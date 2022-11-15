@@ -29,7 +29,7 @@ public sealed class CameraController : UpdateableEntity {
             var keyboardState = inputState.CurrentKeyboardState;
             var previousMouseState = inputState.PreviousMouseState;
             if (mouseState.ScrollWheelValue != previousMouseState.ScrollWheelValue) {
-                var scrollViewChange = (float)(frameTime.SecondsPassed * (previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * this._camera.ViewHeight);
+                var scrollViewChange = (float)(frameTime.SecondsPassed * (previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * this._camera.ActualViewHeight);
 
                 var isZoomIn = scrollViewChange < 0;
                 if (isZoomIn) {
@@ -58,7 +58,7 @@ public sealed class CameraController : UpdateableEntity {
             }
 
             if (!keyboardState.IsModifierKeyDown()) {
-                var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
+                var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ActualViewHeight;
                 if (keyboardState.IsKeyDown(Keys.W)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }

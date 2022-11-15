@@ -125,6 +125,7 @@ public class RenderLoopTests {
         public OffsetSettings OffsetSettings { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public float ViewHeight { get; set; } = 4f;
+        public float ActualViewHeight => this.ViewHeight;
         public float ViewWidth => 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {

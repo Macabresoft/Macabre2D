@@ -29,7 +29,7 @@ public sealed class CameraScroller : UpdateableEntity {
                 this._previousScrollValue = inputState.CurrentMouseState.ScrollWheelValue;
             }
 
-            var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
+            var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ActualViewHeight;
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                 this._camera.LocalPosition += new Vector2(0f, movementMultiplier);

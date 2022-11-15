@@ -43,7 +43,7 @@ public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
 
     private void AdjustPosition() {
         if (this._camera != null) {
-            this.SetWorldPosition(this._camera.Transform.Position + new Vector2(this._camera.ViewWidth, this._camera.ViewHeight) * 0.5f);
+            this.SetWorldPosition(this._camera.Transform.Position + new Vector2(this._camera.ViewWidth, this._camera.ActualViewHeight) * 0.5f);
         }
     }
 }

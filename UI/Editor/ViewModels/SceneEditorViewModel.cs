@@ -78,8 +78,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
             case nameof(ICamera.Transform):
                 this._settingsService.Settings.CameraPosition = this._camera.Transform.Position;
                 break;
-            case nameof(ICamera.ViewHeight):
-                this._settingsService.Settings.CameraViewHeight = this._camera.ViewHeight;
+            case nameof(ICamera.ActualViewHeight):
+                this._settingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
                 break;
         }
     }
@@ -87,7 +87,9 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     private IScene CreateScene() {
         var scene = new Scene();
         scene.AddLoop(new EditorRenderLoop(this.SceneService));
-        this._camera = scene.AddChild<Camera>();
+        var camera = scene.AddChild<Camera>();
+        camera.PixelSnap = PixelSnap.No;
+        this._camera = camera;
         this._camera.ViewHeight = this._settingsService.Settings.CameraViewHeight;
         this._camera.SetWorldPosition(this._settingsService.Settings.CameraPosition);
         this._camera.AddChild(new CameraController(this._editorService));

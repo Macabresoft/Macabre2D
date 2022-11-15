@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -44,6 +45,11 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// Gets or sets the view height of the camera in world units (not screen pixels).
     /// </summary>
     float ViewHeight { get; set; }
+    
+    /// <summary>
+    /// Gets the actual view height.
+    /// </summary>
+    float ActualViewHeight { get; }
 
     /// <summary>
     /// Gets the view width.
@@ -160,10 +166,16 @@ public class Camera : Entity, ICamera {
             }
 
             if (this.Set(ref this._viewHeight, value)) {
+                this.CalculateActualViewHeight();
                 this.OnScreenAreaChanged();
             }
         }
     }
+
+    /// <summary>
+    /// Gets the actual view height for this camera. Will only be different than <see cref="ViewHeight"/> if pixel snapping is enabled.
+    /// </summary>
+    public float ActualViewHeight { get; private set; }
 
     /// <inheritdoc />
     public float ViewWidth => this._viewWidth.Value;
@@ -178,7 +190,7 @@ public class Camera : Entity, ICamera {
         var result = Vector2.Zero;
 
         if (this.OffsetSettings.Size.Y != 0f) {
-            var ratio = this.ViewHeight / this.OffsetSettings.Size.Y;
+            var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
             var pointVector = point.ToVector2();
             var vectorPosition = new Vector2(pointVector.X + this.OffsetSettings.Offset.X, -pointVector.Y + this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y) * ratio;
             result = this.GetWorldTransform(vectorPosition).Position;
@@ -192,6 +204,7 @@ public class Camera : Entity, ICamera {
         base.Initialize(scene, parent);
 
         this.OffsetSettings.Initialize(this.CreateSize);
+        this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
         this._samplerState = this._samplerStateType.ToSamplerState();
 
@@ -213,9 +226,9 @@ public class Camera : Entity, ICamera {
     public void ZoomTo(Vector2 worldPosition, float zoomAmount) {
         var originalCameraPosition = this.Transform.Position;
         var originalDistanceFromCamera = worldPosition - originalCameraPosition;
-        var originalViewHeight = this.ViewHeight;
+        var originalViewHeight = this.ActualViewHeight;
         this.ViewHeight -= zoomAmount;
-        var viewHeightRatio = this.ViewHeight / originalViewHeight;
+        var viewHeightRatio = this.ActualViewHeight / originalViewHeight;
         this.SetWorldPosition(worldPosition - originalDistanceFromCamera * viewHeightRatio);
     }
 
@@ -240,9 +253,9 @@ public class Camera : Entity, ICamera {
 
         this.SetWorldPosition(origin);
 
-        this.ViewHeight = difference.Y;
-        if (this.ViewWidth < difference.X && this.ViewWidth != 0f) {
-            this.ViewHeight *= difference.X / this.ViewWidth;
+        this.ActualViewHeight = difference.Y;
+        if (this.ActualViewHeight < difference.X && this.ViewWidth != 0f) {
+            this.ActualViewHeight *= difference.X / this.ViewWidth;
         }
     }
 
@@ -262,7 +275,7 @@ public class Camera : Entity, ICamera {
     protected Matrix GetViewMatrix(Transform transform) {
         var settings = this.Settings;
         var pixelsPerUnit = settings.PixelsPerUnit;
-        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
+        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetSettings.Size.Y);
 
         var matrix =
             Matrix.CreateTranslation(new Vector3(-transform.Position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
@@ -325,7 +338,7 @@ public class Camera : Entity, ICamera {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var ratio = this.ViewHeight / this.OffsetSettings.Size.Y;
+        var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
         var width = this.OffsetSettings.Size.X * ratio;
         var height = this.OffsetSettings.Size.Y * ratio;
         var offset = this.OffsetSettings.Offset * ratio;
@@ -358,14 +371,42 @@ public class Camera : Entity, ICamera {
 
     private float CreateViewWidth() {
         var (x, y) = this.OffsetSettings.Size;
-        var ratio = y != 0 ? this.ViewHeight / y : 0f;
+        var ratio = y != 0 ? this.ActualViewHeight / y : 0f;
         return x * ratio;
     }
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OffsetSettings.InvalidateSize();
+        this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
         this._viewWidth.Reset();
+    }
+
+    private void CalculateActualViewHeight() {
+        if (this.ShouldSnapToPixels(this.Settings)) {
+            var originalPixelHeight = (uint)Math.Round(this.ViewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
+            var viewportHeight = this.Game.ViewportSize.Y;
+            if (originalPixelHeight < viewportHeight) {
+                var internalPixelHeight = originalPixelHeight;
+                var count = 0;
+
+                while (internalPixelHeight < viewportHeight) {
+                    internalPixelHeight += originalPixelHeight;
+                    count++;
+                }
+
+                this.ActualViewHeight = this.Settings.UnitsPerPixel * (viewportHeight / (float)count);
+            }
+            else {
+                this.ActualViewHeight = this.ViewHeight;
+            }
+
+        }
+        else {
+            this.ActualViewHeight = this.ViewHeight;
+        }
+        
+        this.RaisePropertyChanged(nameof(ActualViewHeight));
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

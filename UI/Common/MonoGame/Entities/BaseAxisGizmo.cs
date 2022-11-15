@@ -138,7 +138,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
         var result = GizmoAxis.None;
 
-        var viewRatio = this.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Game.ViewportSize.Y);
+        var viewRatio = this.Settings.GetPixelAgnosticRatio(this.Camera.ActualViewHeight, this.Game.ViewportSize.Y);
         var radius = viewRatio * GizmoPointSize * this.Settings.UnitsPerPixel * 0.5f;
         if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
             result = GizmoAxis.X;
@@ -219,7 +219,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     }
 
     private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ICamera.ViewHeight)) {
+        if (e.PropertyName == nameof(ICamera.ActualViewHeight)) {
             this.ResetEndPoints();
         }
     }
