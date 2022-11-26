@@ -255,11 +255,8 @@ public sealed class AutoTileMap : RenderableTileMap {
             foreach (var visualChunk in reversedVisualChunks) {
                 var candidates = visualChunks.Where(x => x.MaximumTile.X == visualChunk.MinimumTile.X - 1).ToList();
 
-                foreach (var candidate in candidates) {
-                    if (candidate.TryCombineColumn(visualChunk)) {
-                        visualChunks.Remove(visualChunk);
-                        break;
-                    }
+                if (candidates.Any(candidate => candidate.TryCombineColumn(visualChunk))) {
+                    visualChunks.Remove(visualChunk);
                 }
             }
 
@@ -270,7 +267,31 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void ReevaluateBoxRowIndexes() {
-        // TODO: Create visual chunks
+        if (this.HasActiveTiles()) {
+            var visualChunks = new List<VisualChunk>();
+            var orderedTiles = this.ActiveTiles.OrderBy(tile => tile.Y).ThenBy(tile => tile.X).ToList();
+            var currentVisualChunk = new VisualChunk(orderedTiles.First());
+            visualChunks.Add(currentVisualChunk);
+            orderedTiles.RemoveAt(0);
+
+            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToRow(activeTile))) {
+                currentVisualChunk = new VisualChunk(activeTile);
+                visualChunks.Add(currentVisualChunk);
+            }
+
+            var reversedVisualChunks = visualChunks.OrderByDescending(x => x.MaximumTile.Y).ToList();
+            foreach (var visualChunk in reversedVisualChunks) {
+                var candidates = visualChunks.Where(x => x.MaximumTile.Y == visualChunk.MinimumTile.Y - 1).ToList();
+
+                if (candidates.Any(candidate => candidate.TryCombineRow(visualChunk))) {
+                    visualChunks.Remove(visualChunk);
+                }
+            }
+
+            foreach (var visualChunk in visualChunks) {
+                this.SetIndexesForVisualChunk(visualChunk);
+            }
+        }
     }
 
     private void ReevaluateIndex(Point tile) {
@@ -418,11 +439,39 @@ public sealed class AutoTileMap : RenderableTileMap {
             return false;
         }
 
+        public bool TryAddToRow(Point tile) {
+            if (this.MaximumTile.Y == this.MinimumTile.Y) {
+                if (tile.X == this.MinimumTile.X - 1) {
+                    this.MinimumTile = tile;
+                    return true;
+                }
+
+                if (tile.X == this.MaximumTile.X + 1) {
+                    this.MaximumTile = tile;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool TryCombineColumn(VisualChunk other) {
             if (this.MinimumTile.Y == other.MinimumTile.Y && this.MaximumTile.Y == other.MaximumTile.Y) {
                 if (this.MaximumTile.X == other.MinimumTile.X - 1 || this.MinimumTile.X + 1 == other.MaximumTile.X) {
                     this.MaximumTile = new Point(Math.Max(this.MaximumTile.X, other.MaximumTile.X), this.MaximumTile.Y);
                     this.MinimumTile = new Point(Math.Min(this.MinimumTile.X, other.MinimumTile.X), this.MinimumTile.Y);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryCombineRow(VisualChunk other) {
+            if (this.MinimumTile.X == other.MinimumTile.X && this.MaximumTile.X == other.MaximumTile.X) {
+                if (this.MaximumTile.Y == other.MinimumTile.Y - 1 || this.MinimumTile.Y + 1 == other.MaximumTile.Y) {
+                    this.MaximumTile = new Point(this.MaximumTile.X, Math.Max(this.MaximumTile.Y, other.MaximumTile.Y));
+                    this.MinimumTile = new Point(this.MinimumTile.X, Math.Min(this.MinimumTile.Y, other.MinimumTile.Y));
                     return true;
                 }
             }
