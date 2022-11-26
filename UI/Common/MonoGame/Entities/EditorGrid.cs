@@ -55,7 +55,7 @@ public sealed class EditorGrid : BaseDrawer {
                 this.ResetColor();
                 var gridPosition = container.Transform.Position;
 
-                if (this._entityService.Selected is ITileableEntity tileableEntity) {
+                if (this._entityService?.Selected is ITileableEntity tileableEntity) {
                     gridPosition += tileableEntity.LocalPosition;
                 }
 
