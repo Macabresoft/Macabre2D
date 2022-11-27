@@ -179,7 +179,7 @@ public class BaseGame : Game, IGame {
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         this._scene.Initialize(this, this.CreateAssetManager());
 
-        if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
+        if (!IsDesignMode && this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
             this.GraphicsSettings = graphicsSettings;
         }
         else {
