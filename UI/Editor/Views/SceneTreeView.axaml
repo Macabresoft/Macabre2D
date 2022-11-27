@@ -63,7 +63,7 @@
 
                 <Button Command="{Binding RemoveCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
-                        HotKey="Delete"
+                        HotKey="Ctrl + Delete"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
@@ -190,7 +190,7 @@
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
-                                              InputGesture="Delete"
+                                              InputGesture="Ctrl + Delete"
                                               ToolTip.Tip="Remove this loop from the scene" />
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>
@@ -255,7 +255,7 @@
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
-                                              InputGesture="Delete"
+                                              InputGesture="Ctrl + Delete"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>
