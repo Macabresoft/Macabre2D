@@ -230,6 +230,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                             this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
                             this._entityService.Selected = scene;
                             this._loopService.Selected = scene.Loops.FirstOrDefault();
+                            this._impliedSelected = scene;
                         }
                     }
                 }
