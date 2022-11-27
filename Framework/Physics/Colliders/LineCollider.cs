@@ -22,7 +22,7 @@ public sealed class LineCollider : PolygonCollider {
     /// <summary>
     /// Initializes a new instance of the <see cref="LineCollider" /> class.
     /// </summary>
-    public LineCollider() : this(Vector2.Zero, Vector2.One) {
+    public LineCollider() : base(2) {
     }
 
     /// <inheritdoc />

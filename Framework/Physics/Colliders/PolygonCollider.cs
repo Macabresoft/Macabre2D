@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Collider representing a generic polygon to be used by the physics engine.
@@ -16,6 +17,7 @@ public abstract class PolygonCollider : Collider {
     private readonly ResettableLazy<List<Vector2>> _normals;
 
     [DataMember]
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly List<Vector2> _vertices = new();
 
     private readonly ResettableLazy<List<Vector2>> _worldPoints;
@@ -23,7 +25,7 @@ public abstract class PolygonCollider : Collider {
     /// <summary>
     /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
     /// </summary>
-    public PolygonCollider() : base() {
+    protected PolygonCollider() : base() {
         this._worldPoints = new ResettableLazy<List<Vector2>>(this.CreateWorldPoints);
         this._normals = new ResettableLazy<List<Vector2>>(this.GetNormals);
         this._center = new ResettableLazy<Vector2>(() => this.WorldPoints.GetAverage());
@@ -32,8 +34,27 @@ public abstract class PolygonCollider : Collider {
     /// <summary>
     /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
     /// </summary>
+    /// <param name="numberOfVertices">The number of vertices.</param>
+    protected PolygonCollider(int numberOfVertices) : this() {
+        if (numberOfVertices == 0) {
+            this._vertices.Clear();
+        }
+        else if (this._vertices.Count > numberOfVertices) {
+            this._vertices.RemoveRange(numberOfVertices, this._vertices.Count - numberOfVertices);
+        }
+        else if (this._vertices.Count < numberOfVertices) {
+            for (var i = this._vertices.Count; i < numberOfVertices; i++) {
+                this._vertices.Add(Vector2.Zero);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
+    /// </summary>
     /// <param name="vertices">The vertices.</param>
-    public PolygonCollider(IEnumerable<Vector2> vertices) : this() {
+    protected PolygonCollider(IEnumerable<Vector2> vertices) : this() {
+        this._vertices.Clear();
         this._vertices.AddRange(vertices);
     }
 
@@ -41,7 +62,7 @@ public abstract class PolygonCollider : Collider {
     /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
     /// </summary>
     /// <param name="points">The points.</param>
-    public PolygonCollider(params Vector2[] points) : this(points as IEnumerable<Vector2>) {
+    protected PolygonCollider(params Vector2[] points) : this(points as IEnumerable<Vector2>) {
     }
 
     /// <inheritdoc />
@@ -324,10 +345,7 @@ public abstract class PolygonCollider : Collider {
     private List<Vector2> CreateWorldPoints() {
         var worldPoints = new List<Vector2>();
         if (this.Body != null) {
-            foreach (var point in this._vertices) {
-                var worldPoint = this.Body.GetWorldTransform(this.Offset + point).Position;
-                worldPoints.Add(worldPoint);
-            }
+            worldPoints.AddRange(this._vertices.Select(point => this.Body.GetWorldTransform(this.Offset + point).Position));
         }
 
         return worldPoints;
