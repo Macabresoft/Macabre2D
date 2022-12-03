@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// A sprite animator that loops a single animation.
 /// </summary>
-public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
+public class LoopingSpriteAnimator : BaseSpriteAnimator {
     private bool _startPlaying = true;
 
     /// <summary>
