@@ -45,6 +45,7 @@ public sealed class MonoGameControl : Control {
     };
 
     private readonly Stopwatch _stopwatch = new();
+    private byte[] _bufferData = Array.Empty<byte>();
     private WriteableBitmap _bitmap = new(new PixelSize(1, 1), Vector.One, PixelFormat.Rgba8888, AlphaFormat.Opaque);
     private bool _isInitialized;
     private MonoGameKeyboard _keyboard;
@@ -82,12 +83,16 @@ public sealed class MonoGameControl : Control {
             this.RunFrame();
 
             using (var bitmapLock = this._bitmap.Lock()) {
-                var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                device.GetBackBufferData(data);
-                Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
+                var size = bitmapLock.RowBytes * bitmapLock.Size.Height;
+                if (this._bufferData.Length != size) {
+                    this._bufferData = new byte[size];
+                }
+                
+                device.GetBackBufferData(this._bufferData);
+                Marshal.Copy(this._bufferData, 0, bitmapLock.Address, this._bufferData.Length);
             }
 
-            if (!this.TryDrawBitmap(context) && game.Scene is IScene scene) {
+            if (!this.TryDrawBitmap(context) && game.Scene is { } scene) {
                 context.DrawRectangle(scene.BackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
             }
         }
