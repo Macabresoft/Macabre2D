@@ -35,6 +35,11 @@ public static class CommonCategories {
     public const string Layers = "Layers";
 
     /// <summary>
+    /// Category for input.
+    /// </summary>
+    public const string Input = "Input";
+
+    /// <summary>
     /// Category for miscellaneous.
     /// </summary>
     public const string Miscellaneous = "Miscellaneous";
