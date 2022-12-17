@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 /// Maps directly to mouse buttons available in MonoGame's <see cref="MouseState" />.
 /// </summary>
 public enum MouseButton {
+    None,
     Left,
     Middle,
     Right,

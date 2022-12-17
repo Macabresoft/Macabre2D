@@ -58,5 +58,8 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Licenses.resx</DependentUpon>
         </Compile>
+        <Compile Update="Input\InputBindings.cs">
+          <Link>Scripts\Input\\InputBindings.cs</Link>
+        </Compile>
     </ItemGroup>
 </Project>
