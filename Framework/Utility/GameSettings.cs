@@ -30,6 +30,11 @@ public interface IGameSettings : INotifyPropertyChanged {
     Color FallbackBackgroundColor { get; set; }
 
     /// <summary>
+    /// Gets the input settings.
+    /// </summary>
+    InputSettings InputSettings { get; }
+
+    /// <summary>
     /// Gets the layer settings.
     /// </summary>
     LayerSettings LayerSettings { get; }
@@ -104,6 +109,11 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
         get => this._fallbackBackgroundColor;
         set => this.Set(ref this._fallbackBackgroundColor, value);
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Input)]
+    public InputSettings InputSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

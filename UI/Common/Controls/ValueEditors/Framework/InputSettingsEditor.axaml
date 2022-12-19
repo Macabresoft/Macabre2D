@@ -1,0 +1,8 @@
+﻿<valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                 x:TypeArguments="framework:InputSettings"
+                                 x:Class="Macabresoft.Macabre2D.UI.Common.Controls.ValueEditors.Framework.InputSettingsEditor">
+    <Grid />
+</valueEditors:ValueEditorControl>
