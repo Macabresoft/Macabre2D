@@ -44,12 +44,14 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
 
         for (var i = 0; i <= rowValues.Count + 1; i++) {
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
         }
 
         grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
-        for (var row = 0; row < rowValues.Count; row++) {
+        for (var i = 0; i < rowValues.Count; i++) {
+            var row = i * 2;
             var action = rowValues[row];
             var label = new TextBlock {
                 Text = action.ToString(),
@@ -64,12 +66,21 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
                 Text = this.Value.GetName(action),
                 Tag = action,
                 [Grid.RowProperty] = row,
-                [Grid.ColumnProperty] = 2
+                [Grid.ColumnProperty] = 1
             };
 
             textBox.LostFocus += this.LayerTextBox_LostFocus;
             textBox.KeyUp += this.LayerTextBox_KeyUp;
             grid.Children.Add(textBox);
+
+            var separator = new Border() {
+                [Grid.RowProperty] = row + 1,
+                [Grid.ColumnProperty] = 0,
+                [Grid.ColumnSpanProperty] = 2
+            };
+            
+            separator.Classes.Add("HorizontalSeparator");
+            grid.Children.Add(separator);
         }
     }
 
