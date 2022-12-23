@@ -20,29 +20,29 @@ public class InputBindings {
     private readonly Dictionary<InputAction, MouseButton> _mouseBindings = new();
 
     /// <summary>
-    /// Adds a controller binding.
+    /// Sets a controller binding.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="button">The button.</param>
-    public void AddControllerBinding(InputAction action, Buttons button) {
+    public void SetControllerBinding(InputAction action, Buttons button) {
         this._controllerBindings[action] = button;
     }
 
     /// <summary>
-    /// Adds a key binding.
+    /// Sets a key binding.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="key">The key.</param>
-    public void AddKeyBinding(InputAction action, Keys key) {
+    public void SetKeyBinding(InputAction action, Keys key) {
         this._keyBindings[action] = key;
     }
 
     /// <summary>
-    /// Adds a mouse binding.
+    /// Sets a mouse binding.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="button">The button.</param>
-    public void AddMouseBinding(InputAction action, MouseButton button) {
+    public void SetMouseBinding(InputAction action, MouseButton button) {
         this._mouseBindings[action] = button;
     }
 

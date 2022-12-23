@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -67,7 +68,7 @@ public class InputSettings {
 
         return result;
     }
-
+    
     /// <summary>
     /// Tries to get the specified action by its name.
     /// </summary>

@@ -3,6 +3,6 @@
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:InputSettings"
-                                 x:Class="Macabresoft.Macabre2D.UI.Common.Controls.ValueEditors.Framework.InputSettingsEditor">
+                                 x:Class="Macabresoft.Macabre2D.UI.Common.InputSettingsEditor">
     <Grid />
 </valueEditors:ValueEditorControl>
