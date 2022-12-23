@@ -27,7 +27,7 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenAllBindings() {
         var bindings = new InputBindings();
-        bindings.SetControllerBinding(InputAction.Action01, Buttons.A);
+        bindings.SetGamePadBinding(InputAction.Action01, Buttons.A);
         bindings.SetKeyBinding(InputAction.Action01, Keys.A);
         bindings.SetMouseBinding(InputAction.Action01, MouseButton.Left);
 
@@ -45,7 +45,7 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenControllerBinding() {
         var bindings = new InputBindings();
-        bindings.SetControllerBinding(InputAction.Action01, Buttons.A);
+        bindings.SetGamePadBinding(InputAction.Action01, Buttons.A);
 
         var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
 

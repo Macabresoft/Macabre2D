@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 [DataContract]
 public class InputBindings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<InputAction, Buttons> _controllerBindings = new();
+    private readonly Dictionary<InputAction, Buttons> _gamePadBindings = new();
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Keys> _keyBindings = new();
@@ -20,12 +20,46 @@ public class InputBindings {
     private readonly Dictionary<InputAction, MouseButton> _mouseBindings = new();
 
     /// <summary>
-    /// Sets a controller binding.
+    /// Clears all bindings for the specified action.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public void ClearBindings(InputAction action) {
+        this.RemoveGamePadBinding(action);
+        this.RemoveKeyBinding(action);
+        this.RemoveMouseBinding(action);
+    }
+
+    /// <summary>
+    /// Removes a game pad binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public void RemoveGamePadBinding(InputAction action) {
+        this._gamePadBindings.Remove(action);
+    }
+
+    /// <summary>
+    /// Removes a key binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public void RemoveKeyBinding(InputAction action) {
+        this._keyBindings.Remove(action);
+    }
+
+    /// <summary>
+    /// Removes a mouse binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public void RemoveMouseBinding(InputAction action) {
+        this._mouseBindings.Remove(action);
+    }
+
+    /// <summary>
+    /// Sets a game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="button">The button.</param>
-    public void SetControllerBinding(InputAction action, Buttons button) {
-        this._controllerBindings[action] = button;
+    public void SetGamePadBinding(InputAction action, Buttons button) {
+        this._gamePadBindings[action] = button;
     }
 
     /// <summary>
@@ -47,49 +81,15 @@ public class InputBindings {
     }
 
     /// <summary>
-    /// Clears all bindings for the specified action.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void ClearBindings(InputAction action) {
-        this.RemoveControllerBinding(action);
-        this.RemoveKeyBinding(action);
-        this.RemoveMouseBinding(action);
-    }
-
-    /// <summary>
-    /// Removes a controller binding.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void RemoveControllerBinding(InputAction action) {
-        this._controllerBindings.Remove(action);
-    }
-
-    /// <summary>
-    /// Removes a key binding.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void RemoveKeyBinding(InputAction action) {
-        this._keyBindings.Remove(action);
-    }
-
-    /// <summary>
-    /// Removes a mouse binding.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void RemoveMouseBinding(InputAction action) {
-        this._mouseBindings.Remove(action);
-    }
-
-    /// <summary>
     /// Gets all possible bindings for an action.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="controllerButton">The controller button binding.</param>
+    /// <param name="gamePadButton">The game pad button binding.</param>
     /// <param name="key">The key binding.</param>
     /// <param name="mouseButton">The mouse binding.</param>
     /// <returns>A value indicating whether or not any of the bindings exist.</returns>
-    public bool TryGetBindings(InputAction action, out Buttons controllerButton, out Keys key, out MouseButton mouseButton) {
-        var result = this._controllerBindings.TryGetValue(action, out controllerButton);
+    public bool TryGetBindings(InputAction action, out Buttons gamePadButton, out Keys key, out MouseButton mouseButton) {
+        var result = this._gamePadBindings.TryGetValue(action, out gamePadButton);
         result = this._keyBindings.TryGetValue(action, out key) || result;
         result = this._mouseBindings.TryGetValue(action, out mouseButton) || result;
         return result;

@@ -20,9 +20,9 @@ public class InputActionControl : UserControl {
 
     public static readonly DirectProperty<InputActionControl, Buttons> SelectedControllerButtonProperty =
         AvaloniaProperty.RegisterDirect<InputActionControl, Buttons>(
-            nameof(SelectedControllerButton),
-            editor => editor.SelectedControllerButton,
-            (editor, value) => editor.SelectedControllerButton = value,
+            nameof(SelectedGamePadButton),
+            editor => editor.SelectedGamePadButton,
+            (editor, value) => editor.SelectedGamePadButton = value,
             defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly DirectProperty<InputActionControl, Keys> SelectedKeyProperty =
@@ -42,7 +42,7 @@ public class InputActionControl : UserControl {
     private readonly InputSettings _inputSettings;
     private readonly IUndoService _undoService;
     private string _actionName;
-    private Buttons _selectedControllerButton;
+    private Buttons _selectedGamePadButton;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
 
@@ -53,18 +53,18 @@ public class InputActionControl : UserControl {
         IUndoService undoService,
         InputSettings inputSettings,
         InputAction action,
-        IReadOnlyCollection<Buttons> availableControllerButtons,
+        IReadOnlyCollection<Buttons> availableGamePadButtons,
         IReadOnlyCollection<Keys> availableKeys,
         IReadOnlyCollection<MouseButton> availableMouseButtons) {
         this._undoService = undoService;
         this._inputSettings = inputSettings;
         this.Action = action;
-        this.AvailableControllerButtons = availableControllerButtons;
+        this.AvailableGamePadButtons = availableGamePadButtons;
         this.AvailableKeys = availableKeys;
         this.AvailableMouseButtons = availableMouseButtons;
 
         this._actionName = this._inputSettings.GetName(this.Action);
-        this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedControllerButton, out this._selectedKey, out this._selectedMouseButton);
+        this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButton, out this._selectedKey, out this._selectedMouseButton);
 
         this.InitializeComponent();
     }
@@ -90,26 +90,26 @@ public class InputActionControl : UserControl {
         }
     }
 
-    public IReadOnlyCollection<Buttons> AvailableControllerButtons { get; }
+    public IReadOnlyCollection<Buttons> AvailableGamePadButtons { get; }
 
     public IReadOnlyCollection<Keys> AvailableKeys { get; }
 
     public IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
 
-    public Buttons SelectedControllerButton {
-        get => this._selectedControllerButton;
+    public Buttons SelectedGamePadButton {
+        get => this._selectedGamePadButton;
         set {
-            if (value != this._selectedControllerButton) {
+            if (value != this._selectedGamePadButton) {
                 this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
                     {
-                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedControllerButton, value);
-                        this._inputSettings.DefaultBindings.SetControllerBinding(this.Action, value);
+                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedGamePadButton, value);
+                        this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, value);
                     },
                     () =>
                     {
-                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedControllerButton, originalValue);
-                        this._inputSettings.DefaultBindings.SetControllerBinding(this.Action, originalValue);
+                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedGamePadButton, originalValue);
+                        this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, originalValue);
                     });
             }
         }

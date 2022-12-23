@@ -36,7 +36,7 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
 
         var rowValues = Enum.GetValues<InputAction>().ToList();
 
-        var controllerButtons = Enum.GetValues<Buttons>().ToList();
+        var gamePadButtons = Enum.GetValues<Buttons>().ToList();
         var keys = Enum.GetValues<Keys>().ToList();
         var mouseButtons = Enum.GetValues<MouseButton>().ToList();
 
@@ -52,7 +52,7 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
             var row = i * 2;
             var action = rowValues[i];
 
-            var control = new InputActionControl(this._undoService, this.Value, action, controllerButtons, keys, mouseButtons) {
+            var control = new InputActionControl(this._undoService, this.Value, action, gamePadButtons, keys, mouseButtons) {
                 [Grid.RowProperty] = row
             };
 
