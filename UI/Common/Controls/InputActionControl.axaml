@@ -3,9 +3,16 @@
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Common.InputActionControl">
+    <UserControl.Styles>
+        <Style Selector="avaloniaEx|Icon">
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Width" Value="24" />
+        </Style>
+    </UserControl.Styles>
     <Grid RowDefinitions="Auto, Auto"
           ColumnDefinitions="Auto, *"
-          DataContext="{Binding $parent[local:InputActionControl]}">
+          DataContext="{Binding $parent[local:InputActionControl]}"
+          Margin="{StaticResource DoubleMarginVertical}">
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    Classes="Label"
@@ -22,30 +29,36 @@
               Grid.ColumnSpan="2">
             <avaloniaEx:Icon Grid.Column="0"
                              Grid.Row="0"
-                             Content="{StaticResource GamePadIcon}" />
+                             Content="{StaticResource GamePadIcon}"
+                             ToolTip.Tip="Game Pad Binding" />
             <ComboBox Grid.Column="1"
                       Grid.Row="0"
                       Items="{Binding AvailableGamePadButtons}"
                       SelectedItem="{Binding SelectedGamePadButton}"
-                      HorizontalAlignment="Stretch" />
+                      HorizontalAlignment="Stretch"
+                      ToolTip.Tip="Game Pad Binding" />
 
             <avaloniaEx:Icon Grid.Column="0"
                              Grid.Row="1"
-                             Content="{StaticResource KeyboardIcon}" />
+                             Content="{StaticResource KeyboardIcon}"
+                             ToolTip.Tip="Keyboard Binding" />
             <ComboBox Grid.Column="1"
                       Grid.Row="1"
                       Items="{Binding AvailableKeys}"
                       SelectedItem="{Binding SelectedKey}"
-                      HorizontalAlignment="Stretch" />
+                      HorizontalAlignment="Stretch"
+                      ToolTip.Tip="Keyboard Binding" />
 
             <avaloniaEx:Icon Grid.Column="0"
                              Grid.Row="2"
-                             Content="{StaticResource MouseClickIcon}" />
+                             Content="{StaticResource MouseClickIcon}"
+                             ToolTip.Tip="Mouse Binding" />
             <ComboBox Grid.Column="1"
                       Grid.Row="2"
                       Items="{Binding AvailableMouseButtons}"
                       SelectedItem="{Binding SelectedMouseButton}"
-                      HorizontalAlignment="Stretch" />
+                      HorizontalAlignment="Stretch"
+                      ToolTip.Tip="Mouse Binding" />
         </Grid>
     </Grid>
 </UserControl>
