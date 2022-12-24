@@ -145,8 +145,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case ILoop system:
-                    this._loopService.Selected = system;
+                case ILoop loop:
+                    this._loopService.Selected = loop;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = false;
@@ -158,16 +158,22 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.IsEntityContext = true;
                     break;
                 case LoopCollection:
+                    this._entityService.Selected = null;
+                    this._loopService.Selected = null;
                     this.IsEntityContext = false;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case EntityCollection:
+                    this._entityService.Selected = null;
+                    this._loopService.Selected = null;
                     this.IsEntityContext = true;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case null:
+                    this._entityService.Selected = null;
+                    this._loopService.Selected = null;
                     this.IsEntityContext = true;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
