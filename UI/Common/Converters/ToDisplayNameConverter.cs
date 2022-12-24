@@ -40,17 +40,29 @@ public class ToDisplayNameConverter : IValueConverter {
 
     private string GetEnumName(Enum enumValue) {
         var enumType = enumValue.GetType();
-        if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
-            var displayName = string.Empty;
-            var isLayers = enumType == typeof(Layers) && this._projectService.CurrentProject != null;
-            foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
-                var enumName = isLayers ? this._projectService.CurrentProject.Settings.LayerSettings.GetName((Layers)value) : value.GetEnumDisplayName();
-                displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
-            }
+        var displayName = string.Empty;
 
-            return displayName;
+        if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
+            if (enumType == typeof(Layers) && this._projectService.CurrentProject != null) {
+                foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
+                    var enumName = this._projectService.CurrentProject.Settings.LayerSettings.GetName((Layers)value);
+                    displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
+                }
+            }
+            else {
+                foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
+                    var enumName = value.GetEnumDisplayName();
+                    displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
+                }
+            }
+        }
+        else if (enumType == typeof(InputAction) && this._projectService.CurrentProject != null) {
+            displayName = this._projectService.CurrentProject.Settings.InputSettings.GetName((InputAction)enumValue);
+        }
+        else {
+            displayName = enumValue.GetEnumDisplayName();
         }
 
-        return enumValue.GetEnumDisplayName();
+        return displayName;
     }
 }

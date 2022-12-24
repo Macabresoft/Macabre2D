@@ -1,0 +1,33 @@
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          x:TypeArguments="framework:InputAction"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.InputActionEditor">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:InputActionEditor]}">
+        <Design.DataContext>
+            <local:InputActionEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <ComboBox Grid.Column="1"
+                  Items="{Binding EnabledInputActions}"
+                  PlaceholderText="{Binding Value, Converter={x:Static local:ToDisplayNameConverter.Instance}}"
+                  SelectedItem="{Binding Value}"
+                  ToolTip.Tip="{Binding Value}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock HorizontalAlignment="Stretch"
+                               Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
+                               TextAlignment="Left"
+                               ToolTip.Tip="{Binding}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+</local:ValueEditorControl>
