@@ -64,6 +64,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public InputBindings InputBindings { get; private set; } = new();
+
+    /// <inheritdoc />
     public InputState InputState { get; protected set; }
 
     /// <summary>
@@ -152,6 +155,11 @@ public class BaseGame : Game, IGame {
         this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.Project.Name, this.GraphicsSettings);
     }
 
+    /// <inheritdoc />
+    public void SaveInputBindings() {
+        this.SaveDataManager.Save(InputBindings.SettingsFileName, this.Project.Name, this.InputBindings);
+    }
+
     /// <summary>
     /// Creates a scene level asset manager.
     /// </summary>
@@ -179,12 +187,25 @@ public class BaseGame : Game, IGame {
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         this._scene.Initialize(this, this.CreateAssetManager());
 
-        if (!IsDesignMode && this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
-            this.GraphicsSettings = graphicsSettings;
-        }
-        else {
+        if (IsDesignMode) {
             this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
         }
+        else {
+            if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
+                this.GraphicsSettings = graphicsSettings;
+            }
+            else {
+                this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
+            }
+
+            if (this.SaveDataManager.TryLoad<InputBindings>(InputBindings.SettingsFileName, this.Project.Name, out var inputBindings) && inputBindings != null) {
+                this.InputBindings = inputBindings;
+            }
+            else {
+                this.InputBindings = this.Project.Settings.InputSettings.DefaultBindings.Clone();
+            }
+        }
+
 
         this.IsInitialized = true;
     }
@@ -286,16 +307,12 @@ public class BaseGame : Game, IGame {
     }
 
     private sealed class EmptyGame : IGame {
-        /// <inheritdoc />
         public event EventHandler<double>? GameSpeedChanged;
 
-        /// <inheritdoc />
         public event EventHandler<Point>? ViewportSizeChanged;
 
-        /// <inheritdoc />
         public ContentManager? Content => null;
 
-        /// <inheritdoc />
         public double GameSpeed {
             get => 1f;
             set {
@@ -307,45 +324,38 @@ public class BaseGame : Game, IGame {
             }
         }
 
-        /// <inheritdoc />
         public GraphicsDevice? GraphicsDevice => null;
 
-        /// <inheritdoc />
         public GraphicsSettings GraphicsSettings { get; } = new();
 
-        /// <inheritdoc />
+        public InputBindings InputBindings { get; } = new();
+
         public IGameProject Project { get; } = new GameProject();
 
-        /// <inheritdoc />
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
-        /// <inheritdoc />
         public IScene Scene => Framework.Scene.Empty;
 
-        /// <inheritdoc />
         public SpriteBatch? SpriteBatch => null;
 
-        /// <inheritdoc />
         public Point ViewportSize => default;
 
-        /// <inheritdoc />
         public void Exit() {
         }
 
-        /// <inheritdoc />
         public void LoadScene(string sceneName) {
         }
 
-        /// <inheritdoc />
         public void LoadScene(IScene scene) {
         }
 
-        /// <inheritdoc />
         public void SaveAndApplyGraphicsSettings() {
         }
 
-        /// <inheritdoc />
         public void SaveGraphicsSettings() {
+        }
+
+        public void SaveInputBindings() {
         }
     }
 }

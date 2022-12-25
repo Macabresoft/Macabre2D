@@ -22,31 +22,31 @@ public interface IGame {
     /// <summary>
     /// Gets the content manager.
     /// </summary>
-    /// <value>The content manager.</value>
     ContentManager? Content { get; }
 
     /// <summary>
     /// Gets or sets the game speed.
     /// </summary>
-    /// <value>The game speed.</value>
     double GameSpeed { get; set; }
 
     /// <summary>
     /// Gets the graphics device.
     /// </summary>
-    /// <value>The graphics device.</value>
     GraphicsDevice? GraphicsDevice { get; }
 
     /// <summary>
     /// Gets the graphics settings.
     /// </summary>
-    /// <value>The graphics settings.</value>
     GraphicsSettings GraphicsSettings { get; }
+
+    /// <summary>
+    /// Gets the input bindings.
+    /// </summary>
+    InputBindings InputBindings { get; }
 
     /// <summary>
     /// Gets the state of input.
     /// </summary>
-    /// <value>The state of input.</value>
     InputState InputState => new();
 
     /// <summary>
@@ -58,25 +58,21 @@ public interface IGame {
     /// <summary>
     /// Gets the save data manager.
     /// </summary>
-    /// <value>The save data manager.</value>
     ISaveDataManager SaveDataManager { get; }
 
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    /// <value>The scene.</value>
     IScene Scene { get; }
 
     /// <summary>
     /// Gets the sprite batch.
     /// </summary>
-    /// <value>The sprite batch.</value>
     SpriteBatch? SpriteBatch { get; }
 
     /// <summary>
     /// Gets the size of the viewport.
     /// </summary>
-    /// <value>The size of the viewport.</value>
     Point ViewportSize { get; }
 
     /// <summary>
@@ -105,4 +101,9 @@ public interface IGame {
     /// Saves the current graphics settings.
     /// </summary>
     void SaveGraphicsSettings();
+
+    /// <summary>
+    /// Saves the current input bindings.
+    /// </summary>
+    void SaveInputBindings();
 }

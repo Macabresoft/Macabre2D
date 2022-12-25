@@ -371,7 +371,7 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
 
-            foreach (var loop in this.Loops.Where(x => x.IsEnabled && x.Kind == LoopKind.Render)) {
+            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.Render })) {
                 loop.Update(frameTime, inputState);
             }
         }
@@ -429,8 +429,16 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
             this.InvokePendingActions();
+            
+            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PreUpdate })) {
+                loop.Update(frameTime, inputState);
+            }
 
-            foreach (var loop in this.Loops.Where(x => x.IsEnabled && x.Kind == LoopKind.Update)) {
+            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.Update })) {
+                loop.Update(frameTime, inputState);
+            }
+            
+            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PostUpdate })) {
                 loop.Update(frameTime, inputState);
             }
         }

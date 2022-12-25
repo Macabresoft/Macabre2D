@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
@@ -9,7 +10,12 @@ using Newtonsoft.Json;
 /// A class which defines input bindings between <see cref="InputAction" /> and <see cref="Keys" />, <see cref="Buttons" />, and <see cref="MouseButton" />.
 /// </summary>
 [DataContract]
-public class InputBindings {
+public class InputBindings : VersionedData {
+    /// <summary>
+    /// The settings file name.
+    /// </summary>
+    public const string SettingsFileName = "InputBindings.m2d";
+
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Buttons> _gamePadBindings = new();
 
@@ -20,6 +26,18 @@ public class InputBindings {
     private readonly Dictionary<InputAction, MouseButton> _mouseBindings = new();
 
     /// <summary>
+    /// Initializes a new instance of <see cref="InputBindings" />.
+    /// </summary>
+    public InputBindings() {
+    }
+
+    private InputBindings(Dictionary<InputAction, Buttons> gamePadBindings, Dictionary<InputAction, Keys> keyBindings, Dictionary<InputAction, MouseButton> mouseBindings) {
+        this._gamePadBindings = new Dictionary<InputAction, Buttons>(gamePadBindings);
+        this._keyBindings = new Dictionary<InputAction, Keys>(keyBindings);
+        this._mouseBindings = new Dictionary<InputAction, MouseButton>(mouseBindings);
+    }
+
+    /// <summary>
     /// Clears all bindings for the specified action.
     /// </summary>
     /// <param name="action">The action.</param>
@@ -27,6 +45,14 @@ public class InputBindings {
         this.RemoveGamePadBinding(action);
         this.RemoveKeyBinding(action);
         this.RemoveMouseBinding(action);
+    }
+
+    /// <summary>
+    /// Clones this instance.
+    /// </summary>
+    /// <returns>A clone of this instance.</returns>
+    public InputBindings Clone() {
+        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings);
     }
 
     /// <summary>

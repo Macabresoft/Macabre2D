@@ -7,5 +7,7 @@ public enum LoopKind {
     None = 0,
     Update = 1,
     Render = 2,
-    Async = 3
+    Async = 3,
+    PreUpdate = 4,
+    PostUpdate = 5
 }

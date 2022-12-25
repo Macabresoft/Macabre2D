@@ -22,7 +22,7 @@ public sealed class GraphicsSettings : VersionedData {
     /// <summary>
     /// The settings file name.
     /// </summary>
-    public const string SettingsFileName = "DefaultGraphics.m2d";
+    public const string SettingsFileName = "Graphics.m2d";
 
     private DisplayModes _displayMode = DisplayModes.Windowed;
     private Point _resolution = new(1920, 1080);
