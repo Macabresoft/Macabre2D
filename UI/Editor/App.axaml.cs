@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
@@ -14,11 +15,11 @@ using Unity;
 public class App : Application {
     /// <inheritdoc />
     public override void Initialize() {
-        Resolver.Container.RegisterServices()
-            .RegisterLibraryServices()
-            .RegisterLibraryTypes()
-            .RegisterFrameworkTypes();
-
+        Resolver.Container
+            .AddNewExtension<AvaloniaUnityContainerExtension>()
+            .AddNewExtension<CommonContainerExtension>()
+            .AddNewExtension<EditorContainerExtension>();
+        
         AvaloniaXamlLoader.Load(this);
     }
 

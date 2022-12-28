@@ -15,7 +15,7 @@
         <PackageReference Include="Avalonia" Version="0.10.18" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
-        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.24" />
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.25" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     </ItemGroup>
 
