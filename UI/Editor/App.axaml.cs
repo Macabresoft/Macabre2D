@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
+using Macabresoft.Macabre2D.UI.Common.DisplayNameHandlers;
 using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
 using Unity;
 
@@ -34,6 +35,9 @@ public class App : Application {
 
             Resolver.Resolve<IEditorSettingsService>().Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
+            
+            DisplayNameHelper.Instance.RegisterHandler(typeof(InputAction), Resolver.Resolve<InputActionsDisplayNameHandler>());
+            DisplayNameHelper.Instance.RegisterHandler(typeof(Layers), Resolver.Resolve<LayersDisplayNameHandler>());
 
             if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
                 Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;

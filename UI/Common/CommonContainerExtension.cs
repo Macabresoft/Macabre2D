@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.UI.Common.DisplayNameHandlers;
 using Unity;
 using Unity.Extension;
 using Unity.Lifetime;
@@ -11,9 +12,16 @@ using Unity.Lifetime;
 public sealed class CommonContainerExtension : UnityContainerExtension {
     /// <inheritdoc />
     protected override void Initialize() {
+        this.RegisterDisplayNameHandlers();
         this.RegisterFrameworkTypes();
         this.RegisterLibraryServices();
         this.RegisterLibraryTypes();
+    }
+
+    private void RegisterDisplayNameHandlers() {
+        this.Container
+            .RegisterType<InputActionsDisplayNameHandler>(new SingletonLifetimeManager())
+            .RegisterType<LayersDisplayNameHandler>(new SingletonLifetimeManager());
     }
 
     private void RegisterFrameworkTypes() {
