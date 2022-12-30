@@ -15,37 +15,10 @@
                    Classes="Label"
                    Text="{Binding Title}" />
 
-        <ComboBox Grid.Column="1"
-                  Classes="Flags"
-                  Items="{Binding EnabledLayers}"
-                  SelectionChanged="SelectingItemsControl_OnSelectionChanged"
-                  PlaceholderText="{Binding Value, Converter={x:Static local:ToDisplayNameConverter.Instance}}"
-                  ToolTip.Tip="{Binding Value}">
-            <ComboBox.Styles>
-                <Style Selector="ComboBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ComboBox.Styles>
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Panel IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <CheckBox HorizontalAlignment="Stretch"
-                                  Content="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
-                                  Command="{Binding $parent[local:LayersEditor].ToggleValueCommand}"
-                                  CommandParameter="{Binding}"
-                                  ToolTip.Tip="{Binding}">
-                            <CheckBox.IsChecked>
-                                <MultiBinding Converter="{x:Static avaloniaEx:FlagsEnumToBoolConverter.Instance}">
-                                    <Binding Path="$parent[local:LayersEditor].Value"
-                                             Mode="TwoWay" />
-                                    <Binding />
-                                </MultiBinding>
-                            </CheckBox.IsChecked>
-                        </CheckBox>
-                    </Panel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <avaloniaEx:FlagsComboBox Grid.Column="1"
+                                  EnumType="{x:Type framework:Layers}"
+                                  Items="{Binding EnabledLayers}"
+                                  SelectedValue="{Binding Value}"/>
 
         <Button Grid.Column="2"
                 Command="{Binding SelectAllCommand}"

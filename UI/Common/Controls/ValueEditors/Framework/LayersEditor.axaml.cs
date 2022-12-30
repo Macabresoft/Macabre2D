@@ -17,11 +17,6 @@ public class LayersEditor : ValueEditorControl<Layers> {
             nameof(SelectAllCommand),
             editor => editor.SelectAllCommand);
 
-    public static readonly DirectProperty<FlagsEnumEditor, ICommand> ToggleValueCommandProperty =
-        AvaloniaProperty.RegisterDirect<FlagsEnumEditor, ICommand>(
-            nameof(ToggleValueCommand),
-            editor => editor.ToggleValueCommand);
-
     private readonly IProjectService _projectService;
 
     public LayersEditor() : this(null, Resolver.Resolve<IProjectService>()) {
@@ -33,7 +28,6 @@ public class LayersEditor : ValueEditorControl<Layers> {
         this.EnabledLayers = this.GetEnabledLayers();
         this.ClearCommand = ReactiveCommand.Create(this.Clear);
         this.SelectAllCommand = ReactiveCommand.Create(this.SelectAll);
-        this.ToggleValueCommand = ReactiveCommand.Create<Layers>(this.ToggleValue);
         this.InitializeComponent();
     }
 
@@ -42,8 +36,6 @@ public class LayersEditor : ValueEditorControl<Layers> {
     public IReadOnlyCollection<Layers> EnabledLayers { get; }
 
     public ICommand SelectAllCommand { get; }
-
-    public ICommand ToggleValueCommand { get; }
 
     private void Clear() {
         this.Value = Layers.None;
@@ -63,21 +55,6 @@ public class LayersEditor : ValueEditorControl<Layers> {
         var all = this._projectService.CurrentProject.Settings.LayerSettings.EnabledLayers;
         if (all != this.Value) {
             this.Value = all;
-        }
-    }
-
-    private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-        if (sender is ComboBox comboBox) {
-            comboBox.SelectedItem = null;
-        }
-    }
-
-    private void ToggleValue(Layers toggled) {
-        if (this.Value.HasFlag(toggled)) {
-            this.Value &= ~toggled;
-        }
-        else {
-            this.Value |= toggled;
         }
     }
 }
