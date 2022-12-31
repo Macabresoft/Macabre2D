@@ -18,11 +18,11 @@ public class InputActionControl : UserControl {
             (editor, value) => editor.ActionName = value,
             defaultBindingMode: BindingMode.TwoWay);
 
-    public static readonly DirectProperty<InputActionControl, Buttons> SelectedControllerButtonProperty =
+    public static readonly DirectProperty<InputActionControl, Buttons> SelectedGamePadButtonsProperty =
         AvaloniaProperty.RegisterDirect<InputActionControl, Buttons>(
-            nameof(SelectedGamePadButton),
-            editor => editor.SelectedGamePadButton,
-            (editor, value) => editor.SelectedGamePadButton = value,
+            nameof(SelectedGamePadButtons),
+            editor => editor.SelectedGamePadButtons,
+            (editor, value) => editor.SelectedGamePadButtons = value,
             defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly DirectProperty<InputActionControl, Keys> SelectedKeyProperty =
@@ -42,7 +42,7 @@ public class InputActionControl : UserControl {
     private readonly InputSettings _inputSettings;
     private readonly IUndoService _undoService;
     private string _actionName;
-    private Buttons _selectedGamePadButton;
+    private Buttons _selectedGamePadButtons;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
 
@@ -64,7 +64,7 @@ public class InputActionControl : UserControl {
         this.AvailableMouseButtons = availableMouseButtons;
 
         this._actionName = this._inputSettings.GetName(this.Action);
-        this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButton, out this._selectedKey, out this._selectedMouseButton);
+        this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
 
         this.InitializeComponent();
     }
@@ -96,19 +96,19 @@ public class InputActionControl : UserControl {
 
     public IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
 
-    public Buttons SelectedGamePadButton {
-        get => this._selectedGamePadButton;
+    public Buttons SelectedGamePadButtons {
+        get => this._selectedGamePadButtons;
         set {
-            if (value != this._selectedGamePadButton) {
+            if (value != this._selectedGamePadButtons) {
                 this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
                     {
-                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedGamePadButton, value);
+                        this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, value);
                         this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, value);
                     },
                     () =>
                     {
-                        this.SetAndRaise(SelectedControllerButtonProperty, ref this._selectedGamePadButton, originalValue);
+                        this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, originalValue);
                         this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, originalValue);
                     });
             }

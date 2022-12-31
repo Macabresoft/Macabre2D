@@ -33,13 +33,11 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
         }
 
         var grid = this.LogicalChildren.OfType<Grid>().First();
-
         var rowValues = Enum.GetValues<InputAction>().ToList();
-
         var gamePadButtons = Enum.GetValues<Buttons>().ToList();
+        gamePadButtons.Remove(Buttons.None);
         var keys = Enum.GetValues<Keys>().ToList();
         var mouseButtons = Enum.GetValues<MouseButton>().ToList();
-
 
         for (var i = 0; i <= rowValues.Count; i++) {
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));

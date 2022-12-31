@@ -1,6 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:monoGameInput="clr-namespace:Microsoft.Xna.Framework.Input;assembly=MonoGame.Framework"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Common.InputActionControl">
     <UserControl.Styles>
@@ -13,6 +14,10 @@
           ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:InputActionControl]}"
           Margin="{StaticResource DoubleMarginVertical}">
+        <Design.DataContext>
+            <local:InputActionControl />
+        </Design.DataContext>
+        
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    Classes="Label"
@@ -31,12 +36,13 @@
                              Grid.Row="0"
                              Content="{StaticResource GamePadIcon}"
                              ToolTip.Tip="Game Pad Binding" />
-            <ComboBox Grid.Column="1"
-                      Grid.Row="0"
-                      Items="{Binding AvailableGamePadButtons}"
-                      SelectedItem="{Binding SelectedGamePadButton}"
-                      HorizontalAlignment="Stretch"
-                      ToolTip.Tip="Game Pad Binding" />
+            <avaloniaEx:FlagsComboBox Grid.Column="1"
+                                      Grid.Row="0"
+                                      HorizontalAlignment="Stretch"
+                                      EnumType="{x:Type monoGameInput:Buttons}"
+                                      Items="{Binding AvailableGamePadButtons}"
+                                      SelectedValue="{Binding SelectedGamePadButtons}"
+                                      ToolTip.Tip="Game Pad Binding" />
 
             <avaloniaEx:Icon Grid.Column="0"
                              Grid.Row="1"

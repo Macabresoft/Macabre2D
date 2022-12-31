@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
@@ -83,9 +82,9 @@ public class InputBindings : VersionedData {
     /// Sets a game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="button">The button.</param>
-    public void SetGamePadBinding(InputAction action, Buttons button) {
-        this._gamePadBindings[action] = button;
+    /// <param name="buttons">The buttons.</param>
+    public void SetGamePadBinding(InputAction action, Buttons buttons) {
+        this._gamePadBindings[action] = buttons;
     }
 
     /// <summary>
@@ -110,12 +109,12 @@ public class InputBindings : VersionedData {
     /// Gets all possible bindings for an action.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="gamePadButton">The game pad button binding.</param>
+    /// <param name="gamePadButtons">The game pad buttons binding.</param>
     /// <param name="key">The key binding.</param>
     /// <param name="mouseButton">The mouse binding.</param>
     /// <returns>A value indicating whether or not any of the bindings exist.</returns>
-    public bool TryGetBindings(InputAction action, out Buttons gamePadButton, out Keys key, out MouseButton mouseButton) {
-        var result = this._gamePadBindings.TryGetValue(action, out gamePadButton);
+    public bool TryGetBindings(InputAction action, out Buttons gamePadButtons, out Keys key, out MouseButton mouseButton) {
+        var result = this._gamePadBindings.TryGetValue(action, out gamePadButtons);
         result = this._keyBindings.TryGetValue(action, out key) || result;
         result = this._mouseBindings.TryGetValue(action, out mouseButton) || result;
         return result;
