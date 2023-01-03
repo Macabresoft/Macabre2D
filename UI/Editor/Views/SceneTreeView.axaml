@@ -114,7 +114,6 @@
                     <TreeDataTemplate DataType="framework:IScene"
                                       ItemsSource="{Binding NamedChildren}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                           HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource SceneIcon}"
                                                            IconForeground="{StaticResource YellowBrush}"
                                                            Text="{Binding Name}" />
@@ -123,7 +122,6 @@
                     <TreeDataTemplate DataType="framework:LoopCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                           HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource LoopIcon}"
                                                            IconForeground="{StaticResource PurpleBrush}"
                                                            Text="{Binding Name}">
@@ -149,7 +147,6 @@
                     <TreeDataTemplate DataType="framework:EntityCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                           HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource EntityIcon}"
                                                            IconForeground="{StaticResource PurpleBrush}"
                                                            Text="{Binding Name}">
