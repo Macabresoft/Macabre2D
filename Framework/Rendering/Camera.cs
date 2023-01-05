@@ -204,7 +204,6 @@ public class Camera : Entity, ICamera {
         base.Initialize(scene, parent);
 
         this.OffsetSettings.Initialize(this.CreateSize);
-        this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
         this._samplerState = this._samplerStateType.ToSamplerState();
 
@@ -302,6 +301,7 @@ public class Camera : Entity, ICamera {
     protected virtual void OnScreenAreaChanged() {
         this._boundingArea.Reset();
         this._viewWidth.Reset();
+        this.CalculateActualViewHeight();
     }
 
     /// <summary>

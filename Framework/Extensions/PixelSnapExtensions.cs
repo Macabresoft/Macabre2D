@@ -34,9 +34,32 @@ public static class PixelSnapExtensions {
     /// <param name="settings">The settings.</param>
     /// <returns>A pixel snapped value</returns>
     public static Vector2 ToPixelSnappedValue(this Vector2 value, IGameSettings settings) {
+        return value.ToPixelSnappedValue(settings, MidpointRounding.AwayFromZero);
+    }
+
+    /// <summary>
+    /// Converts a <see cref="Vector2" /> to a pixel snapped value according to the <see cref="IGameSettings" />.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="midpointRounding">The midpoint rounding.</param>
+    /// <returns>A pixel snapped value</returns>
+    public static Vector2 ToPixelSnappedValue(this Vector2 value, IGameSettings settings, MidpointRounding midpointRounding) {
         return new Vector2(
-            (int)Math.Round(value.X * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.UnitsPerPixel,
-            (int)Math.Round(value.Y * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.UnitsPerPixel);
+            (int)Math.Round(value.X * settings.PixelsPerUnit, 0, midpointRounding) * settings.UnitsPerPixel,
+            (int)Math.Round(value.Y * settings.PixelsPerUnit, 0, midpointRounding) * settings.UnitsPerPixel);
+    }
+
+    /// <summary>
+    /// Converts a <see cref="BoundingArea" /> to a pixel snapped value according to the <see cref="IGameSettings" />.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="settings">The settings.</param>
+    /// <returns>A pixel snapped value.</returns>
+    public static BoundingArea ToPixelSnappedValue(this BoundingArea value, IGameSettings settings) {
+        return new BoundingArea(
+            value.Minimum.ToPixelSnappedValue(settings, MidpointRounding.ToNegativeInfinity),
+            value.Maximum.ToPixelSnappedValue(settings, MidpointRounding.ToPositiveInfinity));
     }
 
     /// <summary>
