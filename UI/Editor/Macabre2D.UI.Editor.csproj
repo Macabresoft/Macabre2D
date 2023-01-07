@@ -76,6 +76,10 @@
             <DependentUpon>PrefabReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\SceneReferenceEditor.axaml.cs">
+          <DependentUpon>SceneReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
