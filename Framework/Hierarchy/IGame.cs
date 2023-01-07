@@ -63,7 +63,7 @@ public interface IGame {
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    IScene Scene { get; }
+    IScene CurrentScene { get; }
 
     /// <summary>
     /// Gets the sprite batch.
@@ -106,4 +106,15 @@ public interface IGame {
     /// Saves the current input bindings.
     /// </summary>
     void SaveInputBindings();
+
+    /// <summary>
+    /// Unpauses the game and stops updating and rendering the pause scene.
+    /// </summary>
+    void Unpause();
+    
+    /// <summary>
+    /// Pauses the current scene while updating and rendering the provided scene instead.
+    /// </summary>
+    /// <param name="scene">The scene to update and render instead of the current scene.</param>
+    void Pause(IScene scene);
 }

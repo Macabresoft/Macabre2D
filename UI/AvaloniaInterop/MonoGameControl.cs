@@ -92,7 +92,7 @@ public sealed class MonoGameControl : Control {
                 Marshal.Copy(this._bufferData, 0, bitmapLock.Address, this._bufferData.Length);
             }
 
-            if (!this.TryDrawBitmap(context) && game.Scene is { } scene) {
+            if (!this.TryDrawBitmap(context) && game.CurrentScene is { } scene) {
                 context.DrawRectangle(scene.BackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
             }
         }

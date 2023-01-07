@@ -154,39 +154,39 @@ public class ContentGame : BaseGame {
 
     private void PostLoadRenderingStuff() {
         var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
-        var arrowSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
+        var arrowSpriteRenderer1 = this.CurrentScene.AddChild<Texture2DRenderer>();
         arrowSpriteRenderer1.Texture = arrowSprite1;
         arrowSpriteRenderer1.LocalPosition += new Vector2(2f, -2f);
 
         var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
-        var arrowSpriteRenderer2 = this.Scene.AddChild<Texture2DRenderer>();
+        var arrowSpriteRenderer2 = this.CurrentScene.AddChild<Texture2DRenderer>();
         arrowSpriteRenderer2.Color = Color.LawnGreen;
         arrowSpriteRenderer2.Texture = arrowSprite2;
         arrowSpriteRenderer2.LocalPosition += new Vector2(3f, -1f);
         arrowSpriteRenderer2.LocalScale = new Vector2(0.75f, 2f);
 
         var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
-        var quadSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
+        var quadSpriteRenderer1 = this.CurrentScene.AddChild<Texture2DRenderer>();
         quadSpriteRenderer1.Texture = quadSprite1;
         quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
 
         var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
-        var quadSpriteRenderer2 = this.Scene.AddChild<Texture2DRenderer>();
+        var quadSpriteRenderer2 = this.CurrentScene.AddChild<Texture2DRenderer>();
         quadSpriteRenderer2.Color = Color.Khaki;
         quadSpriteRenderer2.Texture = quadSprite2;
         quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
 
         var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
-        var rightTriangleSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
+        var rightTriangleSpriteRenderer1 = this.CurrentScene.AddChild<Texture2DRenderer>();
         rightTriangleSpriteRenderer1.Texture = rightTriangleSprite1;
         rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
 
         var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
-        var circleSpriteRenderer = this.Scene.AddChild<Texture2DRenderer>();
+        var circleSpriteRenderer = this.CurrentScene.AddChild<Texture2DRenderer>();
         circleSpriteRenderer.Texture = circleSprite;
         circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
 
-        if (this.Scene.TryGetChild<BinaryTileMap>(out var binaryTileMap) && binaryTileMap != null) {
+        if (this.CurrentScene.TryGetChild<BinaryTileMap>(out var binaryTileMap) && binaryTileMap != null) {
             var binaryTileMapBoundingArea = binaryTileMap.AddChild<BoundingAreaDrawer>();
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;

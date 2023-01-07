@@ -16,10 +16,12 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
+    private IScene _currentScene = Scene.Empty;
+
     private double _gameSpeed = 1d;
     private GraphicsSettings _graphicsSettings = new();
+    private IScene _pauseScene = Scene.Empty;
     private IGameProject _project = new GameProject();
-    private IScene _scene = Framework.Scene.Empty;
     private Point _viewportSize;
 
     /// <inheritdoc />
@@ -40,6 +42,21 @@ public class BaseGame : Game, IGame {
     public BaseGame() : base() {
         this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
         this.Content.RootDirectory = "Content";
+    }
+
+    /// <inheritdoc />
+    public IScene CurrentScene {
+        get => this._currentScene;
+
+        private set {
+            if (this._currentScene != value) {
+                this._currentScene = value;
+
+                if (this.IsInitialized) {
+                    this._currentScene.Initialize(this, this.CreateAssetManager());
+                }
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -87,21 +104,6 @@ public class BaseGame : Game, IGame {
     public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
 
     /// <inheritdoc />
-    public IScene Scene {
-        get => this._scene;
-
-        private set {
-            if (this._scene != value) {
-                this._scene = value;
-
-                if (this.IsInitialized) {
-                    this._scene.Initialize(this, this.CreateAssetManager());
-                }
-            }
-        }
-    }
-
-    /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
 
     /// <inheritdoc />
@@ -141,7 +143,13 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public void LoadScene(IScene scene) {
-        this.Scene = scene;
+        this.CurrentScene = scene;
+    }
+
+    /// <inheritdoc />
+    public void Pause(IScene scene) {
+        this._pauseScene = scene;
+        scene.Initialize(this, Scene.IsNullOrEmpty(this.CurrentScene) ? this.CreateAssetManager() : this.CurrentScene.Assets);
     }
 
     /// <inheritdoc />
@@ -160,6 +168,11 @@ public class BaseGame : Game, IGame {
         this.SaveDataManager.Save(InputBindings.SettingsFileName, this.Project.Name, this.InputBindings);
     }
 
+    /// <inheritdoc />
+    public void Unpause() {
+        this._pauseScene = Scene.Empty;
+    }
+
     /// <summary>
     /// Creates a scene level asset manager.
     /// </summary>
@@ -175,8 +188,12 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null) {
-            this.GraphicsDevice.Clear(this.Scene.BackgroundColor);
-            this.Scene.Render(this.FrameTime, this.InputState);
+            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+            this.CurrentScene.Render(this.FrameTime, this.InputState);
+
+            if (!Scene.IsNullOrEmpty(this._pauseScene)) {
+                this._pauseScene.Render(this.FrameTime, this.InputState);
+            }
         }
     }
 
@@ -185,7 +202,7 @@ public class BaseGame : Game, IGame {
         base.Initialize();
 
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        this._scene.Initialize(this, this.CreateAssetManager());
+        this._currentScene.Initialize(this, this.CreateAssetManager());
 
         if (IsDesignMode) {
             this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
@@ -264,7 +281,13 @@ public class BaseGame : Game, IGame {
 
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
-        this.Scene.Update(this.FrameTime, this.InputState);
+
+        if (Scene.IsNullOrEmpty(this._pauseScene)) {
+            this.CurrentScene.Update(this.FrameTime, this.InputState);
+        }
+        else {
+            this._pauseScene.Update(this.FrameTime, this.InputState);
+        }
     }
 
     /// <summary>
@@ -313,6 +336,8 @@ public class BaseGame : Game, IGame {
 
         public ContentManager? Content => null;
 
+        public IScene CurrentScene => Scene.Empty;
+
         public double GameSpeed {
             get => 1f;
             set {
@@ -334,8 +359,6 @@ public class BaseGame : Game, IGame {
 
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
-        public IScene Scene => Framework.Scene.Empty;
-
         public SpriteBatch? SpriteBatch => null;
 
         public Point ViewportSize => default;
@@ -349,6 +372,9 @@ public class BaseGame : Game, IGame {
         public void LoadScene(IScene scene) {
         }
 
+        public void Pause(IScene scene) {
+        }
+
         public void SaveAndApplyGraphicsSettings() {
         }
 
@@ -356,6 +382,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void SaveInputBindings() {
+        }
+
+        public void Unpause() {
         }
     }
 }

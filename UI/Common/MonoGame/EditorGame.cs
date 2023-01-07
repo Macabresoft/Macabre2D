@@ -56,7 +56,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     /// <inheritdoc />
-    public ICamera Camera => this.Scene.TryGetChild<ICamera>(out var camera) ? camera : null;
+    public ICamera Camera => this.CurrentScene.TryGetChild<ICamera>(out var camera) ? camera : null;
 
     /// <inheritdoc />
     public IGizmo SelectedGizmo { get; private set; }
@@ -64,12 +64,12 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null) {
-            if (this.Scene.Children.OfType<IScene>().Any() && Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
+            if (this.CurrentScene.Children.OfType<IScene>().Any() && Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                this.CurrentScene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             }
 
-            this.GraphicsDevice.Clear(this.Scene.BackgroundColor);
-            this.Scene.Render(this.FrameTime, this.InputState);
+            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+            this.CurrentScene.Render(this.FrameTime, this.InputState);
         }
     }
 
@@ -118,7 +118,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     private void ResetGizmo() {
-        this.SelectedGizmo = this.Scene.GetDescendents<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
+        this.SelectedGizmo = this.CurrentScene.GetDescendents<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
     }
 
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -130,7 +130,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.Scene)) {
+        if (e.PropertyName == nameof(this.CurrentScene)) {
             this.ResetGizmo();
         }
     }

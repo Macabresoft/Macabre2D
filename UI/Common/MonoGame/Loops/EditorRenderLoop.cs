@@ -29,7 +29,7 @@ public class EditorRenderLoop : Loop {
             spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
             this._renderTree.Clear();
 
-            foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => x is EditorGrid)) {
+            foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => x is EditorGrid)) {
                 this._renderTree.Insert(component);
             }
 
@@ -37,7 +37,7 @@ public class EditorRenderLoop : Loop {
                 this._renderTree.Insert(component);
             }
 
-            foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => !(x is EditorGrid))) {
+            foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                 this._renderTree.Insert(component);
             }
 
