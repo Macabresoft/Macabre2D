@@ -28,6 +28,14 @@ public interface ISimplePhysicsLoop : ILoop {
     IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers);
 
     /// <summary>
+    /// Checks if any colliders with the specified layers overlap with the provided <see cref="BoundingArea" />.
+    /// </summary>
+    /// <param name="boundingArea">The bounding area.</param>
+    /// <param name="layers">The layers.</param>
+    /// <returns>A value indicating whether or not there was a hit.</returns>
+    bool TryBoundingAreaCast(BoundingArea boundingArea, Layers layers);
+
+    /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
     /// </summary>
     /// <param name="start">The start.</param>
@@ -89,6 +97,17 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
         }
 
         return hits;
+    }
+
+    /// <inheritdoc />
+    public bool TryBoundingAreaCast(BoundingArea boundingArea, Layers layers) {
+        foreach (var collider in this.GetFilteredColliders(boundingArea, layers)) {
+            if (collider.Intersects(boundingArea, out _)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <inheritdoc />
