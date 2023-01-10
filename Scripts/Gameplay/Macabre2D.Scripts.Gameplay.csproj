@@ -34,10 +34,4 @@
             <Link>Scripts\%(RecursiveDir)/%(FileName)%(Extension)</Link>
         </Compile>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="..\..\Content\src\Gameplay\Physics">
-        <Link>Scripts\Physics</Link>
-      </Folder>
-    </ItemGroup>
 </Project>
