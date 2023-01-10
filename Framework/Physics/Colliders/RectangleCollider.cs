@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -30,6 +31,7 @@ public sealed class RectangleCollider : PolygonCollider {
     /// runtime if possible.
     /// </summary>
     /// <value>The height.</value>
+    [DataMember]
     public float Height {
         get {
             if (this.Vertices.Count == 4) {
@@ -41,8 +43,7 @@ public sealed class RectangleCollider : PolygonCollider {
 
         set {
             if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
-                var width = this.Width;
-                this.ResetVertices(CreateVertices(width, value), true);
+                this.ResetVertices(CreateVertices(this.Width, value), true);
                 this.RaisePropertyChanged();
             }
         }
@@ -53,6 +54,7 @@ public sealed class RectangleCollider : PolygonCollider {
     /// runtime if possible.
     /// </summary>
     /// <value>The width.</value>
+    [DataMember]
     public float Width {
         get {
             if (this.Vertices.Count == 4) {
@@ -64,11 +66,16 @@ public sealed class RectangleCollider : PolygonCollider {
 
         set {
             if (value > 0 && Math.Abs(value - this.Width) > Defaults.FloatComparisonTolerance) {
-                var height = this.Height;
-                this.ResetVertices(CreateVertices(value, height), true);
+                this.ResetVertices(CreateVertices(value, this.Height), true);
                 this.RaisePropertyChanged();
             }
         }
+    }
+    
+    /// <inheritdoc />
+    public override bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
+        var result = base.Intersects(boundingArea, out hits);
+        return result || this.BoundingArea.Overlaps(boundingArea); // Temporary fix
     }
 
     /// <inheritdoc />
