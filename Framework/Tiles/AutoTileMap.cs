@@ -21,24 +21,22 @@ public enum AutoTileMapVisualBehavior {
     /// <summary>
     /// Visuals always create single unit width columns.
     /// </summary>
-    Column,
+    SingleColumn,
 
     /// <summary>
     /// Visuals always create single unit height rows.
     /// </summary>
-    Row,
+    SingleRow,
 
     /// <summary>
-    /// Creates visual chunks by scanning the columns for grouped together tiles. Only forms box shapes.
+    /// Creates visual chunks by scanning the columns for grouped together tiles.
     /// </summary>
-    [Display(Name = "Box (Column Preferred)")]
-    BoxColumn,
+    Column,
 
     /// <summary>
-    /// Creates visual chunks by scanning the rows for grouped together tiles. Only forms box shapes.
+    /// Creates visual chunks by scanning the rows for grouped together tiles.
     /// </summary>
-    [Display(Name = "Box (Row Preferred)")]
-    BoxRow
+    Row
 }
 
 /// <summary>
@@ -195,10 +193,10 @@ public sealed class AutoTileMap : RenderableTileMap {
     private byte GetIndex(Point tile) {
         return this.VisualBehavior switch {
             AutoTileMapVisualBehavior.Standard => this.GetStandardIndex(tile),
-            AutoTileMapVisualBehavior.Column => this.GetColumnIndex(tile),
-            AutoTileMapVisualBehavior.Row => this.GetRowIndex(tile),
-            AutoTileMapVisualBehavior.BoxColumn => 0,
-            AutoTileMapVisualBehavior.BoxRow => 0,
+            AutoTileMapVisualBehavior.SingleColumn => this.GetColumnIndex(tile),
+            AutoTileMapVisualBehavior.SingleRow => this.GetRowIndex(tile),
+            AutoTileMapVisualBehavior.Column => 0,
+            AutoTileMapVisualBehavior.Row => 0,
             _ => 0
         };
     }
@@ -239,58 +237,18 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void ReevaluateBoxColumnIndexes() {
-        if (this.HasActiveTiles()) {
-            var visualChunks = new List<VisualChunk>();
-            var orderedTiles = this.ActiveTiles.OrderBy(tile => tile.X).ThenBy(tile => tile.Y).ToList();
-            var currentVisualChunk = new VisualChunk(orderedTiles.First());
-            visualChunks.Add(currentVisualChunk);
-            orderedTiles.RemoveAt(0);
+        var visualChunks = TileChunk.GetColumnChunks(this.ActiveTiles);
 
-            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToColumn(activeTile))) {
-                currentVisualChunk = new VisualChunk(activeTile);
-                visualChunks.Add(currentVisualChunk);
-            }
-
-            var reversedVisualChunks = visualChunks.OrderByDescending(x => x.MaximumTile.X).ToList();
-            foreach (var visualChunk in reversedVisualChunks) {
-                var candidates = visualChunks.Where(x => x.MaximumTile.X == visualChunk.MinimumTile.X - 1).ToList();
-
-                if (candidates.Any(candidate => candidate.TryCombineColumn(visualChunk))) {
-                    visualChunks.Remove(visualChunk);
-                }
-            }
-
-            foreach (var visualChunk in visualChunks) {
-                this.SetIndexesForVisualChunk(visualChunk);
-            }
+        foreach (var visualChunk in visualChunks) {
+            this.SetIndexesForVisualChunk(visualChunk);
         }
     }
 
     private void ReevaluateBoxRowIndexes() {
-        if (this.HasActiveTiles()) {
-            var visualChunks = new List<VisualChunk>();
-            var orderedTiles = this.ActiveTiles.OrderBy(tile => tile.Y).ThenBy(tile => tile.X).ToList();
-            var currentVisualChunk = new VisualChunk(orderedTiles.First());
-            visualChunks.Add(currentVisualChunk);
-            orderedTiles.RemoveAt(0);
+        var visualChunks = TileChunk.GetRowChunks(this.ActiveTiles);
 
-            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToRow(activeTile))) {
-                currentVisualChunk = new VisualChunk(activeTile);
-                visualChunks.Add(currentVisualChunk);
-            }
-
-            var reversedVisualChunks = visualChunks.OrderByDescending(x => x.MaximumTile.Y).ToList();
-            foreach (var visualChunk in reversedVisualChunks) {
-                var candidates = visualChunks.Where(x => x.MaximumTile.Y == visualChunk.MinimumTile.Y - 1).ToList();
-
-                if (candidates.Any(candidate => candidate.TryCombineRow(visualChunk))) {
-                    visualChunks.Remove(visualChunk);
-                }
-            }
-
-            foreach (var visualChunk in visualChunks) {
-                this.SetIndexesForVisualChunk(visualChunk);
-            }
+        foreach (var visualChunk in visualChunks) {
+            this.SetIndexesForVisualChunk(visualChunk);
         }
     }
 
@@ -303,14 +261,14 @@ public sealed class AutoTileMap : RenderableTileMap {
     private void ReevaluateIndexes() {
         switch (this.VisualBehavior) {
             case AutoTileMapVisualBehavior.Standard:
-            case AutoTileMapVisualBehavior.Column:
-            case AutoTileMapVisualBehavior.Row:
+            case AutoTileMapVisualBehavior.SingleColumn:
+            case AutoTileMapVisualBehavior.SingleRow:
                 this.ReevaluateIndexesStandard();
                 break;
-            case AutoTileMapVisualBehavior.BoxColumn:
+            case AutoTileMapVisualBehavior.Column:
                 this.ReevaluateBoxColumnIndexes();
                 break;
-            case AutoTileMapVisualBehavior.BoxRow:
+            case AutoTileMapVisualBehavior.Row:
                 this.ReevaluateBoxRowIndexes();
                 break;
         }
@@ -324,7 +282,7 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void ReevaluateSurroundingIndexes(Point tile) {
-        if (this.VisualBehavior is AutoTileMapVisualBehavior.BoxColumn or AutoTileMapVisualBehavior.BoxRow) {
+        if (this.VisualBehavior is AutoTileMapVisualBehavior.Column or AutoTileMapVisualBehavior.Row) {
             this.ReevaluateIndexes();
         }
         else {
@@ -342,56 +300,56 @@ public sealed class AutoTileMap : RenderableTileMap {
         }
     }
 
-    private void SetIndexesForVisualChunk(VisualChunk visualChunk) {
-        if (visualChunk.MaximumTile == visualChunk.MinimumTile) {
-            this._activeTileToIndex[visualChunk.MaximumTile] = 0;
+    private void SetIndexesForVisualChunk(TileChunk tileChunk) {
+        if (tileChunk.MaximumTile == tileChunk.MinimumTile) {
+            this._activeTileToIndex[tileChunk.MaximumTile] = 0;
         }
-        else if (visualChunk.MaximumTile.X == visualChunk.MinimumTile.X) {
-            this._activeTileToIndex[visualChunk.MinimumTile] = (byte)CardinalDirections.North;
-            this._activeTileToIndex[visualChunk.MaximumTile] = (byte)CardinalDirections.South;
+        else if (tileChunk.MaximumTile.X == tileChunk.MinimumTile.X) {
+            this._activeTileToIndex[tileChunk.MinimumTile] = (byte)CardinalDirections.North;
+            this._activeTileToIndex[tileChunk.MaximumTile] = (byte)CardinalDirections.South;
 
-            for (var y = visualChunk.MinimumTile.Y + 1; y < visualChunk.MaximumTile.Y; y++) {
-                this._activeTileToIndex[new Point(visualChunk.MinimumTile.X, y)] = (byte)(CardinalDirections.South | CardinalDirections.North);
+            for (var y = tileChunk.MinimumTile.Y + 1; y < tileChunk.MaximumTile.Y; y++) {
+                this._activeTileToIndex[new Point(tileChunk.MinimumTile.X, y)] = (byte)(CardinalDirections.South | CardinalDirections.North);
             }
         }
-        else if (visualChunk.MaximumTile.Y == visualChunk.MinimumTile.Y) {
-            this._activeTileToIndex[visualChunk.MinimumTile] = (byte)CardinalDirections.East;
-            this._activeTileToIndex[visualChunk.MaximumTile] = (byte)CardinalDirections.West;
+        else if (tileChunk.MaximumTile.Y == tileChunk.MinimumTile.Y) {
+            this._activeTileToIndex[tileChunk.MinimumTile] = (byte)CardinalDirections.East;
+            this._activeTileToIndex[tileChunk.MaximumTile] = (byte)CardinalDirections.West;
 
-            for (var x = visualChunk.MinimumTile.X + 1; x < visualChunk.MaximumTile.X; x++) {
-                this._activeTileToIndex[new Point(x, visualChunk.MinimumTile.Y)] = (byte)(CardinalDirections.East | CardinalDirections.West);
+            for (var x = tileChunk.MinimumTile.X + 1; x < tileChunk.MaximumTile.X; x++) {
+                this._activeTileToIndex[new Point(x, tileChunk.MinimumTile.Y)] = (byte)(CardinalDirections.East | CardinalDirections.West);
             }
         }
         else {
-            for (var x = visualChunk.MinimumTile.X; x <= visualChunk.MaximumTile.X; x++) {
-                for (var y = visualChunk.MinimumTile.Y; y <= visualChunk.MaximumTile.Y; y++) {
+            for (var x = tileChunk.MinimumTile.X; x <= tileChunk.MaximumTile.X; x++) {
+                for (var y = tileChunk.MinimumTile.Y; y <= tileChunk.MaximumTile.Y; y++) {
                     var current = new Point(x, y);
-                    if (current.X == visualChunk.MinimumTile.X) {
-                        if (current.Y == visualChunk.MinimumTile.Y) {
+                    if (current.X == tileChunk.MinimumTile.X) {
+                        if (current.Y == tileChunk.MinimumTile.Y) {
                             this._activeTileToIndex[current] = (byte)CardinalDirections.NorthEast;
                         }
-                        else if (current.Y == visualChunk.MaximumTile.Y) {
+                        else if (current.Y == tileChunk.MaximumTile.Y) {
                             this._activeTileToIndex[current] = (byte)CardinalDirections.SouthEast;
                         }
                         else {
                             this._activeTileToIndex[current] = (byte)(CardinalDirections.NorthEast | CardinalDirections.South);
                         }
                     }
-                    else if (current.X == visualChunk.MaximumTile.X) {
-                        if (current.Y == visualChunk.MinimumTile.Y) {
+                    else if (current.X == tileChunk.MaximumTile.X) {
+                        if (current.Y == tileChunk.MinimumTile.Y) {
                             this._activeTileToIndex[current] = (byte)CardinalDirections.NorthWest;
                         }
-                        else if (current.Y == visualChunk.MaximumTile.Y) {
+                        else if (current.Y == tileChunk.MaximumTile.Y) {
                             this._activeTileToIndex[current] = (byte)CardinalDirections.SouthWest;
                         }
                         else {
                             this._activeTileToIndex[current] = (byte)(CardinalDirections.NorthWest | CardinalDirections.South);
                         }
                     }
-                    else if (current.Y == visualChunk.MinimumTile.Y) {
+                    else if (current.Y == tileChunk.MinimumTile.Y) {
                         this._activeTileToIndex[current] = (byte)(CardinalDirections.NorthWest | CardinalDirections.East);
                     }
-                    else if (current.Y == visualChunk.MaximumTile.Y) {
+                    else if (current.Y == tileChunk.MaximumTile.Y) {
                         this._activeTileToIndex[current] = (byte)(CardinalDirections.SouthWest | CardinalDirections.East);
                     }
                     else {
@@ -405,78 +363,6 @@ public sealed class AutoTileMap : RenderableTileMap {
     private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
             this.ResetBoundingArea();
-        }
-    }
-
-    private class VisualChunk {
-        public VisualChunk(Point tile) {
-            this.MinimumTile = tile;
-            this.MaximumTile = tile;
-        }
-
-        public VisualChunk(Point minimumTile, Point maximumTile) {
-            this.MinimumTile = minimumTile;
-            this.MaximumTile = maximumTile;
-        }
-
-        public Point MaximumTile { get; set; }
-
-        public Point MinimumTile { get; set; }
-
-        public bool TryAddToColumn(Point tile) {
-            if (this.MaximumTile.X == this.MinimumTile.X) {
-                if (tile.Y == this.MinimumTile.Y - 1) {
-                    this.MinimumTile = tile;
-                    return true;
-                }
-
-                if (tile.Y == this.MaximumTile.Y + 1) {
-                    this.MaximumTile = tile;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryAddToRow(Point tile) {
-            if (this.MaximumTile.Y == this.MinimumTile.Y) {
-                if (tile.X == this.MinimumTile.X - 1) {
-                    this.MinimumTile = tile;
-                    return true;
-                }
-
-                if (tile.X == this.MaximumTile.X + 1) {
-                    this.MaximumTile = tile;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryCombineColumn(VisualChunk other) {
-            if (this.MinimumTile.Y == other.MinimumTile.Y && this.MaximumTile.Y == other.MaximumTile.Y) {
-                if (this.MaximumTile.X == other.MinimumTile.X - 1 || this.MinimumTile.X + 1 == other.MaximumTile.X) {
-                    this.MaximumTile = new Point(Math.Max(this.MaximumTile.X, other.MaximumTile.X), this.MaximumTile.Y);
-                    this.MinimumTile = new Point(Math.Min(this.MinimumTile.X, other.MinimumTile.X), this.MinimumTile.Y);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryCombineRow(VisualChunk other) {
-            if (this.MinimumTile.X == other.MinimumTile.X && this.MaximumTile.X == other.MaximumTile.X) {
-                if (this.MaximumTile.Y == other.MinimumTile.Y - 1 || this.MinimumTile.Y + 1 == other.MaximumTile.Y) {
-                    this.MaximumTile = new Point(this.MaximumTile.X, Math.Max(this.MaximumTile.Y, other.MaximumTile.Y));
-                    this.MinimumTile = new Point(this.MinimumTile.X, Math.Min(this.MinimumTile.Y, other.MinimumTile.Y));
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }
