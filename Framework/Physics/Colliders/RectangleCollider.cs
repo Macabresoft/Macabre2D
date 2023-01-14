@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,12 +11,16 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [Display(Name = "Rectangle Collider")]
 public sealed class RectangleCollider : PolygonCollider {
+    private const int MaximumIndex = 2;
+    private const int MinimumIndex = 0;
+
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
     /// </summary>
-    /// <param name="width">The width.</param>
-    /// <param name="height">The height.</param>
-    public RectangleCollider(float width, float height) : base(CreateVertices(width, height)) {
+    /// <param name="minimum">The minimum.</param>
+    /// <param name="maximum">The maximum.</param>
+    public RectangleCollider(Vector2 minimum, Vector2 maximum) : base(CreateVertices(minimum, maximum)) {
     }
 
     /// <summary>
@@ -27,51 +30,45 @@ public sealed class RectangleCollider : PolygonCollider {
     }
 
     /// <summary>
-    /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
-    /// runtime if possible.
+    /// Gets or sets the minimum vertex on the rectangle.
     /// </summary>
-    /// <value>The height.</value>
     [DataMember]
-    public float Height {
+    public Vector2 Maximum {
         get {
             if (this.Vertices.Count == 4) {
-                return Math.Abs(this.Vertices[2].Y - this.Vertices[0].Y);
+                return this.Vertices[MaximumIndex];
             }
 
-            return 0;
+            return Vector2.Zero;
         }
 
         set {
-            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
-                this.ResetVertices(CreateVertices(this.Width, value), true);
+            if (value != this.Maximum) {
+                this.ResetVertices(CreateVertices(this.Minimum, value), true);
                 this.RaisePropertyChanged();
             }
         }
     }
 
     /// <summary>
-    /// Gets or sets the width. Setting this is fairly expensive and should be avoided during
-    /// runtime if possible.
+    /// Gets or sets the minimum vertex on the rectangle.
     /// </summary>
-    /// <value>The width.</value>
     [DataMember]
-    public float Width {
+    public Vector2 Minimum {
         get {
             if (this.Vertices.Count == 4) {
-                return Math.Abs(this.Vertices[0].X - this.Vertices[2].X);
+                return this.Vertices[MinimumIndex];
             }
 
-            return 0;
+            return Vector2.Zero;
         }
 
         set {
-            if (value > 0 && Math.Abs(value - this.Width) > Defaults.FloatComparisonTolerance) {
-                this.ResetVertices(CreateVertices(value, this.Height), true);
-                this.RaisePropertyChanged();
-            }
+            this.ResetVertices(CreateVertices(value, this.Maximum), true);
+            this.RaisePropertyChanged();
         }
     }
-    
+
     /// <inheritdoc />
     public override bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
         var result = base.Intersects(boundingArea, out hits);
@@ -90,15 +87,12 @@ public sealed class RectangleCollider : PolygonCollider {
         return normals;
     }
 
-    private static IEnumerable<Vector2> CreateVertices(float width, float height) {
-        var halfWidth = 0.5f * width;
-        var halfHeight = 0.5f * height;
-
+    private static IEnumerable<Vector2> CreateVertices(Vector2 minimum, Vector2 maximum) {
         return new[] {
-            new Vector2(-halfWidth, -halfHeight),
-            new Vector2(-halfWidth, halfHeight),
-            new Vector2(halfWidth, halfHeight),
-            new Vector2(halfWidth, -halfHeight)
+            minimum,
+            new Vector2(minimum.X, maximum.Y),
+            maximum,
+            new Vector2(maximum.X, minimum.Y)
         };
     }
 }

@@ -33,7 +33,7 @@ public static class RectangleColliderTests {
         circleBody.Collider = new CircleCollider(r1);
 
         rectangleBody.SetWorldPosition(new Vector2(x2, y2));
-        rectangleBody.Collider = new RectangleCollider(w, h);
+        rectangleBody.Collider = new RectangleCollider(new Vector2(-0.5f * w, -0.5f * h), new Vector2(0.5f * w, 0.5f * h));
 
         Assert.AreEqual(collisionOccured, circleBody.Collider.CollidesWith(rectangleBody.Collider, out var collision1));
         Assert.AreEqual(collisionOccured, rectangleBody.Collider.CollidesWith(circleBody.Collider, out var collision2));
@@ -84,10 +84,10 @@ public static class RectangleColliderTests {
         rectangleBody2.Initialize(scene, new Entity());
 
         rectangleBody1.SetWorldPosition(new Vector2(x1, y1));
-        rectangleBody1.Collider = new RectangleCollider(w1, h1);
+        rectangleBody1.Collider = new RectangleCollider(new Vector2(-0.5f * w1, -0.5f * h1), new Vector2(0.5f * w1, 0.5f * h1));
 
         rectangleBody2.SetWorldPosition(new Vector2(x2, y2));
-        rectangleBody2.Collider = new RectangleCollider(w2, h2);
+        rectangleBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
         Assert.AreEqual(collisionOccured, rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out var collision1));
         Assert.AreEqual(collisionOccured, rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out var collision2));

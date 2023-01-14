@@ -11,8 +11,8 @@ using Microsoft.Xna.Framework;
 /// A <see cref="PhysicsBody" /> which reacts to a <see cref="ITileableEntity" /> parent
 /// and creates colliders based on the available grid.
 /// </summary>
-[Display(Name = "Tileable Body")]
-public sealed class TileableBody : QuadBody {
+[Display(Name = "Tileable Body (Edge)")]
+public sealed class TileableEdgeBody : QuadBody {
     private readonly List<Collider> _colliders = new();
     private ITileableEntity? _tileable;
 
@@ -53,7 +53,7 @@ public sealed class TileableBody : QuadBody {
     protected override void ResetColliders() {
         this._colliders.Clear();
 
-        if (this._tileable != null) {
+        if (this._tileable != null && this._tileable.ActiveTiles.Any()) {
             var allSegments = new List<TileLineSegment>();
 
             for (var y = this._tileable.MinimumTile.Y; y <= this._tileable.MaximumTile.Y; y++) {
@@ -174,13 +174,13 @@ public sealed class TileableBody : QuadBody {
             }
         }
 
-        public Point EndPoint { get; private set; }
-
         public bool IsHorizontal => this.StartPoint.Y == this.EndPoint.Y;
 
         public bool IsVertical => this.StartPoint.X == this.EndPoint.X;
 
         public Layers Layers { get; }
+
+        public Point EndPoint { get; private set; }
 
         public Point StartPoint { get; private set; }
 

@@ -62,7 +62,7 @@ public class PhysicsGame : BaseGame {
         }
 
         var rectangleBody = scene.AddChild<SimplePhysicsBody>();
-        rectangleBody.Collider = new RectangleCollider(10f, 1f);
+        rectangleBody.Collider = new RectangleCollider(new Vector2(-5f, -0.5f), new Vector2(5f, 0.5f));
         rectangleBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
         rectangleBody.LocalPosition -= new Vector2(0f, 4f);
         var rectangleDrawer = rectangleBody.AddChild<ColliderDrawer>();
@@ -91,7 +91,7 @@ public class PhysicsGame : BaseGame {
         lineDrawer.LineThickness = 1f;
 
         var triggerBody = scene.AddChild<SimplePhysicsBody>();
-        triggerBody.Collider = new RectangleCollider(2f, 2f);
+        triggerBody.Collider = new RectangleCollider(new Vector2(-1f, -1f), new Vector2(1f, 1f));
         triggerBody.LocalPosition += new Vector2(2f, 2.5f);
         triggerBody.IsTrigger = true;
         triggerBody.AddChild<TriggerListener>();

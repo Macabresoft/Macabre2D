@@ -31,7 +31,7 @@ public static class PolygonColliderTests {
         quadBody.Initialize(scene, new Entity());
 
         quadBody.SetWorldPosition(new Vector2(x1, y1));
-        quadBody.Collider = new RectangleCollider(w1, h1);
+        quadBody.Collider = new RectangleCollider(new Vector2(-0.5f * w1, -0.5f * h1), new Vector2(0.5f * w1, 0.5f * h1));
 
         circleBody.SetWorldPosition(new Vector2(x2, y2));
         circleBody.Collider = new CircleCollider(r2);
@@ -58,7 +58,7 @@ public static class PolygonColliderTests {
         var scene = Substitute.For<IScene>();
         quadBody.Initialize(scene, new Entity());
         quadBody.SetWorldPosition(new Vector2(x1, y1));
-        quadBody.Collider = new RectangleCollider(w, h);
+        quadBody.Collider = new RectangleCollider(new Vector2(-0.5f * w, -0.5f * h), new Vector2(0.5f * w, 0.5f * h));
 
         Assert.AreEqual(shouldContain, quadBody.Collider.Contains(new Vector2(x2, y2)));
     }
@@ -88,10 +88,10 @@ public static class PolygonColliderTests {
         quadBody2.Initialize(scene, new Entity());
 
         quadBody1.SetWorldPosition(new Vector2(x1, y1));
-        quadBody1.Collider = new RectangleCollider(w1, h1);
+        quadBody1.Collider = new RectangleCollider(new Vector2(-0.5f * w1, -0.5f * h1), new Vector2(0.5f * w1, 0.5f * h1));
 
         quadBody2.SetWorldPosition(new Vector2(x2, y2));
-        quadBody2.Collider = new RectangleCollider(w2, h2);
+        quadBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
         Assert.AreEqual(shouldContain, quadBody1.Collider.Contains(quadBody2.Collider));
     }
@@ -121,10 +121,10 @@ public static class PolygonColliderTests {
         quadBody2.Initialize(scene, new Entity());
 
         quadBody1.SetWorldPosition(new Vector2(x1, y1));
-        quadBody1.Collider = new RectangleCollider(w1, h1);
+        quadBody1.Collider = new RectangleCollider(new Vector2(-0.5f * w1, -0.5f * h1), new Vector2(0.5f * w1, 0.5f * h1));
 
         quadBody2.SetWorldPosition(new Vector2(x2, y2));
-        quadBody2.Collider = new RectangleCollider(w2, h2);
+        quadBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
         Assert.AreEqual(collisionOccured, quadBody1.Collider.CollidesWith(quadBody2.Collider, out var collision1));
         Assert.AreEqual(collisionOccured, quadBody2.Collider.CollidesWith(quadBody1.Collider, out var collision2));
@@ -177,7 +177,7 @@ public static class PolygonColliderTests {
         var scene = Substitute.For<IScene>();
         quadBody.Initialize(scene, new Entity());
         quadBody.SetWorldPosition(new Vector2(qx, qy));
-        quadBody.Collider = new RectangleCollider(qw, qh);
+        quadBody.Collider = new RectangleCollider(new Vector2(-0.5f * qw, -0.5f * qh), new Vector2(0.5f * qw, 0.5f * qh));
 
         var ray = new LineSegment(new Vector2(rx, ry), new Vector2(directionX, directionY), distance);
         Assert.AreEqual(shouldHit, quadBody.Collider.IsHitBy(ray, out var hit));

@@ -19,7 +19,7 @@ public static class RaycastTests {
         var scene = Substitute.For<IScene>();
         body.Initialize(scene, new Entity());
         body.LocalPosition = new Vector2(0f, -0.5f);
-        body.Collider = new RectangleCollider(18f, 1f);
+        body.Collider = new RectangleCollider(new Vector2(-9f, -0.5f), new Vector2(9f, 0.5f));
         var result = body.Collider.IsHitBy(ray, out var hit);
         Assert.IsTrue(result);
     }
