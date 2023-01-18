@@ -26,6 +26,11 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// </summary>
     public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
 
+    /// <summary>
+    /// Gets a value indicating whether or not this is looping on the current animation.
+    /// </summary>
+    public bool IsLooping => this._currentAnimation is { ShouldLoopIndefinitely: true };
+
     /// <inheritdoc />
     protected override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation.SpriteSheet;
 
