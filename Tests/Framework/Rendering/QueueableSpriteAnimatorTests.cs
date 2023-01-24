@@ -177,7 +177,7 @@ public static class QueueableSpriteAnimatorTests {
             finishedAnimation.Should().BeNull();
         }
     }
-
+    
     [Test]
     [Category("Unit Tests")]
     public static void Update_ShouldTriggerOnAnimationFinished_WhenAnimationFinished() {
@@ -226,14 +226,12 @@ public static class QueueableSpriteAnimatorTests {
 
         animator = CreateAnimator(1);
         gameTime = new GameTime {
-            ElapsedGameTime = TimeSpan.FromMilliseconds(100d)
+            ElapsedGameTime = TimeSpan.Zero
         };
 
         frameTime = new FrameTime(gameTime, 1f);
 
         animator.Play(animation, isLooping);
-        animator.Update(frameTime, default);
-
         return animation;
     }
 
