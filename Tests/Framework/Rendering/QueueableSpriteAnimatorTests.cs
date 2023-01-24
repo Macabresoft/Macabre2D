@@ -100,18 +100,14 @@ public static class QueueableSpriteAnimatorTests {
         using (new AssertionScope()) {
             animator.SpriteIndex.Should().Be(animation.Steps.ElementAt(0).SpriteIndex);
 
-            for (byte i = 1; i < animation.Steps.Count; i++) {
+            for (byte i = 0; i < animation.Steps.Count; i++) {
+                animator.SpriteIndex.Should().Be(animation.Steps.ElementAt(i).SpriteIndex);
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
                 frameTime = new FrameTime(gameTime, 1f);
                 animator.Update(frameTime, default);
-                animator.SpriteIndex.Should().Be(animation.Steps.ElementAt(i).SpriteIndex);
             }
 
-            gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
-            frameTime = new FrameTime(gameTime, 1f);
-
             // Should loop here.
-            animator.Update(frameTime, default);
             animator.SpriteIndex.Should().Be(animation.Steps.ElementAt(0).SpriteIndex);
         }
     }
