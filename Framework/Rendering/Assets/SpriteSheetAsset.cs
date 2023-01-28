@@ -30,6 +30,11 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     private AutoTileSetCollection _autoTileSets = new();
 
     private byte _columns = 1;
+
+    [DataMember]
+    [Category("Fonts")]
+    private SpriteSheetFontCollection _fonts = new();
+
     private byte _rows = 1;
 
     [DataMember]
@@ -42,16 +47,36 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// Initializes a new instance of the <see cref="SpriteSheetAsset" /> class.
     /// </summary>
     public SpriteSheetAsset() {
-        this._autoTileSets.CollectionChanged += this.SpriteSheetAsset_CollectionChanged;
+        this._autoTileSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._autoTileSets.PropertyChanged += this.RaisePropertyChanged;
-        this._spriteAnimations.CollectionChanged += this.SpriteSheetAsset_CollectionChanged;
+        this._spriteAnimations.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
+        this._fonts.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
+        this._fonts.PropertyChanged += this.RaisePropertyChanged;
     }
 
     /// <summary>
     /// Gets the auto tile sets.
     /// </summary>
     public INameableCollection AutoTileSets => this._autoTileSets;
+
+    /// <summary>
+    /// Gets the fonts.
+    /// </summary>
+    public INameableCollection Fonts => this._fonts;
+
+    /// <inheritdoc />
+    public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets the max index.
+    /// </summary>
+    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
+
+    /// <summary>
+    /// Gets the sprite animations.
+    /// </summary>
+    public INameableCollection SpriteAnimations => this._spriteAnimations;
 
     /// <summary>
     /// Gets or sets the number of columns in this sprite sheet.
@@ -71,14 +96,6 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         }
     }
 
-    /// <inheritdoc />
-    public override bool IncludeFileExtensionInContentPath => false;
-
-    /// <summary>
-    /// Gets the max index.
-    /// </summary>
-    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
-
     /// <summary>
     /// Gets or sets the number of rows in this sprite sheet.
     /// </summary>
@@ -96,11 +113,6 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
             }
         }
     }
-
-    /// <summary>
-    /// Gets the sprite animations.
-    /// </summary>
-    public INameableCollection SpriteAnimations => this._spriteAnimations;
 
     /// <summary>
     /// Gets the size of a single sprite on this sprite sheet.
@@ -328,7 +340,7 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         }
     }
 
-    private void SpriteSheetAsset_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+    private void SpriteSheetMember_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
         if (e.NewItems != null) {
             foreach (var newItem in e.NewItems.OfType<SpriteSheetMember>()) {
                 newItem.SpriteSheet = this;

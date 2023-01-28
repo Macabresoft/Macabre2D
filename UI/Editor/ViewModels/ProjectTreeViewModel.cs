@@ -181,11 +181,20 @@ public class ProjectTreeViewModel : BaseViewModel {
                     () => { animations.Add(animation); },
                     () => { animations.Remove(animation); });
                 break;
+            case SpriteSheetFontCollection fonts:
+                var font = new SpriteSheetFont {
+                    Name = SpriteSheetFont.DefaultName
+                };
+
+                this._undoService.Do(
+                    () => { fonts.Add(font); },
+                    () => { fonts.Remove(font); });
+                break;
         }
     }
 
     private static bool CanAddNode(object parent) {
-        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection;
+        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection;
     }
 
     private static bool CanOpenContent(IContentNode node) {
@@ -237,12 +246,16 @@ public class ProjectTreeViewModel : BaseViewModel {
                         var tileSetIndex = tileSets.IndexOf(tileSet);
                         this._undoService.Do(() => tileSets.Remove(tileSet),
                             () => tileSets.InsertOrAdd(tileSetIndex, tileSet));
-
                         break;
                     case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is SpriteAnimationCollection spriteAnimations:
                         var spriteAnimationIndex = spriteAnimations.IndexOf(spriteAnimation);
                         this._undoService.Do(() => spriteAnimations.Remove(spriteAnimation),
                             () => spriteAnimations.InsertOrAdd(spriteAnimationIndex, spriteAnimation));
+                        break;
+                    case SpriteSheetFont font when spriteSheet.Fonts is SpriteSheetFontCollection fonts:
+                        var fontIndex = fonts.IndexOf(font);
+                        this._undoService.Do(() => fonts.Remove(font),
+                            () => fonts.InsertOrAdd(fontIndex, font));
                         break;
                 }
 

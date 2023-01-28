@@ -17,6 +17,7 @@ public class SpriteSheetContentFile : ContentFile<SpriteSheetAsset> {
     public SpriteSheetContentFile(IContentDirectory parent, ContentMetadata metadata) : base(parent, metadata) {
         this._children.Add(this.TypedAsset.AutoTileSets);
         this._children.Add(this.TypedAsset.SpriteAnimations);
+        this._children.Add(this.TypedAsset.Fonts);
     }
 
     /// <summary>
