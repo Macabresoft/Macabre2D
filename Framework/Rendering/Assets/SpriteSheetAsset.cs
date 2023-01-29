@@ -209,6 +209,9 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         else if (typeof(TAsset) == typeof(AutoTileSet)) {
             result = (IReadOnlyCollection<TAsset>)this._autoTileSets;
         }
+        else if (typeof(TAsset) == typeof(SpriteSheetFont)) {
+            result = (IReadOnlyCollection<TAsset>)this._fonts;
+        }
         else {
             result = new List<TAsset>();
         }
@@ -317,6 +320,7 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         var packages = new List<IIdentifiable>();
         packages.AddRange(this._autoTileSets);
         packages.AddRange(this._spriteAnimations);
+        packages.AddRange(this._fonts);
         return packages;
     }
 
