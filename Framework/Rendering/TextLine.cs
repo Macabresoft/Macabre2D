@@ -160,7 +160,7 @@ public class TextLine : RenderableEntity {
         if (this.FontReference.Asset is { } spriteSheet) {
             return new Vector2(this._spriteIndexes.Count * spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
         }
-        
+
         return Vector2.Zero;
     }
 
@@ -189,7 +189,7 @@ public class TextLine : RenderableEntity {
 
     private void ResetIndexes() {
         this._spriteIndexes.Clear();
-        
+
         if (this.FontReference.PackagedAsset is { } font) {
             foreach (var character in this.Text) {
                 if (font.TryGetSpriteIndex(character, out var spriteIndex)) {
