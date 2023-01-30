@@ -17,8 +17,8 @@ public class TextLine : RenderableEntity {
     private float _characterHeight;
     private float _characterWidth;
     private Color _color = Color.White;
-    private string _text = string.Empty;
     private int _kerning;
+    private string _text = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLine" /> class.
