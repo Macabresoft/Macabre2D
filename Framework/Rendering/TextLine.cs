@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -10,22 +9,20 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A renderer for <see cref="SpriteSheetFont" />.
+/// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class SpriteSheetTextRenderer : RenderableEntity {
+public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<TextLine> _lines = new();
+    private readonly List<byte> _spriteIndexes = new();
     private float _characterHeight;
     private float _characterWidth;
     private Color _color = Color.White;
-    private byte _lineLength;
-    private byte _maxLines;
     private string _text = string.Empty;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteSheetTextRenderer" /> class.
+    /// Initializes a new instance of the <see cref="TextLine" /> class.
     /// </summary>
-    public SpriteSheetTextRenderer() {
+    public TextLine() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
@@ -46,32 +43,6 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     public Color Color {
         get => this._color;
         set => this.Set(ref this._color, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the line length.
-    /// </summary>
-    [DataMember]
-    public byte LineLength {
-        get => this._lineLength;
-        set {
-            if (this.Set(ref this._lineLength, value)) {
-                this.Refresh();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the line length.
-    /// </summary>
-    [DataMember]
-    public byte MaxLines {
-        get => this._maxLines;
-        set {
-            if (this.Set(ref this._maxLines, value)) {
-                this.Refresh();
-            }
-        }
     }
 
     /// <summary>
@@ -98,10 +69,10 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.RenderSettings.Initialize(this.CreateSize);
         this.FontReference.Initialize(this.Scene.Assets);
-        this.Refresh();
         this.ResetCharacterSizes();
+        this.RenderSettings.Initialize(this.CreateSize);
+        this.Refresh();
         this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
@@ -109,33 +80,23 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.CouldBeVisible(out var spriteSheet) && this.SpriteBatch is { } spriteBatch) {
-            var lineNumber = 1;
+            var rowNumber = 0;
+            var verticalPosition = this.BoundingArea.Minimum.Y;
 
-            foreach (var line in this._lines) {
-                var verticalPosition = this.BoundingArea.Maximum.Y - lineNumber * this._characterHeight;
-                var rowNumber = 0;
+            foreach (var spriteIndex in this._spriteIndexes) {
+                var horizontalPosition = this.BoundingArea.Minimum.X + rowNumber * this._characterWidth;
 
-                foreach (var spriteIndex in line.SpriteIndexes) {
-                    var horizontalPosition = this.BoundingArea.Minimum.X + rowNumber * this._characterWidth;
+                spriteSheet.Draw(
+                    spriteBatch,
+                    this.Settings.PixelsPerUnit,
+                    spriteIndex,
+                    new Vector2(horizontalPosition, verticalPosition),
+                    Vector2.One,
+                    0f,
+                    this.Color,
+                    this.RenderSettings.Orientation);
 
-                    spriteSheet.Draw(
-                        spriteBatch,
-                        this.Settings.PixelsPerUnit,
-                        spriteIndex,
-                        new Vector2(horizontalPosition, verticalPosition),
-                        Vector2.One,
-                        0f,
-                        this.Color,
-                        this.RenderSettings.Orientation);
-
-                    rowNumber++;
-                }
-
-                if (lineNumber >= this.MaxLines) {
-                    break;
-                }
-
-                lineNumber++;
+                rowNumber++;
             }
         }
     }
@@ -152,8 +113,6 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheetAsset? spriteSheet) {
         spriteSheet = this.FontReference.Asset;
         return !string.IsNullOrEmpty(this.Text) &&
-               this.LineLength > 0 &&
-               this.MaxLines > 0 &&
                this._characterHeight > 0f &&
                this._characterWidth > 0f &&
                this.LocalScale.X != 0f &&
@@ -164,11 +123,11 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.CouldBeVisible(out _) && this.RenderSettings.Size.X != 0f && this.RenderSettings.Size.Y != 0f) {
-            var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
+            var unitsPerPixel = this.Settings.UnitsPerPixel;
             var (x, y) = this.RenderSettings.Size;
-            var width = x * inversePixelsPerUnit;
-            var height = y * inversePixelsPerUnit;
-            var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
+            var width = x * unitsPerPixel;
+            var height = y * unitsPerPixel;
+            var offset = this.RenderSettings.Offset * unitsPerPixel;
             var points = new List<Vector2> {
                 this.GetWorldTransform(offset).Position,
                 this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
@@ -198,14 +157,11 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     }
 
     private Vector2 CreateSize() {
-        var result = Vector2.Zero;
-        if (this.CouldBeVisible(out var spriteSheet)) {
-            var width = this.LineLength * spriteSheet.SpriteSize.X;
-            var height = this.MaxLines * spriteSheet.SpriteSize.Y;
-            result = new Vector2(width, height);
+        if (this.FontReference.Asset is { } spriteSheet) {
+            return new Vector2(this._spriteIndexes.Count * spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
         }
-
-        return result;
+        
+        return Vector2.Zero;
     }
 
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -213,7 +169,7 @@ public class SpriteSheetTextRenderer : RenderableEntity {
     }
 
     private void Refresh() {
-        this.ResetLines();
+        this.ResetIndexes();
         this.RenderSettings.InvalidateSize();
         this._boundingArea.Reset();
     }
@@ -231,48 +187,18 @@ public class SpriteSheetTextRenderer : RenderableEntity {
         }
     }
 
-    private void ResetLines() {
-        this._lines.Clear();
-
-        if (this.MaxLines == 0 || this.LineLength == 0 || string.IsNullOrEmpty(this._text)) {
-            return;
-        }
-
+    private void ResetIndexes() {
+        this._spriteIndexes.Clear();
+        
         if (this.FontReference.PackagedAsset is { } font) {
-            var numberOfLines = (byte)Math.Ceiling(this._text.Length / (float)this.LineLength);
-            var lineLength = (int)this.LineLength;
-            for (var i = 0; i < numberOfLines; i++) {
-                var start = i * this.LineLength;
-
-                if (start >= this.Text.Length) {
-                    break;
-                }
-
-                if (start + lineLength >= this.Text.Length) {
-                    lineLength = this.Text.Length - start;
-                }
-
-                this._lines.Add(new TextLine(this.Text.Substring(start, lineLength), font));
-            }
-        }
-    }
-
-    private class TextLine {
-        private readonly byte[] _spriteIndexes;
-
-        public TextLine(string text, SpriteSheetFont font) {
-            this._spriteIndexes = new byte[text.Length];
-
-            for (var i = 0; i < text.Length; i++) {
-                if (font.TryGetSpriteIndex(text[i], out var spriteIndex)) {
-                    this._spriteIndexes[i] = spriteIndex;
+            foreach (var character in this.Text) {
+                if (font.TryGetSpriteIndex(character, out var spriteIndex)) {
+                    this._spriteIndexes.Add(spriteIndex);
                 }
                 else {
-                    this._spriteIndexes[i] = 0;
+                    this._spriteIndexes.Add(0);
                 }
             }
         }
-
-        public IReadOnlyCollection<byte> SpriteIndexes => this._spriteIndexes;
     }
 }
