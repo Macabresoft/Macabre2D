@@ -18,6 +18,7 @@ public class TextLine : RenderableEntity {
     private float _characterWidth;
     private Color _color = Color.White;
     private string _text = string.Empty;
+    private int _kerning;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLine" /> class.
@@ -43,6 +44,20 @@ public class TextLine : RenderableEntity {
     public Color Color {
         get => this._color;
         set => this.Set(ref this._color, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
+    /// </summary>
+    [DataMember]
+    public int Kerning {
+        get => this._kerning;
+        set {
+            if (this.Set(ref this._kerning, value)) {
+                this.ResetCharacterSizes();
+                this.Refresh();
+            }
+        }
     }
 
     /// <summary>
@@ -158,7 +173,7 @@ public class TextLine : RenderableEntity {
 
     private Vector2 CreateSize() {
         if (this.FontReference.Asset is { } spriteSheet) {
-            return new Vector2(this._spriteIndexes.Count * spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
+            return new Vector2(this._spriteIndexes.Count * (spriteSheet.SpriteSize.X + this.Kerning), spriteSheet.SpriteSize.Y);
         }
 
         return Vector2.Zero;
@@ -182,7 +197,7 @@ public class TextLine : RenderableEntity {
 
     private void ResetCharacterSizes() {
         if (this.FontReference.Asset is { } spriteSheet) {
-            this._characterWidth = spriteSheet.SpriteSize.X * this.Settings.UnitsPerPixel;
+            this._characterWidth = (spriteSheet.SpriteSize.X + this.Kerning) * this.Settings.UnitsPerPixel;
             this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
         }
     }
