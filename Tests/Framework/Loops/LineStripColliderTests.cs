@@ -65,7 +65,7 @@ public static class LineStripColliderTests {
         });
 
         var physicsBody = Substitute.For<IPhysicsBody>();
-        physicsBody.GetWorldTransform(Arg.Any<Vector2>()).Returns(x => new Macabre2D.Framework.Transform((Vector2)x[0], Vector2.One));
+        physicsBody.GetWorldPosition(Arg.Any<Vector2>()).Returns(x => (Vector2)x[0]);
         lineStripCollider.Initialize(physicsBody);
         return lineStripCollider;
     }

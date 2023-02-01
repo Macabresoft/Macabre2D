@@ -272,7 +272,7 @@ public sealed class PrimitiveDrawer {
             this.DrawCircle(
                 spriteBatch,
                 pixelsPerUnit,
-                circle.ScaledRadius,
+                circle.Radius,
                 circle.Center + offset,
                 50,
                 color,
@@ -356,6 +356,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="color">The color.</param>
     /// <param name="thickness">The thickness.</param>
+    /// <param name="connectFirstAndLastPoint">A value indicating whether or not to connect the first and last points.</param>
     /// <param name="points">The points.</param>
     public void DrawPolygon(
         SpriteBatch spriteBatch,

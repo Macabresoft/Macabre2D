@@ -11,24 +11,26 @@ using Microsoft.Xna.Framework;
 /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
 /// </summary>
 [Category(CommonCategories.Rendering)]
-public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
+public abstract class BaseSpriteEntity : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly ResettableLazy<Transform> _pixelTransform;
-    private readonly ResettableLazy<Transform> _rotatableTransform;
+    private readonly ResettableLazy<Vector2> _pixelTransform;
     private Color _color = Color.White;
-    private Rotation _rotation;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
     /// </summary>
     protected BaseSpriteEntity() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-        this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
-        this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
+        this._pixelTransform = new ResettableLazy<Vector2>(this.CreatePixelPosition);
     }
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+    /// <summary>
+    /// Gets the sprite index.
+    /// </summary>
+    public abstract byte? SpriteIndex { get; }
 
     /// <summary>
     /// Gets or sets the color.
@@ -46,24 +48,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     /// <value>The render settings.</value>
     [DataMember(Order = 4, Name = "Render Settings")]
     public RenderSettings RenderSettings { get; private set; } = new();
-
-    /// <inheritdoc />
-    [DataMember(Order = 3)]
-    [Category(CommonCategories.Transform)]
-    public Rotation Rotation {
-        get => this.ShouldSnapToPixels(this.Settings) ? Rotation.Zero : this._rotation;
-        set {
-            if (this.Set(ref this._rotation, value) && !this.ShouldSnapToPixels(this.Settings)) {
-                this._boundingArea.Reset();
-                this._rotatableTransform.Reset();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the sprite index.
-    /// </summary>
-    public abstract byte? SpriteIndex { get; }
 
     /// <summary>
     /// Gets the sprite sheet.
@@ -95,7 +79,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             this.Reset();
         }
         else if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
@@ -110,7 +94,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         this.RenderSettings.InvalidateSize();
         this._boundingArea.Reset();
         this._pixelTransform.Reset();
-        this._rotatableTransform.Reset();
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -122,10 +105,10 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
             var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
 
             var points = new List<Vector2> {
-                this.GetWorldTransform(offset, this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(width, height), this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
+                this.GetWorldPosition(offset),
+                this.GetWorldPosition(offset + new Vector2(width, 0f)),
+                this.GetWorldPosition(offset + new Vector2(width, height)),
+                this.GetWorldPosition(offset + new Vector2(0f, height))
             };
 
             var minimumX = points.Min(x => x.X);
@@ -149,15 +132,8 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         return result;
     }
 
-    private Transform CreatePixelTransform() {
-        var worldTransform =
-            this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel)
-                .ToPixelSnappedValue(this.Settings);
-        return worldTransform;
-    }
-
-    private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel, this.Rotation);
+    private Vector2 CreatePixelPosition() {
+        return this.GetWorldPosition(this.RenderSettings.Offset * this.Settings.UnitsPerPixel).ToPixelSnappedValue(this.Settings);
     }
 
     private Vector2 CreateSize() {
@@ -169,14 +145,13 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         return result;
     }
 
-    private Transform GetRenderTransform() {
-        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this._rotatableTransform.Value;
+    private Vector2 GetRenderTransform() {
+        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this.WorldPosition;
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
             this._pixelTransform.Reset();
-            this._rotatableTransform.Reset();
             this._boundingArea.Reset();
         }
     }

@@ -155,16 +155,16 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public void MoveEntity(IEntity sourceEntity, IEntity targetEntity) {
         if (CanMoveEntity(sourceEntity, targetEntity)) {
             var originalParent = sourceEntity.Parent;
-            var transform = sourceEntity.Transform;
+            var worldPosition = sourceEntity.WorldPosition;
             this._undoService.Do(() =>
             {
                 targetEntity.AddChild(sourceEntity);
-                sourceEntity.SetWorldTransform(transform);
+                sourceEntity.SetWorldPosition(worldPosition);
                 this.SceneService.RaiseSelectedChanged();
             }, () =>
             {
                 originalParent.AddChild(sourceEntity);
-                sourceEntity.SetWorldTransform(transform);
+                sourceEntity.SetWorldPosition(worldPosition);
                 this.SceneService.RaiseSelectedChanged();
             });
         }
@@ -180,7 +180,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         if (CanMoveEntity(sourceEntity, targetEntity)) {
             var originalParent = sourceEntity.Parent;
             var originalIndex = originalParent.Children.IndexOf(sourceEntity);
-            var transform = sourceEntity.Transform;
+            var worldPosition = sourceEntity.WorldPosition;
             this._undoService.Do(() =>
             {
                 if (originalParent != targetEntity) {
@@ -190,7 +190,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                     this.MoveEntityByIndex(sourceEntity, targetEntity, index);
                 }
 
-                sourceEntity.SetWorldTransform(transform);
+                sourceEntity.SetWorldPosition(worldPosition);
                 this.SceneService.RaiseSelectedChanged();
             }, () =>
             {
@@ -201,7 +201,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                     this.MoveEntityByIndex(sourceEntity, originalParent, originalIndex);
                 }
 
-                sourceEntity.SetWorldTransform(transform);
+                sourceEntity.SetWorldPosition(worldPosition);
                 this.SceneService.RaiseSelectedChanged();
             });
         }
@@ -342,7 +342,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             container.PrefabReference.Asset?.Content is IEntity content &&
             content.TryClone(out var clone)) {
             clone.LocalPosition = entity.LocalPosition;
-            clone.LocalScale = entity.LocalScale;
 
             this._undoService.Do(() =>
             {

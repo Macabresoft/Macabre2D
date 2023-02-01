@@ -105,7 +105,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             if (this.SpriteReference.Asset is { } spriteSheet) {
                 this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
             }

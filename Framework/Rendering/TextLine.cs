@@ -106,8 +106,6 @@ public class TextLine : RenderableEntity {
                     this.Settings.PixelsPerUnit,
                     spriteIndex,
                     new Vector2(horizontalPosition, verticalPosition),
-                    Vector2.One,
-                    0f,
                     this.Color,
                     this.RenderSettings.Orientation);
 
@@ -120,7 +118,7 @@ public class TextLine : RenderableEntity {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(this.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             this.Refresh();
         }
     }
@@ -130,8 +128,6 @@ public class TextLine : RenderableEntity {
         return !string.IsNullOrEmpty(this.Text) &&
                this._characterHeight > 0f &&
                this._characterWidth > 0f &&
-               this.LocalScale.X != 0f &&
-               this.LocalScale.Y != 0f &&
                spriteSheet != null;
     }
 
@@ -144,10 +140,10 @@ public class TextLine : RenderableEntity {
             var height = y * unitsPerPixel;
             var offset = this.RenderSettings.Offset * unitsPerPixel;
             var points = new List<Vector2> {
-                this.GetWorldTransform(offset).Position,
-                this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
-                this.GetWorldTransform(offset + new Vector2(width, height)).Position,
-                this.GetWorldTransform(offset + new Vector2(0f, height)).Position
+                this.GetWorldPosition(offset),
+                this.GetWorldPosition(offset + new Vector2(width, 0f)),
+                this.GetWorldPosition(offset + new Vector2(width, height)),
+                this.GetWorldPosition(offset + new Vector2(0f, height))
             };
 
             var minimumX = points.Min(point => point.X);

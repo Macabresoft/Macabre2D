@@ -14,8 +14,7 @@ public static class SpriteBatchExtensions {
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="spriteIndex">The sprite index.</param>
-    /// <param name="transform">The transform.</param>
-    /// <param name="rotation">The rotation.</param>
+    /// <param name="position">The position.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public static void Draw(
@@ -23,22 +22,10 @@ public static class SpriteBatchExtensions {
         ushort pixelsPerUnit,
         SpriteSheetAsset spriteSheet,
         byte spriteIndex,
-        Transform transform,
-        float rotation,
+        Vector2 position,
         Color color,
         SpriteEffects orientation) {
-        if (spriteSheet.Content != null && spriteSheet.SpriteSize != Point.Zero) {
-            spriteBatch.Draw(
-                spriteSheet.Content,
-                transform.Position * pixelsPerUnit,
-                new Rectangle(spriteSheet.GetSpriteLocation(spriteIndex), spriteSheet.SpriteSize),
-                color,
-                rotation,
-                Vector2.Zero,
-                transform.Scale,
-                orientation,
-                0f);
-        }
+        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, position, Vector2.One, color, orientation);
     }
 
     /// <summary>
@@ -50,7 +37,6 @@ public static class SpriteBatchExtensions {
     /// <param name="spriteIndex">The sprite index.</param>
     /// <param name="position">The position.</param>
     /// <param name="scale">The scale.</param>
-    /// <param name="rotation">The rotation.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public static void Draw(
@@ -60,7 +46,6 @@ public static class SpriteBatchExtensions {
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,
-        float rotation,
         Color color,
         SpriteEffects orientation) {
         if (spriteSheet.Content != null && spriteSheet.SpriteSize != Point.Zero) {
@@ -69,7 +54,7 @@ public static class SpriteBatchExtensions {
                 position * pixelsPerUnit,
                 new Rectangle(spriteSheet.GetSpriteLocation(spriteIndex), spriteSheet.SpriteSize),
                 color,
-                rotation,
+                0f,
                 Vector2.Zero,
                 scale,
                 orientation,
@@ -85,7 +70,6 @@ public static class SpriteBatchExtensions {
     /// <param name="texture">The texture.</param>
     /// <param name="position">The position.</param>
     /// <param name="scale">The scale.</param>
-    /// <param name="rotation">The rotation.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public static void Draw(
@@ -94,21 +78,58 @@ public static class SpriteBatchExtensions {
         Texture2D? texture,
         Vector2 position,
         Vector2 scale,
-        float rotation,
         Color color,
         SpriteEffects orientation = SpriteEffects.None) {
-        if (texture != null && !texture.Bounds.IsEmpty) {
+        if (texture is { Bounds.IsEmpty: false }) {
             spriteBatch.Draw(
                 texture,
                 position * pixelsPerUnit,
                 texture.Bounds,
                 color,
-                rotation,
+                0f,
                 Vector2.Zero,
                 scale,
                 orientation,
                 0f);
         }
+    }
+
+    /// <summary>
+    /// Draws the specified <see cref="Texture2D" />.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="pixelsPerUnit">The pixels per unit.</param>
+    /// <param name="texture">The texture.</param>
+    /// <param name="position">The position.</param>
+    /// <param name="color">The color.</param>
+    /// <param name="orientation">The orientation.</param>
+    public static void Draw(
+        this SpriteBatch spriteBatch,
+        ushort pixelsPerUnit,
+        Texture2D? texture,
+        Vector2 position,
+        Color color,
+        SpriteEffects orientation = SpriteEffects.None) {
+        spriteBatch.Draw(pixelsPerUnit, texture, position, Vector2.One, color, orientation);
+    }
+
+    /// <summary>
+    /// Draws the specified sprite.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="pixelsPerUnit">The pixels per unit.</param>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="spriteIndex">The sprite index.</param>
+    /// <param name="position">The world position.</param>
+    /// <param name="color">The color.</param>
+    public static void Draw(
+        this SpriteBatch spriteBatch,
+        ushort pixelsPerUnit,
+        SpriteSheetAsset spriteSheet,
+        byte spriteIndex,
+        Vector2 position,
+        Color color) {
+        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, position, color, SpriteEffects.FlipVertically);
     }
 
     /// <summary>
@@ -129,47 +150,7 @@ public static class SpriteBatchExtensions {
         Vector2 position,
         Vector2 scale,
         Color color) {
-        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, position, scale, 0f, color, SpriteEffects.FlipVertically);
-    }
-
-    /// <summary>
-    /// Draws the specified sprite.
-    /// </summary>
-    /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="pixelsPerUnit">The pixels per unit.</param>
-    /// <param name="spriteSheet">The sprite sheet.</param>
-    /// <param name="spriteIndex">The sprite index.</param>
-    /// <param name="transform">The transform.</param>
-    /// <param name="color">The color.</param>
-    public static void Draw(
-        this SpriteBatch spriteBatch,
-        ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
-        byte spriteIndex,
-        Transform transform,
-        Color color) {
-        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, transform, transform.Rotation, color, SpriteEffects.FlipVertically);
-    }
-
-    /// <summary>
-    /// Draws the specified sprite.
-    /// </summary>
-    /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="pixelsPerUnit">The pixels per unit.</param>
-    /// <param name="spriteSheet">The sprite sheet.</param>
-    /// <param name="spriteIndex">The sprite index.</param>
-    /// <param name="transform">The transform.</param>
-    /// <param name="color">The color.</param>
-    /// <param name="orientation">The orientation.</param>
-    public static void Draw(
-        this SpriteBatch spriteBatch,
-        ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
-        byte spriteIndex,
-        Transform transform,
-        Color color,
-        SpriteEffects orientation) {
-        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, transform, transform.Rotation, color, orientation);
+        spriteBatch.Draw(pixelsPerUnit, spriteSheet, spriteIndex, position, scale, color, SpriteEffects.FlipVertically);
     }
 
     /// <summary>
@@ -181,7 +162,6 @@ public static class SpriteBatchExtensions {
     /// <param name="text">The text.</param>
     /// <param name="position">The position.</param>
     /// <param name="scale">The scale.</param>
-    /// <param name="rotationAngle">The rotation angle.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public static void Draw(
@@ -191,16 +171,15 @@ public static class SpriteBatchExtensions {
         string text,
         Vector2 position,
         Vector2 scale,
-        float rotationAngle,
         Color color,
         SpriteEffects orientation) {
-        if (font.Content is SpriteFont spriteFont) {
+        if (font.Content is { } spriteFont) {
             spriteBatch.DrawString(
                 spriteFont,
                 text,
                 position * pixelsPerUnit,
                 color,
-                rotationAngle,
+                0f,
                 Vector2.Zero,
                 scale,
                 orientation,
@@ -215,7 +194,7 @@ public static class SpriteBatchExtensions {
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="font">The font.</param>
     /// <param name="text">The text.</param>
-    /// <param name="transform">The transform.</param>
+    /// <param name="position">The world transform.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public static void Draw(
@@ -223,10 +202,10 @@ public static class SpriteBatchExtensions {
         ushort pixelsPerUnit,
         FontAsset font,
         string text,
-        Transform transform,
+        Vector2 position,
         Color color,
         SpriteEffects orientation) {
-        spriteBatch.Draw(pixelsPerUnit, font, text, transform.Position, transform.Scale, transform.Rotation, color, orientation);
+        spriteBatch.Draw(pixelsPerUnit, font, text, position, Vector2.One, color, orientation);
     }
 
     /// <summary>
@@ -236,15 +215,15 @@ public static class SpriteBatchExtensions {
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="font">The font.</param>
     /// <param name="text">The text.</param>
-    /// <param name="transform">The transform.</param>
+    /// <param name="position">The world transform.</param>
     /// <param name="color">The color.</param>
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
         FontAsset font,
         string text,
-        Transform transform,
+        Vector2 position,
         Color color) {
-        spriteBatch.Draw(pixelsPerUnit, font, text, transform.Position, transform.Scale, transform.Rotation, color, SpriteEffects.FlipVertically);
+        spriteBatch.Draw(pixelsPerUnit, font, text, position, Vector2.One, color, SpriteEffects.FlipVertically);
     }
 }

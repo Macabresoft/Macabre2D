@@ -56,7 +56,7 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             this._collider.Reset();
         }
     }

@@ -136,12 +136,12 @@ public static class PolygonColliderTests {
             Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
             Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-            var originalPosition = quadBody1.Transform.Position;
+            var originalPosition = quadBody1.WorldPosition;
             quadBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
             Assert.False(quadBody1.Collider.CollidesWith(quadBody2.Collider, out collision1));
             quadBody1.SetWorldPosition(originalPosition);
 
-            quadBody2.SetWorldPosition(quadBody2.Transform.Position + collision2.MinimumTranslationVector);
+            quadBody2.SetWorldPosition(quadBody2.WorldPosition + collision2.MinimumTranslationVector);
             Assert.False(quadBody2.Collider.CollidesWith(quadBody1.Collider, out collision2));
         }
         else {

@@ -5,7 +5,6 @@ using System.ComponentModel;
 using Avalonia.Input;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A base class for gizmos that can operate on one axis or the other.
@@ -17,22 +16,19 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected const int GizmoPointSize = 16;
 
     private const float FloatingPointTolerance = 0.0001f;
-
     private ICamera _camera;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseAxisGizmo" /> class.
     /// </summary>
     /// <param name="editorService">The editor service.</param>
-    /// <param name="sceneService">The scene service.</param>
     /// <param name="entityService">The selection service.</param>
-    protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, IEntityService entityService) {
+    protected BaseAxisGizmo(IEditorService editorService, IEntityService entityService) {
         this.UseDynamicLineThickness = true;
         this.LineThickness = 1f;
         this.EditorService = editorService;
         this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
-        this.SceneService = sceneService;
         this.EntityService = entityService;
         this.EntityService.PropertyChanged += this.SelectionService_PropertyChanged;
     }
@@ -49,11 +45,6 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected ICamera Camera => this._camera;
 
     /// <summary>
-    /// Gets or sets the current axis being operated on.
-    /// </summary>
-    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
-
-    /// <summary>
     /// Gets the editor service.
     /// </summary>
     protected IEditorService EditorService { get; }
@@ -64,24 +55,24 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected IEntityService EntityService { get; }
 
     /// <summary>
+    /// Gets or sets the current axis being operated on.
+    /// </summary>
+    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
+
+    /// <summary>
     /// Gets or sets the neutral axis position, which is the intersection of the X and Y axis.
     /// </summary>
     protected Vector2 NeutralAxisPosition { get; private set; }
 
     /// <summary>
-    /// Gets the scene service.
-    /// </summary>
-    protected ISceneService SceneService { get; }
-
-    /// <summary>
     /// Gets or sets the end point of the x axis line.
     /// </summary>
-    protected Vector2 XAxisPosition { get; set; }
+    protected Vector2 XAxisPosition { get; private set; }
 
     /// <summary>
     /// Gets or sets the end point of the y axis line.
     /// </summary>
-    protected Vector2 YAxisPosition { get; set; }
+    protected Vector2 YAxisPosition { get; private set; }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
@@ -100,7 +91,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
+        if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var lineOffset = lineThickness * this.Settings.UnitsPerPixel * -0.5f;
             var lineOffsetVector = new Vector2(-lineOffset, lineOffset);
@@ -120,14 +111,6 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         }
 
         return false;
-    }
-
-    /// <summary>
-    /// Gets the length of an axis line based on the view height.
-    /// </summary>
-    /// <returns>The length of an axis line.</returns>
-    protected float GetAxisLength() {
-        return this._camera.BoundingArea.Height * 0.1f;
     }
 
     /// <summary>
@@ -195,10 +178,10 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         var transformable = this.EntityService.Selected;
         if (transformable != null) {
             var axisLength = this.GetAxisLength();
-            var worldTransform = transformable.Transform;
-            this.NeutralAxisPosition = worldTransform.Position;
-            this.XAxisPosition = worldTransform.Position + new Vector2(axisLength, 0f);
-            this.YAxisPosition = worldTransform.Position + new Vector2(0f, axisLength);
+            var worldTransform = transformable.WorldPosition;
+            this.NeutralAxisPosition = worldTransform;
+            this.XAxisPosition = worldTransform + new Vector2(axisLength, 0f);
+            this.YAxisPosition = worldTransform + new Vector2(0f, axisLength);
         }
     }
 
@@ -232,6 +215,10 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         }
         else if (e.PropertyName == nameof(IEditorService.YAxisColor)) {
         }
+    }
+
+    private float GetAxisLength() {
+        return this._camera.BoundingArea.Height * 0.1f;
     }
 
     private void ResetIsEnabled() {

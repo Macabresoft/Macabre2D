@@ -53,16 +53,16 @@ public sealed class EditorGrid : BaseDrawer {
         if (this.SpriteBatch is { } spriteBatch) {
             if (this._editorService.GridDivisions > 0 && this.ResolveGridContainer() is { } container) {
                 this.ResetColor();
-                var gridPosition = container.Transform.Position;
+                var gridPosition = container.WorldPosition;
 
                 if (this._entityService?.Selected is ITileableEntity tileableEntity) {
                     gridPosition += tileableEntity.LocalPosition;
                 }
 
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.DrawGrid(spriteBatch, viewBoundingArea, container.WorldTileSize, gridPosition, lineThickness, 0.2f);
+                this.DrawGrid(spriteBatch, viewBoundingArea, container.TileSize, gridPosition, lineThickness, 0.2f);
 
-                var majorGridSize = container.WorldTileSize * this._editorService.GridDivisions;
+                var majorGridSize = container.TileSize * this._editorService.GridDivisions;
                 this.DrawGrid(spriteBatch, viewBoundingArea, majorGridSize, gridPosition, lineThickness, 0.5f);
             }
         }

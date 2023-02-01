@@ -15,6 +15,11 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// <summary>
+    /// Gets the actual view height.
+    /// </summary>
+    float ActualViewHeight { get; }
+
+    /// <summary>
     /// Gets the layers to exclude from renders.
     /// </summary>
     /// <remarks>
@@ -42,19 +47,14 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
-    /// Gets or sets the view height of the camera in world units (not screen pixels).
-    /// </summary>
-    float ViewHeight { get; set; }
-    
-    /// <summary>
-    /// Gets the actual view height.
-    /// </summary>
-    float ActualViewHeight { get; }
-
-    /// <summary>
     /// Gets the view width.
     /// </summary>
     float ViewWidth { get; }
+
+    /// <summary>
+    /// Gets or sets the view height of the camera in world units (not screen pixels).
+    /// </summary>
+    float ViewHeight { get; set; }
 
     /// <summary>
     /// Converts the point from screen space to world space.
@@ -99,6 +99,25 @@ public class Camera : Entity, ICamera {
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
+    [DataMember(Name = "Offset Settings")]
+    public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
+
+    /// <summary>
+    /// Gets the shader reference.
+    /// </summary>
+    [DataMember(Name = CommonCategories.Shader)]
+    [Category(CommonCategories.Shader)]
+    public ShaderReference ShaderReference { get; } = new();
+
+    /// <inheritdoc />
+    public float ViewWidth => this._viewWidth.Value;
+
+    /// <summary>
+    /// Gets the actual view height for this camera. Will only be different than <see cref="ViewHeight" /> if pixel snapping is enabled.
+    /// </summary>
+    public float ActualViewHeight { get; private set; }
+
+    /// <inheritdoc />
     [DataMember(Name = "Layers to Exclude")]
     public Layers LayersToExcludeFromRender {
         get => this._layersToExcludeFromRender;
@@ -111,10 +130,6 @@ public class Camera : Entity, ICamera {
         get => this._layersToRender;
         set => this.Set(ref this._layersToRender, value);
     }
-
-    /// <inheritdoc />
-    [DataMember(Name = "Offset Settings")]
-    public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
     /// <inheritdoc />
     [DataMember]
@@ -146,13 +161,6 @@ public class Camera : Entity, ICamera {
     }
 
     /// <summary>
-    /// Gets the shader reference.
-    /// </summary>
-    [DataMember(Name = CommonCategories.Shader)]
-    [Category(CommonCategories.Shader)]
-    public ShaderReference ShaderReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the height of the view.
     /// </summary>
     [DataMember(Name = "View Height")]
@@ -173,14 +181,6 @@ public class Camera : Entity, ICamera {
     }
 
     /// <summary>
-    /// Gets the actual view height for this camera. Will only be different than <see cref="ViewHeight"/> if pixel snapping is enabled.
-    /// </summary>
-    public float ActualViewHeight { get; private set; }
-
-    /// <inheritdoc />
-    public float ViewWidth => this._viewWidth.Value;
-
-    /// <summary>
     /// Gets the sampler state.
     /// </summary>
     protected SamplerState SamplerState => this._samplerState;
@@ -193,7 +193,7 @@ public class Camera : Entity, ICamera {
             var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
             var pointVector = point.ToVector2();
             var vectorPosition = new Vector2(pointVector.X + this.OffsetSettings.Offset.X, -pointVector.Y + this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y) * ratio;
-            result = this.GetWorldTransform(vectorPosition).Position;
+            result = this.GetWorldPosition(vectorPosition);
         }
 
         return result;
@@ -223,7 +223,7 @@ public class Camera : Entity, ICamera {
     /// <param name="worldPosition">The world position.</param>
     /// <param name="zoomAmount">The zoom amount.</param>
     public void ZoomTo(Vector2 worldPosition, float zoomAmount) {
-        var originalCameraPosition = this.Transform.Position;
+        var originalCameraPosition = this.WorldPosition;
         var originalDistanceFromCamera = worldPosition - originalCameraPosition;
         var originalViewHeight = this.ActualViewHeight;
         this.ViewHeight -= zoomAmount;
@@ -263,21 +263,21 @@ public class Camera : Entity, ICamera {
     /// </summary>
     /// <returns>The view matrix.</returns>
     protected Matrix GetViewMatrix() {
-        return this.GetViewMatrix(this.Transform);
+        return this.GetViewMatrix(this.WorldPosition);
     }
 
     /// <summary>
     /// Gets the view matrix.
     /// </summary>
-    /// <param name="transform">The transform to use.</param>
+    /// <param name="position">The position to use.</param>
     /// <returns>The view matrix.</returns>
-    protected Matrix GetViewMatrix(Transform transform) {
+    protected Matrix GetViewMatrix(Vector2 position) {
         var settings = this.Settings;
         var pixelsPerUnit = settings.PixelsPerUnit;
         var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetSettings.Size.Y);
 
         var matrix =
-            Matrix.CreateTranslation(new Vector3(-transform.Position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
 
@@ -288,7 +288,7 @@ public class Camera : Entity, ICamera {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             this.OnScreenAreaChanged();
         }
     }
@@ -337,6 +337,32 @@ public class Camera : Entity, ICamera {
         }
     }
 
+    private void CalculateActualViewHeight() {
+        if (this.ShouldSnapToPixels(this.Settings)) {
+            var originalPixelHeight = (uint)Math.Round(this.ViewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
+            var viewportHeight = this.Game.ViewportSize.Y;
+            if (originalPixelHeight < viewportHeight) {
+                var internalPixelHeight = originalPixelHeight;
+                var count = 0;
+
+                while (internalPixelHeight < viewportHeight) {
+                    internalPixelHeight += originalPixelHeight;
+                    count++;
+                }
+
+                this.ActualViewHeight = this.Settings.UnitsPerPixel * (viewportHeight / (float)count);
+            }
+            else {
+                this.ActualViewHeight = this.ViewHeight;
+            }
+        }
+        else {
+            this.ActualViewHeight = this.ViewHeight;
+        }
+
+        this.RaisePropertyChanged(nameof(this.ActualViewHeight));
+    }
+
     private BoundingArea CreateBoundingArea() {
         var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
         var width = this.OffsetSettings.Size.X * ratio;
@@ -344,10 +370,10 @@ public class Camera : Entity, ICamera {
         var offset = this.OffsetSettings.Offset * ratio;
 
         var points = new List<Vector2> {
-            this.GetWorldTransform(offset).Position,
-            this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
-            this.GetWorldTransform(offset + new Vector2(width, height)).Position,
-            this.GetWorldTransform(offset + new Vector2(0f, height)).Position
+            this.GetWorldPosition(offset),
+            this.GetWorldPosition(offset + new Vector2(width, 0f)),
+            this.GetWorldPosition(offset + new Vector2(width, height)),
+            this.GetWorldPosition(offset + new Vector2(0f, height))
         };
 
         var minimumX = points.Min(x => x.X);
@@ -380,33 +406,6 @@ public class Camera : Entity, ICamera {
         this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
         this._viewWidth.Reset();
-    }
-
-    private void CalculateActualViewHeight() {
-        if (this.ShouldSnapToPixels(this.Settings)) {
-            var originalPixelHeight = (uint)Math.Round(this.ViewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
-            var viewportHeight = this.Game.ViewportSize.Y;
-            if (originalPixelHeight < viewportHeight) {
-                var internalPixelHeight = originalPixelHeight;
-                var count = 0;
-
-                while (internalPixelHeight < viewportHeight) {
-                    internalPixelHeight += originalPixelHeight;
-                    count++;
-                }
-
-                this.ActualViewHeight = this.Settings.UnitsPerPixel * (viewportHeight / (float)count);
-            }
-            else {
-                this.ActualViewHeight = this.ViewHeight;
-            }
-
-        }
-        else {
-            this.ActualViewHeight = this.ViewHeight;
-        }
-        
-        this.RaisePropertyChanged(nameof(ActualViewHeight));
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

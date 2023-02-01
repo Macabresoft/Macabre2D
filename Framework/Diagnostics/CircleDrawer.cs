@@ -50,7 +50,7 @@ public sealed class CircleDrawer : BaseDrawer {
                 spriteBatch,
                 this.Settings.PixelsPerUnit,
                 this.Radius,
-                this.Transform.Position,
+                this.WorldPosition,
                 this.Complexity,
                 this.Color,
                 lineThickness);

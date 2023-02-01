@@ -49,12 +49,17 @@ public sealed class AutoTileMap : RenderableTileMap {
     private readonly Dictionary<Point, byte> _activeTileToIndex = new();
 
     private Color _color = Color.White;
-    private Vector2 _previousWorldScale;
     private Vector2 _spriteScale = Vector2.One;
     private AutoTileMapVisualBehavior _visualBehavior;
 
     /// <inheritdoc />
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTileToIndex.Keys;
+
+    /// <summary>
+    /// Gets the animation reference.
+    /// </summary>
+    [DataMember(Order = 0, Name = "Tile Set")]
+    public AutoTileSetReference TileSetReference { get; } = new();
 
     /// <summary>
     /// Gets or sets the color.
@@ -66,17 +71,11 @@ public sealed class AutoTileMap : RenderableTileMap {
         set => this.Set(ref this._color, value);
     }
 
-    /// <summary>
-    /// Gets the animation reference.
-    /// </summary>
-    [DataMember(Order = 0, Name = "Tile Set")]
-    public AutoTileSetReference TileSetReference { get; } = new();
-
     [DataMember]
     public AutoTileMapVisualBehavior VisualBehavior {
         get => this._visualBehavior;
         set {
-            if (this.Set(ref this._visualBehavior, value) && this.IsInitialized) {
+            if (this.Set(ref this._visualBehavior, value)) {
                 this.ReevaluateIndexes();
             }
         }
@@ -94,7 +93,6 @@ public sealed class AutoTileMap : RenderableTileMap {
         this.TileSetReference.PropertyChanged -= this.TileSetReference_PropertyChanged;
         this.TileSetReference.Initialize(this.Scene.Assets);
         this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
-        this._previousWorldScale = this.Transform.Scale;
         this.ReevaluateIndexes();
         this.ResetSpriteScale();
     }
@@ -102,7 +100,7 @@ public sealed class AutoTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteBatch is { } spriteBatch && this.TileSetReference.PackagedAsset is { } tileSet && this.TileSetReference.Asset is { } spriteSheet) {
+        if (this.SpriteBatch is { } spriteBatch && this.TileSetReference is { PackagedAsset: { } tileSet, Asset: { } spriteSheet }) {
             foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTile);
                 if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex) && (this.Scene.BoundingArea.IsEmpty || boundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
@@ -136,16 +134,6 @@ public sealed class AutoTileMap : RenderableTileMap {
     /// <inheritdoc />
     protected override bool HasActiveTiles() {
         return this._activeTileToIndex.Any();
-    }
-
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(IEntity.Transform) && this.Transform.Scale != this._previousWorldScale) {
-            this._previousWorldScale = this.Transform.Scale;
-            this.ResetSpriteScale();
-        }
     }
 
     /// <inheritdoc />
@@ -259,18 +247,22 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void ReevaluateIndexes() {
-        switch (this.VisualBehavior) {
-            case AutoTileMapVisualBehavior.Standard:
-            case AutoTileMapVisualBehavior.SingleColumn:
-            case AutoTileMapVisualBehavior.SingleRow:
-                this.ReevaluateIndexesStandard();
-                break;
-            case AutoTileMapVisualBehavior.Column:
-                this.ReevaluateBoxColumnIndexes();
-                break;
-            case AutoTileMapVisualBehavior.Row:
-                this.ReevaluateBoxRowIndexes();
-                break;
+        if (this.IsInitialized) {
+            switch (this.VisualBehavior) {
+                case AutoTileMapVisualBehavior.Standard:
+                case AutoTileMapVisualBehavior.SingleColumn:
+                case AutoTileMapVisualBehavior.SingleRow:
+                    this.ReevaluateIndexesStandard();
+                    break;
+                case AutoTileMapVisualBehavior.Column:
+                    this.ReevaluateBoxColumnIndexes();
+                    break;
+                case AutoTileMapVisualBehavior.Row:
+                    this.ReevaluateBoxRowIndexes();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 

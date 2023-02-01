@@ -18,7 +18,7 @@ public sealed class DefaultCollisionResolver : ICollisionResolver {
     /// <inheritdoc />
     public void ResolveCollision(CollisionEventArgs e, float timeStep) {
         if (e.FirstCollider.Body is IDynamicPhysicsBody firstBody) {
-            firstBody.SetWorldPosition(firstBody.Transform.Position + e.MinimumTranslationVector);
+            firstBody.SetWorldPosition(firstBody.WorldPosition + e.MinimumTranslationVector);
 
             if (firstBody.IsKinematic) {
                 var normalPerpendicular = e.Normal.GetPerpendicular();

@@ -130,7 +130,6 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// <param name="spriteIndex">The sprite index.</param>
     /// <param name="position">The position.</param>
     /// <param name="scale">The scale.</param>
-    /// <param name="rotation">The rotation.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public void Draw(
@@ -139,7 +138,6 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,
-        float rotation,
         Color color,
         SpriteEffects orientation) {
         if (this.Content != null && this.SpriteSize != Point.Zero) {
@@ -148,7 +146,7 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
                 position * pixelsPerUnit,
                 new Rectangle(this.GetSpriteLocation(spriteIndex), this.SpriteSize),
                 color,
-                rotation,
+                0f,
                 Vector2.Zero,
                 scale,
                 orientation,
@@ -162,38 +160,17 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// <param name="spriteBatch">The sprite batch.</param>
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="spriteIndex">The sprite index.</param>
-    /// <param name="transform">The transform.</param>
-    /// <param name="rotation">The rotation.</param>
+    /// <param name="position">The position.</param>
     /// <param name="color">The color.</param>
     /// <param name="orientation">The orientation.</param>
     public void Draw(
         SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
         byte spriteIndex,
-        Transform transform,
-        float rotation,
+        Vector2 position,
         Color color,
         SpriteEffects orientation) {
-        this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform.Position, transform.Scale, rotation, color, orientation);
-    }
-
-    /// <summary>
-    /// Draws the specified sprite.
-    /// </summary>
-    /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="pixelsPerUnit">The pixels per unit.</param>
-    /// <param name="spriteIndex">The sprite index.</param>
-    /// <param name="transform">The transform.</param>
-    /// <param name="color">The color.</param>
-    /// <param name="orientation">The orientation.</param>
-    public void Draw(
-        SpriteBatch spriteBatch,
-        ushort pixelsPerUnit,
-        byte spriteIndex,
-        Transform transform,
-        Color color,
-        SpriteEffects orientation) {
-        this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
+        this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, position, Vector2.One, color, orientation);
     }
 
     /// <summary>

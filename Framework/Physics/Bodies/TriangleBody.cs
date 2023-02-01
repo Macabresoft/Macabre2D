@@ -56,22 +56,6 @@ public class TriangleBody : PhysicsBody {
     public override bool HasCollider => this.GetColliders().Any();
 
     /// <summary>
-    /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
-    /// runtime if possible.
-    /// </summary>
-    [DataMember]
-    public float Height {
-        get => this._height;
-        set {
-            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
-                this._height = value;
-                this.ResetColliders();
-                this.RaisePropertyChanged();
-            }
-        }
-    }
-
-    /// <summary>
     /// Gets the bottom edge's overriden layer.
     /// </summary>
     [DataMember(Name = "Bottom Layers", Order = 102)]
@@ -88,6 +72,22 @@ public class TriangleBody : PhysicsBody {
     /// </summary>
     [DataMember(Name = "Right Layers", Order = 101)]
     public LayersOverride OverrideLayersRightEdge { get; } = new();
+
+    /// <summary>
+    /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
+    /// runtime if possible.
+    /// </summary>
+    [DataMember]
+    public float Height {
+        get => this._height;
+        set {
+            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
+                this._height = value;
+                this.ResetColliders();
+                this.RaisePropertyChanged();
+            }
+        }
+    }
 
     /// <summary>
     /// Gets or sets the peak position of the triangle. Setting this is fairly expensive and should be avoided during
@@ -152,7 +152,7 @@ public class TriangleBody : PhysicsBody {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName is nameof(ITransformable.Transform)) {
+        if (e.PropertyName is nameof(this.WorldPosition)) {
             this.ResetColliders();
         }
     }

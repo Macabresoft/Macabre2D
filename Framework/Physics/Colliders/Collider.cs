@@ -43,7 +43,7 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     public static readonly Collider Empty = new EmptyCollider();
 
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly ResettableLazy<Transform> _transform;
+    private readonly ResettableLazy<Vector2> _worldPosition;
     private Vector2 _offset;
 
     private Layers _overrideLayers = Layers.None;
@@ -52,14 +52,9 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// Initializes a new instance of the <see cref="Collider" /> class.
     /// </summary>
     protected Collider() {
-        this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? Transform.Origin);
+        this._worldPosition = new ResettableLazy<Vector2>(() => this.Body?.GetWorldPosition(this.Offset) ?? Vector2.Zero);
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
-
-    /// <summary>
-    /// Gets the body that this collider is attached to.
-    /// </summary>
-    public IPhysicsBody? Body { get; private set; }
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
@@ -68,6 +63,11 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// Gets the type of the collider.
     /// </summary>
     public abstract ColliderType ColliderType { get; }
+
+    /// <summary>
+    /// Gets the body that this collider is attached to.
+    /// </summary>
+    public IPhysicsBody? Body { get; private set; }
 
     /// <summary>
     /// Gets or sets the layers.
@@ -93,9 +93,9 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     }
 
     /// <summary>
-    /// Gets the transform.
+    /// Gets the world position.
     /// </summary>
-    protected Transform Transform => this._transform.Value;
+    protected Vector2 WorldPosition => this._worldPosition.Value;
 
     /// <summary>
     /// Gets a value indicating whether or not this instance collides with the specified collider.
@@ -315,7 +315,7 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// Resets the lazy fields.
     /// </summary>
     protected virtual void ResetLazyFields() {
-        this._transform.Reset();
+        this._worldPosition.Reset();
         this._boundingArea.Reset();
     }
 

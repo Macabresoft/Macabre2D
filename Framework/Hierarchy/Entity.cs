@@ -20,17 +20,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IReadOnlyCollection<IEntity> Children => Array.Empty<IEntity>();
 
     /// <summary>
-    /// Gets a value indicating whether or not this is initialized;
-    /// </summary>
-    bool IsInitialized => false;
-
-    /// <summary>
-    /// Gets the layers.
-    /// </summary>
-    /// <value>The layers.</value>
-    Layers Layers { get; set; }
-
-    /// <summary>
     /// Gets the parent.
     /// </summary>
     /// <value>The parent.</value>
@@ -41,6 +30,12 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// </summary>
     /// <value>The scene.</value>
     IScene Scene => Framework.Scene.Empty;
+
+    /// <summary>
+    /// Gets the layers.
+    /// </summary>
+    /// <value>The layers.</value>
+    Layers Layers { get; set; }
 
     /// <summary>
     /// Adds a child of the specified type.
@@ -202,9 +197,6 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public bool IsInitialized { get; private set; }
-
-    /// <inheritdoc />
     [DataMember]
     public Layers Layers {
         get => this._layers;
@@ -233,6 +225,11 @@ public class Entity : Transformable, IEntity {
     /// Gets the sprite batch.
     /// </summary>
     protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is initialized.
+    /// </summary>
+    protected bool IsInitialized { get; private set; }
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {
@@ -321,7 +318,7 @@ public class Entity : Transformable, IEntity {
                 child.Initialize(this.Scene, this);
             }
 
-            this.HandleMatrixOrTransformChanged();
+            this.HandleTransformed();
             this.Parent.PropertyChanged += this.Parent_PropertyChanged;
         }
         finally {
@@ -413,7 +410,7 @@ public class Entity : Transformable, IEntity {
     /// </param>
     protected virtual void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(this.Parent)) {
-            this.HandleMatrixOrTransformChanged();
+            this.HandleTransformed();
         }
     }
 
@@ -428,8 +425,8 @@ public class Entity : Transformable, IEntity {
     }
 
     private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(ITransformable.Transform)) {
-            this.HandleMatrixOrTransformChanged();
+        if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(this.WorldPosition)) {
+            this.HandleTransformed();
         }
     }
 

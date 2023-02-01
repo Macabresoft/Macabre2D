@@ -61,16 +61,4 @@ public static class PixelSnapExtensions {
             value.Minimum.ToPixelSnappedValue(settings, MidpointRounding.ToNegativeInfinity),
             value.Maximum.ToPixelSnappedValue(settings, MidpointRounding.ToPositiveInfinity));
     }
-
-    /// <summary>
-    /// Converts a <see cref="Transform" /> to a pixel snapped value.
-    /// </summary>
-    /// <param name="transform">The transform.</param>
-    /// <param name="settings">The settings.</param>
-    /// <returns>A pixel snapped value.</returns>
-    public static Transform ToPixelSnappedValue(this Transform transform, IGameSettings settings) {
-        var position = transform.Position.ToPixelSnappedValue(settings);
-        var scale = new Vector2((int)Math.Round(transform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.Scale.Y, 0, MidpointRounding.AwayFromZero));
-        return new Transform(position, scale);
-    }
 }

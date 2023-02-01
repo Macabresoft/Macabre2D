@@ -46,36 +46,6 @@
 
                     <avaloniaEx:Icon Content="{StaticResource TranslateIcon}" />
                 </ToggleButton>
-                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static common:GizmoKind.Scale}"
-                              Classes="Icon"
-                              ToolTip.Tip="Alter the scale of the selected entity">
-                    <ToggleButton.IsChecked>
-                        <Binding Path="EditorService.SelectedGizmo"
-                                 Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static common:GizmoKind.Scale}"
-                                 Mode="OneWay"
-                                 TargetNullValue="False" />
-                    </ToggleButton.IsChecked>
-
-                    <avaloniaEx:Icon Content="{StaticResource ScaleIcon}" />
-                </ToggleButton>
-
-                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static common:GizmoKind.Rotation}"
-                              Classes="Icon"
-                              IsVisible="{Binding IsRotatable}"
-                              ToolTip.Tip="Alter the rotation of the selected entity">
-                    <ToggleButton.IsChecked>
-                        <Binding Path="EditorService.SelectedGizmo"
-                                 Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static common:GizmoKind.Rotation}"
-                                 Mode="OneWay"
-                                 TargetNullValue="False" />
-                    </ToggleButton.IsChecked>
-
-                    <avaloniaEx:Icon Content="{StaticResource RotateIcon}" />
-                </ToggleButton>
 
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                               CommandParameter="{x:Static common:GizmoKind.Tile}"

@@ -143,7 +143,7 @@ public abstract class PolygonCollider : Collider {
                 var current = this.WorldPoints.ElementAt(i);
 
                 // Touching edges is not containment
-                if (Vector2.Distance(circle.Center, current) <= circle.ScaledRadius) {
+                if (Vector2.Distance(circle.Center, current) <= circle.Radius) {
                     return false;
                 }
 
@@ -165,7 +165,7 @@ public abstract class PolygonCollider : Collider {
                 var distance = Vector2.Dot(currentToCenter, edge) / edge.LengthSquared();
                 var pointOnLine = current + edge * distance;
 
-                if (Vector2.Distance(circle.Center, pointOnLine) <= circle.ScaledRadius) {
+                if (Vector2.Distance(circle.Center, pointOnLine) <= circle.Radius) {
                     return false;
                 }
             }
@@ -345,7 +345,7 @@ public abstract class PolygonCollider : Collider {
     private List<Vector2> CreateWorldPoints() {
         var worldPoints = new List<Vector2>();
         if (this.Body != null) {
-            worldPoints.AddRange(this._vertices.Select(point => this.Body.GetWorldTransform(this.Offset + point).Position));
+            worldPoints.AddRange(this._vertices.Select(point => this.Body.GetWorldPosition(this.Offset + point)));
         }
 
         return worldPoints;

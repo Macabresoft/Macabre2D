@@ -43,12 +43,12 @@ public static class CircleColliderTests {
             Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
             Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-            var originalPosition = circleBody1.Transform.Position;
+            var originalPosition = circleBody1.WorldPosition;
             circleBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
             Assert.False(circleBody1.Collider.CollidesWith(circleBody2.Collider, out collision1));
             circleBody1.SetWorldPosition(originalPosition);
 
-            circleBody2.SetWorldPosition(circleBody2.Transform.Position + collision2.MinimumTranslationVector);
+            circleBody2.SetWorldPosition(circleBody2.WorldPosition + collision2.MinimumTranslationVector);
             Assert.False(circleBody2.Collider.CollidesWith(circleBody1.Collider, out collision2));
         }
         else {
@@ -96,12 +96,12 @@ public static class CircleColliderTests {
             Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
             Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-            var originalPosition = circleBody.Transform.Position;
+            var originalPosition = circleBody.WorldPosition;
             circleBody.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
             Assert.False(circleBody.Collider.CollidesWith(quadBody.Collider, out collision1));
             circleBody.SetWorldPosition(originalPosition);
 
-            quadBody.SetWorldPosition(quadBody.Transform.Position + collision2.MinimumTranslationVector);
+            quadBody.SetWorldPosition(quadBody.WorldPosition + collision2.MinimumTranslationVector);
             Assert.False(quadBody.Collider.CollidesWith(circleBody.Collider, out collision2));
         }
         else {

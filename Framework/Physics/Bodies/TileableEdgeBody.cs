@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -44,7 +45,7 @@ public sealed class TileableEdgeBody : QuadBody {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName is nameof(ITransformable.Transform)) {
+        if (e.PropertyName is nameof(this.WorldPosition)) {
             this.ResetColliders();
         }
     }

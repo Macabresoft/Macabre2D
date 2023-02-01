@@ -75,8 +75,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
 
     private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         switch (e.PropertyName) {
-            case nameof(ICamera.Transform):
-                this._settingsService.Settings.CameraPosition = this._camera.Transform.Position;
+            case nameof(ICamera.WorldPosition):
+                this._settingsService.Settings.CameraPosition = this._camera.WorldPosition;
                 break;
             case nameof(ICamera.ActualViewHeight):
                 this._settingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
@@ -98,14 +98,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         var selectorGizmo = new SelectorGizmo(this.SceneService);
         this._camera.AddChild(selectorGizmo);
 
-        var translationGizmo = new TranslationGizmo(this._editorService, this.SceneService, this._entityService, this._undoService);
+        var translationGizmo = new TranslationGizmo(this._editorService, this._entityService, this._undoService);
         this._camera.AddChild(translationGizmo);
-
-        var scaleGizmo = new ScaleGizmo(this._editorService, this.SceneService, this._entityService, this._undoService);
-        this._camera.AddChild(scaleGizmo);
-
-        var rotationGizmo = new RotationGizmo(this._editorService, this._entityService, this.SceneService, this._undoService);
-        this._camera.AddChild(rotationGizmo);
 
         var tileGizmo = new TileGizmo(this._entityService, this._undoService);
         this._camera.AddChild(tileGizmo);
@@ -124,7 +118,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
 
     private void EditorService_FocusRequested(object sender, IEntity e) {
         if (e != null) {
-            this._camera.LocalPosition = e.Transform.Position;
+            this._camera.LocalPosition = e.WorldPosition;
         }
     }
 

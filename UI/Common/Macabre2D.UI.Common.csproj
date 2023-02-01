@@ -63,10 +63,6 @@
             <DependentUpon>BoundingAreaEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\RotationEditor.axaml.cs">
-            <DependentUpon>RotationEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\Framework\GameTimerEditor.axaml.cs">
             <DependentUpon>FloatEditor.axaml</DependentUpon>
             <SubType>Code</SubType>

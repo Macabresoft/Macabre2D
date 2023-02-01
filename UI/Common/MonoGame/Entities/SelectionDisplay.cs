@@ -62,7 +62,7 @@ public class SelectionDisplay : BaseDrawer {
 
             if (this._entityService.Selected is { } selected) {
                 if (this._editorService.SelectedGizmo == GizmoKind.Selector) {
-                    var (x, y) = selected.Transform.Position;
+                    var (x, y) = selected.WorldPosition;
 
                     var crosshairLength = viewBoundingArea.Height * 0.01f;
                     var left = new Vector2(x - crosshairLength, y);

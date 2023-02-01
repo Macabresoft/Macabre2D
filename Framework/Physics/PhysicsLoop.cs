@@ -130,7 +130,7 @@ public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
     private void HandleCollisions(IPhysicsBody body) {
         if (body.HasCollider && body is IDynamicPhysicsBody dynamicBody) {
             var collisionsOccured = new List<Guid>();
-            dynamicBody.SetWorldPosition(dynamicBody.Transform.Position + dynamicBody.Velocity * this.TimeStep);
+            dynamicBody.SetWorldPosition(dynamicBody.WorldPosition + dynamicBody.Velocity * this.TimeStep);
 
             if (dynamicBody.IsKinematic) {
                 dynamicBody.Velocity += this.Gravity.Value * this.TimeStep;

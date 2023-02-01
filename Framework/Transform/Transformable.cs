@@ -1,14 +1,20 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for an object which has a <see cref="Transform" />.
+/// Interface for an object which can be transformed.
 /// </summary>
 public interface ITransformable {
+    /// <summary>
+    /// Gets the world position position.
+    /// </summary>
+    Vector2 WorldPosition { get; }
+
     /// <summary>
     /// Gets or sets the local position.
     /// </summary>
@@ -16,61 +22,11 @@ public interface ITransformable {
     Vector2 LocalPosition { get; set; }
 
     /// <summary>
-    /// Gets or sets the local scale.
-    /// </summary>
-    /// <value>The local scale.</value>
-    Vector2 LocalScale { get; set; }
-
-    /// <summary>
-    /// Gets the transform.
-    /// </summary>
-    /// <value>The transform.</value>
-    Transform Transform { get; }
-
-    /// <summary>
-    /// Gets the transform matrix.
-    /// </summary>
-    /// <value>The transform matrix.</value>
-    Matrix TransformMatrix { get; }
-
-    /// <summary>
-    /// Gets the world transform.
-    /// </summary>
-    /// <param name="rotationAngle">The rotation angle.</param>
-    /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(float rotationAngle);
-
-    /// <summary>
-    /// Gets the world transform.
+    /// Gets the world position with an offset.
     /// </summary>
     /// <param name="originOffset">The origin offset.</param>
-    /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset);
-
-    /// <summary>
-    /// Gets the world transform.
-    /// </summary>
-    /// <param name="originOffset">The origin offset.</param>
-    /// <param name="rotation">The rotation.</param>
-    /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset, Rotation rotation);
-
-    /// <summary>
-    /// Gets the world transform.
-    /// </summary>
-    /// <param name="originOffset">The origin offset.</param>
-    /// <param name="overrideScale">An override value for scale.</param>
-    /// <param name="rotation">The rotation.</param>
-    /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation);
-
-    /// <summary>
-    /// Gets the world transform.
-    /// </summary>
-    /// <param name="originOffset">The origin offset.</param>
-    /// <param name="overrideScale">An override value for scale.</param>
-    /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale);
+    /// <returns>The world position.</returns>
+    Vector2 GetWorldPosition(Vector2 originOffset);
 
     /// <summary>
     /// Moves this actor the specified amount.
@@ -83,25 +39,6 @@ public interface ITransformable {
     /// </summary>
     /// <param name="position">The position.</param>
     void SetWorldPosition(Vector2 position);
-
-    /// <summary>
-    /// Sets the world scale.
-    /// </summary>
-    /// <param name="scale">The scale.</param>
-    void SetWorldScale(Vector2 scale);
-
-    /// <summary>
-    /// Sets the world transform.
-    /// </summary>
-    /// <param name="position">The position.</param>
-    /// <param name="scale">The scale.</param>
-    void SetWorldTransform(Vector2 position, Vector2 scale);
-
-    /// <summary>
-    /// Sets the world transform.
-    /// </summary>
-    /// <param name="transform">The transform.</param>
-    void SetWorldTransform(Transform transform);
 }
 
 /// <summary>
@@ -111,62 +48,37 @@ public interface ITransformable {
 [DataContract]
 [Category(CommonCategories.Transform)]
 public abstract class Transformable : NotifyPropertyChanged, ITransformable {
-    private readonly ResettableLazy<Matrix> _transformMatrix;
-    private bool _isTransformUpToDate;
+    private readonly ResettableLazy<Vector2> _worldPosition;
     private Vector2 _localPosition;
-    private Vector2 _localScale = Vector2.One;
-    private Transform _transform;
     private TransformInheritance _transformInheritance = TransformInheritance.Both;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Transformable" /> class.
     /// </summary>
     protected Transformable() {
-        this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
+        this._worldPosition = new ResettableLazy<Vector2>(this.GetWorldPosition);
     }
+
+    /// <summary>
+    /// Gets the world position position.
+    /// </summary>
+    public Vector2 WorldPosition => this._worldPosition.Value;
 
     /// <summary>
     /// Gets or sets the local position.
     /// </summary>
-    /// <value>The local position.</value>
     [DataMember(Name = "Local Position")]
     public Vector2 LocalPosition {
         get => this._localPosition;
         set {
             if (this.Set(ref this._localPosition, value)) {
-                this.HandleMatrixOrTransformChanged();
+                this.HandleTransformed();
             }
         }
     }
 
     /// <summary>
-    /// Gets or sets the local scale.
-    /// </summary>
-    /// <value>The local scale.</value>
-    [DataMember(Name = "Local Scale")]
-    public Vector2 LocalScale {
-        get => this._localScale;
-        set {
-            if (this.Set(ref this._localScale, value)) {
-                this.HandleMatrixOrTransformChanged();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public Transform Transform {
-        get {
-            if (!this._isTransformUpToDate) {
-                this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
-                this._isTransformUpToDate = true;
-            }
-
-            return this._transform;
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the way this inherits its parent's <see cref="Transform" />.
+    /// Gets or sets the way this inherits its parent's position.
     /// </summary>
     [DataMember(Name = "Inheritance")]
     public TransformInheritance TransformInheritance {
@@ -175,100 +87,24 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     }
 
     /// <inheritdoc />
-    public Matrix TransformMatrix => this._transformMatrix.Value;
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(float rotationAngle) {
-        var transform = this.Transform;
-        var matrix =
-            Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
-            Matrix.CreateRotationZ(rotationAngle) *
-            Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
-
-        return matrix.ToTransform();
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset) {
-        var matrix = Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) * this.TransformMatrix;
-        return matrix.ToTransform();
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Rotation rotation) {
-        var transform = this.Transform;
-
-        var matrix =
-            Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
-            Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
-            Matrix.CreateRotationZ(rotation.Radians) *
-            Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
-
-        return matrix.ToTransform();
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation) {
-        var transform = this.Transform;
-
-        var matrix =
-            Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
-            Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
-            Matrix.CreateRotationZ(rotation.Radians) *
-            Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
-
-        return matrix.ToTransform();
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
-        var transform = this.Transform;
-
-        var matrix =
-            Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
-            Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
-            Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
-
-        return matrix.ToTransform();
+    public Vector2 GetWorldPosition(Vector2 originOffset) {
+        return this.WorldPosition + originOffset;
     }
 
     /// <inheritdoc />
     public void Move(Vector2 amount) {
-        this.SetWorldPosition(this.Transform.Position + amount);
+        this.SetWorldPosition(this.WorldPosition + amount);
     }
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
-        this.SetWorldTransform(position, this.Transform.Scale);
-    }
-
-    /// <inheritdoc />
-    public void SetWorldScale(Vector2 scale) {
-        this.SetWorldTransform(this.Transform.Position, scale);
-    }
-
-    /// <inheritdoc />
-    public void SetWorldTransform(Vector2 position, Vector2 scale) {
-        var matrix =
-            Matrix.CreateScale(scale.X, scale.Y, 1f) *
-            Matrix.CreateTranslation(position.X, position.Y, 0f);
-
-        var parent = this.GetParentTransformable();
-        if (parent != this) {
-            matrix *= Matrix.Invert(parent.TransformMatrix);
-        }
-
-        var localTransform = matrix.ToTransform();
-        this._localPosition = localTransform.Position;
-        this._localScale = localTransform.Scale;
-        this.HandleMatrixOrTransformChanged();
-        this.RaisePropertyChanged(nameof(this.LocalPosition));
-        this.RaisePropertyChanged(nameof(this.LocalScale));
-    }
-
-    /// <inheritdoc />
-    public void SetWorldTransform(Transform transform) {
-        this.SetWorldTransform(transform.Position, transform.Scale);
+        this.LocalPosition = this._transformInheritance switch {
+            TransformInheritance.None => position,
+            TransformInheritance.X => new Vector2(this.LocalPosition.X + position.X - this.WorldPosition.X, this.LocalPosition.Y),
+            TransformInheritance.Y => new Vector2(this.LocalPosition.X, this.LocalPosition.Y + position.Y - this.WorldPosition.Y),
+            TransformInheritance.Both => this.LocalPosition + position - this.WorldPosition,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     /// <summary>
@@ -280,37 +116,26 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     /// <summary>
     /// Handles the matrix or transform changed.
     /// </summary>
-    protected void HandleMatrixOrTransformChanged() {
-        this._transformMatrix.Reset();
-        this._isTransformUpToDate = false;
-        this.RaisePropertyChanged(true, nameof(this.Transform));
+    protected void HandleTransformed() {
+        this._worldPosition.Reset();
+        this.RaisePropertyChanged(true, nameof(this.WorldPosition));
     }
 
-    private Matrix GetMatrix() {
-        var transformMatrix =
-            Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
-            Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
-
-        var parent = this.GetParentTransformable();
-        if (this.TransformInheritance != TransformInheritance.None && parent != this) {
-            switch (this.TransformInheritance) {
-                case TransformInheritance.Both: {
-                    transformMatrix *= parent.TransformMatrix;
-                    break;
-                }
-                case TransformInheritance.X: {
-                    var parentTransform = new Transform(parent.Transform.Position.RemoveY(), parent.Transform.Scale.ReplaceY(1f));
-                    transformMatrix *= parentTransform.ToMatrix();
-                    break;
-                }
-                case TransformInheritance.Y: {
-                    var parentTransform = new Transform(parent.Transform.Position.RemoveX(), parent.Transform.Scale.ReplaceX(1f));
-                    transformMatrix *= parentTransform.ToMatrix();
-                    break;
-                }
-            }
+    private Vector2 GetParentWorldPosition() {
+        if (this.GetParentTransformable() is { } transformable && transformable != this) {
+            return transformable.WorldPosition;
         }
 
-        return transformMatrix;
+        return Vector2.Zero;
+    }
+
+    private Vector2 GetWorldPosition() {
+        return this._transformInheritance switch {
+            TransformInheritance.None => this.LocalPosition,
+            TransformInheritance.X => new Vector2(this.LocalPosition.X + this.GetParentWorldPosition().X, this.LocalPosition.Y),
+            TransformInheritance.Y => new Vector2(this.LocalPosition.X, this.LocalPosition.Y + this.GetParentWorldPosition().Y),
+            TransformInheritance.Both => this.GetParentWorldPosition() + this.LocalPosition,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

@@ -105,9 +105,9 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         var result = Point.Zero;
         var grid = this.CurrentGrid;
 
-        if (grid.WorldTileSize.X > 0 && grid.WorldTileSize.Y > 0) {
-            var xTile = Math.Floor(worldPosition.X / grid.WorldTileSize.X);
-            var yTile = Math.Floor(worldPosition.Y / grid.WorldTileSize.Y);
+        if (grid.TileSize.X > 0 && grid.TileSize.Y > 0) {
+            var xTile = Math.Floor(worldPosition.X / grid.TileSize.X);
+            var yTile = Math.Floor(worldPosition.Y / grid.TileSize.Y);
             result = new Point((int)xTile, (int)yTile);
         }
 
@@ -186,7 +186,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
             var grid = this.CurrentGrid;
             var tilePosition = grid.GetTilePosition(tile) + this.LocalPosition;
-            boundingArea = new BoundingArea(tilePosition, tilePosition + grid.WorldTileSize);
+            boundingArea = new BoundingArea(tilePosition, tilePosition + grid.TileSize);
             this._tilePositionToBoundingArea.Add(tile, boundingArea);
         }
 
@@ -200,7 +200,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// <returns>The scale for the sprite to fit within the tile grid.</returns>
     protected Vector2 GetTileScale(Point spriteSize) {
         var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
-        var result = this.CurrentGrid.WorldTileSize;
+        var result = this.CurrentGrid.TileSize;
 
         if (spriteSize.X != 0 && spriteSize.Y != 0) {
             var spriteWidth = spriteSize.X * inversePixelsPerUnit;
@@ -224,7 +224,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         if (e.PropertyName == nameof(IEntity.Parent)) {
             this.ResetGridContainer();
         }
-        else if (e.PropertyName == nameof(ITransformable.Transform)) {
+        else if (e.PropertyName == nameof(this.WorldPosition)) {
             this.ResetBoundingArea();
         }
     }
@@ -264,7 +264,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     }
 
     private void GridContainer_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(IGridContainer.WorldTileSize)) {
+        if (e.PropertyName == nameof(IGridContainer.TileSize)) {
             this.ResetBoundingArea();
             this.TilesChanged?.SafeInvoke(this);
         }

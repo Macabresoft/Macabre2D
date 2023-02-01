@@ -13,12 +13,10 @@ using Microsoft.Xna.Framework.Graphics;
 /// An entity which will render the specified text.
 /// </summary>
 [Display(Name = "Text Renderer")]
-public class TextRenderer : RenderableEntity, IRotatable {
+public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly ResettableLazy<Transform> _pixelTransform;
-    private readonly ResettableLazy<Transform> _rotatableTransform;
+    private readonly ResettableLazy<Vector2> _pixelPosition;
     private Color _color = Color.Black;
-    private Rotation _rotation;
     private bool _snapToPixels;
     private string _text = string.Empty;
 
@@ -27,12 +25,17 @@ public class TextRenderer : RenderableEntity, IRotatable {
     /// </summary>
     public TextRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-        this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
-        this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
+        this._pixelPosition = new ResettableLazy<Vector2>(this.CreatePixelPosition);
     }
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+    /// <summary>
+    /// Gets the font reference.
+    /// </summary>
+    [DataMember(Order = 0)]
+    public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
 
     /// <summary>
     /// Gets or sets the color.
@@ -45,30 +48,11 @@ public class TextRenderer : RenderableEntity, IRotatable {
     }
 
     /// <summary>
-    /// Gets the font reference.
-    /// </summary>
-    [DataMember(Order = 0)]
-    public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
-
-    /// <summary>
     /// Gets the render settings.
     /// </summary>
     /// <value>The render settings.</value>
     [DataMember(Order = 4, Name = "Render Settings")]
     public RenderSettings RenderSettings { get; private set; } = new();
-
-    /// <inheritdoc />
-    [DataMember(Order = 5)]
-    [Category(CommonCategories.Transform)]
-    public Rotation Rotation {
-        get => this.ShouldSnapToPixels(this.Settings) ? Rotation.Zero : this._rotation;
-        set {
-            if (this.Set(ref this._rotation, value) && !this.ShouldSnapToPixels(this.Settings)) {
-                this._boundingArea.Reset();
-                this._rotatableTransform.Reset();
-            }
-        }
-    }
 
     /// <summary>
     /// Gets or sets a value indicating whether this text renderer should snap to the pixel
@@ -82,11 +66,8 @@ public class TextRenderer : RenderableEntity, IRotatable {
 
         set {
             if (this.Set(ref this._snapToPixels, value)) {
-                if (!this._snapToPixels) {
-                    this._rotatableTransform.Reset();
-                }
-                else {
-                    this._pixelTransform.Reset();
+                if (this._snapToPixels) {
+                    this._pixelPosition.Reset();
                 }
 
                 this._boundingArea.Reset();
@@ -126,7 +107,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
                 this.Settings.PixelsPerUnit,
                 font,
                 this.Text,
-                this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value,
+                this.SnapToPixels ? this._pixelPosition.Value : this.WorldPosition,
                 this.Color,
                 this.RenderSettings.Orientation);
         }
@@ -136,54 +117,41 @@ public class TextRenderer : RenderableEntity, IRotatable {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.Transform)) {
+        if (e.PropertyName == nameof(this.WorldPosition)) {
             this.Reset();
         }
     }
 
     private BoundingArea CreateBoundingArea() {
-        BoundingArea result;
-        if (this.LocalScale.X != 0f && this.LocalScale.Y != 0f) {
-            var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
-            var (x, y) = this.RenderSettings.Size;
-            var width = x * inversePixelsPerUnit;
-            var height = y * inversePixelsPerUnit;
-            var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
-            var points = new List<Vector2> {
-                this.GetWorldTransform(offset, this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(width, height), this.Rotation).Position,
-                this.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
-            };
+        var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
+        var (x, y) = this.RenderSettings.Size;
+        var width = x * inversePixelsPerUnit;
+        var height = y * inversePixelsPerUnit;
+        var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
+        var points = new List<Vector2> {
+            this.GetWorldPosition(offset),
+            this.GetWorldPosition(offset + new Vector2(width, 0f)),
+            this.GetWorldPosition(offset + new Vector2(width, height)),
+            this.GetWorldPosition(offset + new Vector2(0f, height))
+        };
 
-            var minimumX = points.Min(point => point.X);
-            var minimumY = points.Min(point => point.Y);
-            var maximumX = points.Max(point => point.X);
-            var maximumY = points.Max(point => point.Y);
+        var minimumX = points.Min(point => point.X);
+        var minimumY = points.Min(point => point.Y);
+        var maximumX = points.Max(point => point.X);
+        var maximumY = points.Max(point => point.Y);
 
-            if (this.SnapToPixels) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Settings);
-                minimumY = minimumY.ToPixelSnappedValue(this.Settings);
-                maximumX = maximumX.ToPixelSnappedValue(this.Settings);
-                maximumY = maximumY.ToPixelSnappedValue(this.Settings);
-            }
-
-            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-        }
-        else {
-            result = new BoundingArea();
+        if (this.SnapToPixels) {
+            minimumX = minimumX.ToPixelSnappedValue(this.Settings);
+            minimumY = minimumY.ToPixelSnappedValue(this.Settings);
+            maximumX = maximumX.ToPixelSnappedValue(this.Settings);
+            maximumY = maximumY.ToPixelSnappedValue(this.Settings);
         }
 
-        return result;
+        return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
-    private Transform CreatePixelTransform() {
-        var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel);
-        return worldTransform.ToPixelSnappedValue(this.Settings);
-    }
-
-    private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel, this.Rotation);
+    private Vector2 CreatePixelPosition() {
+        return this.WorldPosition.ToPixelSnappedValue(this.Settings);
     }
 
     private Vector2 CreateSize() {
@@ -197,8 +165,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     }
 
     private void Reset() {
-        this._pixelTransform.Reset();
-        this._rotatableTransform.Reset();
+        this._pixelPosition.Reset();
         this._boundingArea.Reset();
     }
 }

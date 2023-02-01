@@ -40,11 +40,6 @@ public class GizmoSelectionViewModel : BaseViewModel {
     public IEditorService EditorService { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not the selected entity is rotatable.
-    /// </summary>
-    public bool IsRotatable => this._entityService.Selected is IRotatable;
-
-    /// <summary>
     /// Gets a value indicating whether or not the selected entity is tileable.
     /// </summary>
     public bool IsTileable => this._entityService.Selected is ITileableEntity;
@@ -56,15 +51,13 @@ public class GizmoSelectionViewModel : BaseViewModel {
 
     private void EntityService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(IEntityService.Selected)) {
-            this.RaisePropertyChanged(nameof(this.IsRotatable));
             this.RaisePropertyChanged(nameof(this.IsTileable));
 
             if (this._entityService.Selected != null) {
                 if (this.IsTileable) {
                     this.EditorService.SelectedGizmo = GizmoKind.Tile;
                 }
-                else if ((this.EditorService.SelectedGizmo == GizmoKind.Rotation && !this.IsRotatable) ||
-                         (this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable)) {
+                else if (this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable) {
                     this.EditorService.SelectedGizmo = GizmoKind.Translation;
                 }
             }

@@ -20,13 +20,16 @@ public class EmptyObject : IScene {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc />
+    public BoundingArea BoundingArea => BoundingArea.Empty;
+
+    /// <inheritdoc />
+    public Vector2 WorldPosition => Vector2.Zero;
+
+    /// <inheritdoc />
     public Color BackgroundColor {
         get => Color.HotPink;
         set { }
     }
-
-    /// <inheritdoc />
-    public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
     public Guid Id {
@@ -53,34 +56,19 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public Vector2 LocalScale {
-        get => Vector2.One;
-        set { }
-    }
-
-    /// <inheritdoc />
-    public Vector2 LocalTileSize {
-        get => Vector2.One;
-        set { }
-    }
-
-    /// <inheritdoc />
     public string Name {
         get => "Empty";
         set { }
     }
 
     /// <inheritdoc />
-    public Transform Transform => Transform.Origin;
-
-    /// <inheritdoc />
-    public Matrix TransformMatrix => Matrix.Identity;
+    public Vector2 TileSize {
+        get => Vector2.One;
+        set { }
+    }
 
     /// <inheritdoc />
     public Version Version { get; set; } = new();
-
-    /// <inheritdoc />
-    public Vector2 WorldTileSize => this.LocalTileSize;
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {
@@ -128,7 +116,7 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     /// <inheritdoc />
@@ -138,32 +126,12 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public Vector2 GetTilePosition(Point tile) {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     /// <inheritdoc />
-    public Transform GetWorldTransform(float rotationAngle) {
-        return this.Transform;
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset) {
-        return this.Transform;
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Rotation rotation) {
-        return this.Transform;
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation) {
-        return this.Transform;
-    }
-
-    /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
-        return this.Transform;
+    public Vector2 GetWorldPosition(Vector2 originOffset) {
+        return this.WorldPosition;
     }
 
     /// <inheritdoc />
@@ -239,18 +207,6 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
-    }
-
-    /// <inheritdoc />
-    public void SetWorldScale(Vector2 scale) {
-    }
-
-    /// <inheritdoc />
-    public void SetWorldTransform(Vector2 position, Vector2 scale) {
-    }
-
-    /// <inheritdoc />
-    public void SetWorldTransform(Transform transform) {
     }
 
     /// <inheritdoc />

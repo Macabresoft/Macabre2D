@@ -22,14 +22,12 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// Initializes a new instance of the <see cref="TranslationGizmo" /> class.
     /// </summary>
     /// <param name="editorService">The editor service.</param>
-    /// <param name="sceneService">The scene service.</param>
     /// <param name="entityService">The selection service.</param>
     /// <param name="undoService">The undo service.</param>
     public TranslationGizmo(
         IEditorService editorService,
-        ISceneService sceneService,
         IEntityService entityService,
-        IUndoService undoService) : base(editorService, sceneService, entityService) {
+        IUndoService undoService) : base(editorService, entityService) {
         this._undoService = undoService;
     }
 
@@ -63,7 +61,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
-                0f,
                 this.EditorService.DropShadowColor);
 
             spriteBatch.Draw(
@@ -71,7 +68,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._xAxisArrowSprite,
                 this.XAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
-                0f,
                 this.EditorService.DropShadowColor);
 
             spriteBatch.Draw(
@@ -79,7 +75,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._yAxisArrowSprite,
                 this.YAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
-                0f,
                 this.EditorService.DropShadowColor);
 
             base.Render(frameTime, viewBoundingArea);
@@ -89,7 +84,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._xAxisArrowSprite,
                 this.XAxisPosition - new Vector2(offset),
                 scale,
-                0f,
                 this.EditorService.XAxisColor);
 
             spriteBatch.Draw(
@@ -97,7 +91,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._yAxisArrowSprite,
                 this.YAxisPosition - new Vector2(offset),
                 scale,
-                0f,
                 this.EditorService.YAxisColor);
 
             spriteBatch.Draw(
@@ -105,7 +98,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition + new Vector2(offset),
                 -scale,
-                0f,
                 this.EditorService.XAxisColor);
 
             spriteBatch.Draw(
@@ -113,7 +105,6 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition - new Vector2(offset),
                 scale,
-                0f,
                 this.EditorService.YAxisColor);
         }
     }
@@ -143,7 +134,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                     this.CurrentAxis = GizmoAxis.None;
                     this.SetCursor(StandardCursorType.None);
 
-                    var position = entity.Transform.Position;
+                    var position = entity.WorldPosition;
                     var unmovedPosition = this._unmovedPosition;
                     this._undoService.Do(
                         () => { UpdatePosition(entity, position); },

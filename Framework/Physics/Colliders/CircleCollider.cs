@@ -5,37 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-
-/// <summary>
-/// Enumeration which defines how a circle's radius will scale when its body has a scale other
-/// than (1, 1). This is necessary, because circle colliders need to stay circles. They cannot
-/// become any other ellipse.
-/// </summary>
-public enum RadiusScalingType {
-    /// <summary>
-    /// No scaling will occur.
-    /// </summary>
-    None = 1,
-
-    /// <summary>
-    /// The circle's radius will scale on the body's X scale value.
-    /// </summary>
-    [Display(Name = "X Axis")]
-    X = 2,
-
-    /// <summary>
-    /// The circle's radius will scale on the body's Y scale value.
-    /// </summary>
-    [Display(Name = "Y Axis")]
-    Y = 3,
-
-    /// <summary>
-    /// The circle's radius will scale on an average of the body's X and Y scale values.
-    /// </summary>
-    Average = 4
-}
 
 /// <summary>
 /// Collider representing a circle to be used by the physics engine.
@@ -43,15 +13,12 @@ public enum RadiusScalingType {
 /// <seealso cref="Collider" />
 [Display(Name = "Circle Collider")]
 public sealed class CircleCollider : Collider {
-    private readonly ResettableLazy<float> _scaledRadius;
     private float _radius = 1f;
-    private RadiusScalingType _radiusScalingType = RadiusScalingType.None;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircleCollider" /> class.
     /// </summary>
     public CircleCollider() : base() {
-        this._scaledRadius = new ResettableLazy<float>(this.CreateScaledRadius);
     }
 
     /// <summary>
@@ -63,19 +30,10 @@ public sealed class CircleCollider : Collider {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircleCollider" /> class.
-    /// </summary>
-    /// <param name="radius">The radius.</param>
-    /// <param name="scalingType">Type of the scaling.</param>
-    public CircleCollider(float radius, RadiusScalingType scalingType) : this(radius) {
-        this._radiusScalingType = scalingType;
-    }
-
-    /// <summary>
     /// Gets the center.
     /// </summary>
     /// <value>The center.</value>
-    public Vector2 Center => this.Transform.Position;
+    public Vector2 Center => this.WorldPosition;
 
     /// <inheritdoc />
     public override ColliderType ColliderType => ColliderType.Circle;
@@ -94,39 +52,17 @@ public sealed class CircleCollider : Collider {
         }
     }
 
-    /// <summary>
-    /// Gets or sets the type of the radius scaling.
-    /// </summary>
-    /// <value>The type of the radius scaling.</value>
-    [DataMember(Name = "Radius Scaling")]
-    public RadiusScalingType RadiusScalingType {
-        get => this._radiusScalingType;
-
-        set {
-            if (this._radiusScalingType != value) {
-                this._radiusScalingType = value;
-                this.ResetLazyFields();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the radius of this circle after all scaling operations have occurred.
-    /// </summary>
-    /// <value>The scaled radius.</value>
-    public float ScaledRadius => this._scaledRadius.Value;
-
     /// <inheritdoc />
     public override bool Contains(Vector2 point) {
         // Do we want to do <= here?
-        return Vector2.Distance(point, this.Center) <= this.ScaledRadius;
+        return Vector2.Distance(point, this.Center) <= this.Radius;
     }
 
     /// <inheritdoc />
     public override bool Contains(Collider other) {
         if (other is CircleCollider circle) {
             var distance = Vector2.Distance(this.Center, circle.Center);
-            return this.ScaledRadius > distance + circle.ScaledRadius; // Should this be >= ?
+            return this.Radius > distance + circle.Radius; // Should this be >= ?
         }
 
         if (other is PolygonCollider polygon) {
@@ -150,10 +86,10 @@ public sealed class CircleCollider : Collider {
     /// <inheritdoc />
     protected override BoundingArea CreateBoundingArea() {
         return new BoundingArea(
-            this.Center.X - this.ScaledRadius,
-            this.Center.X + this.ScaledRadius,
-            this.Center.Y - this.ScaledRadius,
-            this.Center.Y + this.ScaledRadius);
+            this.Center.X - this.Radius,
+            this.Center.X + this.Radius,
+            this.Center.Y - this.Radius,
+            this.Center.Y + this.Radius);
     }
 
     /// <inheritdoc />
@@ -196,15 +132,9 @@ public sealed class CircleCollider : Collider {
     /// <inheritdoc />
     protected override Projection GetProjection(Vector2 axis) {
         var minimum = Vector2.Dot(axis, this.Center);
-        var maximum = minimum + this.ScaledRadius;
-        minimum -= this.ScaledRadius;
+        var maximum = minimum + this.Radius;
+        minimum -= this.Radius;
         return new Projection(axis, minimum, maximum);
-    }
-
-    /// <inheritdoc />
-    protected override void ResetLazyFields() {
-        base.ResetLazyFields();
-        this.ResetScaledRadius();
     }
 
     /// <inheritdoc />
@@ -220,7 +150,7 @@ public sealed class CircleCollider : Collider {
         }
 
         var valueB = 2f * (distanceX * (ray.Start.X - this.Center.X) + distanceY * (ray.Start.Y - this.Center.Y));
-        var valueC = Math.Pow(ray.Start.X - this.Center.X, 2f) + Math.Pow(ray.Start.Y - this.Center.Y, 2f) - Math.Pow(this.ScaledRadius, 2f);
+        var valueC = Math.Pow(ray.Start.X - this.Center.X, 2f) + Math.Pow(ray.Start.Y - this.Center.Y, 2f) - Math.Pow(this.Radius, 2f);
         var det = Math.Pow(valueB, 2f) - 4f * valueA * valueC;
 
         if (det < 0f) {
@@ -254,25 +184,5 @@ public sealed class CircleCollider : Collider {
         }
 
         return true;
-    }
-
-    private float CreateScaledRadius() {
-        var result = this._radius;
-
-        if (this.Body != null) {
-            var worldTransform = this.Body.Transform;
-            result = this.RadiusScalingType switch {
-                RadiusScalingType.X => this._radius * worldTransform.Scale.X,
-                RadiusScalingType.Y => this._radius * worldTransform.Scale.Y,
-                RadiusScalingType.Average => this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y),
-                _ => result
-            };
-        }
-
-        return result;
-    }
-
-    private void ResetScaledRadius() {
-        this._scaledRadius.Reset();
     }
 }
