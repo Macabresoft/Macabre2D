@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -144,7 +145,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <typeparam name="T">The type of parent entity.</typeparam>
     /// <param name="entity">The parent entity.</param>
     /// <returns>A value indicating whether or not the entity was found.</returns>
-    bool TryGetParentEntity<T>(out T? entity);
+    bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity);
 }
 
 /// <summary>
@@ -385,7 +386,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public virtual bool TryGetParentEntity<T>(out T? entity) {
+    public virtual bool TryGetParentEntity<T>([NotNullWhen(true)] out  T? entity) {
         if (this.Parent is T parent) {
             entity = parent;
         }

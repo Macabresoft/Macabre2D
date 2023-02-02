@@ -14,8 +14,6 @@ using Microsoft.Xna.Framework;
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<byte> _spriteIndexes = new();
-    private float _characterHeight;
-    private float _characterWidth;
     private Color _color = Color.White;
     private int _kerning;
     private string _text = string.Empty;
@@ -37,6 +35,16 @@ public class TextLine : RenderableEntity {
     public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <summary>
+    /// Gets the character height.
+    /// </summary>
+    public float CharacterHeight { get; private set; }
+
+    /// <summary>
+    /// Gets the character width.
+    /// </summary>
+    public float CharacterWidth { get; private set; }
+
+    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -55,7 +63,7 @@ public class TextLine : RenderableEntity {
         set {
             if (this.Set(ref this._kerning, value)) {
                 this.ResetCharacterSizes();
-                this.Refresh();
+                this.RequestRefresh();
             }
         }
     }
@@ -75,7 +83,7 @@ public class TextLine : RenderableEntity {
         get => this._text;
         set {
             if (this.Set(ref this._text, value)) {
-                this.Refresh();
+                this.RequestRefresh();
             }
         }
     }
@@ -99,7 +107,7 @@ public class TextLine : RenderableEntity {
             var verticalPosition = this.BoundingArea.Minimum.Y;
 
             foreach (var spriteIndex in this._spriteIndexes) {
-                var horizontalPosition = this.BoundingArea.Minimum.X + rowNumber * this._characterWidth;
+                var horizontalPosition = this.BoundingArea.Minimum.X + rowNumber * this.CharacterWidth;
 
                 spriteSheet.Draw(
                     spriteBatch,
@@ -119,15 +127,24 @@ public class TextLine : RenderableEntity {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(this.WorldPosition)) {
-            this.Refresh();
+            this.RequestRefresh();
         }
+    }
+
+    /// <summary>
+    /// Refreshes this instance.
+    /// </summary>
+    protected virtual void Refresh() {
+        this.ResetIndexes();
+        this.RenderSettings.InvalidateSize();
+        this._boundingArea.Reset();
     }
 
     private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheetAsset? spriteSheet) {
         spriteSheet = this.FontReference.Asset;
         return !string.IsNullOrEmpty(this.Text) &&
-               this._characterHeight > 0f &&
-               this._characterWidth > 0f &&
+               this.CharacterHeight > 0f &&
+               this.CharacterWidth > 0f &&
                spriteSheet != null;
     }
 
@@ -179,22 +196,22 @@ public class TextLine : RenderableEntity {
         this.ResetCharacterSizes();
     }
 
-    private void Refresh() {
-        this.ResetIndexes();
-        this.RenderSettings.InvalidateSize();
-        this._boundingArea.Reset();
-    }
-
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
             this._boundingArea.Reset();
         }
     }
 
+    private void RequestRefresh() {
+        if (this.IsInitialized) {
+            this.Refresh();
+        }
+    }
+
     private void ResetCharacterSizes() {
         if (this.FontReference.Asset is { } spriteSheet) {
-            this._characterWidth = (spriteSheet.SpriteSize.X + this.Kerning) * this.Settings.UnitsPerPixel;
-            this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
+            this.CharacterWidth = (spriteSheet.SpriteSize.X + this.Kerning) * this.Settings.UnitsPerPixel;
+            this.CharacterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
         }
     }
 

@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -16,11 +17,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the asset manager.
     /// </summary>
     IAssetManager Assets => AssetManager.Empty;
-
-    /// <summary>
-    /// Gets or sets the color of the background.
-    /// </summary>
-    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Gets the cameras in the scene.
@@ -61,6 +57,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
+
+    /// <summary>
+    /// Gets or sets the color of the background.
+    /// </summary>
+    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Gets or sets the version of this scene.
@@ -221,23 +222,6 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
-
-    /// <inheritdoc />
-    [DataMember]
-    public Color BackgroundColor {
-        get => this._backgroundColor;
-        set => this.Set(ref this._backgroundColor, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public BoundingArea BoundingArea {
-        get => this._boundingArea;
-        set => this.Set(ref this._boundingArea, value);
-    }
-
-    /// <inheritdoc />
     public IEnumerable<ICamera> Cameras => this._cameras;
 
     /// <summary>
@@ -265,6 +249,23 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
+
+    /// <inheritdoc />
+    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
+    public Color BackgroundColor {
+        get => this._backgroundColor;
+        set => this.Set(ref this._backgroundColor, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public BoundingArea BoundingArea {
+        get => this._boundingArea;
+        set => this.Set(ref this._boundingArea, value);
+    }
 
     /// <inheritdoc />
     [DataMember]
@@ -410,7 +411,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public override bool TryGetParentEntity<T>(out T? entity) where T : default {
+    public override bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity) where T : default {
         entity = default;
         return false;
     }
@@ -429,7 +430,7 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
             this.InvokePendingActions();
-            
+
             foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PreUpdate })) {
                 loop.Update(frameTime, inputState);
             }
@@ -437,7 +438,7 @@ public sealed class Scene : GridContainer, IScene {
             foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.Update })) {
                 loop.Update(frameTime, inputState);
             }
-            
+
             foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PostUpdate })) {
                 loop.Update(frameTime, inputState);
             }
