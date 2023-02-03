@@ -103,23 +103,25 @@ public class TextLine : RenderableEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.CouldBeVisible(out var spriteSheet) && this.SpriteBatch is { } spriteBatch) {
-            var rowNumber = 0;
-            var verticalPosition = this.BoundingArea.Minimum.Y;
-
-            foreach (var spriteIndex in this._spriteIndexes) {
-                var horizontalPosition = this.BoundingArea.Minimum.X + rowNumber * this.CharacterWidth;
-
+            for (var i = 0; i < this._spriteIndexes.Count; i++) {
                 spriteSheet.Draw(
                     spriteBatch,
                     this.Settings.PixelsPerUnit,
-                    spriteIndex,
-                    new Vector2(horizontalPosition, verticalPosition),
+                    this._spriteIndexes[i],
+                    this.GetCharacterPosition(i),
                     this.Color,
                     this.RenderSettings.Orientation);
-
-                rowNumber++;
             }
         }
+    }
+
+    /// <summary>
+    /// Gets the character position for the character that is <see cref="characterIndex" /> characters into <see cref="Text" />.
+    /// </summary>
+    /// <param name="characterIndex">The character index.</param>
+    /// <returns>The position of the character for rendering purposes.</returns>
+    protected virtual Vector2 GetCharacterPosition(int characterIndex) {
+        return new Vector2(this.BoundingArea.Minimum.X + characterIndex * this.CharacterWidth, this.BoundingArea.Minimum.Y);
     }
 
     /// <inheritdoc />
