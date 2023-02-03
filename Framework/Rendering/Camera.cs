@@ -214,7 +214,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix());
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
     /// <summary>
@@ -312,11 +312,13 @@ public class Camera : Entity, ICamera {
     /// <param name="renderTree">The render tree.</param>
     /// <param name="viewBoundingArea">The view's bounding area.</param>
     /// <param name="viewMatrix">The view matrix.</param>
-    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix) {
+    /// <param name="layersToRender">The layers to render.</param>
+    /// <param name="layersToExclude">The layers to exclude from render.</param>
+    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix, Layers layersToRender, Layers layersToExclude) {
         var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+            .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender & enabledLayers) != Layers.None)
             .ToList();
 
         if (entities.Any()) {

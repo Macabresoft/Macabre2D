@@ -41,7 +41,7 @@ public class RenderLoop : Loop {
         this._renderTree.Clear();
 
         if (!this.Scene.BoundingArea.IsEmpty) {
-            foreach (var entity in this.Scene.RenderableEntities.Where(x => x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
+            foreach (var entity in this.Scene.RenderableEntities.Where(x => x.RenderOutOfBounds || x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
                 this._renderTree.Insert(entity);
             }
         }

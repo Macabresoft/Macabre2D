@@ -119,14 +119,14 @@ public class RenderLoopTests {
     }
 
     private class TestCamera : Entity, ICamera {
+        public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => Layers.Layer06;
         public Layers LayersToRender => Layers.Layer01;
         public OffsetSettings OffsetSettings { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
-        public float ViewHeight { get; set; } = 4f;
-        public float ActualViewHeight => this.ViewHeight;
         public float ViewWidth => 4f;
+        public float ViewHeight { get; set; } = 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
             return Vector2.Zero;
@@ -149,6 +149,7 @@ public class RenderLoopTests {
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
         public bool IsVisible => true;
         public PixelSnap PixelSnap => PixelSnap.Inherit;
+        public bool RenderOutOfBounds => true;
         public int RenderCount { get; private set; }
 
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

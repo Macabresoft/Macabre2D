@@ -204,6 +204,7 @@ public class TextLine : RenderableEntity {
         }
     }
 
+
     private void RequestRefresh() {
         if (this.IsInitialized) {
             this.Refresh();

@@ -20,6 +20,11 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
+    /// Gets a value indicating whether or not this should be rendered when out of bounds.
+    /// </summary>
+    bool RenderOutOfBounds { get; }
+
+    /// <summary>
     /// Renders this instance.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
@@ -63,6 +68,11 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
         get => this._renderOrder;
         set => this.Set(ref this._renderOrder, value);
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);

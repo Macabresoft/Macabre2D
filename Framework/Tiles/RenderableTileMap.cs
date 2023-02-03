@@ -35,6 +35,11 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     }
 
     /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool RenderOutOfBounds { get; set; }
+
+    /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
 
     /// <inheritdoc />
