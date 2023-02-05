@@ -145,7 +145,11 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         return result;
     }
 
-    private Vector2 GetRenderTransform() {
+    /// <summary>
+    /// Gets the appropriate transform for rendering.
+    /// </summary>
+    /// <returns></returns>
+    protected Vector2 GetRenderTransform() {
         return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this.WorldPosition;
     }
 
