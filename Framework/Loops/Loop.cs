@@ -26,7 +26,7 @@ public interface ILoop : IUpdateableGameObject, INameable {
 /// </summary>
 [DataContract]
 [Category("System")]
-public abstract class Loop : PropertyChangedNotifier, ILoop {
+public abstract class Loop : NotifyPropertyChanged, ILoop {
     private bool _isEnabled = true;
     private string _name;
 
