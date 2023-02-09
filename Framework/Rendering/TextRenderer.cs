@@ -48,11 +48,11 @@ public class TextRenderer : RenderableEntity {
     }
 
     /// <summary>
-    /// Gets the render settings.
+    /// Gets the render options.
     /// </summary>
-    /// <value>The render settings.</value>
-    [DataMember(Order = 4, Name = "Render Settings")]
-    public RenderSettings RenderSettings { get; private set; } = new();
+    /// <value>The render options.</value>
+    [DataMember(Order = 4, Name = "Render Options")]
+    public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
     /// Gets or sets a value indicating whether this text renderer should snap to the pixel
@@ -86,7 +86,7 @@ public class TextRenderer : RenderableEntity {
         set {
             if (this.Set(ref this._text, value)) {
                 this._boundingArea.Reset();
-                this.RenderSettings.InvalidateSize();
+                this.RenderOptions.InvalidateSize();
             }
         }
     }
@@ -96,8 +96,8 @@ public class TextRenderer : RenderableEntity {
         base.Initialize(scene, entity);
 
         this.FontReference.Initialize(this.Scene.Assets);
-        this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
-        this.RenderSettings.Initialize(this.CreateSize);
+        this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
+        this.RenderOptions.Initialize(this.CreateSize);
     }
 
     /// <inheritdoc />
@@ -109,7 +109,7 @@ public class TextRenderer : RenderableEntity {
                 this.Text,
                 this.SnapToPixels ? this._pixelPosition.Value : this.WorldPosition,
                 this.Color,
-                this.RenderSettings.Orientation);
+                this.RenderOptions.Orientation);
         }
     }
 
@@ -124,10 +124,10 @@ public class TextRenderer : RenderableEntity {
 
     private BoundingArea CreateBoundingArea() {
         var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
-        var (x, y) = this.RenderSettings.Size;
+        var (x, y) = this.RenderOptions.Size;
         var width = x * inversePixelsPerUnit;
         var height = y * inversePixelsPerUnit;
-        var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
+        var offset = this.RenderOptions.Offset * inversePixelsPerUnit;
         var points = new List<Vector2> {
             this.GetWorldPosition(offset),
             this.GetWorldPosition(offset + new Vector2(width, 0f)),
@@ -159,7 +159,7 @@ public class TextRenderer : RenderableEntity {
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
+        if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this.Reset();
         }
     }

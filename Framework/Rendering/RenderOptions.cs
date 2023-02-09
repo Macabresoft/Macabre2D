@@ -22,26 +22,26 @@ public enum PixelOffsetType {
 }
 
 /// <summary>
-/// Render settings for rendering a sprite or text. Handles offset and flipping of the sprite.
+/// Render options for rendering a sprite or text. Handles offset and flipping of the sprite.
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Rendering)]
-public sealed class RenderSettings : OffsetSettings {
+public sealed class RenderOptions : OffsetOptions {
     private bool _flipHorizontal;
     private bool _flipVertical;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RenderSettings" /> class.
+    /// Initializes a new instance of the <see cref="RenderOptions" /> class.
     /// </summary>
-    public RenderSettings() : base() {
+    public RenderOptions() : base() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RenderSettings" /> class.
+    /// Initializes a new instance of the <see cref="RenderOptions" /> class.
     /// </summary>
     /// <param name="offset">The offset.</param>
     /// <param name="type">The type.</param>
-    public RenderSettings(Vector2 offset, PixelOffsetType type) : base(offset, type) {
+    public RenderOptions(Vector2 offset, PixelOffsetType type) : base(offset, type) {
     }
 
     /// <summary>

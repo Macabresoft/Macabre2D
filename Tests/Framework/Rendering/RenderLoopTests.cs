@@ -123,7 +123,7 @@ public class RenderLoopTests {
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => Layers.Layer06;
         public Layers LayersToRender => Layers.Layer01;
-        public OffsetSettings OffsetSettings { get; } = new();
+        public OffsetOptions OffsetOptions { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public float ViewWidth => 4f;
         public float ViewHeight { get; set; } = 4f;

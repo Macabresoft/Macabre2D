@@ -35,10 +35,10 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     Layers LayersToRender { get; }
 
     /// <summary>
-    /// Gets the offset settings.
+    /// Gets the offset options.
     /// </summary>
-    /// <value>The offset settings.</value>
-    OffsetSettings OffsetSettings { get; }
+    /// <value>The offset options.</value>
+    OffsetOptions OffsetOptions { get; }
 
     /// <summary>
     /// Gets the render order.
@@ -99,8 +99,8 @@ public class Camera : Entity, ICamera {
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
-    [DataMember(Name = "Offset Settings")]
-    public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
+    [DataMember(Name = "Offset Options")]
+    public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
     /// <summary>
     /// Gets the shader reference.
@@ -189,10 +189,10 @@ public class Camera : Entity, ICamera {
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
         var result = Vector2.Zero;
 
-        if (this.OffsetSettings.Size.Y != 0f) {
-            var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
+        if (this.OffsetOptions.Size.Y != 0f) {
+            var ratio = this.ActualViewHeight / this.OffsetOptions.Size.Y;
             var pointVector = point.ToVector2();
-            var vectorPosition = new Vector2(pointVector.X + this.OffsetSettings.Offset.X, -pointVector.Y + this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y) * ratio;
+            var vectorPosition = new Vector2(pointVector.X + this.OffsetOptions.Offset.X, -pointVector.Y + this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y) * ratio;
             result = this.GetWorldPosition(vectorPosition);
         }
 
@@ -203,12 +203,12 @@ public class Camera : Entity, ICamera {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.OffsetSettings.Initialize(this.CreateSize);
+        this.OffsetOptions.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
         this._samplerState = this._samplerStateType.ToSamplerState();
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
-        this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
+        this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
         this.ShaderReference.Initialize(this.Scene.Assets);
     }
 
@@ -274,12 +274,12 @@ public class Camera : Entity, ICamera {
     protected Matrix GetViewMatrix(Vector2 position) {
         var settings = this.Settings;
         var pixelsPerUnit = settings.PixelsPerUnit;
-        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetSettings.Size.Y);
+        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
 
         var matrix =
             Matrix.CreateTranslation(new Vector3(-position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
-            Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
+            Matrix.CreateTranslation(new Vector3(-this.OffsetOptions.Offset.X, this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y, 0f));
 
         return matrix;
     }
@@ -295,7 +295,7 @@ public class Camera : Entity, ICamera {
 
     /// <summary>
     /// Called when the screen area changes.
-    /// This could be the resolution changing, the transform of this entity changing, the offset settings changing, or snap to pixels changing.
+    /// This could be the resolution changing, the transform of this entity changing, the offset options changing, or snap to pixels changing.
     /// This will also be called during initialization.
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
@@ -366,10 +366,10 @@ public class Camera : Entity, ICamera {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var ratio = this.ActualViewHeight / this.OffsetSettings.Size.Y;
-        var width = this.OffsetSettings.Size.X * ratio;
-        var height = this.OffsetSettings.Size.Y * ratio;
-        var offset = this.OffsetSettings.Offset * ratio;
+        var ratio = this.ActualViewHeight / this.OffsetOptions.Size.Y;
+        var width = this.OffsetOptions.Size.X * ratio;
+        var height = this.OffsetOptions.Size.Y * ratio;
+        var offset = this.OffsetOptions.Offset * ratio;
 
         var points = new List<Vector2> {
             this.GetWorldPosition(offset),
@@ -398,20 +398,20 @@ public class Camera : Entity, ICamera {
     }
 
     private float CreateViewWidth() {
-        var (x, y) = this.OffsetSettings.Size;
+        var (x, y) = this.OffsetOptions.Size;
         var ratio = y != 0 ? this.ActualViewHeight / y : 0f;
         return x * ratio;
     }
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
-        this.OffsetSettings.InvalidateSize();
+        this.OffsetOptions.InvalidateSize();
         this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
         this._viewWidth.Reset();
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.OffsetSettings.Offset)) {
+        if (e.PropertyName == nameof(this.OffsetOptions.Offset)) {
             this.OnScreenAreaChanged();
         }
     }

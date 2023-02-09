@@ -43,11 +43,11 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     /// <summary>
-    /// Gets or sets the render settings.
+    /// Gets or sets the render options.
     /// </summary>
-    /// <value>The render settings.</value>
-    [DataMember(Order = 4, Name = "Render Settings")]
-    public RenderSettings RenderSettings { get; private set; } = new();
+    /// <value>The render options.</value>
+    [DataMember(Order = 4, Name = "Render Options")]
+    public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
     /// Gets the sprite sheet.
@@ -58,8 +58,8 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
-        this.RenderSettings.Initialize(this.CreateSize);
+        this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
+        this.RenderOptions.Initialize(this.CreateSize);
     }
 
     /// <inheritdoc />
@@ -71,7 +71,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
                 this.SpriteIndex.Value,
                 this.GetRenderTransform(),
                 this.Color,
-                this.RenderSettings.Orientation);
+                this.RenderOptions.Orientation);
         }
     }
 
@@ -88,10 +88,10 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     /// <summary>
-    /// Resets the render settings, bounding area, and render transform.
+    /// Resets the render options, bounding area, and render transform.
     /// </summary>
     protected void Reset() {
-        this.RenderSettings.InvalidateSize();
+        this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
         this._pixelTransform.Reset();
     }
@@ -102,7 +102,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
             var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
             var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
             var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
-            var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
+            var offset = this.RenderOptions.Offset * inversePixelsPerUnit;
 
             var points = new List<Vector2> {
                 this.GetWorldPosition(offset),
@@ -133,7 +133,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     private Vector2 CreatePixelPosition() {
-        return this.GetWorldPosition(this.RenderSettings.Offset * this.Settings.UnitsPerPixel).ToPixelSnappedValue(this.Settings);
+        return this.GetWorldPosition(this.RenderOptions.Offset * this.Settings.UnitsPerPixel).ToPixelSnappedValue(this.Settings);
     }
 
     private Vector2 CreateSize() {
@@ -154,7 +154,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
+        if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this._pixelTransform.Reset();
             this._boundingArea.Reset();
         }

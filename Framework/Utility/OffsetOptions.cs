@@ -7,11 +7,11 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Settings that define offset.
+/// Options that define offset.
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Offset)]
-public class OffsetSettings : NotifyPropertyChanged {
+public class OffsetOptions : NotifyPropertyChanged {
     private static readonly ResettableLazy<Vector2> EmptySizeFactory = new(() => Vector2.Zero);
     private bool _isInitialized;
     private Vector2 _offset;
@@ -19,17 +19,17 @@ public class OffsetSettings : NotifyPropertyChanged {
     private PixelOffsetType _type;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
+    /// Initializes a new instance of the <see cref="OffsetOptions" /> class.
     /// </summary>
-    public OffsetSettings() : this(Vector2.Zero, PixelOffsetType.Custom) {
+    public OffsetOptions() : this(Vector2.Zero, PixelOffsetType.Custom) {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
+    /// Initializes a new instance of the <see cref="OffsetOptions" /> class.
     /// </summary>
     /// <param name="offset">The offset.</param>
     /// <param name="type">The type.</param>
-    public OffsetSettings(Vector2 offset, PixelOffsetType type) {
+    public OffsetOptions(Vector2 offset, PixelOffsetType type) {
         this._offset = offset;
         this._type = type;
     }

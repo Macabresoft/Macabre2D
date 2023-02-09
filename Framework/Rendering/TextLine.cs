@@ -69,11 +69,11 @@ public class TextLine : RenderableEntity {
     }
 
     /// <summary>
-    /// Gets or sets the render settings.
+    /// Gets or sets the render options.
     /// </summary>
-    /// <value>The render settings.</value>
-    [DataMember(Order = 4, Name = "Render Settings")]
-    public RenderSettings RenderSettings { get; private set; } = new();
+    /// <value>The render options.</value>
+    [DataMember(Order = 4, Name = "Render Options")]
+    public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
     /// Gets or sets the text.
@@ -94,9 +94,9 @@ public class TextLine : RenderableEntity {
 
         this.FontReference.Initialize(this.Scene.Assets);
         this.ResetCharacterSizes();
-        this.RenderSettings.Initialize(this.CreateSize);
+        this.RenderOptions.Initialize(this.CreateSize);
         this.Refresh();
-        this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
+        this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
 
@@ -110,7 +110,7 @@ public class TextLine : RenderableEntity {
                     this._spriteIndexes[i],
                     this.GetCharacterPosition(i),
                     this.Color,
-                    this.RenderSettings.Orientation);
+                    this.RenderOptions.Orientation);
             }
         }
     }
@@ -138,7 +138,7 @@ public class TextLine : RenderableEntity {
     /// </summary>
     protected virtual void Refresh() {
         this.ResetIndexes();
-        this.RenderSettings.InvalidateSize();
+        this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
     }
 
@@ -152,12 +152,12 @@ public class TextLine : RenderableEntity {
 
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
-        if (this.CouldBeVisible(out _) && this.RenderSettings.Size.X != 0f && this.RenderSettings.Size.Y != 0f) {
+        if (this.CouldBeVisible(out _) && this.RenderOptions.Size.X != 0f && this.RenderOptions.Size.Y != 0f) {
             var unitsPerPixel = this.Settings.UnitsPerPixel;
-            var (x, y) = this.RenderSettings.Size;
+            var (x, y) = this.RenderOptions.Size;
             var width = x * unitsPerPixel;
             var height = y * unitsPerPixel;
-            var offset = this.RenderSettings.Offset * unitsPerPixel;
+            var offset = this.RenderOptions.Offset * unitsPerPixel;
             var points = new List<Vector2> {
                 this.GetWorldPosition(offset),
                 this.GetWorldPosition(offset + new Vector2(width, 0f)),
@@ -199,7 +199,7 @@ public class TextLine : RenderableEntity {
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
+        if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this._boundingArea.Reset();
         }
     }
