@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel.DataAnnotations;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,6 +12,9 @@ using Microsoft.Xna.Framework.Graphics;
 [Display(Name = "Collider Drawer (Diagnostics)")]
 public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
     private IPhysicsBody? _body;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._body?.BoundingArea ?? BoundingArea.Empty;
@@ -24,7 +29,7 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer != null && this._body != null && this.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.PrimitiveDrawer != null && this._body != null && this.SpriteBatch is { } spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var colliders = this._body.GetColliders();
 
@@ -45,7 +50,21 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
         this.Reset();
     }
 
+    private void Body_BoundingAreaChanged(object? sender, EventArgs e) {
+        this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
     private void Reset() {
+        if (this._body != null) {
+            this._body.BoundingAreaChanged -= this.Body_BoundingAreaChanged;
+        }
+
         this._body = this.Parent as IPhysicsBody;
+
+        if (this._body != null) {
+            this._body.BoundingAreaChanged += this.Body_BoundingAreaChanged;
+        }
+
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }

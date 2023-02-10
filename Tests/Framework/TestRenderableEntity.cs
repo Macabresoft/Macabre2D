@@ -1,10 +1,12 @@
 namespace Macabresoft.Macabre2D.Tests.Framework;
 
+using System;
 using System.Threading;
 using Macabresoft.Macabre2D.Framework;
 
 internal class TestRenderableEntity : RenderableEntity {
     private BoundingArea _boundingArea = BoundingArea.MaximumSize;
+    public override event EventHandler BoundingAreaChanged;
 
     public override BoundingArea BoundingArea => this._boundingArea;
     public int RenderCount { get; private set; }

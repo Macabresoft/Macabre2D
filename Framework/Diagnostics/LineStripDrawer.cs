@@ -1,10 +1,11 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Draws a line strip.
@@ -13,6 +14,9 @@ using Microsoft.Xna.Framework.Graphics;
 public sealed class LineStripDrawer : BaseDrawer {
     private readonly List<Vector2> _vertices = new();
     private BoundingArea _boundingArea;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LineStripDrawer" /> class.
@@ -39,7 +43,7 @@ public sealed class LineStripDrawer : BaseDrawer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer != null && this.SpriteBatch is SpriteBatch spriteBatch && this._vertices.Any()) {
+        if (this.PrimitiveDrawer != null && this.SpriteBatch is { } spriteBatch && this._vertices.Any()) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Settings.PixelsPerUnit, this.Color, lineThickness, this.Vertices.ToArray());
         }
@@ -53,6 +57,7 @@ public sealed class LineStripDrawer : BaseDrawer {
         this._vertices.Clear();
         this._vertices.AddRange(points);
         this._boundingArea = this.CreateBoundingArea();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private BoundingArea CreateBoundingArea() {

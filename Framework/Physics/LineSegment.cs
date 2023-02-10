@@ -65,6 +65,9 @@ public sealed class LineSegment : IBoundable {
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
+    /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
     internal float ValueA => this._valueA.Value;
 
     internal float ValueB => this._valueB.Value;

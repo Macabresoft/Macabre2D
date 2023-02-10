@@ -23,6 +23,9 @@ public class EmptyObject : IScene {
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public Vector2 WorldPosition => Vector2.Zero;
 
     /// <inheritdoc />

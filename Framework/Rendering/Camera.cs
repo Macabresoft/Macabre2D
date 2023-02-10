@@ -87,6 +87,9 @@ public class Camera : Entity, ICamera {
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
     private float _viewHeight = 10f;
 
+    /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Camera" /> class.
     /// </summary>
@@ -302,6 +305,7 @@ public class Camera : Entity, ICamera {
         this._boundingArea.Reset();
         this._viewWidth.Reset();
         this.CalculateActualViewHeight();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     /// <summary>
@@ -314,7 +318,14 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
-    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix, Layers layersToRender, Layers layersToExclude) {
+    protected virtual void Render(
+        FrameTime frameTime,
+        SpriteBatch? spriteBatch,
+        IReadonlyQuadTree<IRenderableEntity> renderTree,
+        BoundingArea viewBoundingArea,
+        Matrix viewMatrix,
+        Layers layersToRender,
+        Layers layersToExclude) {
         var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)

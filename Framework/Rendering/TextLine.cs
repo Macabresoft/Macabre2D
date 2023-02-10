@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -27,6 +28,9 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Gets the font asset reference.
@@ -140,6 +144,7 @@ public class TextLine : RenderableEntity {
         this.ResetIndexes();
         this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheetAsset? spriteSheet) {

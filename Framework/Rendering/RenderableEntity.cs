@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -44,6 +45,9 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public abstract BoundingArea BoundingArea { get; }
+
+    /// <inheritdoc />
+    public abstract event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     [DataMember]

@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel.DataAnnotations;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -9,6 +11,9 @@ using Microsoft.Xna.Framework;
 [Display(Name = "Bounding Area Drawer (Diagnostics)")]
 public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
     private BoundingArea _boundingArea;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea;
@@ -40,7 +45,10 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
 
     public void Update(FrameTime frameTime, InputState inputState) {
         if (this.Parent is IBoundable boundable) {
-            this._boundingArea = boundable.BoundingArea;
+            if (boundable.BoundingArea != this._boundingArea) {
+                this._boundingArea = boundable.BoundingArea;
+                this.BoundingAreaChanged.SafeInvoke(this);
+            }
         }
         else {
             this._boundingArea = BoundingArea.Empty;

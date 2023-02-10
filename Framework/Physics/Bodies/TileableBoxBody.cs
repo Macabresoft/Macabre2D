@@ -20,6 +20,9 @@ public class TileableBoxBody : PhysicsBody {
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
 
     /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public override bool HasCollider => this._colliders.Any();
 
     [DataMember]

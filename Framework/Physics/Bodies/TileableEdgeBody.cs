@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -16,6 +16,9 @@ using Microsoft.Xna.Framework;
 public sealed class TileableEdgeBody : QuadBody {
     private readonly List<Collider> _colliders = new();
     private ITileableEntity? _tileable;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
@@ -30,10 +33,12 @@ public sealed class TileableEdgeBody : QuadBody {
         base.Initialize(scene, parent);
 
         if (this._tileable != null) {
+            this._tileable.BoundingAreaChanged -= this.Tileable_BoundingAreaChanged;
             this._tileable.TilesChanged -= this.OnRequestReset;
         }
 
         if (this.TryGetParentEntity(out this._tileable) && this._tileable != null) {
+            this._tileable.BoundingAreaChanged += this.Tileable_BoundingAreaChanged;
             this._tileable.TilesChanged += this.OnRequestReset;
         }
         else {
@@ -155,6 +160,10 @@ public sealed class TileableEdgeBody : QuadBody {
 
     private void OnRequestReset(object? sender, EventArgs e) {
         this.ResetColliders();
+    }
+
+    private void Tileable_BoundingAreaChanged(object? sender, EventArgs e) {
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private class TileLineSegment {

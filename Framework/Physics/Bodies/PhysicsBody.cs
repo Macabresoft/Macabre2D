@@ -66,6 +66,9 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     private int _updateOrder;
 
     /// <inheritdoc />
+    public abstract event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public event EventHandler<CollisionEventArgs>? CollisionOccured;
 
     /// <inheritdoc />

@@ -48,6 +48,9 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
 
     private Layers _overrideLayers = Layers.None;
 
+    /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Collider" /> class.
     /// </summary>
@@ -317,6 +320,7 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     protected virtual void ResetLazyFields() {
         this._worldPosition.Reset();
         this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     /// <summary>

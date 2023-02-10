@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -19,6 +20,9 @@ public class TextRenderer : RenderableEntity {
     private Color _color = Color.Black;
     private bool _snapToPixels;
     private string _text = string.Empty;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextRenderer" /> class.
@@ -70,7 +74,7 @@ public class TextRenderer : RenderableEntity {
                     this._pixelPosition.Reset();
                 }
 
-                this._boundingArea.Reset();
+                this.ResetBoundingArea();
             }
         }
     }
@@ -85,7 +89,7 @@ public class TextRenderer : RenderableEntity {
 
         set {
             if (this.Set(ref this._text, value)) {
-                this._boundingArea.Reset();
+                this.ResetBoundingArea();
                 this.RenderOptions.InvalidateSize();
             }
         }
@@ -166,6 +170,11 @@ public class TextRenderer : RenderableEntity {
 
     private void Reset() {
         this._pixelPosition.Reset();
+        this.ResetBoundingArea();
+    }
+
+    private void ResetBoundingArea() {
         this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }

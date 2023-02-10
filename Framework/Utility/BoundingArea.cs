@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -193,5 +194,48 @@ public readonly struct BoundingArea {
         }
 
         return true;
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) {
+        if (obj is BoundingArea boundingArea) {
+            return this.Equals(boundingArea);
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks equality.
+    /// </summary>
+    /// <param name="first">The first.</param>
+    /// <param name="second">The second.</param>
+    /// <returns>A value indicating equality.</returns>
+    public static bool operator ==(BoundingArea first, BoundingArea second) {
+        return first.Equals(second);
+    }
+
+    /// <summary>
+    /// Checks non-equality.
+    /// </summary>
+    /// <param name="first">The first.</param>
+    /// <param name="second">The second.</param>
+    /// <returns>A value indicating non-equality.</returns>
+    public static bool operator !=(BoundingArea first, BoundingArea second) {
+        return !first.Equals(second);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode() {
+        return HashCode.Combine(this.Maximum, this.Minimum);
+    }
+
+    /// <summary>
+    /// Determines if this <see cref="BoundingArea" /> equals the other <see cref="BoundingArea" />.
+    /// </summary>
+    /// <param name="other">The other.</param>
+    /// <returns>A value indicating equality.</returns>
+    public bool Equals(BoundingArea other) {
+        return this.Minimum == other.Minimum && this.Maximum == other.Maximum;
     }
 }

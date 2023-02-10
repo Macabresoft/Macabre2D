@@ -1,9 +1,11 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// A <see cref="IPhysicsBody" /> with a <see cref="Collider" />.
@@ -23,23 +25,27 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     private Collider _collider = new CircleCollider();
 
     /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public override BoundingArea BoundingArea => this.Collider.BoundingArea;
+
+    /// <inheritdoc />
+    public override bool HasCollider => true;
 
     /// <inheritdoc />
     [DataMember(Order = 0)]
     [Category("Collider")]
     public Collider Collider {
         get => this._collider;
-
         set {
-            if (this.Set(ref this._collider, value)) {
-                this._collider.Initialize(this);
+            this._collider.BoundingAreaChanged -= this.Collider_BoundingAreaChanged;
+
+            if (this.Set(ref this._collider, value) && this.IsInitialized) {
+                this.InitializeCollider();
             }
         }
     }
-
-    /// <inheritdoc />
-    public override bool HasCollider => true;
 
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
@@ -49,7 +55,7 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._collider.Initialize(this);
+        this.InitializeCollider();
     }
 
     /// <inheritdoc />
@@ -59,5 +65,14 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
         if (e.PropertyName == nameof(this.WorldPosition)) {
             this._collider.Reset();
         }
+    }
+
+    private void Collider_BoundingAreaChanged(object? sender, EventArgs e) {
+        this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
+    private void InitializeCollider() {
+        this._collider.Initialize(this);
+        this._collider.BoundingAreaChanged += this.Collider_BoundingAreaChanged;
     }
 }

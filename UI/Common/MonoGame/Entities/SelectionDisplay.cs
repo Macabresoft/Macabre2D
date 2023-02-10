@@ -1,8 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +19,9 @@ public class SelectionDisplay : BaseDrawer {
     private readonly ILoopService _loopService;
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IBoundable _selectedBoundable;
+
+    /// <inheritdoc />
+    public override event EventHandler BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SelectionDisplay" /> class.
@@ -154,6 +159,8 @@ public class SelectionDisplay : BaseDrawer {
                 this._selectedBoundable = null;
                 this._boundingArea = BoundingArea.Empty;
             }
+
+            this.BoundingAreaChanged.SafeInvoke(this);
         }
     }
 

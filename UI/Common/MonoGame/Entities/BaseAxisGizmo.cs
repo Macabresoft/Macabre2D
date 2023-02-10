@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.ComponentModel;
 using Avalonia.Input;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
@@ -17,6 +18,9 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
     private const float FloatingPointTolerance = 0.0001f;
     private ICamera _camera;
+
+    /// <inheritdoc />
+    public override event EventHandler BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseAxisGizmo" /> class.
@@ -80,6 +84,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         this.LineThickness = 3f;
 
         if (this.TryGetParentEntity(out this._camera)) {
+            this.Camera.BoundingAreaChanged += this.Camera_BoundingAreaChanged;
             this.Camera.PropertyChanged += this.Camera_PropertyChanged;
         }
         else {
@@ -199,6 +204,10 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     /// <returns>A value indicating whether or not this should be enabled.</returns>
     protected virtual bool ShouldBeEnabled() {
         return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.EntityService.Selected is IScene);
+    }
+
+    private void Camera_BoundingAreaChanged(object sender, EventArgs e) {
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {

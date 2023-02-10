@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,9 @@ public sealed class EditorGrid : BaseDrawer {
     private readonly IEntityService _entityService;
     private Camera _camera;
     private Color _currentBackgroundColor;
+
+    /// <inheritdoc />
+    public override event EventHandler BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EditorGrid" /> class.
@@ -33,12 +37,17 @@ public sealed class EditorGrid : BaseDrawer {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
+        if (this._camera != null) {
+            this._camera.BoundingAreaChanged -= this.Camera_BoundingAreaChanged;
+        }
+
         this.UseDynamicLineThickness = true;
 
         if (!this.TryGetParentEntity(out this._camera)) {
             throw new NotSupportedException("Could not find a camera ancestor.");
         }
 
+        this._camera.BoundingAreaChanged += this.Camera_BoundingAreaChanged;
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
         this.IsVisible = this._editorService.ShowGrid;
         this.ResetColor();
@@ -66,6 +75,10 @@ public sealed class EditorGrid : BaseDrawer {
                 this.DrawGrid(spriteBatch, viewBoundingArea, majorGridSize, gridPosition, lineThickness, 0.5f);
             }
         }
+    }
+
+    private void Camera_BoundingAreaChanged(object sender, EventArgs e) {
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void DrawGrid(
@@ -193,7 +206,7 @@ public sealed class EditorGrid : BaseDrawer {
             if (this._entityService.Selected is IGridContainer container) {
                 gridContainer = container;
             }
-            else if (this._entityService.Selected.TryGetParentEntity(out container) && container != null) {
+            else if (this._entityService.Selected.TryGetParentEntity(out container)) {
                 gridContainer = container;
             }
         }

@@ -53,6 +53,9 @@ public class TriangleBody : PhysicsBody {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public override bool HasCollider => this.GetColliders().Any();
 
     /// <summary>
@@ -202,6 +205,7 @@ public class TriangleBody : PhysicsBody {
             this._rightCollider.Initialize(this);
             this._bottomCollider.Initialize(this);
             this._boundingArea.Reset();
+            this.BoundingAreaChanged.SafeInvoke(this);
         }
     }
 }

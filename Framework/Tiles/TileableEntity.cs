@@ -48,6 +48,9 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public IGridContainer CurrentGrid { get; private set; } = GridContainer.Empty;
 
     /// <inheritdoc />
@@ -235,6 +238,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     protected virtual void ResetBoundingArea() {
         this._tilePositionToBoundingArea.Clear();
         this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     /// <summary>

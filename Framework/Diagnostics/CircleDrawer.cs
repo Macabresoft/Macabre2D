@@ -1,8 +1,9 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework.Graphics;
+using Macabresoft.Core;
 
 /// <summary>
 /// Draws a circle.
@@ -10,6 +11,10 @@ using Microsoft.Xna.Framework.Graphics;
 [Display(Name = "Circle Drawer (Diagnostics)")]
 public sealed class CircleDrawer : BaseDrawer {
     private int _complexity;
+    private float _radius;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => new(-this.Radius, this.Radius);
@@ -40,11 +45,17 @@ public sealed class CircleDrawer : BaseDrawer {
     /// Gets or sets the radius.
     /// </summary>
     /// <value>The radius.</value>
-    public float Radius { get; set; }
+    public float Radius {
+        get => this._radius;
+        set {
+            this._radius = value;
+            this.BoundingAreaChanged.SafeInvoke(this);
+        }
+    }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Radius > 0f && this.PrimitiveDrawer != null && this.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.Radius > 0f && this.PrimitiveDrawer != null && this.SpriteBatch is { } spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawCircle(
                 spriteBatch,

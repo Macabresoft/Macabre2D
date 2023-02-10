@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +17,10 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     private readonly ResettableLazy<Vector2> _pixelTransform;
     private Color _color = Color.White;
 
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
+
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
     /// </summary>
@@ -94,6 +99,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
         this._pixelTransform.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private BoundingArea CreateBoundingArea() {

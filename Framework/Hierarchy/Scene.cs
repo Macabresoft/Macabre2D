@@ -211,6 +211,9 @@ public sealed class Scene : GridContainer, IScene {
     private bool _isInitialized;
     private Version _version = new(0, 0, 0, 0);
 
+    /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Scene" /> class.
     /// </summary>
@@ -264,7 +267,11 @@ public sealed class Scene : GridContainer, IScene {
     [DataMember]
     public BoundingArea BoundingArea {
         get => this._boundingArea;
-        set => this.Set(ref this._boundingArea, value);
+        set {
+            if (this.Set(ref this._boundingArea, value)) {
+                this.BoundingAreaChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />

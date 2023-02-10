@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -119,6 +120,7 @@ public class RenderLoopTests {
     }
 
     private class TestCamera : Entity, ICamera {
+        public event EventHandler BoundingAreaChanged;
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => Layers.Layer06;
@@ -146,6 +148,7 @@ public class RenderLoopTests {
     }
 
     private class TestRenderable : Entity, IRenderableEntity {
+        public event EventHandler BoundingAreaChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
         public bool IsVisible => true;
         public PixelSnap PixelSnap => PixelSnap.Inherit;
