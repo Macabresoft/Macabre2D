@@ -44,9 +44,9 @@ public sealed class Gravity : NotifyPropertyChanged {
     [DataMember(Name = "Gravity")]
     public Vector2 Value {
         get => this._value;
-
         set {
-            if (this.Set(ref this._value, value, true)) {
+            if (value != this._value) {
+                this._value = value;
                 this.SetProperties();
             }
         }

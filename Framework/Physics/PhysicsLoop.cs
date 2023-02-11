@@ -55,14 +55,6 @@ public interface IPhysicsLoop : ISimplePhysicsLoop {
 public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
     private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new();
 
-    [DataMember(Name = "Collision Resolver", Order = 0)]
-    private ICollisionResolver _collisionResolver = new DefaultCollisionResolver();
-
-    private float _groundedness = 0.35f;
-    private float _minimumPostBounceMagnitude = 1.5f;
-    private float _minimumPostFrictionMagnitude = 0.2f;
-    private float _stickiness = 0.1f;
-
     /// <summary>
     /// Gets the collision map.
     /// </summary>
@@ -70,51 +62,37 @@ public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
     [Category(CommonCategories.CollisionMap)]
     public CollisionMap CollisionMap { get; } = new();
 
-    /// <summary>
-    /// Gets the collision resolver.
-    /// </summary>
-    /// <value>The collision resolver.</value>
-    public ICollisionResolver CollisionResolver {
-        get => this._collisionResolver;
-        private set => this.Set(ref this._collisionResolver, value);
-    }
-
     /// <inheritdoc />
     [DataMember(Order = 1)]
     public Gravity Gravity { get; } = new(Vector2.Zero);
 
     /// <inheritdoc />
     [DataMember(Order = 2)]
-    public float Groundedness {
-        get => this._groundedness;
-        set => this.Set(ref this._groundedness, value);
-    }
+    public float Groundedness { get; set; } = 0.35f;
 
     /// <inheritdoc />
     [DataMember(Order = 4, Name = "Minimum Post-Bounce Magnitude")]
-    public float MinimumPostBounceMagnitude {
-        get => this._minimumPostBounceMagnitude;
-        set => this.Set(ref this._minimumPostBounceMagnitude, value);
-    }
+    public float MinimumPostBounceMagnitude { get; set; } = 1.5f;
 
     /// <inheritdoc />
     [DataMember(Order = 5, Name = "Minimum Post-Friction Magnitude")]
-    public float MinimumPostFrictionMagnitude {
-        get => this._minimumPostFrictionMagnitude;
-        set => this.Set(ref this._minimumPostFrictionMagnitude, value);
-    }
+    public float MinimumPostFrictionMagnitude { get; set; } = 0.2f;
 
     /// <inheritdoc />
     [DataMember(Order = 3)]
-    public float Stickiness {
-        get => this._stickiness;
-        set => this.Set(ref this._stickiness, value);
-    }
+    public float Stickiness { get; set; } = 0.1f;
+
+    /// <summary>
+    /// Gets the collision resolver.
+    /// </summary>
+    /// <value>The collision resolver.</value>
+    [DataMember(Name = "Collision Resolver", Order = 0)]
+    protected ICollisionResolver CollisionResolver { get; private set; } = new DefaultCollisionResolver();
 
     /// <inheritdoc />
     public override void Initialize(IScene scene) {
         base.Initialize(scene);
-        this._collisionResolver.Initialize(this);
+        this.CollisionResolver.Initialize(this);
     }
 
     /// <inheritdoc />
@@ -145,7 +123,7 @@ public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
 
                         if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision) && collision != null) {
                             if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
-                                this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                                this.CollisionResolver.ResolveCollision(collision, this.TimeStep);
                             }
 
                             body.NotifyCollisionOccured(collision);
