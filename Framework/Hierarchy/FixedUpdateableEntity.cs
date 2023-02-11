@@ -27,14 +27,9 @@ public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
 /// Base implementation of <see cref="IFixedUpdateableEntity" />.
 /// </summary>
 public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
-    private int _updateOrder;
-
     /// <inheritdoc />
     [DataMember]
-    public int UpdateOrder {
-        get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
-    }
+    public int UpdateOrder { get; set; }
 
     /// <inheritdoc />
     public abstract void FixedUpdate(float timeStep);

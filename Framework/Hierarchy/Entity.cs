@@ -157,11 +157,6 @@ public class Entity : Transformable, IEntity {
     [DataMember]
     private readonly EntityCollection _children = new();
 
-    private Guid _id = Guid.NewGuid();
-    private bool _isEnabled = true;
-    private Layers _layers = Layers.Default;
-    private string _name = string.Empty;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity" /> class.
     /// </summary>
@@ -185,31 +180,19 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     [DataMember]
     [EditorExclude]
-    public Guid Id {
-        get => this._id;
-        set => this.Set(ref this._id, value);
-    }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <inheritdoc />
     [DataMember]
-    public bool IsEnabled {
-        get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
-    }
+    public bool IsEnabled { get; set; } = true;
 
     /// <inheritdoc />
     [DataMember]
-    public Layers Layers {
-        get => this._layers;
-        set => this.Set(ref this._layers, value);
-    }
+    public Layers Layers { get; set; } = Layers.Default;
 
     /// <inheritdoc />
     [DataMember]
-    public string Name {
-        get => this._name;
-        set => this.Set(ref this._name, value);
-    }
+    public string Name { get; set; } = string.Empty;
 
     /// <inheritdoc />
     public IEntity Parent { get; private set; } = Empty;

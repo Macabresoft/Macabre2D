@@ -19,14 +19,9 @@ public interface IUpdateableEntity : IEntity, IUpdateableGameObject {
 /// </summary>
 [Category("Updateable")]
 public abstract class UpdateableEntity : Entity, IUpdateableEntity {
-    private int _updateOrder;
-
     /// <inheritdoc />
     [DataMember]
-    public int UpdateOrder {
-        get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
-    }
+    public int UpdateOrder { get; set; }
 
     /// <inheritdoc />
     public abstract void Update(FrameTime frameTime, InputState inputState);

@@ -45,9 +45,6 @@ public class GameProject : NotifyPropertyChanged, IGameProject {
     /// </summary>
     public const string ProjectFileName = DefaultProjectName + ProjectFileExtension;
 
-    private string _name;
-    private Guid _startupSceneContentId;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
     /// </summary>
@@ -56,8 +53,8 @@ public class GameProject : NotifyPropertyChanged, IGameProject {
     /// <param name="startupSceneContentId">The identifier for the scene which should run on startup.</param>
     public GameProject(IGameSettings settings, string name, Guid startupSceneContentId) {
         this.Settings = settings;
-        this._name = name;
-        this._startupSceneContentId = startupSceneContentId;
+        this.Name = name;
+        this.StartupSceneContentId = startupSceneContentId;
     }
 
     /// <summary>
@@ -67,21 +64,15 @@ public class GameProject : NotifyPropertyChanged, IGameProject {
     }
 
     /// <inheritdoc />
-    [DataMember]
-    public string Name {
-        get => this._name;
-        set => this.Set(ref this._name, value);
-    }
-
-    /// <inheritdoc />
     [DataMember(Order = 1)]
     public IGameSettings Settings { get; }
 
     /// <inheritdoc />
+    [DataMember]
+    public string Name { get; set; }
+
+    /// <inheritdoc />
     [DataMember(Name = "Startup Scene")]
     [AssetGuid(typeof(SceneAsset))]
-    public Guid StartupSceneContentId {
-        get => this._startupSceneContentId;
-        set => this.Set(ref this._startupSceneContentId, value);
-    }
+    public Guid StartupSceneContentId { get; set; }
 }

@@ -204,12 +204,10 @@ public sealed class Scene : GridContainer, IScene {
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IUpdateableEntity.UpdateOrder));
 
-    private Color _backgroundColor = DefinedColors.MacabresoftBlack;
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IGame _game = BaseGame.Empty;
     private bool _isBusy;
     private bool _isInitialized;
-    private Version _version = new(0, 0, 0, 0);
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -258,17 +256,15 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     [DataMember]
-    public Color BackgroundColor {
-        get => this._backgroundColor;
-        set => this.Set(ref this._backgroundColor, value);
-    }
+    public Color BackgroundColor { get; set; } = DefinedColors.MacabresoftBlack;
 
     /// <inheritdoc />
     [DataMember]
     public BoundingArea BoundingArea {
         get => this._boundingArea;
         set {
-            if (this.Set(ref this._boundingArea, value)) {
+            this._boundingArea = value;
+            if (this.IsInitialized) {
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
         }
@@ -276,10 +272,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     [DataMember]
-    public Version Version {
-        get => this._version;
-        set => this.Set(ref this._version, value);
-    }
+    public Version Version { get; set; } = new(0, 0, 0, 0);
 
     /// <inheritdoc />
     public T AddLoop<T>() where T : ILoop, new() {
