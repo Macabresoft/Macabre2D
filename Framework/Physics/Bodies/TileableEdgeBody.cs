@@ -47,12 +47,9 @@ public sealed class TileableEdgeBody : QuadBody {
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName is nameof(this.WorldPosition)) {
-            this.ResetColliders();
-        }
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.ResetColliders();
     }
 
     /// <inheritdoc />

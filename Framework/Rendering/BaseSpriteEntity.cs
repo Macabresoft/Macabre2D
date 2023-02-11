@@ -20,7 +20,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
     /// </summary>
@@ -80,16 +80,27 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         }
     }
 
+    /// <summary>
+    /// Gets the appropriate transform for rendering.
+    /// </summary>
+    /// <returns></returns>
+    protected Vector2 GetRenderTransform() {
+        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this.WorldPosition;
+    }
+
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(this.WorldPosition)) {
-            this.Reset();
-        }
-        else if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
+        if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
             this.RaisePropertyChanged(nameof(this.IsVisible));
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.Reset();
     }
 
     /// <summary>
@@ -149,14 +160,6 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Gets the appropriate transform for rendering.
-    /// </summary>
-    /// <returns></returns>
-    protected Vector2 GetRenderTransform() {
-        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this.WorldPosition;
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

@@ -287,15 +287,6 @@ public class Camera : Entity, ICamera {
         return matrix;
     }
 
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(this.WorldPosition)) {
-            this.OnScreenAreaChanged();
-        }
-    }
-
     /// <summary>
     /// Called when the screen area changes.
     /// This could be the resolution changing, the transform of this entity changing, the offset options changing, or snap to pixels changing.
@@ -306,6 +297,12 @@ public class Camera : Entity, ICamera {
         this._viewWidth.Reset();
         this.CalculateActualViewHeight();
         this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
+    /// <inheritdoc />
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.OnScreenAreaChanged();
     }
 
     /// <summary>

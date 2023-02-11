@@ -11,6 +11,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface ITransformable {
     /// <summary>
+    /// Occurs when the transform changes.
+    /// </summary>
+    event EventHandler TransformChanged;
+
+    /// <summary>
     /// Gets the world position position.
     /// </summary>
     Vector2 WorldPosition { get; }
@@ -51,6 +56,9 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     private readonly ResettableLazy<Vector2> _worldPosition;
     private Vector2 _localPosition;
     private TransformInheritance _transformInheritance = TransformInheritance.Both;
+
+    /// <inheritdoc />
+    public event EventHandler? TransformChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Transformable" /> class.
@@ -118,7 +126,14 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     /// </summary>
     protected void HandleTransformed() {
         this._worldPosition.Reset();
-        this.RaisePropertyChanged(true, nameof(this.WorldPosition));
+        this.OnTransformChanged();
+    }
+
+    /// <summary>
+    /// Called when the transform changes.
+    /// </summary>
+    protected virtual void OnTransformChanged() {
+        this.TransformChanged.SafeInvoke(this);
     }
 
     private Vector2 GetParentWorldPosition() {

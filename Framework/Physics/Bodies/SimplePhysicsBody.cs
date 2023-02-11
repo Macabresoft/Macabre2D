@@ -59,12 +59,9 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(this.WorldPosition)) {
-            this._collider.Reset();
-        }
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this._collider.Reset();
     }
 
     private void Collider_BoundingAreaChanged(object? sender, EventArgs e) {

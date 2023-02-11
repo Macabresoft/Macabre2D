@@ -32,6 +32,9 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new();
 
     /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public event EventHandler? TilesChanged;
 
     /// <summary>
@@ -46,9 +49,6 @@ public abstract class TileableEntity : Entity, ITileableEntity {
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <inheritdoc />
-    public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public IGridContainer CurrentGrid { get; private set; } = GridContainer.Empty;
@@ -108,7 +108,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         var result = Point.Zero;
         var grid = this.CurrentGrid;
 
-        if (grid.TileSize.X > 0 && grid.TileSize.Y > 0) {
+        if (grid.TileSize is { X: > 0, Y: > 0 }) {
             var xTile = Math.Floor(worldPosition.X / grid.TileSize.X);
             var yTile = Math.Floor(worldPosition.Y / grid.TileSize.Y);
             result = new Point((int)xTile, (int)yTile);
@@ -227,9 +227,12 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         if (e.PropertyName == nameof(IEntity.Parent)) {
             this.ResetGridContainer();
         }
-        else if (e.PropertyName == nameof(this.WorldPosition)) {
-            this.ResetBoundingArea();
-        }
+    }
+
+    /// <inheritdoc />
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.ResetBoundingArea();
     }
 
     /// <summary>
@@ -277,7 +280,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     private void ResetGridContainer() {
         this.CurrentGrid.PropertyChanged -= this.GridContainer_PropertyChanged;
 
-        if (this.TryGetParentEntity<IGridContainer>(out var gridContainer) && gridContainer != null) {
+        if (this.TryGetParentEntity<IGridContainer>(out var gridContainer)) {
             this.CurrentGrid = gridContainer;
             this.CurrentGrid.PropertyChanged += this.GridContainer_PropertyChanged;
         }

@@ -17,13 +17,16 @@ public class EmptyObject : IScene {
     public static readonly EmptyObject Instance = new();
 
     /// <inheritdoc />
+    public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc />
-    public BoundingArea BoundingArea => BoundingArea.Empty;
+    public event EventHandler? TransformChanged;
 
     /// <inheritdoc />
-    public event EventHandler? BoundingAreaChanged;
+    public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
     public Vector2 WorldPosition => Vector2.Zero;

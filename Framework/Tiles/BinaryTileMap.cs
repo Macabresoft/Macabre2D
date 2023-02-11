@@ -30,6 +30,13 @@ public sealed class BinaryTileMap : RenderableTileMap {
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
 
     /// <summary>
+    /// Gets the sprite reference.
+    /// </summary>
+    [DataMember(Order = 0)]
+    [Display(Name = "Sprite")]
+    public SpriteReference SpriteReference { get; } = new();
+
+    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -38,13 +45,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
         get => this._color;
         set => this.Set(ref this._color, value);
     }
-
-    /// <summary>
-    /// Gets the sprite reference.
-    /// </summary>
-    [DataMember(Order = 0)]
-    [Display(Name = "Sprite")]
-    public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) {
@@ -102,13 +102,11 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
 
-        if (e.PropertyName == nameof(this.WorldPosition)) {
-            if (this.SpriteReference.Asset is { } spriteSheet) {
-                this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
-            }
+        if (this.SpriteReference.Asset is { } spriteSheet) {
+            this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
         }
     }
 

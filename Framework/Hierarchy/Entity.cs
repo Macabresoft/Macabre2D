@@ -310,7 +310,7 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public virtual void Initialize(IScene scene, IEntity parent) {
         try {
-            this.Parent.PropertyChanged -= this.Parent_PropertyChanged;
+            this.Parent.TransformChanged -= this.Parent_TransformChanged;
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
@@ -320,7 +320,7 @@ public class Entity : Transformable, IEntity {
             }
 
             this.HandleTransformed();
-            this.Parent.PropertyChanged += this.Parent_PropertyChanged;
+            this.Parent.TransformChanged += this.Parent_TransformChanged;
         }
         finally {
             this.IsInitialized = true;
@@ -386,7 +386,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public virtual bool TryGetParentEntity<T>([NotNullWhen(true)] out  T? entity) {
+    public virtual bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity) {
         if (this.Parent is T parent) {
             entity = parent;
         }
@@ -425,8 +425,8 @@ public class Entity : Transformable, IEntity {
         }
     }
 
-    private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(this.WorldPosition)) {
+    private void Parent_TransformChanged(object? sender, EventArgs e) {
+        if (this.TransformInheritance != TransformInheritance.None) {
             this.HandleTransformed();
         }
     }

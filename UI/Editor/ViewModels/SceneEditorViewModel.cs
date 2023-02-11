@@ -59,6 +59,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this._scene = this.CreateScene();
         this.TryLoadScene();
         this._camera.PropertyChanged += this.Camera_PropertyChanged;
+        this._camera.TransformChanged += this.Camera_TransformChanged;
 
         this._editorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
         this._editorService.FocusRequested += this.EditorService_FocusRequested;
@@ -74,14 +75,13 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     public ISceneService SceneService { get; }
 
     private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        switch (e.PropertyName) {
-            case nameof(ICamera.WorldPosition):
-                this._settingsService.Settings.CameraPosition = this._camera.WorldPosition;
-                break;
-            case nameof(ICamera.ActualViewHeight):
-                this._settingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
-                break;
+        if (e.PropertyName == nameof(ICamera.ActualViewHeight)) {
+            this._settingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
         }
+    }
+
+    private void Camera_TransformChanged(object sender, EventArgs e) {
+        this._settingsService.Settings.CameraPosition = this._camera.WorldPosition;
     }
 
     private IScene CreateScene() {

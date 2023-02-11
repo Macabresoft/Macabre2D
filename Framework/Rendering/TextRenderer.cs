@@ -118,12 +118,9 @@ public class TextRenderer : RenderableEntity {
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(this.WorldPosition)) {
-            this.Reset();
-        }
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.Reset();
     }
 
     private BoundingArea CreateBoundingArea() {

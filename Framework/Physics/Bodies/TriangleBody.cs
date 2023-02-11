@@ -29,6 +29,9 @@ public class TriangleBody : PhysicsBody {
     private TrianglePeakPosition _peakPosition = TrianglePeakPosition.Center;
     private float _width = 1f;
 
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
+
     /// <summary>
     /// Initializes a new instance of <see cref="TriangleBody" />.
     /// </summary>
@@ -51,9 +54,6 @@ public class TriangleBody : PhysicsBody {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <inheritdoc />
-    public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public override bool HasCollider => this.GetColliders().Any();
@@ -152,12 +152,9 @@ public class TriangleBody : PhysicsBody {
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName is nameof(this.WorldPosition)) {
-            this.ResetColliders();
-        }
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.ResetColliders();
     }
 
     private BoundingArea CreateBoundingArea() {
