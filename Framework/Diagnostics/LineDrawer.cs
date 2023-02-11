@@ -28,7 +28,8 @@ public sealed class LineDrawer : BaseDrawer {
     public Vector2 EndPoint {
         get => this._endPoint;
         set {
-            if (this.Set(ref this._endPoint, value) && this.IsInitialized) {
+            this._endPoint = value;
+            if (this.IsInitialized) {
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
         }
@@ -42,7 +43,8 @@ public sealed class LineDrawer : BaseDrawer {
     public Vector2 StartPoint {
         get => this._startPoint;
         set {
-            if (this.Set(ref this._startPoint, value) && this.IsInitialized) {
+            this._startPoint = value;
+            if (this.IsInitialized) {
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
         }

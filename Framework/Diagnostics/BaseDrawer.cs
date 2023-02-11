@@ -2,45 +2,31 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A base class for drawing the outlines of entities.
 /// </summary>
 public abstract class BaseDrawer : RenderableEntity {
-    private Color _color = Color.White;
-    private float _lineThickness = 1f;
-    private bool _useDynamicLineThickness;
-
     /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 0)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.White;
 
     /// <summary>
     /// Gets or sets the line thickness.
     /// </summary>
     /// <value>The line thickness.</value>
     [DataMember(Order = 1)]
-    public float LineThickness {
-        get => this._lineThickness;
-        set => this.Set(ref this._lineThickness, value);
-    }
+    public float LineThickness { get; set; } = 1f;
 
     /// <summary>
     /// Gets or sets a value indicating whether this should use dynamic line thickness.
     /// </summary>
     /// <value><c>true</c> if this should use dynamic line thickness; otherwise, <c>false</c>.</value>
     [DataMember(Order = 2)]
-    public bool UseDynamicLineThickness {
-        get => this._useDynamicLineThickness;
-        set => this.Set(ref this._useDynamicLineThickness, value);
-    }
+    public bool UseDynamicLineThickness { get; set; }
 
     /// <summary>
     /// Gets the primitive drawer.
@@ -64,7 +50,7 @@ public abstract class BaseDrawer : RenderableEntity {
     /// <returns>The appropriate line thickness for this drawer.</returns>
     protected float GetLineThickness(float viewHeight) {
         var result = this.LineThickness;
-        if (this.UseDynamicLineThickness && this.Game.GraphicsDevice is GraphicsDevice device) {
+        if (this.UseDynamicLineThickness && this.Game.GraphicsDevice is { } device) {
             result = LineHelper.GetDynamicLineThickness(result, viewHeight, device, this.Settings);
         }
 

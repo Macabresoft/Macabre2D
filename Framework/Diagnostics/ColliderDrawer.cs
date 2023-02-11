@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Draws a collider.

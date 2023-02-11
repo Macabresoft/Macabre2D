@@ -37,7 +37,7 @@ public sealed class CircleDrawer : BaseDrawer {
                 value = 3;
             }
 
-            this.Set(ref this._complexity, value);
+            this._complexity = value;
         }
     }
 
