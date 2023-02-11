@@ -48,7 +48,6 @@ public sealed class AutoTileMap : RenderableTileMap {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<Point, byte> _activeTileToIndex = new();
 
-    private Color _color = Color.White;
     private Vector2 _spriteScale = Vector2.One;
     private AutoTileMapVisualBehavior _visualBehavior;
 
@@ -66,16 +65,14 @@ public sealed class AutoTileMap : RenderableTileMap {
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.White;
 
     [DataMember]
     public AutoTileMapVisualBehavior VisualBehavior {
         get => this._visualBehavior;
         set {
-            if (this.Set(ref this._visualBehavior, value)) {
+            if (value != this._visualBehavior) {
+                this._visualBehavior = value;
                 this.ReevaluateIndexes();
             }
         }

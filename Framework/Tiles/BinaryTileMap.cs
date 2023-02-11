@@ -16,7 +16,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
     [DataMember]
     private readonly HashSet<Point> _activeTiles = new();
 
-    private Color _color = Color.White;
     private Vector2 _tileScale;
 
     /// <summary>
@@ -41,10 +40,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.White;
 
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) {

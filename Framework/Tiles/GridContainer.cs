@@ -33,8 +33,6 @@ public interface IGridContainer : IEntity {
 /// An entity which contains a grid.
 /// </summary>
 public class GridContainer : Entity, IGridContainer {
-    private Vector2 _tileSize = Vector2.One;
-
     /// <summary>
     /// Creates a new instance of <see cref="GridContainer" />.
     /// </summary>
@@ -49,10 +47,7 @@ public class GridContainer : Entity, IGridContainer {
     /// <inheritdoc />
     [DataMember(Name = "Tile Size")]
     [Category(CommonCategories.Grid)]
-    public Vector2 TileSize {
-        get => this._tileSize;
-        set => this.Set(ref this._tileSize, value);
-    }
+    public Vector2 TileSize { get; set; } = Vector2.One;
 
     /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) {
