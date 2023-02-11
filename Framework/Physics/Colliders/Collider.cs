@@ -78,7 +78,7 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     [DataMember(Name = "Collider Layers")]
     public Layers Layers {
         get => this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Layers ?? Layers.None;
-        set => this.Set(ref this._overrideLayers, value);
+        set => this._overrideLayers = value;
     }
 
     /// <summary>
@@ -89,7 +89,8 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
         get => this._offset;
 
         set {
-            if (this.Set(ref this._offset, value)) {
+            if (this._offset != value) {
+                this._offset = value;
                 this.Reset();
             }
         }

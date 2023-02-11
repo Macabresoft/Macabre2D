@@ -36,7 +36,6 @@ public sealed class LineCollider : PolygonCollider {
     [DataMember(Order = 1)]
     public Vector2 End {
         get => this.Vertices[1];
-
         set {
             if (this.TrySetVertex(1, value)) {
                 this.RaisePropertyChanged();
@@ -52,7 +51,6 @@ public sealed class LineCollider : PolygonCollider {
     [DataMember(Order = 0)]
     public Vector2 Start {
         get => this.Vertices[0];
-
         set {
             if (this.TrySetVertex(0, value)) {
                 this.RaisePropertyChanged();

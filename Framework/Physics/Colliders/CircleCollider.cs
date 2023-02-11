@@ -45,7 +45,6 @@ public sealed class CircleCollider : Collider {
     [DataMember]
     public float Radius {
         get => this._radius;
-
         set {
             this._radius = value;
             this.ResetLazyFields();
