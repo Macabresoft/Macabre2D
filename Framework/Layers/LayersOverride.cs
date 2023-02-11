@@ -7,17 +7,14 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 public class LayersOverride : NotifyPropertyChanged {
-    private bool _isEnabled;
-    private Layers _value;
-
     /// <summary>
     /// Initializes a new instance of <see cref="LayersOverride" />
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="isEnabled">A value indicating whether or not this is enabled.</param>
     public LayersOverride(Layers value, bool isEnabled) {
-        this._value = value;
-        this._isEnabled = isEnabled;
+        this.Value = value;
+        this.IsEnabled = isEnabled;
     }
 
     /// <summary>
@@ -37,17 +34,11 @@ public class LayersOverride : NotifyPropertyChanged {
     /// Gets or sets a value indicating whether or not this is enabled.
     /// </summary>
     [DataMember]
-    public bool IsEnabled {
-        get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
-    }
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// Gets or sets the value.
     /// </summary>
     [DataMember]
-    public Layers Value {
-        get => this._value;
-        set => this.Set(ref this._value, value);
-    }
+    public Layers Value { get; set; }
 }
