@@ -16,8 +16,6 @@ public enum TimerState {
 /// </summary>
 [DataContract]
 public class GameTimer : NotifyPropertyChanged {
-    private float _timeLimit;
-
     /// <summary>
     /// Gets the percentage complete.
     /// </summary>
@@ -40,10 +38,7 @@ public class GameTimer : NotifyPropertyChanged {
     /// Gets or sets the time limit of this timer in seconds.
     /// </summary>
     [DataMember]
-    public float TimeLimit {
-        get => this._timeLimit;
-        set => this.Set(ref this._timeLimit, value);
-    }
+    public float TimeLimit { get; set; }
 
     /// <summary>
     /// Gets the number of seconds this has been running.
