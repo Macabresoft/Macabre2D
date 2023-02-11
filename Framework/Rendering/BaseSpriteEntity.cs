@@ -15,7 +15,6 @@ using Microsoft.Xna.Framework;
 public abstract class BaseSpriteEntity : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _pixelTransform;
-    private Color _color = Color.White;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -42,10 +41,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.White;
 
     /// <summary>
     /// Gets or sets the render options.

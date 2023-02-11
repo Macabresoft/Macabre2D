@@ -14,22 +14,9 @@ public sealed class QueueableSpriteAnimation {
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
     /// animation has been queued.
     /// </param>
-    public QueueableSpriteAnimation(SpriteAnimation animation, bool shouldLoopIndefinitely) : this(animation, shouldLoopIndefinitely, 1) {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="QueueableSpriteAnimation" /> class.
-    /// </summary>
-    /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoopIndefinitely">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    /// <param name="numberOfLoops">The number of loops.</param>
-    public QueueableSpriteAnimation(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
+    public QueueableSpriteAnimation(SpriteAnimation animation, bool shouldLoopIndefinitely) {
         this.Animation = animation ?? throw new ArgumentNullException(nameof(animation));
         this.ShouldLoopIndefinitely = shouldLoopIndefinitely;
-        this.RemainingLoops = numberOfLoops;
     }
 
     /// <summary>
@@ -37,12 +24,6 @@ public sealed class QueueableSpriteAnimation {
     /// </summary>
     /// <value>The animation.</value>
     public SpriteAnimation Animation { get; }
-
-    /// <summary>
-    /// Gets or sets the number of remaining loops.
-    /// </summary>
-    /// <value>The number of remaining loops.</value>
-    public ushort RemainingLoops { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this should loop indefinitely when no other animation

@@ -51,21 +51,6 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// <summary>
     /// Enqueues the specified animation.
     /// </summary>
-    /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoopIndefinitely">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    /// <param name="numberOfLoops">The number of loops.</param>
-    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
-        if (animation.SpriteSheet != null) {
-            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
-        }
-    }
-
-    /// <summary>
-    /// Enqueues the specified animation.
-    /// </summary>
     /// <param name="animationReference">The animation reference.</param>
     /// <param name="shouldLoopIndefinitely">
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
@@ -74,21 +59,6 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
         if (animationReference.PackagedAsset is { } animation) {
             this.Enqueue(animation, shouldLoopIndefinitely);
-        }
-    }
-
-    /// <summary>
-    /// Enqueues the specified animation.
-    /// </summary>
-    /// <param name="animationReference">The animation.</param>
-    /// <param name="shouldLoopIndefinitely">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    /// <param name="numberOfLoops">The number of loops.</param>
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely, ushort numberOfLoops) {
-        if (animationReference.PackagedAsset is { } animation) {
-            this.Enqueue(animation, shouldLoopIndefinitely, numberOfLoops);
         }
     }
 

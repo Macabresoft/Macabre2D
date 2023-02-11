@@ -53,7 +53,9 @@ public sealed class RenderOptions : OffsetOptions {
         get => this._flipHorizontal;
 
         set {
-            if (this.Set(ref this._flipHorizontal, value)) {
+            if (value != this._flipHorizontal) {
+                this._flipHorizontal = value;
+
                 if (this._flipHorizontal) {
                     this.Orientation |= SpriteEffects.FlipHorizontally;
                 }
@@ -73,7 +75,9 @@ public sealed class RenderOptions : OffsetOptions {
         get => this._flipVertical;
 
         set {
-            if (this.Set(ref this._flipVertical, value)) {
+            if (value != this._flipVertical) {
+                this._flipVertical = value;
+
                 // Since the default state is to flip vertically, this looks a little backwards,
                 // but just trust it!
                 if (this._flipVertical) {

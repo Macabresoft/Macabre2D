@@ -40,14 +40,13 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
     private bool _isVisible = true;
-    private PixelSnap _pixelSnap = PixelSnap.Inherit;
     private int _renderOrder;
 
     /// <inheritdoc />
-    public abstract BoundingArea BoundingArea { get; }
+    public abstract event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
-    public abstract event EventHandler? BoundingAreaChanged;
+    public abstract BoundingArea BoundingArea { get; }
 
     /// <inheritdoc />
     [DataMember]
@@ -60,17 +59,14 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap {
-        get => this._pixelSnap;
-        set => this.Set(ref this._pixelSnap, value);
-    }
+    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
 
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public int RenderOrder {
         get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
+        set => this.Set(ref this._renderOrder, value, true);
     }
 
     /// <inheritdoc />

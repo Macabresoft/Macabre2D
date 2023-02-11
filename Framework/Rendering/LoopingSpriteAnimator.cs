@@ -8,8 +8,6 @@ using System.Runtime.Serialization;
 /// A sprite animator that loops a single animation.
 /// </summary>
 public class LoopingSpriteAnimator : BaseSpriteAnimator {
-    private bool _startPlaying = true;
-
     /// <summary>
     /// Gets the animation reference.
     /// </summary>
@@ -19,10 +17,8 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     /// <summary>
     /// Gets or sets a value indicating whether or not this should start playing by default.
     /// </summary>
-    public bool StartPlaying {
-        get => this._startPlaying;
-        set => this.Set(ref this._startPlaying, value);
-    }
+    [DataMember]
+    public bool StartPlaying { get; set; } = true;
 
     /// <inheritdoc />
     protected override SpriteSheetAsset? SpriteSheet => this.AnimationReference?.Asset;

@@ -17,7 +17,6 @@ using Microsoft.Xna.Framework.Graphics;
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _pixelPosition;
-    private Color _color = Color.Black;
     private bool _snapToPixels;
     private string _text = string.Empty;
 
@@ -46,10 +45,7 @@ public class TextRenderer : RenderableEntity {
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.Black;
 
     /// <summary>
     /// Gets the render options.
@@ -67,9 +63,9 @@ public class TextRenderer : RenderableEntity {
     [DataMember(Order = 3)]
     public bool SnapToPixels {
         get => this._snapToPixels;
-
         set {
-            if (this.Set(ref this._snapToPixels, value)) {
+            if (value != this._snapToPixels) {
+                this._snapToPixels = value;
                 if (this._snapToPixels) {
                     this._pixelPosition.Reset();
                 }
@@ -86,9 +82,9 @@ public class TextRenderer : RenderableEntity {
     [DataMember(Order = 2)]
     public string Text {
         get => this._text;
-
         set {
-            if (this.Set(ref this._text, value)) {
+            if (value != this._text) {
+                this._text = value;
                 this.ResetBoundingArea();
                 this.RenderOptions.InvalidateSize();
             }

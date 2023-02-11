@@ -15,9 +15,11 @@ using Microsoft.Xna.Framework;
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<byte> _spriteIndexes = new();
-    private Color _color = Color.White;
     private int _kerning;
     private string _text = string.Empty;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLine" /> class.
@@ -28,9 +30,6 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <inheritdoc />
-    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Gets the font asset reference.
@@ -53,10 +52,7 @@ public class TextLine : RenderableEntity {
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
-    public Color Color {
-        get => this._color;
-        set => this.Set(ref this._color, value);
-    }
+    public Color Color { get; set; } = Color.White;
 
     /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
@@ -65,7 +61,8 @@ public class TextLine : RenderableEntity {
     public int Kerning {
         get => this._kerning;
         set {
-            if (this.Set(ref this._kerning, value)) {
+            if (value != this._kerning) {
+                this._kerning = value;
                 this.ResetCharacterSizes();
                 this.RequestRefresh();
             }
@@ -86,7 +83,8 @@ public class TextLine : RenderableEntity {
     public string Text {
         get => this._text;
         set {
-            if (this.Set(ref this._text, value)) {
+            if (value != this._text) {
+                this._text = value;
                 this.RequestRefresh();
             }
         }

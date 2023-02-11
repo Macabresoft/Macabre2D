@@ -24,9 +24,6 @@ public sealed class GraphicsSettings : VersionedData {
     /// </summary>
     public const string SettingsFileName = "Graphics.m2d";
 
-    private DisplayModes _displayMode = DisplayModes.Windowed;
-    private Point _resolution = new(1920, 1080);
-
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
     /// </summary>
@@ -39,8 +36,8 @@ public sealed class GraphicsSettings : VersionedData {
     /// <param name="displayMode">The display mode.</param>
     /// <param name="resolution">The resolution.</param>
     public GraphicsSettings(DisplayModes displayMode, Point resolution) {
-        this._displayMode = displayMode;
-        this._resolution = resolution;
+        this.DisplayMode = displayMode;
+        this.Resolution = resolution;
     }
 
     /// <summary>
@@ -48,20 +45,14 @@ public sealed class GraphicsSettings : VersionedData {
     /// </summary>
     /// <value>The display mode.</value>
     [DataMember]
-    public DisplayModes DisplayMode {
-        get => this._displayMode;
-        set => this.Set(ref this._displayMode, value);
-    }
+    public DisplayModes DisplayMode { get; set; } = DisplayModes.Windowed;
 
     /// <summary>
     /// Gets or sets the resolution.
     /// </summary>
     /// <value>The resolution.</value>
     [DataMember]
-    public Point Resolution {
-        get => this._resolution;
-        set => this.Set(ref this._resolution, value);
-    }
+    public Point Resolution { get; set; } = new(1920, 1080);
 
     /// <summary>
     /// Clones this instance.
