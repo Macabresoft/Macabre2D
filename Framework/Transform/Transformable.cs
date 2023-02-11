@@ -78,8 +78,10 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     public Vector2 LocalPosition {
         get => this._localPosition;
         set {
-            this._localPosition = value;
-            this.HandleTransformed();
+            if (this._localPosition != value) {
+                this._localPosition = value;
+                this.HandleTransformed();
+            }
         }
     }
 

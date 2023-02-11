@@ -16,7 +16,7 @@ public class OffsetOptions : NotifyPropertyChanged {
     private bool _isInitialized;
     private Vector2 _offset;
     private ResettableLazy<Vector2> _size = EmptySizeFactory;
-    private PixelOffsetType _type;
+    private PixelOffsetType _offsetType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetOptions" /> class.
@@ -28,10 +28,10 @@ public class OffsetOptions : NotifyPropertyChanged {
     /// Initializes a new instance of the <see cref="OffsetOptions" /> class.
     /// </summary>
     /// <param name="offset">The offset.</param>
-    /// <param name="type">The type.</param>
-    public OffsetOptions(Vector2 offset, PixelOffsetType type) {
+    /// <param name="offsetType">The type.</param>
+    public OffsetOptions(Vector2 offset, PixelOffsetType offsetType) {
         this._offset = offset;
-        this._type = type;
+        this._offsetType = offsetType;
     }
 
     /// <summary>
@@ -48,26 +48,31 @@ public class OffsetOptions : NotifyPropertyChanged {
     [DataMember(Order = 1, Name = "Offset")]
     public Vector2 Offset {
         get => this._offset;
-
         set {
-            if (this.Set(ref this._offset, value) && this._isInitialized) {
-                this._type = PixelOffsetType.Custom;
-                this.RaisePropertyChanged(true, nameof(this.OffsetType));
+            if (value != this._offset) {
+                this._offset = value;
+
+                if (this._isInitialized) {
+                    this._offsetType = PixelOffsetType.Custom;
+                    this.RaisePropertyChanged(true, nameof(this.OffsetType));
+                }
             }
         }
     }
 
     /// <summary>
-    /// Gets or sets the type.
+    /// Gets or sets the offset type.
     /// </summary>
-    /// <value>The type.</value>
     [DataMember(Order = 0, Name = "Offset Type")]
     public PixelOffsetType OffsetType {
-        get => this._type;
-
+        get => this._offsetType;
         set {
-            if (this.Set(ref this._type, value)) {
-                this.ResetOffset();
+            if (value != this._offsetType) {
+                this._offsetType = value;
+
+                if (this._isInitialized) {
+                    this.ResetOffset();
+                }
             }
         }
     }
@@ -104,7 +109,7 @@ public class OffsetOptions : NotifyPropertyChanged {
     /// automatically when <see cref="OffsetType" /> changes.
     /// </remarks>
     public void ResetOffset() {
-        if (this._type != PixelOffsetType.Custom) {
+        if (this._offsetType != PixelOffsetType.Custom) {
             var size = this._size.Value;
 
             if (size == Vector2.Zero) {

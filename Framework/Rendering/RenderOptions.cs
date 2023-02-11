@@ -40,8 +40,8 @@ public sealed class RenderOptions : OffsetOptions {
     /// Initializes a new instance of the <see cref="RenderOptions" /> class.
     /// </summary>
     /// <param name="offset">The offset.</param>
-    /// <param name="type">The type.</param>
-    public RenderOptions(Vector2 offset, PixelOffsetType type) : base(offset, type) {
+    /// <param name="offsetType">The type.</param>
+    public RenderOptions(Vector2 offset, PixelOffsetType offsetType) : base(offset, offsetType) {
     }
 
     /// <summary>

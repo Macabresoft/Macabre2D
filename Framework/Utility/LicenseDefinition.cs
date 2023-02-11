@@ -3,9 +3,7 @@
 /// <summary>
 /// A license definition for displaying a product and its license.
 /// </summary>
-public sealed class LicenseDefinition : NotifyPropertyChanged {
-    private bool _isExpanded = true;
-
+public sealed class LicenseDefinition {
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
@@ -17,14 +15,6 @@ public sealed class LicenseDefinition : NotifyPropertyChanged {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not this should be expanded in a list of licenses.
-    /// </summary>
-    public bool IsExpanded {
-        get => this._isExpanded;
-        set => this.Set(ref this._isExpanded, value);
-    }
-
-    /// <summary>
     /// Gets the license.
     /// </summary>
     public string License { get; }
@@ -33,4 +23,9 @@ public sealed class LicenseDefinition : NotifyPropertyChanged {
     /// Gets the product.
     /// </summary>
     public string Product { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this should be expanded in a list of licenses.
+    /// </summary>
+    public bool IsExpanded { get; set; } = true;
 }

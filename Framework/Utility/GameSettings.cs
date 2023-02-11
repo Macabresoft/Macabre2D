@@ -20,16 +20,6 @@ public interface IGameSettings : INotifyPropertyChanged {
     Point DefaultResolution { get; }
 
     /// <summary>
-    /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
-    /// </summary>
-    Color ErrorSpritesColor { get; set; }
-
-    /// <summary>
-    /// Gets or sets the color of the game background when there is no scene opened.
-    /// </summary>
-    Color FallbackBackgroundColor { get; set; }
-
-    /// <summary>
     /// Gets the input settings.
     /// </summary>
     InputSettings InputSettings { get; }
@@ -38,11 +28,6 @@ public interface IGameSettings : INotifyPropertyChanged {
     /// Gets the layer settings.
     /// </summary>
     LayerSettings LayerSettings { get; }
-
-    /// <summary>
-    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
-    /// </summary>
-    ushort PixelsPerUnit { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
@@ -61,6 +46,21 @@ public interface IGameSettings : INotifyPropertyChanged {
     float UnitsPerPixel { get; }
 
     /// <summary>
+    /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
+    /// </summary>
+    Color ErrorSpritesColor { get; set; }
+
+    /// <summary>
+    /// Gets or sets the color of the game background when there is no scene opened.
+    /// </summary>
+    Color FallbackBackgroundColor { get; set; }
+
+    /// <summary>
+    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
+    /// </summary>
+    ushort PixelsPerUnit { get; set; }
+
+    /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
     /// screen regardless of the current view size.
     /// </summary>
@@ -76,39 +76,12 @@ public interface IGameSettings : INotifyPropertyChanged {
 [DataContract]
 [Category(CommonCategories.Settings)]
 public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
-    private Point _defaultResolution;
-    private Color _errorSpritesColor = Color.HotPink;
-    private Color _fallbackBackgroundColor = Color.Black;
     private ushort _pixelsPerUnit = 32;
-    private bool _snapToPixels;
 
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.DefaultGraphics)]
     public GraphicsSettings DefaultGraphicsSettings { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    public Point DefaultResolution {
-        get => this._defaultResolution;
-        set => this.Set(ref this._defaultResolution, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Fallback)]
-    public Color ErrorSpritesColor {
-        get => this._errorSpritesColor;
-        set => this.Set(ref this._errorSpritesColor, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember(Name = nameof(FallbackBackgroundColor))]
-    [Category(CommonCategories.Fallback)]
-    public Color FallbackBackgroundColor {
-        get => this._fallbackBackgroundColor;
-        set => this.Set(ref this._fallbackBackgroundColor, value);
-    }
 
     /// <inheritdoc />
     [DataMember]
@@ -122,6 +95,20 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
 
     /// <inheritdoc />
     [DataMember]
+    public Point DefaultResolution { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Fallback)]
+    public Color ErrorSpritesColor { get; set; } = Color.HotPink;
+
+    /// <inheritdoc />
+    [DataMember(Name = nameof(FallbackBackgroundColor))]
+    [Category(CommonCategories.Fallback)]
+    public Color FallbackBackgroundColor { get; set; } = Color.Black;
+
+    /// <inheritdoc />
+    [DataMember]
     public ushort PixelsPerUnit {
         get => this._pixelsPerUnit;
 
@@ -130,7 +117,8 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
                 throw new ArgumentOutOfRangeException($"{nameof(this.PixelsPerUnit)} must be greater than 0!");
             }
 
-            if (this.Set(ref this._pixelsPerUnit, value)) {
+            if (value != this._pixelsPerUnit) {
+                this._pixelsPerUnit = value;
                 this.UnitsPerPixel = 1f / this._pixelsPerUnit;
             }
         }
@@ -138,10 +126,7 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
 
     /// <inheritdoc />
     [DataMember(Name = "Snap to Pixels During Render")]
-    public bool SnapToPixels {
-        get => this._snapToPixels;
-        set => this.Set(ref this._snapToPixels, value);
-    }
+    public bool SnapToPixels { get; set; }
 
     /// <inheritdoc />
     public float UnitsPerPixel { get; private set; } = 1f / 32f;
