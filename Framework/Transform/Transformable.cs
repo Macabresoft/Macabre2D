@@ -55,7 +55,6 @@ public interface ITransformable {
 public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     private readonly ResettableLazy<Vector2> _worldPosition;
     private Vector2 _localPosition;
-    private TransformInheritance _transformInheritance = TransformInheritance.Both;
 
     /// <inheritdoc />
     public event EventHandler? TransformChanged;
@@ -79,9 +78,8 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     public Vector2 LocalPosition {
         get => this._localPosition;
         set {
-            if (this.Set(ref this._localPosition, value)) {
-                this.HandleTransformed();
-            }
+            this._localPosition = value;
+            this.HandleTransformed();
         }
     }
 
@@ -89,10 +87,7 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     /// Gets or sets the way this inherits its parent's position.
     /// </summary>
     [DataMember(Name = "Inheritance")]
-    public TransformInheritance TransformInheritance {
-        get => this._transformInheritance;
-        set => this.Set(ref this._transformInheritance, value);
-    }
+    public TransformInheritance TransformInheritance { get; set; } = TransformInheritance.Both;
 
     /// <inheritdoc />
     public Vector2 GetWorldPosition(Vector2 originOffset) {
@@ -106,7 +101,7 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
-        this.LocalPosition = this._transformInheritance switch {
+        this.LocalPosition = this.TransformInheritance switch {
             TransformInheritance.None => position,
             TransformInheritance.X => new Vector2(this.LocalPosition.X + position.X - this.WorldPosition.X, this.LocalPosition.Y),
             TransformInheritance.Y => new Vector2(this.LocalPosition.X, this.LocalPosition.Y + position.Y - this.WorldPosition.Y),
@@ -145,7 +140,7 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     }
 
     private Vector2 GetWorldPosition() {
-        return this._transformInheritance switch {
+        return this.TransformInheritance switch {
             TransformInheritance.None => this.LocalPosition,
             TransformInheritance.X => new Vector2(this.LocalPosition.X + this.GetParentWorldPosition().X, this.LocalPosition.Y),
             TransformInheritance.Y => new Vector2(this.LocalPosition.X, this.LocalPosition.Y + this.GetParentWorldPosition().Y),
