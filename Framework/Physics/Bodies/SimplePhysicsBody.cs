@@ -40,8 +40,9 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
         get => this._collider;
         set {
             this._collider.BoundingAreaChanged -= this.Collider_BoundingAreaChanged;
+            this._collider = value;
 
-            if (this.Set(ref this._collider, value) && this.IsInitialized) {
+            if (this.IsInitialized) {
                 this.InitializeCollider();
             }
         }

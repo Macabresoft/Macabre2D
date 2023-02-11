@@ -33,31 +33,15 @@ public interface IDynamicPhysicsBody : IPhysicsBody {
 /// </summary>
 [Display(Name = "Dynamic Physics Body")]
 public sealed class DynamicPhysicsBody : SimplePhysicsBody, IDynamicPhysicsBody {
-    private bool _isKinematic;
-    private float _mass = 1f;
-    private Vector2 _velocity;
-
     /// <inheritdoc />
     [DataMember(Name = "Kinematic")]
-    public bool IsKinematic {
-        get => this._isKinematic;
-
-        set => this.Set(ref this._isKinematic, value);
-    }
+    public bool IsKinematic { get; set; }
 
     /// <inheritdoc />
     [DataMember]
-    public float Mass {
-        get => this._mass;
-
-        set => this.Set(ref this._mass, value);
-    }
+    public float Mass { get; set; } = 1f;
 
     /// <inheritdoc />
     [DataMember]
-    public Vector2 Velocity {
-        get => this._velocity;
-
-        set => this.Set(ref this._velocity, value);
-    }
+    public Vector2 Velocity { get; set; }
 }

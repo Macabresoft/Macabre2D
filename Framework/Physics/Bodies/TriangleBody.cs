@@ -100,7 +100,8 @@ public class TriangleBody : PhysicsBody {
     public TrianglePeakPosition PeakPosition {
         get => this._peakPosition;
         set {
-            if (this.Set(ref this._peakPosition, value)) {
+            if (value != this._peakPosition) {
+                this._peakPosition = value;
                 this.ResetColliders();
             }
         }
