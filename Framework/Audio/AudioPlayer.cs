@@ -24,6 +24,12 @@ public sealed class AudioPlayer : Entity {
     public AudioClipReference AudioClipReference { get; } = new();
 
     /// <summary>
+    /// Gets the state.
+    /// </summary>
+    /// <value>The state.</value>
+    public SoundState State => this._currentSoundEffectInstance?.State ?? SoundState.Stopped;
+
+    /// <summary>
     /// Gets or sets the pan.
     /// </summary>
     /// <value>The pan.</value>
@@ -32,8 +38,8 @@ public sealed class AudioPlayer : Entity {
         get => this._pan;
 
         set {
-            if (this.Set(ref this._pan, MathHelper.Clamp(value, -1f, 1f)) &&
-                this._currentSoundEffectInstance is SoundEffectInstance soundEffectInstance) {
+            this._pan = MathHelper.Clamp(value, -1f, 1f);
+            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
                 soundEffectInstance.Pan = this._pan;
             }
         }
@@ -48,8 +54,8 @@ public sealed class AudioPlayer : Entity {
         get => this._pitch;
 
         set {
-            if (this.Set(ref this._pitch, MathHelper.Clamp(value, -1f, 1f)) &&
-                this._currentSoundEffectInstance is SoundEffectInstance soundEffectInstance) {
+            this._pitch = MathHelper.Clamp(value, -1f, 1f);
+            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
                 soundEffectInstance.Pitch = this._pitch;
             }
         }
@@ -64,18 +70,12 @@ public sealed class AudioPlayer : Entity {
         get => this._shouldLoop;
 
         set {
-            if (this.Set(ref this._shouldLoop, value) &&
-                this._currentSoundEffectInstance is SoundEffectInstance soundEffectInstance) {
+            this._shouldLoop = value;
+            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
                 soundEffectInstance.IsLooped = this._shouldLoop;
             }
         }
     }
-
-    /// <summary>
-    /// Gets the state.
-    /// </summary>
-    /// <value>The state.</value>
-    public SoundState State => this._currentSoundEffectInstance?.State ?? SoundState.Stopped;
 
     /// <summary>
     /// Gets or sets the volume.
@@ -86,8 +86,8 @@ public sealed class AudioPlayer : Entity {
         get => this._volume;
 
         set {
-            if (this.Set(ref this._volume, MathHelper.Clamp(value, 0f, 1f)) &&
-                this._currentSoundEffectInstance is SoundEffectInstance soundEffectInstance) {
+            this._volume = MathHelper.Clamp(value, 0f, 1f);
+            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
                 soundEffectInstance.Volume = this._volume;
             }
         }
@@ -107,12 +107,12 @@ public sealed class AudioPlayer : Entity {
     /// Play this instance.
     /// </summary>
     public void Play() {
-        if (this._currentSoundEffectInstance is SoundEffectInstance currentInstance) {
+        if (this._currentSoundEffectInstance is { } currentInstance) {
             currentInstance.Stop(true);
             currentInstance.Dispose();
         }
 
-        if (this.AudioClipReference.Asset is AudioClipAsset audioClip) {
+        if (this.AudioClipReference.Asset is { } audioClip) {
             this._currentSoundEffectInstance = audioClip.GetSoundEffectInstance(this.Volume, this.Pan, this.Pitch);
 
             if (this._currentSoundEffectInstance != null) {
@@ -134,7 +134,7 @@ public sealed class AudioPlayer : Entity {
     /// </summary>
     /// <param name="isImmediate">If set to <c>true</c> is immediate.</param>
     public void Stop(bool isImmediate) {
-        if (this._currentSoundEffectInstance is SoundEffectInstance soundEffectInstance) {
+        if (this._currentSoundEffectInstance is { } soundEffectInstance) {
             soundEffectInstance.Stop(isImmediate);
             soundEffectInstance.Dispose();
         }
