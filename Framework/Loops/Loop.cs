@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 
 /// <summary>
 /// Interface for an system which runs operations for a <see cref="IScene" />.
@@ -27,21 +26,11 @@ public interface ILoop : IUpdateableGameObject, INameable {
 [DataContract]
 [Category("System")]
 public abstract class Loop : NotifyPropertyChanged, ILoop {
-    private bool _isEnabled = true;
-    private string _name;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Loop" /> class.
     /// </summary>
     protected Loop() {
-        this._name = this.GetType().Name;
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public bool IsEnabled {
-        get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
+        this.Name = this.GetType().Name;
     }
 
     /// <inheritdoc />
@@ -49,10 +38,11 @@ public abstract class Loop : NotifyPropertyChanged, ILoop {
 
     /// <inheritdoc />
     [DataMember]
-    public string Name {
-        get => this._name;
-        set => this.Set(ref this._name, value);
-    }
+    public bool IsEnabled { get; set; } = true;
+
+    /// <inheritdoc />
+    [DataMember]
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets the game.

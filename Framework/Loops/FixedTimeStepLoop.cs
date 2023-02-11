@@ -21,14 +21,7 @@ public abstract class FixedTimeStepLoop : UpdateLoop {
     [DataMember]
     public float TimeStep {
         get => this._timeStep;
-        set {
-            if (value >= 0f) {
-                this.Set(ref this._timeStep, value);
-            }
-            else {
-                throw new NotSupportedException("Time step must be greater than 0.");
-            }
-        }
+        set => this._timeStep = Math.Max(0f, value);
     }
 
     /// <inheritdoc />
