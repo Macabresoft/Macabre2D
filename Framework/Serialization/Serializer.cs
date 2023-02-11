@@ -87,7 +87,6 @@ public sealed class Serializer : ISerializer {
     /// </summary>
     public static ISerializer Instance {
         get => _instance;
-
         set {
             if (value != null) {
                 _instance = value;

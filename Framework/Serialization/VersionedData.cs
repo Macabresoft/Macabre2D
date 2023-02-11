@@ -27,8 +27,6 @@ public interface IVersionedData {
 /// </summary>
 [DataContract]
 public class VersionedData : NotifyPropertyChanged, IVersionedData {
-    private Version _version = new();
-
     /// <summary>
     /// Initializes a new instance of the <see cref="VersionedData" /> class.
     /// </summary>
@@ -50,8 +48,5 @@ public class VersionedData : NotifyPropertyChanged, IVersionedData {
 
     /// <inheritdoc />
     [DataMember]
-    public Version Version {
-        get => this._version;
-        set => this.Set(ref this._version, value);
-    }
+    public Version Version { get; set; } = new();
 }
