@@ -51,8 +51,6 @@ public interface IAsset<TContent> : IAsset {
 /// </summary>
 [DataContract]
 public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent> {
-    private TContent? _content;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
     /// </summary>
@@ -61,10 +59,7 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     }
 
     /// <inheritdoc />
-    public TContent? Content {
-        get => this._content;
-        protected set => this.Set(ref this._content, value); // TODO: does this need property changed?
-    }
+    public TContent? Content { get; protected set; }
 
     /// <inheritdoc />
     [DataMember]

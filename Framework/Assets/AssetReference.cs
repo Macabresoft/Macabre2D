@@ -12,26 +12,18 @@ using Macabresoft.Core;
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 [DataContract]
 public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
-    private TAsset? _asset;
     private IAssetManager _assetManager = AssetManager.Empty;
-    private Guid _contentId;
 
     /// <summary>
     /// Gets the asset.
     /// </summary>
-    public TAsset? Asset {
-        get => this._asset;
-        private set => this.Set(ref this._asset, value); // TODO: does this need property changed?
-    }
+    public TAsset? Asset { get; private set; }
 
     /// <summary>
     /// Gets or sets the asset identifier.
     /// </summary>
     [DataMember]
-    public Guid ContentId {
-        get => this._contentId;
-        private set => this.Set(ref this._contentId, value); // TODO: does this need property changed?
-    }
+    public Guid ContentId { get; private set; }
 
     /// <summary>
     /// Clears the asset reference.
