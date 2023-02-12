@@ -55,27 +55,6 @@ public class TextRenderer : RenderableEntity {
     public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
-    /// Gets or sets a value indicating whether this text renderer should snap to the pixel
-    /// ratio defined in <see cref="IGameSettings" />.
-    /// </summary>
-    /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
-    /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-    [DataMember(Order = 3)]
-    public bool SnapToPixels {
-        get => this._snapToPixels;
-        set {
-            if (value != this._snapToPixels) {
-                this._snapToPixels = value;
-                if (this._snapToPixels) {
-                    this._pixelPosition.Reset();
-                }
-
-                this.ResetBoundingArea();
-            }
-        }
-    }
-
-    /// <summary>
     /// Gets or sets the text.
     /// </summary>
     /// <value>The text.</value>
@@ -107,7 +86,7 @@ public class TextRenderer : RenderableEntity {
                 this.Settings.PixelsPerUnit,
                 font,
                 this.Text,
-                this.SnapToPixels ? this._pixelPosition.Value : this.WorldPosition,
+                this.ShouldSnapToPixels(this.Settings) ? this._pixelPosition.Value : this.WorldPosition,
                 this.Color,
                 this.RenderOptions.Orientation);
         }
@@ -137,7 +116,7 @@ public class TextRenderer : RenderableEntity {
         var maximumX = points.Max(point => point.X);
         var maximumY = points.Max(point => point.Y);
 
-        if (this.SnapToPixels) {
+        if (this.ShouldSnapToPixels(this.Settings)) {
             minimumX = minimumX.ToPixelSnappedValue(this.Settings);
             minimumY = minimumY.ToPixelSnappedValue(this.Settings);
             maximumX = maximumX.ToPixelSnappedValue(this.Settings);
