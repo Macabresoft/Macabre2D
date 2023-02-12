@@ -27,6 +27,8 @@ public interface ILoop : IUpdateableGameObject, INameable {
 [DataContract]
 [Category("System")]
 public abstract class Loop : PropertyChangedNotifier, ILoop {
+    private bool _isEnabled = true;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Loop" /> class.
     /// </summary>
@@ -39,7 +41,10 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
 
     /// <inheritdoc />
     [DataMember]
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled {
+        get => this._isEnabled;
+        set => this.Set(ref this._isEnabled, value);
+    }
 
     /// <inheritdoc />
     [DataMember]

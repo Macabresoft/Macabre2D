@@ -6,15 +6,13 @@ using System.Runtime.Serialization;
 
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
+    private bool _isPlaying;
     private uint _millisecondsPassed;
     private uint _millisecondsPerFrame;
-    private bool _isPlaying;
+    private int _updateOrder;
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.CurrentSpriteIndex;
-
-    /// <inheritdoc />
-    public int UpdateOrder => 0;
 
     /// <summary>
     /// Gets or sets the frame rate. This is represented in frames per second.
@@ -37,6 +35,13 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     public bool IsPlaying {
         get => this._isPlaying;
         private set => this.Set(ref this._isPlaying, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public int UpdateOrder {
+        get => this._updateOrder;
+        set => this.Set(ref this._updateOrder, value);
     }
 
     /// <summary>

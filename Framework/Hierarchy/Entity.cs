@@ -154,6 +154,8 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
 /// </summary>
 [Category("Entity")]
 public class Entity : Transformable, IEntity {
+    private bool _isEnabled = true;
+    
     [DataMember]
     private readonly EntityCollection _children = new();
 
@@ -184,7 +186,10 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     [DataMember]
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled {
+        get => this._isEnabled;
+        set => this.Set(ref this._isEnabled, value);
+    }
 
     /// <inheritdoc />
     [DataMember]

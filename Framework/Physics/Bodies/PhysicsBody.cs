@@ -63,6 +63,8 @@ public interface IPhysicsBody : IEntity, IBoundable {
 [Display(Name = "Physics Body")]
 [Category("Body")]
 public abstract class PhysicsBody : Entity, IPhysicsBody {
+    private int _updateOrder;
+
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
 
@@ -85,7 +87,10 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
 
     /// <inheritdoc />
     [DataMember]
-    public int UpdateOrder { get; set; }
+    public int UpdateOrder {
+        get => this._updateOrder;
+        set => this.Set(ref this._updateOrder, value);
+    }
 
     /// <inheritdoc />
     public abstract IEnumerable<Collider> GetColliders();
