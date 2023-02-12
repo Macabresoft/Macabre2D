@@ -8,6 +8,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
     private uint _millisecondsPassed;
     private uint _millisecondsPerFrame;
+    private bool _isPlaying;
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.CurrentSpriteIndex;
@@ -33,7 +34,10 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// <summary>
     /// Gets a value indicating whether or not this is playing.
     /// </summary>
-    public bool IsPlaying { get; private set; }
+    public bool IsPlaying {
+        get => this._isPlaying;
+        private set => this.Set(ref this._isPlaying, value);
+    }
 
     /// <summary>
     /// Gets or sets the current frame index.
