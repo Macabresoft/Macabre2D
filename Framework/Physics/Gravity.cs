@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Physics)]
-public sealed class Gravity : NotifyPropertyChanged {
+public sealed class Gravity {
     private Vector2 _value;
 
     /// <summary>

@@ -1,12 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// An wrapper that provides notifications on property changed. Useful for structs in a collection that need to be edited.
 /// </summary>
 /// <typeparam name="T">The type to wrap.</typeparam>
-public class NotifyingWrapper<T> : NotifyPropertyChanged {
+public class NotifyingWrapper<T> : PropertyChangedNotifier {
     private T _value;
 
     /// <summary>

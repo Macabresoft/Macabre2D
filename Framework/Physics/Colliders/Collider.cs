@@ -36,7 +36,7 @@ public enum ColliderType {
 /// Collider to be attached to bodies in the physics engine.
 /// </summary>
 [DataContract]
-public abstract class Collider : NotifyPropertyChanged, IBoundable {
+public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// <summary>
     /// The empty collider.
     /// </summary>

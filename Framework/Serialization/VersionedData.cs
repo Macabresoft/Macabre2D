@@ -26,7 +26,7 @@ public interface IVersionedData {
 /// Data that can be versioned.
 /// </summary>
 [DataContract]
-public class VersionedData : NotifyPropertyChanged, IVersionedData {
+public class VersionedData : IVersionedData {
     /// <summary>
     /// Initializes a new instance of the <see cref="VersionedData" /> class.
     /// </summary>

@@ -1,12 +1,13 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// A step in a sprite animation.
 /// </summary>
 [DataContract]
-public sealed class SpriteAnimationStep : NotifyPropertyChanged {
+public sealed class SpriteAnimationStep : PropertyChangedNotifier {
     private int _frames = 1;
     private byte? _spriteIndex;
 

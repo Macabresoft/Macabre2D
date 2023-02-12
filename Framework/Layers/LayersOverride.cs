@@ -1,12 +1,15 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// A <see cref="Layers" /> wrapper that can be enabled or disabled.
 /// </summary>
 [DataContract]
-public class LayersOverride : NotifyPropertyChanged {
+public class LayersOverride : PropertyChangedNotifier {
+    private Layers _value;
+
     /// <summary>
     /// Initializes a new instance of <see cref="LayersOverride" />
     /// </summary>
@@ -40,5 +43,8 @@ public class LayersOverride : NotifyPropertyChanged {
     /// Gets or sets the value.
     /// </summary>
     [DataMember]
-    public Layers Value { get; set; }
+    public Layers Value {
+        get => this._value;
+        set => this.Set(ref this._value, value);
+    }
 }

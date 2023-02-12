@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An interface to read common game settings.
 /// </summary>
-public interface IGameSettings : INotifyPropertyChanged {
+public interface IGameSettings {
     /// <summary>
     /// Gets the default graphics settings.
     /// </summary>
@@ -75,7 +75,7 @@ public interface IGameSettings : INotifyPropertyChanged {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Settings)]
-public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
+public sealed class GameSettings : IGameSettings {
     private ushort _pixelsPerUnit = 32;
 
     /// <inheritdoc />

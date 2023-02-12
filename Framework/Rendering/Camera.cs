@@ -134,7 +134,7 @@ public class Camera : Entity, ICamera {
     [DataMember]
     public int RenderOrder {
         get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value, true);
+        set => this.Set(ref this._renderOrder, value);
     }
 
     /// <summary>

@@ -52,7 +52,7 @@ public interface ITransformable {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Transform)]
-public abstract class Transformable : NotifyPropertyChanged, ITransformable {
+public abstract class Transformable : PropertyChangedNotifier, ITransformable {
     private readonly ResettableLazy<Vector2> _worldPosition;
     private Vector2 _localPosition;
 

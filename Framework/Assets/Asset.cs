@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for an object that is an asset.
@@ -49,7 +50,7 @@ public interface IAsset<TContent> : IAsset {
 /// A base implementation for assets that contains an identifier and name.
 /// </summary>
 [DataContract]
-public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> {
+public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent> {
     private TContent? _content;
 
     /// <summary>
@@ -62,7 +63,7 @@ public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> 
     /// <inheritdoc />
     public TContent? Content {
         get => this._content;
-        protected set => this.Set(ref this._content, value);
+        protected set => this.Set(ref this._content, value); // TODO: does this need property changed?
     }
 
     /// <inheritdoc />

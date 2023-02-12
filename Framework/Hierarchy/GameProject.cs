@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for a single project in the engine.
@@ -29,7 +30,7 @@ public interface IGameProject : INotifyPropertyChanged {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Miscellaneous)]
-public class GameProject : NotifyPropertyChanged, IGameProject {
+public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <summary>
     /// The default project name.
     /// </summary>

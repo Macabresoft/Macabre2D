@@ -1,11 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// A model for a single tile of an <see cref="AutoTileSet" />.
 /// </summary>
-public class AutoTileIndexModel : NotifyPropertyChanged {
+public class AutoTileIndexModel : PropertyChangedNotifier {
     private readonly AutoTileSet _tileSet;
     private byte? _spriteIndex;
 
@@ -24,6 +25,11 @@ public class AutoTileIndexModel : NotifyPropertyChanged {
     }
 
     /// <summary>
+    /// Gets the tile index.
+    /// </summary>
+    public byte TileIndex { get; }
+
+    /// <summary>
     /// Gets or sets the sprite index.
     /// </summary>
     public byte? SpriteIndex {
@@ -39,9 +45,4 @@ public class AutoTileIndexModel : NotifyPropertyChanged {
             }
         }
     }
-
-    /// <summary>
-    /// Gets the tile index.
-    /// </summary>
-    public byte TileIndex { get; }
 }

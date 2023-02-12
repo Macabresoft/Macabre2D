@@ -6,13 +6,14 @@ using System.IO;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// Display collection for a <see cref="SpriteSheetMember" />.
 /// </summary>
 /// <typeparam name="TAsset">The type of asset.</typeparam>
-public class SpriteSheetAssetDisplayCollection<TAsset> : NotifyPropertyChanged, IReadOnlyCollection<TAsset> where TAsset : SpriteSheetMember {
+public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier, IReadOnlyCollection<TAsset> where TAsset : SpriteSheetMember {
     private readonly ContentFile _file;
 
     /// <summary>

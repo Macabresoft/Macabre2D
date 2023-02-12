@@ -11,12 +11,12 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Offset)]
-public class OffsetOptions : NotifyPropertyChanged {
+public class OffsetOptions : PropertyChangedNotifier {
     private static readonly ResettableLazy<Vector2> EmptySizeFactory = new(() => Vector2.Zero);
     private bool _isInitialized;
     private Vector2 _offset;
-    private ResettableLazy<Vector2> _size = EmptySizeFactory;
     private PixelOffsetType _offsetType;
+    private ResettableLazy<Vector2> _size = EmptySizeFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetOptions" /> class.
@@ -33,6 +33,12 @@ public class OffsetOptions : NotifyPropertyChanged {
         this._offset = offset;
         this._offsetType = offsetType;
     }
+
+    /// <summary>
+    /// Gets the size.
+    /// </summary>
+    /// <value>The size.</value>
+    public Vector2 Size => this._size.Value;
 
     /// <summary>
     /// Gets or sets the offset amount. This size is in pixels.
@@ -54,7 +60,7 @@ public class OffsetOptions : NotifyPropertyChanged {
 
                 if (this._isInitialized) {
                     this._offsetType = PixelOffsetType.Custom;
-                    this.RaisePropertyChanged(true, nameof(this.OffsetType));
+                    this.RaisePropertyChanged(nameof(this.OffsetType));
                 }
             }
         }
@@ -76,12 +82,6 @@ public class OffsetOptions : NotifyPropertyChanged {
             }
         }
     }
-
-    /// <summary>
-    /// Gets the size.
-    /// </summary>
-    /// <value>The size.</value>
-    public Vector2 Size => this._size?.Value ?? Vector2.Zero;
 
     /// <summary>
     /// Initializes the specified size factory.
@@ -155,7 +155,7 @@ public class OffsetOptions : NotifyPropertyChanged {
                 }
             }
 
-            this.RaisePropertyChanged(true, nameof(this.Offset));
+            this.RaisePropertyChanged(nameof(this.Offset));
         }
     }
 }

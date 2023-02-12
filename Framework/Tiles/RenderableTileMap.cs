@@ -15,7 +15,7 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     [DataMember]
     public bool IsVisible {
         get => this._isVisible && this.IsEnabled;
-        set => this.Set(ref this._isVisible, value, this.IsEnabled);
+        set => this.Set(ref this._isVisible, value);
     }
 
     /// <inheritdoc />
@@ -27,7 +27,7 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     [DataMember]
     public int RenderOrder {
         get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value, true);
+        set => this.Set(ref this._renderOrder, value);
     }
 
     /// <inheritdoc />

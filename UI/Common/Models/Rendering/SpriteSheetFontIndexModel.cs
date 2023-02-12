@@ -1,11 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// A model for a single character in a <see cref="SpriteSheetFont" />.
 /// </summary>
-public class SpriteSheetFontIndexModel : NotifyPropertyChanged {
+public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
     private readonly SpriteSheetFont _font;
     private byte? _spriteIndex;
 

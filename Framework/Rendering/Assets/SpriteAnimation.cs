@@ -124,6 +124,7 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     }
 
     private void Step_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        // TODO: remove this?
         this.RaisePropertyChanged(nameof(this.Steps));
     }
 

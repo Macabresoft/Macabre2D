@@ -13,7 +13,7 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// A collection of <see cref="SpriteDisplayModel" />.
 /// </summary>
-public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollection<SpriteDisplayModel> {
+public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollection<SpriteDisplayModel> {
     private readonly IImage _bitmap;
     private readonly ContentFile _file;
 

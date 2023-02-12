@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for an system which runs operations for a <see cref="IScene" />.
@@ -25,7 +26,7 @@ public interface ILoop : IUpdateableGameObject, INameable {
 /// </summary>
 [DataContract]
 [Category("System")]
-public abstract class Loop : NotifyPropertyChanged, ILoop {
+public abstract class Loop : PropertyChangedNotifier, ILoop {
     /// <summary>
     /// Initializes a new instance of the <see cref="Loop" /> class.
     /// </summary>

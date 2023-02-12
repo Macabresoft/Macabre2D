@@ -15,7 +15,7 @@ public enum TimerState {
 /// A timer that can be disabled and has a limit
 /// </summary>
 [DataContract]
-public class GameTimer : NotifyPropertyChanged {
+public class GameTimer {
     /// <summary>
     /// Gets the percentage complete.
     /// </summary>

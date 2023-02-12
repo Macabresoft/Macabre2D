@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// A reference to an asset using identifier and type. Held by entities for serialization.
@@ -10,7 +11,7 @@ using System.Runtime.Serialization;
 /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 [DataContract]
-public class AssetReference<TAsset, TContent> : NotifyPropertyChanged where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
+public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private TAsset? _asset;
     private IAssetManager _assetManager = AssetManager.Empty;
     private Guid _contentId;
@@ -20,7 +21,7 @@ public class AssetReference<TAsset, TContent> : NotifyPropertyChanged where TAss
     /// </summary>
     public TAsset? Asset {
         get => this._asset;
-        private set => this.Set(ref this._asset, value);
+        private set => this.Set(ref this._asset, value); // TODO: does this need property changed?
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public class AssetReference<TAsset, TContent> : NotifyPropertyChanged where TAss
     [DataMember]
     public Guid ContentId {
         get => this._contentId;
-        private set => this.Set(ref this._contentId, value);
+        private set => this.Set(ref this._contentId, value); // TODO: does this need property changed?
     }
 
     /// <summary>
