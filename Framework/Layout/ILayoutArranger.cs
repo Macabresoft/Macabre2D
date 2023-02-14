@@ -7,7 +7,7 @@ public interface ILayoutArranger {
     /// <summary>
     /// Requests a rearrangement. This is called when size, row, or column changes on a <see cref="ILayoutArrangeable"/>.
     /// </summary>
-    void RequestRearrange();
+    void RequestRearrange(ILayoutArrangeable requester);
 
     /// <summary>
     /// Gets the bounding area for a specific row and column.
@@ -15,5 +15,5 @@ public interface ILayoutArranger {
     /// <param name="row">The row.</param>
     /// <param name="column">The column.</param>
     /// <returns>The bounding area.</returns>
-    BoundingArea GetBoundingArea(byte row, byte column);
+    BoundingArea GetBoundingArea(int row, int column);
 }
