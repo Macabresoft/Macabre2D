@@ -19,12 +19,20 @@ public class LayoutGrid : Entity, ILayoutArranger {
     private IBoundable? _boundable;
     private BoundingArea _boundingArea = BoundingArea.Empty;
 
+    /// <summary>
+    /// Adds a column.
+    /// </summary>
+    /// <returns>The added column.</returns>
     public LayoutDimension AddColumn() {
         var dimension = new LayoutDimension();
         this._columns.Add(dimension);
         return dimension;
     }
 
+    /// <summary>
+    /// Adds a row.
+    /// </summary>
+    /// <returns>The added row.</returns>
     public LayoutDimension AddRow() {
         var dimension = new LayoutDimension();
         this._rows.Add(dimension);
