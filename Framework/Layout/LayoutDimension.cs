@@ -10,6 +10,7 @@ using Macabresoft.Core;
 [DataContract]
 public class LayoutDimension {
     /// <summary>
+    /// An empty <see cref="LayoutDimension"/>.
     /// </summary>
     public static readonly LayoutDimension Empty = new();
 

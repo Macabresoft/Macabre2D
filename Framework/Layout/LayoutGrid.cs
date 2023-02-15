@@ -19,6 +19,18 @@ public class LayoutGrid : Entity, ILayoutArranger {
     private IBoundable? _boundable;
     private BoundingArea _boundingArea = BoundingArea.Empty;
 
+    public LayoutDimension AddColumn() {
+        var dimension = new LayoutDimension();
+        this._columns.Add(dimension);
+        return dimension;
+    }
+
+    public LayoutDimension AddRow() {
+        var dimension = new LayoutDimension();
+        this._rows.Add(dimension);
+        return dimension;
+    }
+
     /// <inheritdoc />
     public BoundingArea GetBoundingArea(int row, int column) {
         if (!this._boundingArea.IsEmpty && this.TryGetColumn(column, out var columnDimension) && this.TryGetRow(row, out var rowDimension)) {
@@ -42,6 +54,46 @@ public class LayoutGrid : Entity, ILayoutArranger {
         }
 
         this.Rearrange();
+    }
+
+    /// <summary>
+    /// Removes the specified column.
+    /// </summary>
+    /// <param name="column">The column.</param>
+    public void RemoveColumn(LayoutDimension column) {
+        this._columns.Remove(column);
+        this.Rearrange();
+    }
+
+    /// <summary>
+    /// Removes a column at the specified index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    public void RemoveColumnAt(int index) {
+        if (index > 0 && index < this._columns.Count) {
+            this._columns.RemoveAt(index);
+            this.Rearrange();
+        }
+    }
+
+    /// <summary>
+    /// Removes the specified row.
+    /// </summary>
+    /// <param name="row">The row.</param>
+    public void RemoveRow(LayoutDimension row) {
+        this._rows.Remove(row);
+        this.Rearrange();
+    }
+
+    /// <summary>
+    /// Removes a row at the specified index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    public void RemoveRowAt(int index) {
+        if (index > 0 && index < this._rows.Count) {
+            this._rows.RemoveAt(index);
+            this.Rearrange();
+        }
     }
 
     /// <inheritdoc />
