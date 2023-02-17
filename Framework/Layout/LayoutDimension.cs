@@ -14,7 +14,7 @@ public class LayoutDimension {
     /// </summary>
     public static readonly LayoutDimension Empty = new();
 
-    private float _amount;
+    private float _amount = 1f;
 
     /// <summary>
     /// Occurs when dimensions have changed.

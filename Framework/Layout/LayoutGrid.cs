@@ -26,6 +26,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public LayoutDimension AddColumn() {
         var dimension = new LayoutDimension();
         this._columns.Add(dimension);
+        this.Rearrange();
         return dimension;
     }
 
@@ -36,6 +37,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public LayoutDimension AddRow() {
         var dimension = new LayoutDimension();
         this._rows.Add(dimension);
+        this.Rearrange();
         return dimension;
     }
 
@@ -127,13 +129,15 @@ public class LayoutGrid : Entity, ILayoutArranger {
         if (totalAmount > 0f) {
             foreach (var dimension in dimensions) {
                 dimension.Length = totalLength * (dimension.Amount / totalAmount);
+
+                if (!increasingStartingPosition) {
+                    startingPosition -= dimension.Length;
+                }
+
                 dimension.Position = startingPosition;
 
                 if (increasingStartingPosition) {
                     startingPosition += dimension.Length;
-                }
-                else {
-                    startingPosition -= dimension.Length;
                 }
             }
         }
@@ -143,7 +147,14 @@ public class LayoutGrid : Entity, ILayoutArranger {
     }
 
     private void Rearrange() {
-        this._boundingArea = this._boundable?.BoundingArea ?? BoundingArea.Empty;
+        if (!this.IsInitialized || this._boundable == null) {
+            this._boundingArea = BoundingArea.Empty;
+            ClearDimensions(this._rows);
+            ClearDimensions(this._columns);
+            return;
+        }
+
+        this._boundingArea = this._boundable.BoundingArea;
 
         if (this._boundingArea.IsEmpty) {
             ClearDimensions(this._rows);
@@ -162,7 +173,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     }
 
     private bool TryGetColumn(int column, out LayoutDimension dimension) {
-        if (column < 0 || column > this._columns.Count) {
+        if (column < 0 || column >= this._columns.Count) {
             dimension = LayoutDimension.Empty;
             return false;
         }
@@ -172,7 +183,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     }
 
     private bool TryGetRow(int row, out LayoutDimension dimension) {
-        if (row < 0 || row > this._rows.Count) {
+        if (row < 0 || row >= this._rows.Count) {
             dimension = LayoutDimension.Empty;
             return false;
         }
