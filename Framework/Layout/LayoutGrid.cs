@@ -47,39 +47,18 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public BoundingArea GetBoundingArea(int row, int column) {
         if (!this._boundingArea.IsEmpty && this.TryGetColumn(column, out var columnDimension) && this.TryGetRow(row, out var rowDimension)) {
             var start = new Vector2(columnDimension.Position, rowDimension.Position);
-            return new BoundingArea(start, columnDimension.ActualLength, rowDimension.ActualLength);
+            var boundingArea = new BoundingArea(start, columnDimension.ActualLength, rowDimension.ActualLength);
+            return new BoundingArea(
+                new Vector2(Math.Max(boundingArea.Minimum.X, this._boundingArea.Minimum.X), Math.Max(boundingArea.Minimum.Y, this._boundingArea.Minimum.Y)),
+                new Vector2(Math.Min(boundingArea.Maximum.X, this._boundingArea.Maximum.X), Math.Min(boundingArea.Maximum.Y, this._boundingArea.Maximum.Y)));
         }
 
         return BoundingArea.Empty;
     }
 
     /// <inheritdoc />
-    public BoundingArea GetBoundingArea(int row, int column, int rowSpan, int columnSpan) {
-        var result = BoundingArea.Empty;
-
-        if (rowSpan > 0 && columnSpan > 0 && row < this._rows.Count && column < this._columns.Count) {
-            rowSpan = Math.Min(this._rows.Count - row, rowSpan);
-            columnSpan = Math.Min(this._columns.Count - column, columnSpan);
-            if (rowSpan == 1 && columnSpan == 1) {
-                result = this.GetBoundingArea(row, column);
-            }
-            else {
-                var startingBoundingArea = this.GetBoundingArea(row, column);
-                var endingBoundingArea = this.GetBoundingArea(row + rowSpan - 1, column + columnSpan - 1);
-                result = new BoundingArea(
-                    startingBoundingArea.Minimum.X,
-                    endingBoundingArea.Maximum.X,
-                    endingBoundingArea.Minimum.Y,
-                    startingBoundingArea.Maximum.Y);
-            }
-        }
-
-        return result;
-    }
-
-    /// <inheritdoc />
     public BoundingArea GetBoundingArea(ILayoutArrangeable arrangeable) {
-        return this.GetBoundingArea(arrangeable.Row, arrangeable.Column, arrangeable.RowSpan, arrangeable.ColumnSpan);
+        return this.GetBoundingArea(arrangeable.Row, arrangeable.Column);
     }
 
     /// <inheritdoc />

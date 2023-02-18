@@ -19,16 +19,6 @@ public interface ILayoutArrangeable : IBoundable {
     /// When arranging a vertical stack panel, row will be used to determine order.
     /// </remarks>
     public byte Row { get; }
-    
-    /// <summary>
-    /// Gets the number of rows this element spans.
-    /// </summary>
-    public byte RowSpan { get; }
-    
-    /// <summary>
-    /// Gets the number of columns this element spans.
-    /// </summary>
-    public byte ColumnSpan { get; }
 
     /// <summary>
     /// Confines this instance to the specified <see cref="BoundingArea"/>.

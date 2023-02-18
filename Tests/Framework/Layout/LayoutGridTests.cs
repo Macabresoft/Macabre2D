@@ -14,6 +14,66 @@ using NUnit.Framework;
 public class LayoutGridTests {
     [Category("Unit Tests")]
     [Test]
+    public static void GetBoundingArea_ShouldReturnArrangeableBoundingArea_WhenAuto_AndFits() {
+        var boundable = new TestingBoundable {
+            BoundingArea = new BoundingArea(Vector2.Zero, 10f, 10f)
+        };
+
+        var arrangeable = new TestingBoundable {
+            Row = 1,
+            Column = 1,
+            BoundingArea = new BoundingArea(new Vector2(1f, 1f), 2f, 2f)
+        };
+
+        var grid = new LayoutGrid();
+        grid.AddChild(arrangeable);
+        grid.Initialize(Substitute.For<IScene>(), boundable);
+
+        grid.AddRow().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddRow().DimensionType = LayoutDimensionType.Auto;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Auto;
+        grid.AddRow().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Proportional;
+
+        using (new AssertionScope()) {
+            var boundingArea = grid.GetBoundingArea(1, 1);
+            boundingArea.Width.Should().Be(arrangeable.BoundingArea.Width);
+            boundingArea.Height.Should().Be(arrangeable.BoundingArea.Height);
+        }
+    }
+    
+    [Category("Unit Tests")]
+    [Test]
+    public static void GetBoundingArea_ShouldReturnParentBoundingArea_WhenAuto_AndDoesNotFit() {
+        var boundable = new TestingBoundable {
+            BoundingArea = new BoundingArea(Vector2.Zero, 10f, 10f)
+        };
+
+        var arrangeable = new TestingBoundable {
+            Row = 1,
+            Column = 1,
+            BoundingArea = new BoundingArea(new Vector2(-5f, -5f), 20f, 20f)
+        };
+
+        var grid = new LayoutGrid();
+        grid.AddChild(arrangeable);
+        grid.Initialize(Substitute.For<IScene>(), boundable);
+
+        grid.AddRow().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddRow().DimensionType = LayoutDimensionType.Auto;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Auto;
+        grid.AddRow().DimensionType = LayoutDimensionType.Proportional;
+        grid.AddColumn().DimensionType = LayoutDimensionType.Proportional;
+
+        using (new AssertionScope()) {
+            grid.GetBoundingArea(1, 1).Should().Be(boundable.BoundingArea);
+        }
+    }
+
+    [Category("Unit Tests")]
+    [Test]
     [TestCase(2, 2, 0f, 0f, 10f, 10f, 1, 1, 5f, 0f, 5f, 5f)]
     [TestCase(3, 3, 0f, 0f, 9, 6f, 0, 1, 3f, 4f, 3f, 2f)]
     public static void GetBoundingArea_ShouldReturnCorrectBoundingArea_WithEqualLengths_AndProportionalDimensions(
@@ -100,33 +160,7 @@ public class LayoutGridTests {
         }
     }
 
-    [Category("Unit Tests")]
-    [Test]
-    [TestCase(1, 1, 1, 1)]
-    [TestCase(2, 5, 3, 10)]
-    [TestCase(10, 10, 10, 10)]
-    public static void GetBoundingArea_ShouldReturnFullBoundingArea_WithRowSpan_AndProportionalDimensions(int rows, int columns, int rowSpan, int columnSpan) {
-        var boundable = new TestingBoundable {
-            BoundingArea = new BoundingArea(Vector2.Zero, 10f, 10f)
-        };
-
-        var grid = new LayoutGrid();
-        grid.Initialize(Substitute.For<IScene>(), boundable);
-
-        for (var i = 0; i < rows; i++) {
-            grid.AddRow().DimensionType = LayoutDimensionType.Proportional;
-        }
-
-        for (var i = 0; i < columns; i++) {
-            grid.AddColumn().DimensionType = LayoutDimensionType.Proportional;
-        }
-
-        using (new AssertionScope()) {
-            grid.GetBoundingArea(0, 0, rowSpan, columnSpan).Should().Be(boundable.BoundingArea);
-        }
-    }
-
-    private class TestingBoundable : Entity, IBoundable {
+    private class TestingBoundable : Entity, IBoundable, ILayoutArrangeable {
         private BoundingArea _boundingArea;
         public event EventHandler BoundingAreaChanged;
 
@@ -136,6 +170,13 @@ public class LayoutGridTests {
                 this._boundingArea = value;
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
+        }
+
+        public byte Column { get; set; }
+
+        public byte Row { get; set; }
+
+        public void ConfineToBounds(BoundingArea boundingArea) {
         }
     }
 }
