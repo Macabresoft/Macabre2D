@@ -26,7 +26,8 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public LayoutDimension AddColumn() {
         var dimension = new LayoutDimension();
         this._columns.Add(dimension);
-        this.Rearrange();
+        this.Rearrange(); // TODO: only arrange columns here.
+        dimension.DimensionChanged += this.Column_DimensionChanged;
         return dimension;
     }
 
@@ -37,7 +38,8 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public LayoutDimension AddRow() {
         var dimension = new LayoutDimension();
         this._rows.Add(dimension);
-        this.Rearrange();
+        this.Rearrange(); // TODO: only arrange rows here.
+        dimension.DimensionChanged += this.Row_DimensionChanged;
         return dimension;
     }
 
@@ -45,7 +47,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     public BoundingArea GetBoundingArea(int row, int column) {
         if (!this._boundingArea.IsEmpty && this.TryGetColumn(column, out var columnDimension) && this.TryGetRow(row, out var rowDimension)) {
             var start = new Vector2(columnDimension.Position, rowDimension.Position);
-            return new BoundingArea(start, columnDimension.Length, rowDimension.Length);
+            return new BoundingArea(start, columnDimension.ActualLength, rowDimension.ActualLength);
         }
 
         return BoundingArea.Empty;
@@ -101,7 +103,8 @@ public class LayoutGrid : Entity, ILayoutArranger {
     /// <param name="column">The column.</param>
     public void RemoveColumn(LayoutDimension column) {
         this._columns.Remove(column);
-        this.Rearrange();
+        column.DimensionChanged -= this.Column_DimensionChanged;
+        this.Rearrange(); // TODO: only arrange columns here.
     }
 
     /// <summary>
@@ -110,8 +113,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     /// <param name="index">The index.</param>
     public void RemoveColumnAt(int index) {
         if (index > 0 && index < this._columns.Count) {
-            this._columns.RemoveAt(index);
-            this.Rearrange();
+            this.RemoveColumn(this._columns[index]);
         }
     }
 
@@ -121,7 +123,8 @@ public class LayoutGrid : Entity, ILayoutArranger {
     /// <param name="row">The row.</param>
     public void RemoveRow(LayoutDimension row) {
         this._rows.Remove(row);
-        this.Rearrange();
+        row.DimensionChanged -= this.Row_DimensionChanged;
+        this.Rearrange(); // TODO: only arrange rows here.
     }
 
     /// <summary>
@@ -130,8 +133,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
     /// <param name="index">The index.</param>
     public void RemoveRowAt(int index) {
         if (index > 0 && index < this._rows.Count) {
-            this._rows.RemoveAt(index);
-            this.Rearrange();
+            this.RemoveRow(this._rows[index]);
         }
     }
 
@@ -148,31 +150,77 @@ public class LayoutGrid : Entity, ILayoutArranger {
 
     private static void ClearDimensions(IEnumerable<LayoutDimension> dimensions) {
         foreach (var dimension in dimensions) {
-            dimension.Length = 0f;
+            dimension.ActualLength = 0f;
             dimension.Position = 0f;
         }
     }
 
+    private void Column_DimensionChanged(object? sender, EventArgs e) {
+        this.Rearrange(); // TODO: only arrange columns here.
+    }
+
+    private void EvaluateColumns(IReadOnlyCollection<ILayoutArrangeable> arrangeables) {
+        var totalLength = this._boundingArea.Width;
+        for (var i = 0; i < this._columns.Count; i++) {
+            var column = this._columns[i];
+
+            if (column.DimensionType == LayoutDimensionType.Auto) {
+                var entities = arrangeables.Where(x => x.Column == i).ToArray();
+                if (entities.Any()) {
+                    column.ActualLength = entities.Max(x => x.BoundingArea.Width);
+                    totalLength -= column.ActualLength;
+                }
+            }
+            else if (column.DimensionType == LayoutDimensionType.Units) {
+                totalLength -= column.ActualLength;
+            }
+        }
+
+        EvaluateDimensions(this._columns, this._boundingArea.Minimum.X, totalLength, true);
+    }
+
     private static void EvaluateDimensions(IReadOnlyCollection<LayoutDimension> dimensions, float startingPosition, float totalLength, bool increasingStartingPosition) {
-        var totalAmount = dimensions.Sum(x => x.Amount);
+        var totalAmount = dimensions.Where(x => x.DimensionType == LayoutDimensionType.Proportional).Sum(x => x.Amount);
         if (totalAmount > 0f) {
             foreach (var dimension in dimensions) {
-                dimension.Length = totalLength * (dimension.Amount / totalAmount);
+                if (dimension.DimensionType == LayoutDimensionType.Proportional) {
+                    dimension.ActualLength = totalLength * (dimension.Amount / totalAmount);
+                }
 
                 if (!increasingStartingPosition) {
-                    startingPosition -= dimension.Length;
+                    startingPosition -= dimension.ActualLength;
                 }
 
                 dimension.Position = startingPosition;
 
                 if (increasingStartingPosition) {
-                    startingPosition += dimension.Length;
+                    startingPosition += dimension.ActualLength;
                 }
             }
         }
         else {
             ClearDimensions(dimensions);
         }
+    }
+
+    private void EvaluateRows(IReadOnlyCollection<ILayoutArrangeable> arrangeables) {
+        var totalLength = this._boundingArea.Height;
+        for (var i = 0; i < this._rows.Count; i++) {
+            var row = this._rows[i];
+
+            if (row.DimensionType == LayoutDimensionType.Auto) {
+                var entities = arrangeables.Where(x => x.Row == i).ToArray();
+                if (entities.Any()) {
+                    row.ActualLength = entities.Max(x => x.BoundingArea.Height);
+                    totalLength -= row.ActualLength;
+                }
+            }
+            else if (row.DimensionType == LayoutDimensionType.Units) {
+                totalLength -= row.ActualLength;
+            }
+        }
+
+        EvaluateDimensions(this._rows, this._boundingArea.Maximum.Y, totalLength, false);
     }
 
     private void Rearrange() {
@@ -190,11 +238,15 @@ public class LayoutGrid : Entity, ILayoutArranger {
             ClearDimensions(this._columns);
         }
         else {
-            EvaluateDimensions(this._rows, this._boundingArea.Maximum.Y, this._boundingArea.Height, false);
-            EvaluateDimensions(this._columns, this._boundingArea.Minimum.X, this._boundingArea.Width, true);
+            var arrangeables = this.Children.OfType<ILayoutArrangeable>().ToList();
+            this.EvaluateRows(arrangeables);
+            this.EvaluateColumns(arrangeables);
+            // TODO: reposition children of type ILayoutArrangeable
         }
+    }
 
-        // TODO: reposition children of type ILayoutArrangeable
+    private void Row_DimensionChanged(object? sender, EventArgs e) {
+        this.Rearrange(); // TODO: only arrange rows here.
     }
 
     private bool ShouldRearrange(ILayoutArrangeable requester) {
