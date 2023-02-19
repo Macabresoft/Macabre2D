@@ -154,10 +154,10 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
 /// </summary>
 [Category("Entity")]
 public class Entity : Transformable, IEntity {
-    private bool _isEnabled = true;
-    
     [DataMember]
     private readonly EntityCollection _children = new();
+
+    private bool _isEnabled = true;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity" /> class.
@@ -359,6 +359,8 @@ public class Entity : Transformable, IEntity {
         else {
             this._children.Remove(entity);
         }
+
+        this.OnRemoveChild(entity);
     }
 
     /// <inheritdoc />
@@ -391,6 +393,23 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <summary>
+    /// Occurs when a child is added.
+    /// </summary>
+    /// <param name="child">The child.</param>
+    protected virtual void OnAddChild(IEntity child) {
+        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
+            this.Scene.Invoke(() => child.Initialize(this.Scene, this));
+        }
+    }
+
+    /// <summary>
+    /// Occurs when a child is removed.
+    /// </summary>
+    /// <param name="child">The child.</param>
+    protected virtual void OnRemoveChild(IEntity child) {
+    }
+
+    /// <summary>
     /// Called when a property on the current object changes.
     /// </summary>
     /// <param name="sender">The sender.</param>
@@ -405,12 +424,6 @@ public class Entity : Transformable, IEntity {
 
     private bool CanAddChild(IEntity entity) {
         return entity != this && this.Children.All(x => x != entity) && !this.IsDescendentOf(entity);
-    }
-
-    private void OnAddChild(IEntity child) {
-        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
-            this.Scene.Invoke(() => child.Initialize(this.Scene, this));
-        }
     }
 
     private void Parent_TransformChanged(object? sender, EventArgs e) {
