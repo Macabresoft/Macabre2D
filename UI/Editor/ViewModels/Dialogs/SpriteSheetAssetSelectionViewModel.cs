@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -30,7 +32,7 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheetAsset), false);
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheetAsset), false, file => ShouldDisplay(file, out _));
         this.SelectedContentNode = this.RootContentDirectory;
     }
 
@@ -38,6 +40,11 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper RootContentDirectory { get; }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
 
     /// <summary>
     /// Gets or sets the selected asset.
@@ -71,11 +78,6 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
 
-    /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
-
     private void ResetSpriteSheets() {
         this._spriteSheets.Clear();
 
@@ -84,7 +86,7 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
                 case ContentDirectory directory: {
                     var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
                     foreach (var file in directory.GetAllContentFiles()) {
-                        if (file.Asset is SpriteSheetAsset spriteSheet) {
+                        if (ShouldDisplay(file, out var spriteSheet)) {
                             spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
                         }
                     }
@@ -92,12 +94,20 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
                     this._spriteSheets.Reset(spriteCollections);
                     break;
                 }
-                case ContentFile { Asset: SpriteSheetAsset spriteSheet } file: {
-                    var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
-                    this._spriteSheets.Add(spriteCollection);
+                case ContentFile file: {
+                    if (ShouldDisplay(file, out var spriteSheet)) {
+                        var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
+                        this._spriteSheets.Add(spriteCollection);
+                    }
+
                     break;
                 }
             }
         }
+    }
+
+    private static bool ShouldDisplay(ContentFile file, [NotNullWhen(true)] out SpriteSheetAsset spriteSheet) {
+        spriteSheet = file.Asset as SpriteSheetAsset;
+        return spriteSheet != null && spriteSheet.GetAssets<TAsset>().Any();
     }
 }

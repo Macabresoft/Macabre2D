@@ -17,7 +17,17 @@ public class FilteredContentWrapper {
     /// <param name="node">The node.</param>
     /// <param name="assetType">The asset type to find.</param>
     /// <param name="allowDirectorySelection">A value indicating whether or not directories are valid objects to select.</param>
-    public FilteredContentWrapper(IContentNode node, Type assetType, bool allowDirectorySelection) {
+    public FilteredContentWrapper(IContentNode node, Type assetType, bool allowDirectorySelection) : this(node, assetType, allowDirectorySelection, _ => true) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FilteredContentWrapper" /> class.
+    /// </summary>
+    /// <param name="node">The node.</param>
+    /// <param name="assetType">The asset type to find.</param>
+    /// <param name="allowDirectorySelection">A value indicating whether or not directories are valid objects to select.</param>
+    /// <param name="shouldDisplayFunc">A func describing whether or not a <see cref="IContentNode" /> should be displayed.</param>
+    public FilteredContentWrapper(IContentNode node, Type assetType, bool allowDirectorySelection, Func<ContentFile, bool> shouldDisplayFunc) {
         if (assetType == null) {
             throw new ArgumentNullException(nameof(assetType));
         }
@@ -27,16 +37,16 @@ public class FilteredContentWrapper {
         if (node is IContentDirectory directory) {
             var children = new List<FilteredContentWrapper>();
             foreach (var childDirectory in directory.Children.OfType<IContentDirectory>()) {
-                if (allowDirectorySelection || childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset))) {
-                    children.Add(new FilteredContentWrapper(childDirectory, assetType, allowDirectorySelection));
+                if (allowDirectorySelection || childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))) {
+                    children.Add(new FilteredContentWrapper(childDirectory, assetType, allowDirectorySelection, shouldDisplayFunc));
                 }
             }
 
             children.AddRange(
                 directory.Children
                     .OfType<ContentFile>()
-                    .Where(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset))
-                    .Select(x => new FilteredContentWrapper(x, assetType, allowDirectorySelection)));
+                    .Where(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))
+                    .Select(x => new FilteredContentWrapper(x, assetType, allowDirectorySelection, shouldDisplayFunc)));
 
             this.Children = children;
         }
