@@ -1,7 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 
 /// <summary>
 /// A basic value untyped version of <see cref="IValueEditor{T}" />

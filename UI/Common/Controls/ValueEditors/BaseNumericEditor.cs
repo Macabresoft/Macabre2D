@@ -8,7 +8,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
-using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 
 public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric> where TNumeric : struct, IComparable {
     public static readonly DirectProperty<BaseNumericEditor<TNumeric>, string> ValueDisplayProperty =

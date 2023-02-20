@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.ComponentModel;
 using Avalonia;
-using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 
 public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {

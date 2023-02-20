@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 
@@ -506,7 +507,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 if (this._fileSystem.DoesFileExist(moveTo)) {
                     this._fileSystem.DeleteFile(moveTo);
                 }
-                
+
                 this._fileSystem.MoveFile(current, moveTo);
             }
         }
