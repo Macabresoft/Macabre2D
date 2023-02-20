@@ -158,6 +158,7 @@ public class Entity : Transformable, IEntity {
     private readonly EntityCollection _children = new();
 
     private bool _isEnabled = true;
+    private string _name = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity" /> class.
@@ -197,7 +198,16 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     [DataMember]
-    public string Name { get; set; } = string.Empty;
+    public string Name {
+        get => this._name;
+        set {
+            this._name = value;
+
+            if (BaseGame.IsDesignMode) {
+                this.RaisePropertyChanged();
+            }
+        }
+    }
 
     /// <inheritdoc />
     public IEntity Parent { get; private set; } = Empty;
@@ -403,13 +413,6 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <summary>
-    /// Occurs when a child is removed.
-    /// </summary>
-    /// <param name="child">The child.</param>
-    protected virtual void OnRemoveChild(IEntity child) {
-    }
-
-    /// <summary>
     /// Called when a property on the current object changes.
     /// </summary>
     /// <param name="sender">The sender.</param>
@@ -420,6 +423,13 @@ public class Entity : Transformable, IEntity {
         if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(this.Parent)) {
             this.HandleTransformed();
         }
+    }
+
+    /// <summary>
+    /// Occurs when a child is removed.
+    /// </summary>
+    /// <param name="child">The child.</param>
+    protected virtual void OnRemoveChild(IEntity child) {
     }
 
     private bool CanAddChild(IEntity entity) {
