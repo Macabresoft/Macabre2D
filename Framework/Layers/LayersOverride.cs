@@ -9,6 +9,7 @@ using Macabresoft.Core;
 [DataContract]
 public class LayersOverride : PropertyChangedNotifier {
     private Layers _value;
+    private bool _isEnabled;
 
     /// <summary>
     /// Initializes a new instance of <see cref="LayersOverride" />
@@ -37,7 +38,10 @@ public class LayersOverride : PropertyChangedNotifier {
     /// Gets or sets a value indicating whether or not this is enabled.
     /// </summary>
     [DataMember]
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled {
+        get => this._isEnabled;
+        set => this.Set(ref this._isEnabled, value);
+    }
 
     /// <summary>
     /// Gets or sets the value.
