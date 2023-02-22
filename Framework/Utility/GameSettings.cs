@@ -10,6 +10,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IGameSettings {
     /// <summary>
+    /// Gets the common view height used when a camera does not override with its own value.
+    /// </summary>
+    float CommonViewHeight { get; }
+
+    /// <summary>
     /// Gets the default graphics settings.
     /// </summary>
     GraphicsSettings DefaultGraphicsSettings { get; }
@@ -76,6 +81,7 @@ public interface IGameSettings {
 [DataContract]
 [Category(CommonCategories.Settings)]
 public sealed class GameSettings : IGameSettings {
+    private float _commonViewHeight = 10f;
     private ushort _pixelsPerUnit = 32;
 
     /// <inheritdoc />
@@ -92,6 +98,13 @@ public sealed class GameSettings : IGameSettings {
     [DataMember]
     [Category(CommonCategories.Layers)]
     public LayerSettings LayerSettings { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember]
+    public float CommonViewHeight {
+        get => this._commonViewHeight;
+        set => this._commonViewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
+    }
 
     /// <inheritdoc />
     [DataMember]

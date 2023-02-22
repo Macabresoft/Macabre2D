@@ -79,6 +79,7 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<float> _viewWidth;
+    private bool _overrideCommonViewHeight = true;
     private int _renderOrder;
     private SamplerState _samplerState = SamplerState.PointClamp;
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
@@ -125,6 +126,21 @@ public class Camera : Entity, ICamera {
     [DataMember(Name = "Layers to Render")]
     public Layers LayersToRender { get; set; } = ~Layers.None;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether or not to override the common view height from <see cref="IGameSettings" />.
+    /// </summary>
+    [DataMember(Name = "Override Common View Height", Order = 10)]
+    public bool OverrideCommonViewHeight {
+        get => this._overrideCommonViewHeight;
+        set {
+            if (value != this._overrideCommonViewHeight) {
+                this._overrideCommonViewHeight = value;
+                this.CalculateActualViewHeight();
+                this.OnScreenAreaChanged();
+            }
+        }
+    }
+
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
@@ -154,7 +170,7 @@ public class Camera : Entity, ICamera {
     /// <summary>
     /// Gets or sets the height of the view.
     /// </summary>
-    [DataMember(Name = "View Height")]
+    [DataMember(Name = "View Height", Order = 11)]
     public float ViewHeight {
         get => this._viewHeight;
         set {
@@ -213,12 +229,17 @@ public class Camera : Entity, ICamera {
     /// <param name="worldPosition">The world position.</param>
     /// <param name="zoomAmount">The zoom amount.</param>
     public void ZoomTo(Vector2 worldPosition, float zoomAmount) {
-        var originalCameraPosition = this.WorldPosition;
-        var originalDistanceFromCamera = worldPosition - originalCameraPosition;
-        var originalViewHeight = this.ActualViewHeight;
-        this.ViewHeight -= zoomAmount;
-        var viewHeightRatio = this.ActualViewHeight / originalViewHeight;
-        this.SetWorldPosition(worldPosition - originalDistanceFromCamera * viewHeightRatio);
+        if (this.OverrideCommonViewHeight) {
+            var originalCameraPosition = this.WorldPosition;
+            var originalDistanceFromCamera = worldPosition - originalCameraPosition;
+            var originalViewHeight = this.ActualViewHeight;
+            this.ViewHeight -= zoomAmount;
+            var viewHeightRatio = this.ActualViewHeight / originalViewHeight;
+            this.SetWorldPosition(worldPosition - originalDistanceFromCamera * viewHeightRatio);
+        }
+        else {
+            this.SetWorldPosition(worldPosition);
+        }
     }
 
     /// <summary>
@@ -335,8 +356,10 @@ public class Camera : Entity, ICamera {
     }
 
     private void CalculateActualViewHeight() {
+        var viewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Settings.CommonViewHeight;
+
         if (this.ShouldSnapToPixels(this.Settings)) {
-            var originalPixelHeight = (uint)Math.Round(this.ViewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
+            var originalPixelHeight = (uint)Math.Round(viewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
             var viewportHeight = this.Game.ViewportSize.Y;
             if (originalPixelHeight < viewportHeight) {
                 var internalPixelHeight = originalPixelHeight;
@@ -350,11 +373,11 @@ public class Camera : Entity, ICamera {
                 this.ActualViewHeight = this.Settings.UnitsPerPixel * (viewportHeight / (float)count);
             }
             else {
-                this.ActualViewHeight = this.ViewHeight;
+                this.ActualViewHeight = viewHeight;
             }
         }
         else {
-            this.ActualViewHeight = this.ViewHeight;
+            this.ActualViewHeight = viewHeight;
         }
 
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
