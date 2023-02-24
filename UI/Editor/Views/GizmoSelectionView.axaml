@@ -62,21 +62,22 @@
 
                     <avaloniaEx:Icon Content="{StaticResource TileIcon}" />
                 </ToggleButton>
-                
-                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static common:GizmoKind.Tile}"
-                              Classes="Icon"
+            </StackPanel>
+        </Border>
+        
+        <Border Classes="Card"
+                Margin="{StaticResource StandardMarginAll}">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Classes="Icon"
+                              IsChecked="{Binding EditorService.ShowGrid}"
+                              ToolTip.Tip="Show the grid">
+                    <avaloniaEx:Icon Content="{StaticResource GridIcon}" />
+                </ToggleButton>
+                <ToggleButton Classes="Icon"
+                              IsChecked="{Binding EditorService.ShowActiveTiles}"
                               IsVisible="{Binding IsTileable}"
-                              ToolTip.Tip="Edit the active tiles of the selected entity">
-                    <ToggleButton.IsChecked>
-                        <Binding Path="EditorService.SelectedGizmo"
-                                 Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static common:GizmoKind.Tile}"
-                                 Mode="OneWay"
-                                 TargetNullValue="False" />
-                    </ToggleButton.IsChecked>
-
-                    <avaloniaEx:Icon Content="{StaticResource TileIcon}" />
+                              ToolTip.Tip="Highlight active tiles">
+                    <avaloniaEx:Icon Content="{StaticResource ShowTilesIcon}" />
                 </ToggleButton>
             </StackPanel>
         </Border>
