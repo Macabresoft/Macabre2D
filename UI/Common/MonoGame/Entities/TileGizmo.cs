@@ -10,23 +10,37 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A gizmo for editing <see cref="ITileableEntity" />.
 /// </summary>
-public class TileGizmo : Entity, IGizmo {
+public class TileGizmo : BaseDrawer, IGizmo {
     private readonly HashSet<Point> _addedTiles = new();
+    private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
     private readonly HashSet<Point> _removedTiles = new();
     private readonly IUndoService _undoService;
     private ICamera _camera;
     private MouseButton? _currentButton;
 
+    /// <inheritdoc />
+    public override event EventHandler BoundingAreaChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SelectorGizmo" /> class.
     /// </summary>
+    /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The selection service.</param>
     /// <param name="undoService">The undo service.</param>
-    public TileGizmo(IEntityService entityService, IUndoService undoService) {
+    public TileGizmo(IEditorService editorService, IEntityService entityService, IUndoService undoService) {
+        this.UseDynamicLineThickness = true;
+        this.LineThickness = 2f;
+
+        this._editorService = editorService;
         this._entityService = entityService;
         this._undoService = undoService;
+
+        this.Color = this._editorService.SelectionColor;
     }
+
+    /// <inheritdoc />
+    public override BoundingArea BoundingArea => this._entityService.Selected is ITileableEntity tileable ? tileable.BoundingArea : BoundingArea.Empty;
 
     /// <inheritdoc />
     public GizmoKind GizmoKind => GizmoKind.Tile;
@@ -37,6 +51,56 @@ public class TileGizmo : Entity, IGizmo {
 
         if (!this.TryGetParentEntity(out this._camera)) {
             throw new NotSupportedException("Could not find a camera ancestor.");
+        }
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        if (this.SpriteBatch is { } spriteBatch &&
+            this.PrimitiveDrawer is { } drawer &&
+            this.LineThickness > 0f &&
+            this.Color.A > 0 &&
+            this._editorService.ShowActiveTiles &&
+            !this.BoundingArea.IsEmpty &&
+            this._entityService.Selected is ITileableEntity tileable &&
+            viewBoundingArea.Overlaps(this.BoundingArea)) {
+            var settings = this.Settings;
+            var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
+            var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
+            var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
+
+            var tileBoundingAreas = tileable.ActiveTiles
+                .Select(tileable.GetTileBoundingArea)
+                .Where(boundingArea => boundingArea.Overlaps(viewBoundingArea));
+
+            foreach (var boundingArea in tileBoundingAreas) {
+                var bottomLeft = boundingArea.Minimum;
+                var topLeft = new Vector2(boundingArea.Minimum.X, boundingArea.Maximum.Y);
+                var topRight = boundingArea.Maximum;
+                var bottomRight = new Vector2(boundingArea.Maximum.X, boundingArea.Minimum.Y);
+
+                var shadows = new[] {
+                    bottomLeft + shadowOffsetVector,
+                    topLeft + shadowOffsetVector,
+                    topRight + shadowOffsetVector,
+                    bottomRight + shadowOffsetVector,
+                    bottomLeft + shadowOffsetVector,
+                    topRight + shadowOffsetVector
+                };
+
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, settings.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadows);
+
+                var lineStrip = new[] {
+                    bottomLeft,
+                    topLeft,
+                    topRight,
+                    bottomRight,
+                    bottomLeft,
+                    topRight
+                };
+
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, settings.PixelsPerUnit, this._editorService.SelectionColor, lineThickness, lineStrip);
+            }
         }
     }
 

@@ -93,6 +93,11 @@ public interface IEditorService : INotifyPropertyChanged {
     /// Gets or sets a value indicating whether to show the editor grid.
     /// </summary>
     bool ShowGrid { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether to show active tiles.
+    /// </summary>
+    bool ShowActiveTiles { get; set; }
 
     /// <summary>
     /// Gets or sets the color of the x axis.
@@ -116,6 +121,7 @@ public class EditorService : ReactiveObject, IEditorService {
     private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
     private byte _gridDivisions = 5;
     private Color _selectionColor = DefinedColors.MacabresoftYellow;
+    private bool _showActiveTiles = true;
     private bool _showGrid = true;
     private StandardCursorType _standardCursorType = StandardCursorType.None;
     private Color _xAxisColor = DefinedColors.ZvukostiGreen;
@@ -217,6 +223,12 @@ public class EditorService : ReactiveObject, IEditorService {
     public bool ShowGrid {
         get => this._showGrid;
         set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
+    }
+
+    /// <inheritdoc />
+    public bool ShowActiveTiles {
+        get => this._showActiveTiles;
+        set => this.RaiseAndSetIfChanged(ref this._showActiveTiles, value);
     }
 
     /// <inheritdoc />

@@ -101,7 +101,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         var translationGizmo = new TranslationGizmo(this._editorService, this._entityService, this._undoService);
         this._camera.AddChild(translationGizmo);
 
-        var tileGizmo = new TileGizmo(this._entityService, this._undoService);
+        var tileGizmo = new TileGizmo(this._editorService, this._entityService, this._undoService);
         this._camera.AddChild(tileGizmo);
 
         if (this._editorService.SelectedGizmo == GizmoKind.Tile && this._entityService.Selected is not ITileableEntity) {

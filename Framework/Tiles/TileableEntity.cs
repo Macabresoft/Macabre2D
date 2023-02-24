@@ -104,6 +104,18 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     }
 
     /// <inheritdoc />
+    public BoundingArea GetTileBoundingArea(Point tile) {
+        if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
+            var grid = this.CurrentGrid;
+            var tilePosition = grid.GetTilePosition(tile) + this.LocalPosition;
+            boundingArea = new BoundingArea(tilePosition, tilePosition + grid.TileSize);
+            this._tilePositionToBoundingArea.Add(tile, boundingArea);
+        }
+
+        return boundingArea;
+    }
+
+    /// <inheritdoc />
     public Point GetTileThatContains(Vector2 worldPosition) {
         var result = Point.Zero;
         var grid = this.CurrentGrid;
@@ -179,22 +191,6 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// </summary>
     /// <returns>The minimum tile.</returns>
     protected abstract Point GetMinimumTile();
-
-    /// <summary>
-    /// Gets the bounding area for the tile at the specified position.
-    /// </summary>
-    /// <param name="tile">The tile.</param>
-    /// <returns>The bounding area.</returns>
-    protected BoundingArea GetTileBoundingArea(Point tile) {
-        if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
-            var grid = this.CurrentGrid;
-            var tilePosition = grid.GetTilePosition(tile) + this.LocalPosition;
-            boundingArea = new BoundingArea(tilePosition, tilePosition + grid.TileSize);
-            this._tilePositionToBoundingArea.Add(tile, boundingArea);
-        }
-
-        return boundingArea;
-    }
 
     /// <summary>
     /// Gets the tile scale for the specified sprite.

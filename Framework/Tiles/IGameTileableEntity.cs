@@ -51,6 +51,13 @@ public interface ITileableEntity : IEntity, IBoundable {
     void ClearTiles();
 
     /// <summary>
+    /// Gets the bounding area for the tile at the specified position.
+    /// </summary>
+    /// <param name="tile">The tile.</param>
+    /// <returns>The bounding area.</returns>
+    BoundingArea GetTileBoundingArea(Point tile);
+
+    /// <summary>
     /// Gets the tile that contains.
     /// </summary>
     /// <param name="worldPosition">The world position.</param>
