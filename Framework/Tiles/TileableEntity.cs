@@ -285,6 +285,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         }
 
         this.ResetBoundingArea();
+        this.TilesChanged.SafeInvoke(this);
     }
 
     private void ResetMaximumTile() {
