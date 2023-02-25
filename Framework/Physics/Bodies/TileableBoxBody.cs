@@ -65,7 +65,7 @@ public class TileableBoxBody : PhysicsBody {
     private void ResetColliders() {
         this._colliders.Clear();
 
-        if (this._tileable != null && this._tileable.ActiveTiles.Any()) {
+        if (this._tileable is { CurrentGrid: not EmptyObject } && this._tileable.ActiveTiles.Any()) {
             var chunks = this._colliderOrientation == Orientation.Horizontal ? TileChunk.GetRowChunks(this._tileable.ActiveTiles) : TileChunk.GetColumnChunks(this._tileable.ActiveTiles);
 
             foreach (var chunk in chunks) {
