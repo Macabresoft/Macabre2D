@@ -120,7 +120,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
 
     /// <inheritdoc />
     public bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers) {
-        return this.GetFilteredColliders(boundingArea, layers).Any();
+        return !boundingArea.IsEmpty && this.GetFilteredColliders(boundingArea, layers).Any(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(boundingArea));
     }
 
     /// <inheritdoc />
