@@ -53,6 +53,16 @@ public interface ISimplePhysicsLoop : ILoop {
     /// <param name="hit">The hit.</param>
     /// <returns>A value indicating whether or not anything was hit.</returns>
     bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit);
+
+    /// <summary>
+    /// Performs a raycast across colliders' bounding areas in the scene, but stops after the first collision.
+    /// </summary>
+    /// <param name="start">The start.</param>
+    /// <param name="direction">The direction.</param>
+    /// <param name="distance">The distance.</param>
+    /// <param name="layers">The layers.</param>
+    /// <returns>A value indicating whether or not anything was hit.</returns>
+    bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers);
 }
 
 /// <summary>
@@ -145,6 +155,12 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
         }
 
         return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers) {
+        var ray = new LineSegment(start, direction, distance);
+        return !ray.BoundingArea.IsEmpty && this.GetFilteredColliders(ray.BoundingArea, layers).Any(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(ray.BoundingArea));
     }
 
     /// <inheritdoc />
