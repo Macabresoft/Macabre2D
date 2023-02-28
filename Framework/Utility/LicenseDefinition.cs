@@ -1,9 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using Macabresoft.Core;
+
 /// <summary>
 /// A license definition for displaying a product and its license.
 /// </summary>
-public sealed class LicenseDefinition {
+public sealed class LicenseDefinition : PropertyChangedNotifier {
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
@@ -23,9 +25,4 @@ public sealed class LicenseDefinition {
     /// Gets the product.
     /// </summary>
     public string Product { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether or not this should be expanded in a list of licenses.
-    /// </summary>
-    public bool IsExpanded { get; set; } = true;
 }

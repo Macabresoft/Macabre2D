@@ -46,7 +46,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <avaloniaEx:GroupBox Header="{Binding Product}"
-                                             ShowContent="{Binding IsExpanded}">
+                                             ShowContent="True">
                             <TextBlock TextWrapping="Wrap"
                                        Text="{Binding License}"
                                        Margin="{StaticResource StandardMarginVertical}" />

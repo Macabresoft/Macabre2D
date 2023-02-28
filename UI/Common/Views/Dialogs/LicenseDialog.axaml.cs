@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -19,6 +20,7 @@ public class LicenseDialog : BaseDialog {
     public LicenseDialog() {
         this.CollapseCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(false));
         this.ExpandCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(true));
+        
         this.FilterLicenses(string.Empty);
         this.InitializeComponent();
     }
@@ -32,8 +34,8 @@ public class LicenseDialog : BaseDialog {
     public IReadOnlyCollection<LicenseDefinition> Licenses => LicenseHelper.Definitions;
 
     private void AdjustGroupBoxes(bool showContent) {
-        foreach (var license in this.Licenses) {
-            license.IsExpanded = showContent;
+        foreach (var groupBox in this.GetVisualDescendants().OfType<GroupBox>()) {
+            groupBox.ShowContent = showContent;
         }
     }
 
