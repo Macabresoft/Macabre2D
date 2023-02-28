@@ -59,28 +59,28 @@ public sealed class CameraController : UpdateableEntity {
 
             if (!keyboardState.IsModifierKeyDown()) {
                 var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ActualViewHeight;
-                if (keyboardState.IsKeyDown(Keys.W)) {
+                if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.A)) {
+                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.S)) {
+                if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.D)) {
+                if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.OemPlus)) {
+                if (keyboardState.IsKeyDown(Keys.OemPlus) || keyboardState.IsKeyDown(Keys.OemCloseBrackets)) {
                     var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
                     this._camera.ViewHeight -= scrollViewChange;
                 }
 
-                if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.OemMinus)) {
+                if (keyboardState.IsKeyDown(Keys.OemMinus) || keyboardState.IsKeyDown(Keys.OemOpenBrackets)) {
                     var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
                     this._camera.ViewHeight += scrollViewChange;
                 }
