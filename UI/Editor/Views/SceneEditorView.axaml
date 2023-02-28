@@ -34,8 +34,7 @@
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
-                    <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                    Collections="{Binding SceneService.Editors}" />
+                    <common:ValueCollectionsControl Collections="{Binding SceneService.Editors}" />
 
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"

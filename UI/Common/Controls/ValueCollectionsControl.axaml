@@ -3,25 +3,48 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabresoft.Macabre2D.UI.Common.ValueCollectionsControl">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Auto">
-        <Grid DataContext="{Binding $parent[local:ValueCollectionsControl]}">
-            <Design.DataContext>
-                <local:ValueCollectionsControl />
-            </Design.DataContext>
-            <ItemsControl Items="{Binding Collections}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <avaloniaEx:GroupBox Header="{Binding Name}"
-                                             Margin="{StaticResource StandardMarginBottom}">
-                            <ItemsControl Items="{Binding ValueControls}" />
-                        </avaloniaEx:GroupBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+    <Grid RowDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ValueCollectionsControl]}">
+        <Design.DataContext>
+            <local:ValueCollectionsControl />
+        </Design.DataContext>
 
-            <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsBusy}" />
-        </Grid>
-    </ScrollViewer>
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    IsVisible="{Binding Collections, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Button VerticalAlignment="Top"
+                    Classes="Icon"
+                    Command="{Binding ExpandAllCommand}"
+                    ToolTip.Tip="Expand all editors">
+                <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
+            </Button>
+            <Button VerticalAlignment="Top"
+                    Classes="Icon"
+                    Command="{Binding CollapseAllCommand}"
+                    ToolTip.Tip="Collapse all editors">
+                <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+            </Button>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="{StaticResource StandardMarginAll}">
+            <Grid>
+                <ItemsControl Items="{Binding Collections}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <avaloniaEx:GroupBox Header="{Binding Name}"
+                                                 Margin="{StaticResource StandardMarginBottom}"
+                                                 ShowContent="{Binding IsExpanded}">
+                                <ItemsControl Items="{Binding ValueControls}" />
+                            </avaloniaEx:GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <ProgressBar IsIndeterminate="True"
+                             IsVisible="{Binding IsBusy}" />
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

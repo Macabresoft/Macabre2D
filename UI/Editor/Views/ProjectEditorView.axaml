@@ -96,8 +96,7 @@
                 Classes="Card"
                 Margin="{StaticResource DoubleMarginLeftTopBottom}">
             <Panel>
-                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                Collections="{Binding AssetSelectionService.Editors}" />
+                <common:ValueCollectionsControl Collections="{Binding AssetSelectionService.Editors}" />
 
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"

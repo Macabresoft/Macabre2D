@@ -2,9 +2,11 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using ReactiveUI;
 
 public class ValueCollectionsControl : UserControl {
     public static readonly StyledProperty<IEnumerable<ValueControlCollection>> CollectionsProperty =
@@ -14,8 +16,15 @@ public class ValueCollectionsControl : UserControl {
         AvaloniaProperty.Register<ValueCollectionsControl, bool>(nameof(IsBusy));
 
     public ValueCollectionsControl() {
+        this.ExpandAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(true));
+        this.CollapseAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(false));
+
         this.InitializeComponent();
     }
+
+    public ICommand CollapseAllCommand { get; }
+
+    public ICommand ExpandAllCommand { get; }
 
     public IEnumerable<ValueControlCollection> Collections {
         get => this.GetValue(CollectionsProperty);
@@ -29,5 +38,11 @@ public class ValueCollectionsControl : UserControl {
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void SetIsExpanded(bool isExpanded) {
+        foreach (var collection in this.Collections) {
+            collection.IsExpanded = isExpanded;
+        }
     }
 }

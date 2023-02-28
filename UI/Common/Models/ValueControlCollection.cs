@@ -4,14 +4,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 
 /// <summary>
 /// A collection of value controls.
 /// </summary>
-public class ValueControlCollection : IReadOnlyCollection<IValueControl>, IDisposable {
+public class ValueControlCollection : PropertyChangedNotifier, IReadOnlyCollection<IValueControl>, IDisposable {
     private readonly ObservableCollection<IValueControl> _valueControls = new();
+    private bool _isExpanded = true;
 
     /// <summary>
     /// Raised when a value editor owned by this collection has its value change.
@@ -40,6 +40,14 @@ public class ValueControlCollection : IReadOnlyCollection<IValueControl>, IDispo
     /// Gets the controls in this collection.
     /// </summary>
     public IReadOnlyCollection<IValueControl> ValueControls => this._valueControls;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not this should be expanded in the UI.
+    /// </summary>
+    public bool IsExpanded {
+        get => this._isExpanded;
+        set => this.Set(ref this._isExpanded, value);
+    }
 
     /// <summary>
     /// Adds the controls.
