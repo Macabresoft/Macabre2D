@@ -9,22 +9,29 @@
             <local:ValueCollectionsControl />
         </Design.DataContext>
 
-        <StackPanel Grid.Row="0"
-                    Orientation="Horizontal"
-                    IsVisible="{Binding Collections, Converter={x:Static ObjectConverters.IsNotNull}}">
-            <Button VerticalAlignment="Top"
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, Auto, Auto"
+              IsVisible="{Binding Collections, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <AutoCompleteBox Grid.Column="0"
+                             Name="_autoCompleteBox"
+                             Items="{Binding Collections}"
+                             ValueMemberBinding="{Binding Name}"
+                             FilterMode="Contains"
+                             Watermark="Filter..." />
+
+            <Button Grid.Column="1"
                     Classes="Icon"
                     Command="{Binding ExpandAllCommand}"
                     ToolTip.Tip="Expand all editors">
                 <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
             </Button>
-            <Button VerticalAlignment="Top"
+            <Button Grid.Column="2"
                     Classes="Icon"
                     Command="{Binding CollapseAllCommand}"
                     ToolTip.Tip="Collapse all editors">
                 <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
             </Button>
-        </StackPanel>
+        </Grid>
         <ScrollViewer Grid.Row="1"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
@@ -36,6 +43,13 @@
                             <avaloniaEx:GroupBox Header="{Binding Name}"
                                                  Margin="{StaticResource StandardMarginBottom}"
                                                  ShowContent="{Binding IsExpanded}">
+                                <avaloniaEx:GroupBox.IsVisible>
+                                    <MultiBinding Converter="{x:Static local:ValueControlCollectionVisibilityConverter.Instance}">
+                                        <Binding />
+                                        <Binding Path="#_autoCompleteBox.Text" />
+                                    </MultiBinding>
+                                </avaloniaEx:GroupBox.IsVisible>
+
                                 <ItemsControl Items="{Binding ValueControls}" />
                             </avaloniaEx:GroupBox>
                         </DataTemplate>

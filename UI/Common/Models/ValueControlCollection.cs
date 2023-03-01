@@ -1,10 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
+using Macabresoft.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Macabresoft.Core;
 
 /// <summary>
 /// A collection of value controls.
@@ -67,20 +67,6 @@ public class ValueControlCollection : PropertyChangedNotifier, IReadOnlyCollecti
     }
 
     /// <inheritdoc />
-    public void Dispose() {
-        foreach (var valueControl in this.ValueControls) {
-            if (valueControl is IValueEditor editor) {
-                editor.ValueChanged -= this.ValueEditor_ValueChanged;
-            }
-
-            valueControl.Collection = null;
-        }
-
-        this._valueControls.Clear();
-        this.OwnedValueChanged = null;
-    }
-
-    /// <inheritdoc />
     public IEnumerator<IValueControl> GetEnumerator() {
         return this.ValueControls.GetEnumerator();
     }
@@ -99,6 +85,22 @@ public class ValueControlCollection : PropertyChangedNotifier, IReadOnlyCollecti
                 this._valueControls.Remove(valueControl);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnDisposing() {
+        base.OnDisposing();
+
+        foreach (var valueControl in this.ValueControls) {
+            if (valueControl is IValueEditor editor) {
+                editor.ValueChanged -= this.ValueEditor_ValueChanged;
+            }
+
+            valueControl.Collection = null;
+        }
+
+        this._valueControls.Clear();
+        this.OwnedValueChanged = null;
     }
 
     /// <inheritdoc />
