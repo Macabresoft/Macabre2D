@@ -380,7 +380,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
+    public bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity {
         entity = this.Children.OfType<T>().FirstOrDefault();
         return entity != null;
     }
