@@ -37,6 +37,24 @@ public class InputBindings : VersionedData {
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether or not the left analog stick is enabled.
+    /// </summary>
+    [DataMember]
+    public bool IsLeftAnalogEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not the mouse is enabled.
+    /// </summary>
+    [DataMember]
+    public bool IsMouseEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not the right analog stick is enabled.
+    /// </summary>
+    [DataMember]
+    public bool IsRightAnalogEnabled { get; set; } = true;
+
+    /// <summary>
     /// Clears all bindings for the specified action.
     /// </summary>
     /// <param name="action">The action.</param>
@@ -51,7 +69,11 @@ public class InputBindings : VersionedData {
     /// </summary>
     /// <returns>A clone of this instance.</returns>
     public InputBindings Clone() {
-        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings);
+        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) {
+            IsMouseEnabled = this.IsMouseEnabled,
+            IsLeftAnalogEnabled = this.IsLeftAnalogEnabled,
+            IsRightAnalogEnabled = this.IsRightAnalogEnabled
+        };
     }
 
     /// <summary>
