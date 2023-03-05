@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -16,11 +18,10 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
-    private IScene _currentScene = Scene.Empty;
+    private readonly Stack<IScene> _sceneStack = new();
 
     private double _gameSpeed = 1d;
     private GraphicsSettings _graphicsSettings = new();
-    private IScene _pauseScene = Scene.Empty;
     private IGameProject _project = new GameProject();
     private Point _viewportSize;
 
@@ -45,15 +46,21 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public IScene CurrentScene {
-        get => this._currentScene;
+    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
 
+    /// <inheritdoc />
+    public Point ViewportSize => this._viewportSize;
+
+    /// <inheritdoc />
+    public IScene CurrentScene {
+        get => this._sceneStack.Any() ? this._sceneStack.Peek() : Scene.Empty;
         private set {
-            if (this._currentScene != value) {
-                this._currentScene = value;
+            if (this.CurrentScene != value) {
+                this._sceneStack.Clear();
+                this._sceneStack.Push(value);
 
                 if (this.IsInitialized) {
-                    this._currentScene.Initialize(this, this.CreateAssetManager());
+                    value.Initialize(this, this.CreateAssetManager());
                 }
             }
         }
@@ -101,24 +108,18 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
-
-    /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
 
-    /// <inheritdoc />
-    public Point ViewportSize => this._viewportSize;
+    /// <summary>
+    /// Gets the graphics device manager.
+    /// </summary>
+    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Gets the frame time.
     /// </summary>
     /// <value>The frame time.</value>
     protected FrameTime FrameTime { get; private set; }
-
-    /// <summary>
-    /// Gets the graphics device manager.
-    /// </summary>
-    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is initialized.
@@ -147,9 +148,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public void Pause(IScene scene) {
-        this._pauseScene = scene;
+    public void PushScene(IScene scene) {
         scene.Initialize(this, Scene.IsNullOrEmpty(this.CurrentScene) ? this.CreateAssetManager() : this.CurrentScene.Assets);
+        this._sceneStack.Push(scene);
     }
 
     /// <inheritdoc />
@@ -169,8 +170,14 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public void Unpause() {
-        this._pauseScene = Scene.Empty;
+    public bool TryPopScene(out IScene scene) {
+        if (this._sceneStack.Count > 1) {
+            scene = this._sceneStack.Pop();
+            return true;
+        }
+
+        scene = Scene.Empty;
+        return false;
     }
 
     /// <summary>
@@ -189,10 +196,9 @@ public class BaseGame : Game, IGame {
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null) {
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-            this.CurrentScene.Render(this.FrameTime, this.InputState);
 
-            if (!Scene.IsNullOrEmpty(this._pauseScene)) {
-                this._pauseScene.Render(this.FrameTime, this.InputState);
+            foreach (var scene in this._sceneStack.Reverse()) {
+                scene.Render(this.FrameTime, this.InputState);
             }
         }
     }
@@ -202,7 +208,7 @@ public class BaseGame : Game, IGame {
         base.Initialize();
 
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        this._currentScene.Initialize(this, this.CreateAssetManager());
+        this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         if (IsDesignMode) {
             this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
@@ -281,13 +287,7 @@ public class BaseGame : Game, IGame {
 
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
-
-        if (Scene.IsNullOrEmpty(this._pauseScene)) {
-            this.CurrentScene.Update(this.FrameTime, this.InputState);
-        }
-        else {
-            this._pauseScene.Update(this.FrameTime, this.InputState);
-        }
+        this.CurrentScene.Update(this.FrameTime, this.InputState);
     }
 
     /// <summary>
@@ -338,17 +338,6 @@ public class BaseGame : Game, IGame {
 
         public IScene CurrentScene => Scene.Empty;
 
-        public double GameSpeed {
-            get => 1f;
-            set {
-                if (value <= 0) {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                this.GameSpeedChanged.SafeInvoke(this, 1f);
-            }
-        }
-
         public GraphicsDevice? GraphicsDevice => null;
 
         public GraphicsSettings GraphicsSettings { get; } = new();
@@ -363,6 +352,17 @@ public class BaseGame : Game, IGame {
 
         public Point ViewportSize => default;
 
+        public double GameSpeed {
+            get => 1f;
+            set {
+                if (value <= 0) {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
+        }
+
         public void Exit() {
         }
 
@@ -372,7 +372,7 @@ public class BaseGame : Game, IGame {
         public void LoadScene(IScene scene) {
         }
 
-        public void Pause(IScene scene) {
+        public void PushScene(IScene scene) {
         }
 
         public void SaveAndApplyGraphicsSettings() {
@@ -384,7 +384,9 @@ public class BaseGame : Game, IGame {
         public void SaveInputBindings() {
         }
 
-        public void Unpause() {
+        public bool TryPopScene(out IScene scene) {
+            scene = Scene.Empty;
+            return false;
         }
     }
 }

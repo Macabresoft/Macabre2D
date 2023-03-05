@@ -25,9 +25,9 @@ public interface IGame {
     ContentManager? Content { get; }
 
     /// <summary>
-    /// Gets or sets the game speed.
+    /// Gets the scene.
     /// </summary>
-    double GameSpeed { get; set; }
+    IScene CurrentScene { get; }
 
     /// <summary>
     /// Gets the graphics device.
@@ -61,11 +61,6 @@ public interface IGame {
     ISaveDataManager SaveDataManager { get; }
 
     /// <summary>
-    /// Gets the scene.
-    /// </summary>
-    IScene CurrentScene { get; }
-
-    /// <summary>
     /// Gets the sprite batch.
     /// </summary>
     SpriteBatch? SpriteBatch { get; }
@@ -74,6 +69,11 @@ public interface IGame {
     /// Gets the size of the viewport.
     /// </summary>
     Point ViewportSize { get; }
+
+    /// <summary>
+    /// Gets or sets the game speed.
+    /// </summary>
+    double GameSpeed { get; set; }
 
     /// <summary>
     /// Exits thie game.
@@ -93,6 +93,12 @@ public interface IGame {
     void LoadScene(IScene scene);
 
     /// <summary>
+    /// Pushes a scene onto the scene stack. This becomes the current scene, but other scenes in the stack will still render underneath. Only the current scene will update.
+    /// </summary>
+    /// <param name="scene">The scene to push.</param>
+    void PushScene(IScene scene);
+
+    /// <summary>
     /// Saves the applies graphics settings.
     /// </summary>
     void SaveAndApplyGraphicsSettings();
@@ -108,13 +114,9 @@ public interface IGame {
     void SaveInputBindings();
 
     /// <summary>
-    /// Unpauses the game and stops updating and rendering the pause scene.
+    /// Pops the top scene in the stack. The scene will no longer be updated or rendered. The next scene in the stack will become CurrentScene.
     /// </summary>
-    void Unpause();
-    
-    /// <summary>
-    /// Pauses the current scene while updating and rendering the provided scene instead.
-    /// </summary>
-    /// <param name="scene">The scene to update and render instead of the current scene.</param>
-    void Pause(IScene scene);
+    /// <param name="scene">The scene popped.</param>
+    /// <returns>A value indicating whether or not a scene was popped.</returns>
+    bool TryPopScene(out IScene scene);
 }
