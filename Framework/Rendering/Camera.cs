@@ -335,6 +335,7 @@ public class Camera : Entity, ICamera {
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender & enabledLayers) != Layers.None)
+            .OrderBy(x => x.RenderOrder)
             .ToList();
 
         if (entities.Any()) {

@@ -40,16 +40,16 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     /// <param name="filter">The filter.</param>
     /// <param name="filterPropertyName">Name of the filter property.</param>
     /// <param name="sort">The sort.</param>
-    /// <param name="sortPropertName">Name of the sort propert.</param>
+    /// <param name="sortPropertyName">Name of the sort property.</param>
     public FilterSortCollection(
         Predicate<T> filter,
         string filterPropertyName,
         Comparison<T> sort,
-        string sortPropertName) {
+        string sortPropertyName) {
         this._filter = filter;
         this._filterPropertyName = filterPropertyName;
         this._sort = sort;
-        this._sortPropertyName = sortPropertName;
+        this._sortPropertyName = sortPropertyName;
 
         this._addJournalSortComparison = this.CompareAddJournalEntry;
     }

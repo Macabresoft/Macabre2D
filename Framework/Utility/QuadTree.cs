@@ -30,11 +30,11 @@ public interface IReadonlyQuadTree<T> where T : IBoundable {
 /// https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374
 /// </summary>
 public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
-    private readonly Vector2 _bottomLeftBounds;
     private readonly List<T> _boundables = new();
     private readonly int _depth;
+    private readonly Vector2 _maximum;
+    private readonly Vector2 _minimum;
     private readonly QuadTree<T>[] _nodes = new QuadTree<T>[4];
-    private readonly Vector2 _topRightBounds;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QuadTree{T}" /> class.
@@ -46,14 +46,14 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     /// <param name="height">The height of the tree's bounds.</param>
     public QuadTree(int depth, float x, float y, float width, float height) {
         this._depth = depth;
-        this._bottomLeftBounds = new Vector2(x, y);
-        this._topRightBounds = this._bottomLeftBounds + new Vector2(width, height);
+        this._minimum = new Vector2(x, y);
+        this._maximum = this._minimum + new Vector2(width, height);
     }
 
     /// <summary>
     /// Gets the default quad tree.
     /// </summary>
-    public static QuadTree<T> Default { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    public static QuadTree<T> Default => new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     /// <summary>
     /// Gets or sets the maximum levels.
@@ -73,9 +73,7 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     public void Clear() {
         this._boundables.Clear();
 
-        // NOTE: I'm breaking this contract and I don't care!!!
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (this._nodes[0] != null) {
+        if (this.HasNodes()) {
             foreach (var node in this._nodes) {
                 node.Clear();
             }
@@ -87,17 +85,14 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     /// </summary>
     /// <param name="item">The item to insert.</param>
     public void Insert(T item) {
-        // We only have to null check the first node, because we always add every node at once.
-        // NOTE: I'm breaking this contract and I don't care!!!
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        var hasNodes = this._nodes[0] != null;
+        var hasNodes = this.HasNodes();
 
         if (hasNodes) {
             var boundingArea = item.BoundingArea;
             var quadrant = this.GetQuadrant(boundingArea);
 
-            if (quadrant != Quadrant.None) {
-                this._nodes[(int)quadrant].Insert(item);
+            if (quadrant != Quadrant.None && this._nodes[(int)quadrant] is { } node) {
+                node.Insert(item);
                 return;
             }
         }
@@ -122,6 +117,13 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
         }
     }
 
+    private bool HasNodes() {
+        // We only have to null check the first node, because we always add every node at once.
+        // NOTE: I'm breaking this contract and I don't care!!!
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        return this._nodes[0] != null;
+    }
+
     /// <summary>
     /// Inserts all provided items into their proper position in the quad tree.
     /// </summary>
@@ -141,11 +143,14 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     public IEnumerable<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
         var quadrant = this.GetQuadrant(boundingArea);
         IEnumerable<T> result = this._boundables;
-        if (quadrant != Quadrant.None) {
+        if (quadrant != Quadrant.None && this._nodes[(int)quadrant] is { } node) {
             // We can directly add to boundables here, because boundables is cleared every frame
             // This is much better than allocating a new collection every frame that contains every
             // boundable in the game.
-            result = result.Concat(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
+            result = result.Concat(node.RetrievePotentialCollisions(boundingArea));
+        }
+        else if (this.HasNodes()) {
+            result = result.Concat(this._nodes.SelectMany(x => x.RetrievePotentialCollisions(boundingArea)));
         }
 
         return result;
@@ -154,17 +159,17 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     private Quadrant GetQuadrant(BoundingArea boundingArea) {
         var x = boundingArea.Minimum.X;
         var y = boundingArea.Minimum.Y;
-        var width = boundingArea.Maximum.X - x;
-        var height = boundingArea.Maximum.Y - y;
+        var width = this._maximum.X - this._minimum.X;
+        var height = this._maximum.Y - this._minimum.Y;
 
         var quadrant = Quadrant.None;
-        var verticalMidpoint = y + height * 0.5f;
-        var horizontalMidPoint = x + width * 0.5f;
+        var verticalMidpoint = this._minimum.Y + height * 0.5f;
+        var horizontalMidPoint = this._minimum.X + width * 0.5f;
 
-        var isBottomQuadrant = y < verticalMidpoint && y + height < verticalMidpoint;
+        var isBottomQuadrant = y < verticalMidpoint && y + boundingArea.Height < verticalMidpoint;
         var isTopQuadrant = y > verticalMidpoint;
 
-        if (x < horizontalMidPoint && x + width < horizontalMidPoint) {
+        if (x < horizontalMidPoint && x + boundingArea.Width < horizontalMidPoint) {
             if (isBottomQuadrant) {
                 quadrant = Quadrant.BottomLeft;
             }
@@ -185,34 +190,34 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     }
 
     private void Split() {
-        var newWidth = (this._topRightBounds.X - this._bottomLeftBounds.X) * 0.5f;
-        var newHeight = (this._topRightBounds.Y - this._bottomLeftBounds.Y) * 0.5f;
+        var newWidth = (this._maximum.X - this._minimum.X) * 0.5f;
+        var newHeight = (this._maximum.Y - this._minimum.Y) * 0.5f;
 
         this._nodes[(int)Quadrant.BottomRight] = new QuadTree<T>(
             this._depth + 1,
-            this._bottomLeftBounds.X + newWidth,
-            this._bottomLeftBounds.Y,
+            this._minimum.X + newWidth,
+            this._minimum.Y,
             newWidth,
             newHeight);
 
         this._nodes[(int)Quadrant.BottomLeft] = new QuadTree<T>(
             this._depth + 1,
-            this._bottomLeftBounds.X,
-            this._bottomLeftBounds.Y,
+            this._minimum.X,
+            this._minimum.Y,
             newWidth,
             newHeight);
 
         this._nodes[(int)Quadrant.TopLeft] = new QuadTree<T>(
             this._depth + 1,
-            this._bottomLeftBounds.X,
-            this._bottomLeftBounds.Y + newHeight,
+            this._minimum.X,
+            this._minimum.Y + newHeight,
             newWidth,
             newHeight);
 
         this._nodes[(int)Quadrant.TopRight] = new QuadTree<T>(
             this._depth + 1,
-            this._bottomLeftBounds.X + newWidth,
-            this._bottomLeftBounds.Y + newHeight,
+            this._minimum.X + newWidth,
+            this._minimum.Y + newHeight,
             newWidth,
             newHeight);
     }

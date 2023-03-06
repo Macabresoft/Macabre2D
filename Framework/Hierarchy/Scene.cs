@@ -192,11 +192,9 @@ public sealed class Scene : GridContainer, IScene {
         (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
         nameof(IPhysicsBody.UpdateOrder));
 
-    private readonly FilterSortCollection<IRenderableEntity> _renderableEntities = new(
+    private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
         c => c.IsVisible,
-        nameof(IRenderableEntity.IsVisible),
-        (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-        nameof(IRenderableEntity.RenderOrder));
+        nameof(IRenderableEntity.IsVisible));
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
         c => c.IsEnabled,
