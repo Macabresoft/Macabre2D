@@ -87,7 +87,8 @@
         </Design.DataContext>
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Grid RowDefinitions="Auto, *">
+            <Grid RowDefinitions="Auto, *"
+                  Grid.ColumnDefinitions="Auto, *, Auto">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
                     <Button Command="{Binding AddCommand, Mode=OneWay}"
@@ -126,7 +127,25 @@
                         <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
-                <TreeView Grid.Row="1"
+                
+                <StackPanel Grid.Column="2"
+                            Grid.Row="0"
+                            Orientation="Horizontal">
+                    <Button Classes="Icon"
+                            Command="{Binding $parent[local:ProjectTreeView].ExpandAllCommand}"
+                            ToolTip.Tip="Expand all nodes in the scene tree">
+                        <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
+                    </Button>
+                    <Button Classes="Icon"
+                            Command="{Binding $parent[local:ProjectTreeView].CollapseAllCommand}"
+                            ToolTip.Tip="Collapse all nodes in the scene tree">
+                        <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+                    </Button>
+                </StackPanel>
+                
+                <TreeView Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          Grid.Row="1"
                           Name="_treeView"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"

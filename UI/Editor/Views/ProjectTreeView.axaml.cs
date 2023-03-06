@@ -1,8 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using System;
-using System.Linq;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -11,6 +8,9 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
+using System;
+using System.Linq;
+using System.Windows.Input;
 
 public class ProjectTreeView : UserControl {
     public static readonly DirectProperty<ProjectTreeView, ProjectTreeViewModel> ViewModelProperty =
@@ -23,9 +23,17 @@ public class ProjectTreeView : UserControl {
     public ProjectTreeView() {
         this.ViewModel = Resolver.Resolve<ProjectTreeViewModel>();
         this.RenameCommand = ReactiveCommand.Create<TreeView>(this.Rename);
+        this.ExpandAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(true));
+        this.CollapseAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(false));
+
         this.InitializeComponent();
+
         this.AddHandler(DragDrop.DropEvent, this.Drop);
     }
+
+    public ICommand CollapseAllCommand { get; }
+
+    public ICommand ExpandAllCommand { get; }
 
     public ICommand RenameCommand { get; }
 
@@ -70,6 +78,14 @@ public class ProjectTreeView : UserControl {
 
             if (editableItem != null && editableItem.EditCommand.CanExecute(null)) {
                 editableItem.EditCommand.Execute(null);
+            }
+        }
+    }
+
+    private void SetIsExpanded(bool isExpanded) {
+        if (this.Find<TreeView>("_treeView") is { } treeView) {
+            foreach (var treeViewItem in treeView.GetLogicalDescendants().OfType<TreeViewItem>()) {
+                treeViewItem.IsExpanded = isExpanded;
             }
         }
     }

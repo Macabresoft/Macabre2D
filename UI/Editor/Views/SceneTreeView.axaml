@@ -20,8 +20,10 @@
         <Design.DataContext>
             <local:SceneTreeViewModel />
         </Design.DataContext>
-        <Grid RowDefinitions="Auto, *, 0">
-            <StackPanel Grid.Row="0"
+        <Grid RowDefinitions="Auto, *, 0"
+              ColumnDefinitions="Auto, *, Auto">
+            <StackPanel Grid.Column="0"
+                        Grid.Row="0"
                         Orientation="Horizontal">
                 <Button Command="{Binding AddCommand}"
                         Classes="Icon"
@@ -84,7 +86,24 @@
                 </Button>
             </StackPanel>
 
-            <TreeView Grid.Row="1"
+            <StackPanel Grid.Column="2"
+                        Grid.Row="0"
+                        Orientation="Horizontal">
+                <Button Classes="Icon"
+                        Command="{Binding $parent[local:SceneTreeView].ExpandAllCommand}"
+                        ToolTip.Tip="Expand all nodes in the scene tree">
+                    <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
+                </Button>
+                <Button Classes="Icon"
+                        Command="{Binding $parent[local:SceneTreeView].CollapseAllCommand}"
+                        ToolTip.Tip="Collapse all nodes in the scene tree">
+                    <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+                </Button>
+            </StackPanel>
+
+            <TreeView Grid.Column="0"
+                      Grid.ColumnSpan="3"
+                      Grid.Row="1"
                       Name="_treeView"
                       Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"

@@ -1,10 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
@@ -18,6 +13,11 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Input;
 
 public class SceneTreeView : UserControl {
     public static readonly Thickness DefaultPadding = new(2D);
@@ -39,21 +39,29 @@ public class SceneTreeView : UserControl {
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.RenameCommand = ReactiveCommand.Create<TreeView>(this.Rename);
+        this.ExpandAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(true));
+        this.CollapseAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(false));
+
         this.InitializeComponent();
+
         this.AddHandler(DragDrop.DropEvent, this.Drop);
         this.AddHandler(DragDrop.DragOverEvent, this.Drag);
     }
 
     public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
 
-    public INameable DraggedObject {
-        get => this._draggedObject;
-        set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
-    }
+    public ICommand CollapseAllCommand { get; }
+
+    public ICommand ExpandAllCommand { get; }
 
     public ICommand RenameCommand { get; }
 
     public SceneTreeViewModel ViewModel { get; }
+
+    public INameable DraggedObject {
+        get => this._draggedObject;
+        set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
+    }
 
     private bool CanInsert(IControl target) {
         return target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
@@ -171,6 +179,14 @@ public class SceneTreeView : UserControl {
         else if (this._currentDropTarget != null) {
             this._currentDropTarget.BorderThickness = EmptyThickness;
             this._currentDropTarget.Padding = DefaultPadding;
+        }
+    }
+
+    private void SetIsExpanded(bool isExpanded) {
+        if (this.Find<TreeView>("_treeView") is { } treeView) {
+            foreach (var treeViewItem in treeView.GetLogicalDescendants().OfType<TreeViewItem>()) {
+                treeViewItem.IsExpanded = isExpanded;
+            }
         }
     }
 
