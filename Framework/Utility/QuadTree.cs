@@ -158,7 +158,7 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
         var height = boundingArea.Maximum.Y - y;
 
         var quadrant = Quadrant.None;
-        var verticalMidpoint = x + height * 0.5f;
+        var verticalMidpoint = y + height * 0.5f;
         var horizontalMidPoint = x + width * 0.5f;
 
         var isBottomQuadrant = y < verticalMidpoint && y + height < verticalMidpoint;
