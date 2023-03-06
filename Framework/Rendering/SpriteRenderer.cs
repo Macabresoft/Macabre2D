@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [Display(Name = "Sprite Renderer")]
 [Category(CommonCategories.Rendering)]
-public sealed class SpriteRenderer : BaseSpriteEntity {
+public class SpriteRenderer : BaseSpriteEntity {
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteRenderer" /> class.
     /// </summary>
