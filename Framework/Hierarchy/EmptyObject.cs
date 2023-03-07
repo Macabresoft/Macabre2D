@@ -32,6 +32,9 @@ public class EmptyObject : IScene {
     public Vector2 WorldPosition => Vector2.Zero;
 
     /// <inheritdoc />
+    public event EventHandler? Reactivated;
+
+    /// <inheritdoc />
     public Color BackgroundColor {
         get => Color.HotPink;
         set { }
@@ -160,6 +163,10 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public void Invoke(Action action) {
+    }
+
+    /// <inheritdoc />
+    public void RaiseReactivated() {
     }
 
     /// <inheritdoc />
