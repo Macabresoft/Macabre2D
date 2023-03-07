@@ -229,11 +229,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private async Task AddChild(Type type) {
         if (type == null) {
-            if (this.SceneService.ImpliedSelected is IScene or IEntity) {
-                await this.AddEntity(null);
-            }
-            else if (this.SceneService.Selected is ILoop or LoopCollection) {
+            if (this.SceneService.Selected is ILoop or LoopCollection) {
                 await this.AddLoop(null);
+            }
+            else if (this.SceneService.ImpliedSelected is IScene or IEntity) {
+                await this.AddEntity(null);
             }
         }
         else if (type.IsAssignableTo(typeof(IEntity))) {
