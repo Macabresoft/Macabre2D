@@ -173,6 +173,7 @@ public class BaseGame : Game, IGame {
     public bool TryPopScene(out IScene scene) {
         if (this._sceneStack.Count > 1) {
             scene = this._sceneStack.Pop();
+            this.CurrentScene.RaiseReactivated();
             return true;
         }
 

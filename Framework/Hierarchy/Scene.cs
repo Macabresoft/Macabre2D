@@ -14,6 +14,16 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
+    /// Occurs when the scene is reactivated and made the current scene on <see cref="IGame" />.
+    /// </summary>
+    /// <remarks>
+    /// This is necessary, because we do not want initialization to happen when a scene is popped,
+    /// exposing another scene as the current scene; however, some entities still need to know that
+    /// they are back in focus.
+    /// </remarks>
+    event EventHandler Reactivated;
+
+    /// <summary>
     /// Gets the asset manager.
     /// </summary>
     IAssetManager Assets => AssetManager.Empty;
@@ -109,6 +119,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// </summary>
     /// <param name="action">The action.</param>
     void Invoke(Action action);
+
+    /// <summary>
+    /// Raises the <see cref="Reactivated" /> event.
+    /// </summary>
+    void RaiseReactivated();
 
     /// <summary>
     /// Registers the entity with relevant services.
@@ -209,6 +224,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? Reactivated;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Scene" /> class.
@@ -343,6 +361,11 @@ public sealed class Scene : GridContainer, IScene {
     /// </returns>
     public static bool IsNullOrEmpty(IScene? scene) {
         return scene == null || scene == Empty;
+    }
+
+    /// <inheritdoc />
+    public void RaiseReactivated() {
+        this.Reactivated?.SafeInvoke(this);
     }
 
     /// <inheritdoc />
