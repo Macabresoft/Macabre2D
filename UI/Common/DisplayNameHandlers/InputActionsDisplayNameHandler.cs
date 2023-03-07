@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.DisplayNameHandlers;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;

@@ -1,5 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
@@ -13,11 +18,6 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Input;
 
 public class SceneTreeView : UserControl {
     public static readonly Thickness DefaultPadding = new(2D);
@@ -39,8 +39,6 @@ public class SceneTreeView : UserControl {
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.RenameCommand = ReactiveCommand.Create<TreeView>(this.Rename);
-        this.ExpandAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(true));
-        this.CollapseAllCommand = ReactiveCommand.Create(() => this.SetIsExpanded(false));
 
         this.InitializeComponent();
 
@@ -49,10 +47,6 @@ public class SceneTreeView : UserControl {
     }
 
     public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
-
-    public ICommand CollapseAllCommand { get; }
-
-    public ICommand ExpandAllCommand { get; }
 
     public ICommand RenameCommand { get; }
 
@@ -179,14 +173,6 @@ public class SceneTreeView : UserControl {
         else if (this._currentDropTarget != null) {
             this._currentDropTarget.BorderThickness = EmptyThickness;
             this._currentDropTarget.Padding = DefaultPadding;
-        }
-    }
-
-    private void SetIsExpanded(bool isExpanded) {
-        if (this.Find<TreeView>("_treeView") is { } treeView) {
-            foreach (var treeViewItem in treeView.GetLogicalDescendants().OfType<TreeViewItem>()) {
-                treeViewItem.IsExpanded = isExpanded;
-            }
         }
     }
 

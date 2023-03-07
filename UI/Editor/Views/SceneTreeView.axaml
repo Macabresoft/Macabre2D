@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <UserControl.KeyBindings>
@@ -90,12 +91,14 @@
                         Grid.Row="0"
                         Orientation="Horizontal">
                 <Button Classes="Icon"
-                        Command="{Binding $parent[local:SceneTreeView].ExpandAllCommand}"
+                        Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
+                        CommandParameter="{Binding #_treeView}"
                         ToolTip.Tip="Expand all nodes in the scene tree">
                     <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
                 </Button>
                 <Button Classes="Icon"
-                        Command="{Binding $parent[local:SceneTreeView].CollapseAllCommand}"
+                        Command="{x:Static common:TreeViewHelper.CollapseAllCommand}"
+                        CommandParameter="{Binding #_treeView}"
                         ToolTip.Tip="Collapse all nodes in the scene tree">
                     <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
                 </Button>

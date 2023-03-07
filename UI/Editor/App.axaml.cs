@@ -6,7 +6,6 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
-using Macabresoft.Macabre2D.UI.Common.DisplayNameHandlers;
 using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
 using Unity;
 

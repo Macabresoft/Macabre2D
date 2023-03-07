@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common.DisplayNameHandlers;
 using Unity;
 using Unity.Extension;
 using Unity.Lifetime;
