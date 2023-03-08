@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 
 public class FilteredContentTree : UserControl {
     public static readonly StyledProperty<FilteredContentWrapper> RootProperty =
@@ -13,11 +14,11 @@ public class FilteredContentTree : UserControl {
         AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(
             nameof(SelectedItem),
             defaultBindingMode: BindingMode.TwoWay);
-
+    
     public FilteredContentTree() {
         this.InitializeComponent();
     }
-
+    
     public FilteredContentWrapper Root {
         get => this.GetValue(RootProperty);
         set => this.SetValue(RootProperty, value);

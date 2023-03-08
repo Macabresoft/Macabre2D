@@ -2,39 +2,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Common.FilteredContentTree">
     <UserControl.Resources>
         <local:AssetToIconConverter x:Key="AssetToIconConverter" />
     </UserControl.Resources>
-    <TreeView BorderThickness="0"
-              Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
-              SelectedItem="{Binding $parent[local:FilteredContentTree].SelectedItem, Mode=TwoWay}">
-        <TreeView.Styles>
-            <Style Selector="TreeViewItem">
-                <Setter Property="IsExpanded" Value="True" />
-            </Style>
-        </TreeView.Styles>
-        <TreeView.DataTemplates>
-            <TreeDataTemplate DataType="local:FilteredContentWrapper"
-                              ItemsSource="{Binding Children}">
-                <Grid ColumnDefinitions="Auto, *">
-                    <avaloniaEx:Icon Grid.Column="0"
-                                     Content="{StaticResource DirectoryIcon}"
-                                     IsVisible="{Binding IsDirectory}"
-                                     Margin="{StaticResource StandardMarginRight}"
-                                     Foreground="{StaticResource YellowBrush}" />
 
-                    <avaloniaEx:Icon Grid.Column="0"
-                                     Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
-                                     IsVisible="{Binding !IsDirectory}"
-                                     Margin="{StaticResource StandardMarginRight}"
-                                     Foreground="{StaticResource TextControlForeground}" />
+    <Grid RowDefinitions="Auto, *"
+          ColumnDefinitions="*, Auto">
+        <StackPanel Grid.Row="0"
+                    Grid.Column="1"
+                    Orientation="Horizontal">
+            <Button Classes="Icon"
+                    Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
+                    CommandParameter="{Binding #_treeView}"
+                    ToolTip.Tip="Expand all nodes in the tree">
+                <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
+            </Button>
+            <Button Classes="Icon"
+                    Command="{x:Static common:TreeViewHelper.CollapseAllCommand}"
+                    CommandParameter="{Binding #_treeView}"
+                    ToolTip.Tip="Collapse all nodes in the tree">
+                <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+            </Button>
+        </StackPanel>
 
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding Node.Name}"
-                               HorizontalAlignment="Stretch" />
-                </Grid>
-            </TreeDataTemplate>
-        </TreeView.DataTemplates>
-    </TreeView>
+        <TreeView Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="1"
+                  Name="_treeView"
+                  BorderThickness="0"
+                  Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                  SelectedItem="{Binding $parent[local:FilteredContentTree].SelectedItem, Mode=TwoWay}">
+            <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.Styles>
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="local:FilteredContentWrapper"
+                                  ItemsSource="{Binding Children}">
+                    <Grid ColumnDefinitions="Auto, *">
+                        <avaloniaEx:Icon Grid.Column="0"
+                                         Content="{StaticResource DirectoryIcon}"
+                                         IsVisible="{Binding IsDirectory}"
+                                         Margin="{StaticResource StandardMarginRight}"
+                                         Foreground="{StaticResource YellowBrush}" />
+
+                        <avaloniaEx:Icon Grid.Column="0"
+                                         Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
+                                         IsVisible="{Binding !IsDirectory}"
+                                         Margin="{StaticResource StandardMarginRight}"
+                                         Foreground="{StaticResource TextControlForeground}" />
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Node.Name}"
+                                   HorizontalAlignment="Stretch" />
+                    </Grid>
+                </TreeDataTemplate>
+            </TreeView.DataTemplates>
+        </TreeView>
+    </Grid>
 </UserControl>
