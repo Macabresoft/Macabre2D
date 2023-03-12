@@ -37,6 +37,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
         this._undoService = undoService;
 
         this.Color = this._editorService.SelectionColor;
+        this.RenderOrder = int.MaxValue;
     }
 
     /// <inheritdoc />

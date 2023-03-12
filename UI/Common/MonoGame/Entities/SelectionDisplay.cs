@@ -40,6 +40,7 @@ public class SelectionDisplay : BaseDrawer {
         this._loopService.PropertyChanged += this.LoopService_PropertyChanged;
 
         this.Color = this._editorService.SelectionColor;
+        this.RenderOrder = int.MaxValue;
     }
 
     /// <inheritdoc />

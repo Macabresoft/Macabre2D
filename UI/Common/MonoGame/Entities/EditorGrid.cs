@@ -28,6 +28,7 @@ public sealed class EditorGrid : BaseDrawer {
     public EditorGrid(IEditorService editorService, IEntityService entityService) {
         this._editorService = editorService;
         this._entityService = entityService;
+        this.RenderOrder = int.MaxValue;
     }
 
     /// <inheritdoc />

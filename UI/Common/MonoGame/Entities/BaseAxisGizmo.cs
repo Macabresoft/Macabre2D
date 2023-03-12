@@ -35,6 +35,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
         this.EntityService = entityService;
         this.EntityService.PropertyChanged += this.SelectionService_PropertyChanged;
+        this.RenderOrder = int.MaxValue;
     }
 
     /// <inheritdoc />
