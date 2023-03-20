@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
@@ -12,9 +13,14 @@ using Macabresoft.Core;
 /// </summary>
 [Display(Name = "Sprite Animator")]
 [Category(CommonCategories.Animation)]
-public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
+public sealed class QueueableSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
     private QueueableSpriteAnimation? _currentAnimation;
+
+    private byte _frameRate = 30;
+    private bool _isPlaying;
+    private int _millisecondsPerFrame;
+    private int _updateOrder;
 
     /// <summary>
     /// An event for when an animation finishes.
@@ -30,6 +36,38 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// Gets a value indicating whether or not this is looping on the current animation.
     /// </summary>
     public bool IsLooping => this._currentAnimation is { ShouldLoopIndefinitely: true };
+
+    public override byte? SpriteIndex => this._currentAnimation?.CurrentSpriteIndex;
+
+    /// <summary>
+    /// Gets or sets the frame rate. This is represented in frames per second.
+    /// </summary>
+    /// <value>The frame rate.</value>
+    [DataMember(Order = 11, Name = "Frame Rate")]
+    public byte FrameRate {
+        get => this._frameRate;
+        set {
+            if (value != this._frameRate) {
+                this._frameRate = value;
+                this.ResetFrameRate();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is playing.
+    /// </summary>
+    public bool IsPlaying {
+        get => this._isPlaying;
+        private set => this.Set(ref this._isPlaying, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public int UpdateOrder {
+        get => this._updateOrder;
+        set => this.Set(ref this._updateOrder, value);
+    }
 
     /// <inheritdoc />
     protected override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation.SpriteSheet;
@@ -63,6 +101,33 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     }
 
     /// <summary>
+    /// Gets the percentage complete for the current animation.
+    /// </summary>
+    /// <returns>The percentage complete.</returns>
+    public float GetPercentageComplete() {
+        var result = 0f;
+
+        if (this._currentAnimation is { } animation) {
+            result = animation.GetPercentageComplete();
+        }
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+        this.ResetFrameRate();
+    }
+
+    /// <summary>
+    /// Pauses this instance.
+    /// </summary>
+    public void Pause() {
+        this.IsPlaying = false;
+    }
+
+    /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
     /// previous animation. If the animation is a looping animation, it will continue to play
     /// until a new animation is queued. If the animation is not a looping animation, it will
@@ -71,17 +136,14 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// <param name="animation">The animation.</param>
     /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
     public void Play(SpriteAnimation animation, bool shouldLoop) {
-        this.Stop(true);
-
-        this._queuedSpriteAnimations.Clear();
-        this.Enqueue(animation, shouldLoop);
-        this.ResetAnimation();
-
-        if (animation.Steps.FirstOrDefault() is { } step) {
-            this.CurrentSpriteIndex = step.SpriteIndex;
+        if (this._currentAnimation != null) {
+            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation.Animation);
         }
-
-        this.Play();
+        
+        this._currentAnimation = new QueueableSpriteAnimation(animation, shouldLoop);
+        this._queuedSpriteAnimations.Clear();
+        this.IsEnabled = true;
+        this.IsPlaying = true;
     }
 
     /// <summary>
@@ -98,8 +160,10 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         }
     }
 
-    /// <inheritdoc />
-    public override void Stop() {
+    /// <summary>
+    /// Stops this instance.
+    /// </summary>
+    public void Stop() {
         this.Stop(true);
     }
 
@@ -108,52 +172,60 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// </summary>
     /// <param name="eraseQueue">A value indicating whether or not the queue should be erased.</param>
     public void Stop(bool eraseQueue) {
-        base.Stop();
+        this.IsEnabled = false;
+        this.IsPlaying = false;
 
         if (eraseQueue) {
-            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
+            if (this._currentAnimation != null) {
+                this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation.Animation);
+            }
+            
             this._currentAnimation = null;
             this._queuedSpriteAnimations.Clear();
         }
+        else {
+            this._currentAnimation?.Reset();
+        }
     }
 
     /// <inheritdoc />
-    protected override SpriteAnimation? GetSpriteAnimation() {
-        if (this._currentAnimation?.Animation == null && this._queuedSpriteAnimations.Any()) {
+    public void Update(FrameTime frameTime, InputState inputState) {
+        if (this.IsPlaying && this.GetCurrentAnimation() is { } animation) {
+            animation.Update(frameTime, this._millisecondsPerFrame, out var isAnimationOver);
+
+            if (isAnimationOver) {
+                this.HandleAnimationFinished();
+            }
+        }
+    }
+
+    private void Enqueue(QueueableSpriteAnimation queueableSpriteAnimation) {
+        this._queuedSpriteAnimations.Enqueue(queueableSpriteAnimation);
+    }
+
+    private QueueableSpriteAnimation? GetCurrentAnimation() {
+        if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
             this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
         }
 
-        return this._currentAnimation?.Animation;
+        return this._currentAnimation;
     }
 
-    /// <inheritdoc />
-    protected override SpriteAnimation? HandleAnimationFinished() {
+    private void HandleAnimationFinished() {
         if (this._queuedSpriteAnimations.Any()) {
             this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
+            var millisecondsPassed = this._currentAnimation?.MillisecondsPassed ?? 0d;
             this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
-            var step = this._currentAnimation.Animation.Steps.FirstOrDefault();
-            if (step != null) {
-                this.CurrentSpriteIndex = step.SpriteIndex;
-            }
-            else {
-                this._currentAnimation = null;
-            }
-
-            this.ResetMillisecondsPassed();
+            this._currentAnimation.Reset();
+            this._currentAnimation.MillisecondsPassed = millisecondsPassed;
         }
         else if (this._currentAnimation?.ShouldLoopIndefinitely == false) {
             this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
             this._currentAnimation = null;
         }
-
-        return this._currentAnimation?.Animation;
     }
 
-    /// <summary>
-    /// Enqueues the specified queueable sprite animation.
-    /// </summary>
-    /// <param name="queueableSpriteAnimation">The queueable sprite animation.</param>
-    private void Enqueue(QueueableSpriteAnimation queueableSpriteAnimation) {
-        this._queuedSpriteAnimations.Enqueue(queueableSpriteAnimation);
+    private void ResetFrameRate() {
+        this._millisecondsPerFrame = 1000 / this._frameRate;
     }
 }
