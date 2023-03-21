@@ -1,13 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
 /// A sprite animator that loops a single animation.
 /// </summary>
 public class LoopingSpriteAnimator : BaseSpriteAnimator {
+    private QueueableSpriteAnimation? _queueableAnimation;
+
     /// <summary>
     /// Gets the animation reference.
     /// </summary>
@@ -21,31 +22,31 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     public bool StartPlaying { get; set; } = true;
 
     /// <inheritdoc />
-    protected override SpriteSheetAsset? SpriteSheet => this.AnimationReference?.Asset;
-
-    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.AnimationReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
         this.AnimationReference.Initialize(this.Scene.Assets);
-        this.ResetStep();
-        this.TryStart();
+
+        if (this.TryResetAnimation()) {
+            this._queueableAnimation?.Reset();
+            this.TryStart();
+        }
+
         this.AnimationReference.PropertyChanged += this.AnimationReference_PropertyChanged;
     }
 
     /// <inheritdoc />
-    protected override SpriteAnimation? GetSpriteAnimation() {
-        if (this.CurrentSpriteIndex == null) {
-            this.ResetStep();
-        }
-
-        return this.AnimationReference.PackagedAsset;
+    protected override QueueableSpriteAnimation? GetCurrentAnimation() {
+        return this._queueableAnimation;
     }
 
     /// <inheritdoc />
-    protected override SpriteAnimation? HandleAnimationFinished() {
-        this.ResetStep();
-        return this.AnimationReference.PackagedAsset;
+    protected override void HandleAnimationFinished() {
+        if (this._queueableAnimation != null) {
+            var millisecondsPassed = this._queueableAnimation.MillisecondsPassed;
+            this._queueableAnimation.Reset();
+            this._queueableAnimation.MillisecondsPassed = millisecondsPassed;
+        }
     }
 
     /// <inheritdoc />
@@ -59,15 +60,21 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
 
     private void AnimationReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName is nameof(SpriteAnimationReference.Asset) or nameof(SpriteAnimationReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
-            this.TryStart();
+            if (this.TryResetAnimation()) {
+                this.TryStart();
+            }
         }
     }
 
-    private void ResetStep() {
-        if (this.AnimationReference.PackagedAsset is { } animation && animation.Steps.FirstOrDefault() is { } step) {
-            this.CurrentSpriteIndex = step.SpriteIndex;
-            this.CurrentStepIndex = 0;
+    private bool TryResetAnimation() {
+        if (this.AnimationReference.PackagedAsset is { } animation) {
+            this._queueableAnimation = new QueueableSpriteAnimation(this.AnimationReference.PackagedAsset, true);
         }
+        else {
+            this._queueableAnimation = null;
+        }
+
+        return this._queueableAnimation != null;
     }
 
     private void TryStart() {
