@@ -21,7 +21,6 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// </summary>
     public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
 
-
     /// <summary>
     /// Enqueues the specified animation.
     /// </summary>
@@ -111,6 +110,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         }
     }
 
+    /// <inheritdoc />
     protected override QueueableSpriteAnimation? GetCurrentAnimation() {
         if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
             this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
@@ -119,6 +119,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         return this._currentAnimation;
     }
 
+    /// <inheritdoc />
     protected override void HandleAnimationFinished() {
         if (this._queuedSpriteAnimations.Any()) {
             this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);

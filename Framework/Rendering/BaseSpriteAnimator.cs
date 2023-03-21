@@ -2,6 +2,9 @@
 
 using System.Runtime.Serialization;
 
+/// <summary>
+/// A base class for sprite animators.
+/// </summary>
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
     private bool _isPlaying;
@@ -20,7 +23,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
-
 
     /// <summary>
     /// Gets or sets the frame rate. This is represented in frames per second.
