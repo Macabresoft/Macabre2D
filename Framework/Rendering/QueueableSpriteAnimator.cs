@@ -12,7 +12,7 @@ using Macabresoft.Core;
 /// </summary>
 [Display(Name = "Sprite Animator")]
 [Category(CommonCategories.Animation)]
-public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
+public class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
     private QueueableSpriteAnimation? _currentAnimation;
 

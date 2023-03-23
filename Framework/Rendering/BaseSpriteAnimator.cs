@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
     private bool _isPlaying;
-    private int _millisecondsPerFrame;
     private int _updateOrder;
 
     /// <summary>
@@ -58,6 +57,11 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     protected override SpriteSheetAsset? SpriteSheet => this.CurrentAnimation?.SpriteSheet;
 
     /// <summary>
+    /// Get the number of milliseconds in a single frame.
+    /// </summary>
+    protected int MillisecondsPerFrame { get; private set; }
+
+    /// <summary>
     /// Gets the percentage complete for the current animation.
     /// </summary>
     /// <returns>The percentage complete.</returns>
@@ -103,9 +107,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public virtual void Update(FrameTime frameTime, InputState inputState) {
         if (this.IsPlaying && this.GetCurrentAnimation() is { } animation) {
-            animation.Update(frameTime, this._millisecondsPerFrame, out var isAnimationOver);
+            animation.Update(frameTime, this.MillisecondsPerFrame, out var isAnimationOver);
 
             if (isAnimationOver) {
                 this.HandleAnimationFinished();
@@ -129,6 +133,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     }
 
     private void ResetFrameRate() {
-        this._millisecondsPerFrame = this._frameRate > 0 ? this._millisecondsPerFrame = 1000 / this._frameRate : 0;
+        this.MillisecondsPerFrame = this._frameRate > 0 ? this.MillisecondsPerFrame = 1000 / this._frameRate : 0;
     }
 }
