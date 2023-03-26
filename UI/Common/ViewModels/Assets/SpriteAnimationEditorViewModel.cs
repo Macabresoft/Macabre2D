@@ -114,6 +114,21 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     public ICommand RemoveCommand { get; }
 
     /// <summary>
+    /// Gets the sprite collection.
+    /// </summary>
+    public SpriteDisplayCollection SpriteCollection { get; }
+
+    /// <summary>
+    /// Gets the steps.
+    /// </summary>
+    public IReadOnlyCollection<SpriteAnimationStep> Steps => this._animation.Steps;
+
+    /// <summary>
+    /// Gets the size of a step's sprite in pixels.
+    /// </summary>
+    public Size StepSize { get; }
+
+    /// <summary>
     /// Gets or sets the selected sprite.
     /// </summary>
     public SpriteDisplayModel SelectedSprite {
@@ -154,26 +169,11 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         private set {
             if (this._selectedStep != value) {
                 this.RaiseAndSetIfChanged(ref this._selectedStep, value);
-                this._selectedSprite = this._selectedStep != null ? this.SpriteCollection.FirstOrDefault(x => x.Index == this._selectedStep.SpriteIndex) : null;
+                this._selectedSprite = this._selectedStep?.SpriteIndex != null ? this.SpriteCollection.FirstOrDefault(x => x.Index == this._selectedStep.SpriteIndex) : null;
                 this.RaisePropertyChanged(nameof(this.SelectedSprite));
             }
         }
     }
-
-    /// <summary>
-    /// Gets the sprite collection.
-    /// </summary>
-    public SpriteDisplayCollection SpriteCollection { get; }
-
-    /// <summary>
-    /// Gets the steps.
-    /// </summary>
-    public IReadOnlyCollection<SpriteAnimationStep> Steps => this._animation.Steps;
-
-    /// <summary>
-    /// Gets the size of a step's sprite in pixels.
-    /// </summary>
-    public Size StepSize { get; }
 
     /// <summary>
     /// Gets or sets the thumbnail size.
