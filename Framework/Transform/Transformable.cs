@@ -81,6 +81,10 @@ public abstract class Transformable : PropertyChangedNotifier, ITransformable {
             if (this._localPosition != value) {
                 this._localPosition = value;
                 this.HandleTransformed();
+
+                if (BaseGame.IsDesignMode) {
+                    this.RaisePropertyChanged();
+                }
             }
         }
     }
