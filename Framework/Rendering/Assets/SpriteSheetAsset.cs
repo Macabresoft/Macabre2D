@@ -58,12 +58,12 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// <summary>
     /// Gets the auto tile sets.
     /// </summary>
-    public INameableCollection AutoTileSets => this._autoTileSets;
+    public AutoTileSetCollection AutoTileSets => this._autoTileSets;
 
     /// <summary>
     /// Gets the fonts.
     /// </summary>
-    public INameableCollection Fonts => this._fonts;
+    public SpriteSheetFontCollection Fonts => this._fonts;
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
@@ -76,7 +76,7 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// <summary>
     /// Gets the sprite animations.
     /// </summary>
-    public INameableCollection SpriteAnimations => this._spriteAnimations;
+    public SpriteAnimationCollection SpriteAnimations => this._spriteAnimations;
 
     /// <summary>
     /// Gets or sets the number of columns in this sprite sheet.

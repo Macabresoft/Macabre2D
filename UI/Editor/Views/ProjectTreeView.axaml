@@ -126,6 +126,31 @@
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
                         <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
+                    
+                    <Button Command="{Binding CloneCommand}"
+                            CommandParameter="{Binding AssetSelectionService.Selected}"
+                            HotKey="Ctrl + Shift + C"
+                            Classes="Icon"
+                            IsVisible="{Binding IsSpriteSheetMemberSelected}"
+                            ToolTip.Tip="Clone the selected asset member">
+                        <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
+                    </Button>
+
+                    <Button Command="{Binding MoveUpCommand}"
+                            CommandParameter="{Binding AssetSelectionService.Selected}"
+                            ToolTip.Tip="Move the selected child up one spot in the list"
+                            Classes="Icon"
+                            IsVisible="{Binding IsSpriteSheetMemberSelected}">
+                        <avaloniaEx:Icon Content="{StaticResource ChevronUpIcon}" />
+                    </Button>
+
+                    <Button Command="{Binding MoveDownCommand}"
+                            CommandParameter="{Binding AssetSelectionService.Selected}"
+                            ToolTip.Tip="Move the selected child down one spot in the list"
+                            Classes="Icon"
+                            IsVisible="{Binding IsSpriteSheetMemberSelected}">
+                        <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2"

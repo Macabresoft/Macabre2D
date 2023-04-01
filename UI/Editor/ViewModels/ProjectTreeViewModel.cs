@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,6 +62,8 @@ public class ProjectTreeViewModel : BaseViewModel {
         this._sceneService = sceneService;
         this._undoService = undoService;
 
+        this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
+
         this.AddCommand = ReactiveCommand.Create<object>(
             this.AddNode,
             this.AssetSelectionService.WhenAny(x => x.Selected, x => CanAddNode(x.Value)));
@@ -83,6 +86,16 @@ public class ProjectTreeViewModel : BaseViewModel {
             this.AssetSelectionService.WhenAny(x => x.Selected, y => this.CanRemoveContent(y.Value)));
 
         this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
+
+        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.AssetSelectionService.WhenAny(
+            x => x.Selected,
+            x => this.CanMoveDown(x.Value)));
+        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.AssetSelectionService.WhenAny(
+            x => x.Selected,
+            x => this.CanMoveUp(x.Value)));
+        this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
+            x => x.Selected,
+            x => this.CanClone(x.Value)));
     }
 
     /// <summary>
@@ -106,6 +119,11 @@ public class ProjectTreeViewModel : BaseViewModel {
     public IAssetSelectionService AssetSelectionService { get; }
 
     /// <summary>
+    /// Gets a command to clone an entity.
+    /// </summary>
+    public ICommand CloneCommand { get; }
+
+    /// <summary>
     /// Gets the content service.
     /// </summary>
     public IContentService ContentService { get; }
@@ -114,6 +132,21 @@ public class ProjectTreeViewModel : BaseViewModel {
     /// Gets the import command.
     /// </summary>
     public ICommand ImportCommand { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not a <see cref="SpriteSheetMember" /> is selected.
+    /// </summary>
+    public bool IsSpriteSheetMemberSelected => this.CanClone(this.AssetSelectionService.Selected);
+
+    /// <summary>
+    /// Gets a command to move a child down.
+    /// </summary>
+    public ICommand MoveDownCommand { get; }
+
+    /// <summary>
+    /// Gets a command to move a child up.
+    /// </summary>
+    public ICommand MoveUpCommand { get; }
 
     /// <summary>
     /// Gets the open command.
@@ -192,13 +225,13 @@ public class ProjectTreeViewModel : BaseViewModel {
             case SpriteSheetFontCollection fonts:
                 this.AddFont(fonts);
                 break;
-            case AutoTileSet { SpriteSheet: { AutoTileSets: AutoTileSetCollection tileSets } }:
+            case AutoTileSet { SpriteSheet: { AutoTileSets: { } tileSets } }:
                 this.AddTileSet(tileSets);
                 break;
-            case SpriteAnimation { SpriteSheet: { SpriteAnimations: SpriteAnimationCollection animations } }:
+            case SpriteAnimation { SpriteSheet: { SpriteAnimations: { } animations } }:
                 this.AddAnimation(animations);
                 break;
-            case SpriteSheetFont { SpriteSheet: { Fonts: SpriteSheetFontCollection fonts } }:
+            case SpriteSheetFont { SpriteSheet: { Fonts: { } fonts } }:
                 this.AddFont(fonts);
                 break;
         }
@@ -214,8 +247,62 @@ public class ProjectTreeViewModel : BaseViewModel {
             () => { tileSets.Remove(tileSet); });
     }
 
+    private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(this.AssetSelectionService.Selected)) {
+            this.RaisePropertyChanged(nameof(this.IsSpriteSheetMemberSelected));
+        }
+    }
+
     private static bool CanAddNode(object parent) {
         return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or SpriteSheetMember;
+    }
+
+    private bool CanClone(object selected) {
+        return selected is SpriteSheetMember;
+    }
+
+    private bool CanMoveDown(object selected) {
+        var result = false;
+
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
+            var index = 0;
+            var maxIndex = 0;
+            switch (selected) {
+                case SpriteAnimation animation:
+                    maxIndex = spriteSheet.SpriteAnimations.Count - 1;
+                    index = spriteSheet.SpriteAnimations.IndexOf(animation);
+                    break;
+                case AutoTileSet tileSet:
+                    maxIndex = spriteSheet.AutoTileSets.Count - 1;
+                    index = spriteSheet.AutoTileSets.IndexOf(tileSet);
+                    break;
+                case SpriteSheetFont font:
+                    maxIndex = spriteSheet.Fonts.Count - 1;
+                    index = spriteSheet.Fonts.IndexOf(font);
+                    break;
+            }
+
+            result = index != 0 && index < maxIndex;
+        }
+
+        return result;
+    }
+
+    private bool CanMoveUp(object selected) {
+        var result = false;
+
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
+            var index = selected switch {
+                SpriteAnimation animation => spriteSheet.SpriteAnimations.IndexOf(animation),
+                AutoTileSet tileSet => spriteSheet.AutoTileSets.IndexOf(tileSet),
+                SpriteSheetFont font => spriteSheet.Fonts.IndexOf(font),
+                _ => 0
+            };
+
+            result = index > 0;
+        }
+
+        return result;
     }
 
     private static bool CanOpenContent(IContentNode node) {
@@ -226,6 +313,144 @@ public class ProjectTreeViewModel : BaseViewModel {
         return node is not RootContentDirectory &&
                node is not INameableCollection &&
                !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId);
+    }
+
+    private void Clone(object selected) {
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
+            if (selected is SpriteAnimation animation) {
+                if (animation.TryClone(out var clone)) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.SpriteAnimations.Add(clone);
+                        this.AssetSelectionService.Selected = clone;
+                    }, () =>
+                    {
+                        spriteSheet.SpriteAnimations.Remove(clone);
+                        this.AssetSelectionService.Selected = animation;
+                    });
+                }
+            }
+            else if (selected is AutoTileSet tileSet) {
+                if (tileSet.TryClone(out var clone)) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.AutoTileSets.Add(clone);
+                        this.AssetSelectionService.Selected = clone;
+                    }, () =>
+                    {
+                        spriteSheet.AutoTileSets.Remove(clone);
+                        this.AssetSelectionService.Selected = tileSet;
+                    });
+                }
+            }
+            else if (selected is SpriteSheetFont font) {
+                if (font.TryClone(out var clone)) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.Fonts.Add(clone);
+                        this.AssetSelectionService.Selected = clone;
+                    }, () =>
+                    {
+                        spriteSheet.Fonts.Remove(clone);
+                        this.AssetSelectionService.Selected = font;
+                    });
+                }
+            }
+        }
+    }
+
+    private void MoveDown(object selected) {
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
+            if (selected is SpriteAnimation animation) {
+                var index = spriteSheet.SpriteAnimations.IndexOf(animation);
+                if (index > 0 && index < spriteSheet.SpriteAnimations.Count - 1) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.SpriteAnimations.Remove(animation);
+                        spriteSheet.SpriteAnimations.Insert(index + 1, animation);
+                    }, () =>
+                    {
+                        spriteSheet.SpriteAnimations.Remove(animation);
+                        spriteSheet.SpriteAnimations.Insert(index, animation);
+                    });
+                }
+            }
+            else if (selected is AutoTileSet tileSet) {
+                var index = spriteSheet.AutoTileSets.IndexOf(tileSet);
+                if (index > 0 && index < spriteSheet.AutoTileSets.Count - 1) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.AutoTileSets.Remove(tileSet);
+                        spriteSheet.AutoTileSets.Insert(index + 1, tileSet);
+                    }, () =>
+                    {
+                        spriteSheet.AutoTileSets.Remove(tileSet);
+                        spriteSheet.AutoTileSets.Insert(index, tileSet);
+                    });
+                }
+            }
+            else if (selected is SpriteSheetFont font) {
+                var index = spriteSheet.Fonts.IndexOf(font);
+                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.Fonts.Remove(font);
+                        spriteSheet.Fonts.Insert(index + 1, font);
+                    }, () =>
+                    {
+                        spriteSheet.Fonts.Remove(font);
+                        spriteSheet.Fonts.Insert(index, font);
+                    });
+                }
+            }
+        }
+    }
+
+    private void MoveUp(object selected) {
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
+            if (selected is SpriteAnimation animation) {
+                var index = spriteSheet.SpriteAnimations.IndexOf(animation);
+                if (index > 0) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.SpriteAnimations.Remove(animation);
+                        spriteSheet.SpriteAnimations.Insert(index - 1, animation);
+                    }, () =>
+                    {
+                        spriteSheet.SpriteAnimations.Remove(animation);
+                        spriteSheet.SpriteAnimations.Insert(index, animation);
+                    });
+                }
+            }
+            else if (selected is AutoTileSet tileSet) {
+                var index = spriteSheet.AutoTileSets.IndexOf(tileSet);
+                if (index > 0) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.AutoTileSets.Remove(tileSet);
+                        spriteSheet.AutoTileSets.Insert(index - 1, tileSet);
+                    }, () =>
+                    {
+                        spriteSheet.AutoTileSets.Remove(tileSet);
+                        spriteSheet.AutoTileSets.Insert(index, tileSet);
+                    });
+                }
+            }
+            else if (selected is SpriteSheetFont font) {
+                var index = spriteSheet.Fonts.IndexOf(font);
+                if (index > 0) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.Fonts.Remove(font);
+                        spriteSheet.Fonts.Insert(index - 1, font);
+                    }, () =>
+                    {
+                        spriteSheet.Fonts.Remove(font);
+                        spriteSheet.Fonts.Insert(index, font);
+                    });
+                }
+            }
+        }
     }
 
     private void OpenContentLocation(IContentNode node) {
@@ -263,17 +488,17 @@ public class ProjectTreeViewModel : BaseViewModel {
                 break;
             case SpriteSheetMember { SpriteSheet: { } spriteSheet } spriteSheetAsset:
                 switch (spriteSheetAsset) {
-                    case AutoTileSet tileSet when spriteSheet.AutoTileSets is AutoTileSetCollection tileSets:
+                    case AutoTileSet tileSet when spriteSheet.AutoTileSets is { } tileSets:
                         var tileSetIndex = tileSets.IndexOf(tileSet);
                         this._undoService.Do(() => tileSets.Remove(tileSet),
                             () => tileSets.InsertOrAdd(tileSetIndex, tileSet));
                         break;
-                    case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is SpriteAnimationCollection spriteAnimations:
+                    case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is { } spriteAnimations:
                         var spriteAnimationIndex = spriteAnimations.IndexOf(spriteAnimation);
                         this._undoService.Do(() => spriteAnimations.Remove(spriteAnimation),
                             () => spriteAnimations.InsertOrAdd(spriteAnimationIndex, spriteAnimation));
                         break;
-                    case SpriteSheetFont font when spriteSheet.Fonts is SpriteSheetFontCollection fonts:
+                    case SpriteSheetFont font when spriteSheet.Fonts is { } fonts:
                         var fontIndex = fonts.IndexOf(font);
                         this._undoService.Do(() => fonts.Remove(font),
                             () => fonts.InsertOrAdd(fontIndex, font));
