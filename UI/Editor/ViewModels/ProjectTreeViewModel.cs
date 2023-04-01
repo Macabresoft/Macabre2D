@@ -156,45 +156,66 @@ public class ProjectTreeViewModel : BaseViewModel {
         }
     }
 
+    private void AddAnimation(SpriteAnimationCollection animations) {
+        var animation = new SpriteAnimation {
+            Name = SpriteAnimation.DefaultName
+        };
+
+        animation.AddStep();
+
+        this._undoService.Do(
+            () => { animations.Add(animation); },
+            () => { animations.Remove(animation); });
+    }
+
+    private void AddFont(SpriteSheetFontCollection fonts) {
+        var font = new SpriteSheetFont {
+            Name = SpriteSheetFont.DefaultName
+        };
+
+        this._undoService.Do(
+            () => { fonts.Add(font); },
+            () => { fonts.Remove(font); });
+    }
+
     private void AddNode(object parent) {
         switch (parent) {
             case IContentDirectory directory:
                 this.ContentService.AddDirectory(directory);
                 break;
             case AutoTileSetCollection tileSets:
-                var tileSet = new AutoTileSet {
-                    Name = AutoTileSet.DefaultName
-                };
-
-                this._undoService.Do(
-                    () => { tileSets.Add(tileSet); },
-                    () => { tileSets.Remove(tileSet); });
+                this.AddTileSet(tileSets);
                 break;
             case SpriteAnimationCollection animations:
-                var animation = new SpriteAnimation {
-                    Name = SpriteAnimation.DefaultName
-                };
-
-                animation.AddStep();
-
-                this._undoService.Do(
-                    () => { animations.Add(animation); },
-                    () => { animations.Remove(animation); });
+                this.AddAnimation(animations);
                 break;
             case SpriteSheetFontCollection fonts:
-                var font = new SpriteSheetFont {
-                    Name = SpriteSheetFont.DefaultName
-                };
-
-                this._undoService.Do(
-                    () => { fonts.Add(font); },
-                    () => { fonts.Remove(font); });
+                this.AddFont(fonts);
+                break;
+            case AutoTileSet { SpriteSheet: { AutoTileSets: AutoTileSetCollection tileSets } }:
+                this.AddTileSet(tileSets);
+                break;
+            case SpriteAnimation { SpriteSheet: { SpriteAnimations: SpriteAnimationCollection animations } }:
+                this.AddAnimation(animations);
+                break;
+            case SpriteSheetFont { SpriteSheet: { Fonts: SpriteSheetFontCollection fonts } }:
+                this.AddFont(fonts);
                 break;
         }
     }
 
+    private void AddTileSet(AutoTileSetCollection tileSets) {
+        var tileSet = new AutoTileSet {
+            Name = AutoTileSet.DefaultName
+        };
+
+        this._undoService.Do(
+            () => { tileSets.Add(tileSet); },
+            () => { tileSets.Remove(tileSet); });
+    }
+
     private static bool CanAddNode(object parent) {
-        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection;
+        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or SpriteSheetMember;
     }
 
     private static bool CanOpenContent(IContentNode node) {
