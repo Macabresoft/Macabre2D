@@ -95,7 +95,11 @@ public sealed class AudioPlayer : Entity {
 
         this.AudioClipReference.Initialize(this.Scene.Assets);
 
-        if (this._shouldLoop && this.IsEnabled) {
+        if (this.AudioClipReference.Asset is { } audioClip) {
+            this._currentSoundEffectInstance = audioClip.GetSoundEffectInstance(this.Volume, this.Pan, this.Pitch);
+        }
+
+        if (this._shouldLoop && this.IsEnabled && !BaseGame.IsDesignMode) {
             this.Play();
         }
     }
@@ -104,18 +108,22 @@ public sealed class AudioPlayer : Entity {
     /// Play this instance.
     /// </summary>
     public void Play() {
-        if (this._currentSoundEffectInstance is { } currentInstance) {
-            currentInstance.Stop(true);
-            currentInstance.Dispose();
+        if (this.State == SoundState.Playing) {
+            return;
         }
 
-        if (this.AudioClipReference.Asset is { } audioClip) {
-            this._currentSoundEffectInstance = audioClip.GetSoundEffectInstance(this.Volume, this.Pan, this.Pitch);
+        if (this._currentSoundEffectInstance != null) {
+            this._currentSoundEffectInstance.IsLooped = this._shouldLoop;
+            this._currentSoundEffectInstance.Play();
+        }
+    }
 
-            if (this._currentSoundEffectInstance != null) {
-                this._currentSoundEffectInstance.IsLooped = this._shouldLoop;
-                this._currentSoundEffectInstance.Play();
-            }
+    /// <summary>
+    /// Pauses this instance.
+    /// </summary>
+    public void Pause() {
+        if (this.State == SoundState.Playing && this._currentSoundEffectInstance is {} soundEffectInstance) {
+            soundEffectInstance.Pause();
         }
     }
 
@@ -133,7 +141,6 @@ public sealed class AudioPlayer : Entity {
     public void Stop(bool isImmediate) {
         if (this._currentSoundEffectInstance is { } soundEffectInstance) {
             soundEffectInstance.Stop(isImmediate);
-            soundEffectInstance.Dispose();
         }
     }
 
