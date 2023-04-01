@@ -347,7 +347,17 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             }
         }
         else if (selected is ILoop loop) {
-            // TODO: clone a loop
+            if (loop.TryClone(out var clone)) {
+                this._undoService.Do(() =>
+                {
+                    this.SceneService.CurrentScene.AddLoop(clone);
+                    this.SceneService.Selected = clone;
+                }, () =>
+                {
+                    this.SceneService.CurrentScene.RemoveLoop(clone);
+                    this.SceneService.Selected = loop;
+                });
+            }
         }
     }
 

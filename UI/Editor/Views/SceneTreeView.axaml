@@ -211,9 +211,15 @@
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this loop" />
+                                    
+                                    <MenuItem Header="Clone"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneCommand}"
+                                              CommandParameter="{Binding}"
+                                              InputGesture="Ctrl + Shift + C"
+                                              ToolTip.Tip="Clone this loop" />
 
                                     <Separator />
-
+                                    
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
