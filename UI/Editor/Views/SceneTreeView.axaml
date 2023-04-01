@@ -71,6 +71,14 @@
                         ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
+                
+                <Button Command="{Binding CloneCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        HotKey="Ctrl + Shift + C"
+                        Classes="Icon"
+                        ToolTip.Tip="Contextually clone an entity or loop depending on the currently selected object in the tree">
+                    <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
+                </Button>
 
                 <Button Command="{Binding MoveUpCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
@@ -237,7 +245,7 @@
                                               ToolTip.Tip="Focus on this entity in the scene editor" />
 
                                     <MenuItem Header="Clone"
-                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneCommand}"
                                               CommandParameter="{Binding}"
                                               InputGesture="Ctrl + Shift + C"
                                               ToolTip.Tip="Clone this entity" />

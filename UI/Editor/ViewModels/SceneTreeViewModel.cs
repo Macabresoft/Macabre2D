@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -23,8 +22,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
     private readonly ILoopService _loopService;
-    private readonly ReactiveCommand<object, Unit> _moveDownCommand;
-    private readonly ReactiveCommand<object, Unit> _moveUpCommand;
     private readonly IUndoService _undoService;
 
     /// <summary>
@@ -65,14 +62,16 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => x.Value is not IScene));
-        this._moveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.SceneService.WhenAny(
+        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanMoveDown(x.Value)));
-        this._moveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.SceneService.WhenAny(
+        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanMoveUp(x.Value)));
         this.RenameCommand = ReactiveCommand.Create<string>(this.RenameChild);
-        this.CloneEntityCommand = ReactiveCommand.Create<IEntity>(this.CloneEntity);
+        this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.SceneService.WhenAny(
+            x => x.ImpliedSelected,
+            x => this.CanClone(x.Value)));
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
 
@@ -100,7 +99,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// <summary>
     /// Gets a command to clone an entity.
     /// </summary>
-    public ICommand CloneEntityCommand { get; }
+    public ICommand CloneCommand { get; }
 
     /// <summary>
     /// Gets a command to convert a prefab into an instance.
@@ -125,12 +124,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// <summary>
     /// Gets a command to move a child down.
     /// </summary>
-    public ICommand MoveDownCommand => this._moveDownCommand;
+    public ICommand MoveDownCommand { get; }
 
     /// <summary>
     /// Gets a command to move a child up.
     /// </summary>
-    public ICommand MoveUpCommand => this._moveUpCommand;
+    public ICommand MoveUpCommand { get; }
 
     /// <summary>
     /// Gets a command to remove a child.
@@ -306,6 +305,10 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
+    private bool CanClone(object selected) {
+        return (selected is IEntity entity && entity != this.SceneService.CurrentScene) || selected is ILoop;
+    }
+
     private bool CanMoveDown(object selected) {
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
@@ -329,17 +332,29 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         };
     }
 
-    private void CloneEntity(IEntity entity) {
-        if (entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
-            this._undoService.Do(() => { parent.AddChild(clone); }, () => { parent.RemoveChild(clone); });
+    private void Clone(object selected) {
+        if (selected is IEntity entity) {
+            if (entity != this.SceneService.CurrentScene && entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
+                this._undoService.Do(() =>
+                {
+                    parent.AddChild(clone);
+                    this.SceneService.Selected = clone;
+                }, () =>
+                {
+                    parent.RemoveChild(clone);
+                    this.SceneService.Selected = entity;
+                });
+            }
+        }
+        else if (selected is ILoop loop) {
+            // TODO: clone a loop
         }
     }
 
     private void ConvertToInstance(IEntity entity) {
         if (entity.Parent is { } parent &&
             !Entity.IsNullOrEmpty(parent, out _) &&
-            entity is PrefabContainer container &&
-            container.PrefabReference.Asset?.Content is IEntity content &&
+            entity is PrefabContainer { PrefabReference.Asset.Content: IEntity content } &&
             content.TryClone(out var clone)) {
             clone.LocalPosition = entity.LocalPosition;
 
