@@ -76,6 +76,7 @@
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         HotKey="Ctrl + Shift + C"
                         Classes="Icon"
+                        IsVisible="{Binding IsEntityOrLoopSelected}"
                         ToolTip.Tip="Contextually clone an entity or loop depending on the currently selected object in the tree">
                     <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
                 </Button>
@@ -83,14 +84,16 @@
                 <Button Command="{Binding MoveUpCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         ToolTip.Tip="Move the selected child up one spot in the list"
-                        Classes="Icon">
+                        Classes="Icon"
+                        IsVisible="{Binding IsEntityOrLoopSelected}">
                     <avaloniaEx:Icon Content="{StaticResource ChevronUpIcon}" />
                 </Button>
 
                 <Button Command="{Binding MoveDownCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         ToolTip.Tip="Move the selected child down one spot in the list"
-                        Classes="Icon">
+                        Classes="Icon"
+                        IsVisible="{Binding IsEntityOrLoopSelected}">
                     <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
                 </Button>
             </StackPanel>

@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -57,6 +58,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService = sceneService;
         this._loopService = loopService;
         this._undoService = undoService;
+        
+        this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
         this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x));
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
@@ -79,6 +82,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
         this.AddLoopModels = this._loopService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
+    }
+
+    private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(this.SceneService.Selected)) {
+            this.RaisePropertyChanged(nameof(this.IsEntityOrLoopSelected));
+        }
     }
 
     /// <summary>
@@ -304,6 +313,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             }
         }
     }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether an entity or loop is selected.
+    /// </summary>
+    public bool IsEntityOrLoopSelected => this.CanClone(this.SceneService.Selected);
 
     private bool CanClone(object selected) {
         return (selected is IEntity entity && entity != this.SceneService.CurrentScene) || selected is ILoop;
