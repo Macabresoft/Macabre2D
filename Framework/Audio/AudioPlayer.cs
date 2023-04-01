@@ -36,7 +36,6 @@ public sealed class AudioPlayer : Entity {
     [DataMember(Order = 3, Name = "Pan")]
     public float Pan {
         get => this._pan;
-
         set {
             this._pan = MathHelper.Clamp(value, -1f, 1f);
             if (this._currentSoundEffectInstance is { } soundEffectInstance) {
@@ -52,7 +51,6 @@ public sealed class AudioPlayer : Entity {
     [DataMember(Order = 4, Name = "Pitch")]
     public float Pitch {
         get => this._pitch;
-
         set {
             this._pitch = MathHelper.Clamp(value, -1f, 1f);
             if (this._currentSoundEffectInstance is { } soundEffectInstance) {
@@ -68,7 +66,6 @@ public sealed class AudioPlayer : Entity {
     [DataMember(Order = 1, Name = "Should Loop")]
     public bool ShouldLoop {
         get => this._shouldLoop;
-
         set {
             this._shouldLoop = value;
             if (this._currentSoundEffectInstance is { } soundEffectInstance) {
@@ -84,7 +81,6 @@ public sealed class AudioPlayer : Entity {
     [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
         get => this._volume;
-
         set {
             this._volume = MathHelper.Clamp(value, 0f, 1f);
             if (this._currentSoundEffectInstance is { } soundEffectInstance) {
@@ -93,6 +89,7 @@ public sealed class AudioPlayer : Entity {
         }
     }
 
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
