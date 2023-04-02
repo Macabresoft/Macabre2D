@@ -428,7 +428,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         mgcbStringBuilder.AppendLine();
 
         var contentFiles = this.RootContentDirectory.GetAllContentFiles();
-        foreach (var contentFile in contentFiles) {
+        foreach (var contentFile in contentFiles.Where(x => !x.Asset.IgnoreInBuild)) {
             mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
             mgcbStringBuilder.AppendLine();
         }

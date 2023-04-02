@@ -37,7 +37,7 @@ public class FilteredContentWrapper {
         if (node is IContentDirectory directory) {
             var children = new List<FilteredContentWrapper>();
             foreach (var childDirectory in directory.Children.OfType<IContentDirectory>()) {
-                if (allowDirectorySelection || childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))) {
+                if (allowDirectorySelection || childDirectory.GetAllContentFiles().Any(x => x.Asset is { IgnoreInBuild: false } && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))) {
                     children.Add(new FilteredContentWrapper(childDirectory, assetType, allowDirectorySelection, shouldDisplayFunc));
                 }
             }
@@ -45,7 +45,7 @@ public class FilteredContentWrapper {
             children.AddRange(
                 directory.Children
                     .OfType<ContentFile>()
-                    .Where(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))
+                    .Where(x => x.Asset is { IgnoreInBuild: false } && assetType.IsInstanceOfType(x.Asset) && shouldDisplayFunc(x))
                     .Select(x => new FilteredContentWrapper(x, assetType, allowDirectorySelection, shouldDisplayFunc)));
 
             this.Children = children;

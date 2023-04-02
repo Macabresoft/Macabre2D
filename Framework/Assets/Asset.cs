@@ -13,13 +13,17 @@ public interface IAsset : INotifyPropertyChanged {
     /// <summary>
     /// Gets the content identifier.
     /// </summary>
-    /// <value>The content identifier.</value>
     Guid ContentId { get; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should include the file extension in its content path.
     /// </summary>
     bool IncludeFileExtensionInContentPath { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this asset should be ignored when building a content file.
+    /// </summary>
+    bool IgnoreInBuild { get; set; }
 
     /// <summary>
     /// Gets the content build commands used by MGCB to compile this piece of content.
@@ -49,14 +53,20 @@ public interface IAsset<TContent> : IAsset {
 /// <summary>
 /// A base implementation for assets that contains an identifier and name.
 /// </summary>
+[Category("Asset")]
 [DataContract]
 public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent> {
+    private bool _ignoreInBuild;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
     /// </summary>
     protected Asset() {
         this.ContentId = Guid.NewGuid();
     }
+
+    /// <inheritdoc />
+    public abstract bool IncludeFileExtensionInContentPath { get; }
 
     /// <inheritdoc />
     public TContent? Content { get; protected set; }
@@ -67,7 +77,11 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     public Guid ContentId { get; private set; }
 
     /// <inheritdoc />
-    public abstract bool IncludeFileExtensionInContentPath { get; }
+    [DataMember]
+    public bool IgnoreInBuild {
+        get => this._ignoreInBuild;
+        set => this.Set(ref this._ignoreInBuild, value);
+    }
 
     /// <inheritdoc />
     public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {
