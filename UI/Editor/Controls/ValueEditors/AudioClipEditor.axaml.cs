@@ -118,18 +118,12 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
 
     private async Task Select() {
         var contentNode = await this._dialogService.OpenAssetSelectionDialog(typeof(AudioClipAsset), false);
-        if (contentNode is ContentFile file) {
+        if (contentNode is ContentFile { Asset: AudioClipAsset newAsset }) {
             var originalAsset = this.Value.Asset;
-            var newAsset = file.Asset as AudioClipAsset;
             this._undoService.Do(
                 () =>
                 {
-                    if (newAsset != null) {
-                        this.Value.LoadAsset(newAsset);
-                    }
-                    else {
-                        this.Value.Clear();
-                    }
+                    this.Value.LoadAsset(newAsset);
                 },
                 () =>
                 {
