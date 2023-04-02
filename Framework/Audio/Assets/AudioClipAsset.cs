@@ -30,22 +30,21 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     }
 
     /// <summary>
-    /// Gets a sound effect instance.
+    /// Gets an audio clip instance for the loaded sound effect..
     /// </summary>
     /// <param name="volume">The volume.</param>
     /// <param name="pan">The panning.</param>
     /// <param name="pitch">The pitch.</param>
-    /// <returns>A sound effect instance.</returns>
-    public SoundEffectInstance? GetSoundEffectInstance(float volume, float pan, float pitch) {
-        SoundEffectInstance? instance;
-        if (this.Content is SoundEffect soundEffect) {
-            instance = soundEffect.CreateInstance();
+    /// <param name="shouldLoop">A value indicating whether or not the instance should loop.</param>
+    /// <returns>An audio clip instance.</returns>
+    public IAudioClipInstance GetInstance(float volume, float pan, float pitch, bool shouldLoop) {
+        var instance = AudioClipInstance.Empty;
+        if (this.Content is { } soundEffect) {
+            instance = new AudioClipInstance(soundEffect.CreateInstance());
             instance.Volume = volume;
             instance.Pan = pan;
             instance.Pitch = pitch;
-        }
-        else {
-            instance = null;
+            instance.ShouldLoop = shouldLoop;
         }
 
         return instance;

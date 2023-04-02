@@ -13,11 +13,15 @@ using Macabresoft.Core;
 [DataContract]
 public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private IAssetManager _assetManager = AssetManager.Empty;
+    private TAsset? _asset;
 
     /// <summary>
     /// Gets the asset.
     /// </summary>
-    public TAsset? Asset { get; private set; }
+    public TAsset? Asset {
+        get => this._asset;
+        set => this.Set(ref this._asset, value);
+    }
 
     /// <summary>
     /// Gets or sets the asset identifier.

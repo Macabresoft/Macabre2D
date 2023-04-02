@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
@@ -11,11 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 /// </summary>
 [Display(Name = "Audio Player")]
 public sealed class AudioPlayer : Entity {
-    private SoundEffectInstance? _currentSoundEffectInstance;
-    private float _pan;
-    private float _pitch;
-    private bool _shouldLoop;
-    private float _volume = 1f;
+    private IAudioClipInstance _instance = AudioClipInstance.Empty;
 
     /// <summary>
     /// Gets the audio clip reference.
@@ -26,37 +21,24 @@ public sealed class AudioPlayer : Entity {
     /// <summary>
     /// Gets the state.
     /// </summary>
-    /// <value>The state.</value>
-    public SoundState State => this._currentSoundEffectInstance?.State ?? SoundState.Stopped;
+    public SoundState State => this._instance.State;
 
     /// <summary>
     /// Gets or sets the pan.
     /// </summary>
-    /// <value>The pan.</value>
     [DataMember(Order = 3, Name = "Pan")]
     public float Pan {
-        get => this._pan;
-        set {
-            this._pan = MathHelper.Clamp(value, -1f, 1f);
-            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
-                soundEffectInstance.Pan = this._pan;
-            }
-        }
+        get => this._instance.Pan;
+        set => this._instance.Pan = value;
     }
 
     /// <summary>
     /// Gets or sets the pitch.
     /// </summary>
-    /// <value>The pitch.</value>
     [DataMember(Order = 4, Name = "Pitch")]
     public float Pitch {
-        get => this._pitch;
-        set {
-            this._pitch = MathHelper.Clamp(value, -1f, 1f);
-            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
-                soundEffectInstance.Pitch = this._pitch;
-            }
-        }
+        get => this._instance.Pitch;
+        set => this._instance.Pitch = value;
     }
 
     /// <summary>
@@ -65,13 +47,8 @@ public sealed class AudioPlayer : Entity {
     /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
     [DataMember(Order = 1, Name = "Should Loop")]
     public bool ShouldLoop {
-        get => this._shouldLoop;
-        set {
-            this._shouldLoop = value;
-            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
-                soundEffectInstance.IsLooped = this._shouldLoop;
-            }
-        }
+        get => this._instance.ShouldLoop;
+        set => this._instance.ShouldLoop = value;
     }
 
     /// <summary>
@@ -80,13 +57,8 @@ public sealed class AudioPlayer : Entity {
     /// <value>The volume.</value>
     [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
-        get => this._volume;
-        set {
-            this._volume = MathHelper.Clamp(value, 0f, 1f);
-            if (this._currentSoundEffectInstance is { } soundEffectInstance) {
-                soundEffectInstance.Volume = this._volume;
-            }
-        }
+        get => this._instance.Volume;
+        set => this._instance.Volume = value;
     }
 
     /// <inheritdoc />
@@ -94,27 +66,11 @@ public sealed class AudioPlayer : Entity {
         base.Initialize(scene, parent);
 
         this.AudioClipReference.Initialize(this.Scene.Assets);
+        this.ResetInstance();
+        this.AudioClipReference.PropertyChanged += this.AudioClipReference_PropertyChanged;
 
-        if (this.AudioClipReference.Asset is { } audioClip) {
-            this._currentSoundEffectInstance = audioClip.GetSoundEffectInstance(this.Volume, this.Pan, this.Pitch);
-        }
-
-        if (this._shouldLoop && this.IsEnabled && !BaseGame.IsDesignMode) {
+        if (this.ShouldLoop && this.IsEnabled && !BaseGame.IsDesignMode) {
             this.Play();
-        }
-    }
-
-    /// <summary>
-    /// Play this instance.
-    /// </summary>
-    public void Play() {
-        if (this.State == SoundState.Playing) {
-            return;
-        }
-
-        if (this._currentSoundEffectInstance != null) {
-            this._currentSoundEffectInstance.IsLooped = this._shouldLoop;
-            this._currentSoundEffectInstance.Play();
         }
     }
 
@@ -122,9 +78,14 @@ public sealed class AudioPlayer : Entity {
     /// Pauses this instance.
     /// </summary>
     public void Pause() {
-        if (this.State == SoundState.Playing && this._currentSoundEffectInstance is {} soundEffectInstance) {
-            soundEffectInstance.Pause();
-        }
+        this._instance.Pause();
+    }
+
+    /// <summary>
+    /// Play this instance.
+    /// </summary>
+    public void Play() {
+        this._instance.Play();
     }
 
     /// <summary>
@@ -139,9 +100,7 @@ public sealed class AudioPlayer : Entity {
     /// </summary>
     /// <param name="isImmediate">If set to <c>true</c> is immediate.</param>
     public void Stop(bool isImmediate) {
-        if (this._currentSoundEffectInstance is { } soundEffectInstance) {
-            soundEffectInstance.Stop(isImmediate);
-        }
+        this._instance.Stop(isImmediate);
     }
 
     /// <inheritdoc />
@@ -149,12 +108,24 @@ public sealed class AudioPlayer : Entity {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(IEntity.IsEnabled)) {
-            if (this.ShouldLoop && this.IsEnabled) {
-                this.Play();
-            }
-            else if (!this.IsEnabled) {
+            if (!this.IsEnabled) {
                 this.Stop();
             }
+            else if (this.ShouldLoop) {
+                this.Play();
+            }
+        }
+    }
+
+    private void AudioClipReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(this.AudioClipReference.Asset)) {
+            this.ResetInstance();
+        }
+    }
+
+    private void ResetInstance() {
+        if (this.AudioClipReference.Asset is { } audioClip) {
+            this._instance = audioClip.GetInstance(this.Volume, this.Pan, this.Pitch, this.ShouldLoop);
         }
     }
 }
