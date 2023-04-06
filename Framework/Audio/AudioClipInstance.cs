@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using System.Runtime.Serialization;
 
 /// <summary>
 /// Interface for an instance of a <see cref="AudioClipAsset" />.
@@ -104,7 +104,9 @@ public sealed class AudioClipInstance : IAudioClipInstance {
 
     /// <inheritdoc />
     public void Pause() {
-        this._instance.Pause();
+        if (this._instance.State == SoundState.Playing) {
+            this._instance.Pause();
+        }
     }
 
     /// <inheritdoc />
