@@ -57,7 +57,7 @@ public class ToDisplayNameConverter : IValueConverter {
             }
         }
         else if (enumType == typeof(InputAction) && this._projectService.CurrentProject != null) {
-            displayName = this._projectService.CurrentProject.Settings.DefaultInputSettings.GetName((InputAction)enumValue);
+            displayName = this._projectService.CurrentProject.Settings.InputSettings.GetName((InputAction)enumValue);
         }
         else {
             displayName = enumValue.GetEnumDisplayName();

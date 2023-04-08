@@ -25,9 +25,9 @@ public interface IGameSettings {
     GraphicsSettings DefaultGraphicsSettings { get; }
 
     /// <summary>
-    /// Gets the default input settings.
+    /// Gets the input settings.
     /// </summary>
-    InputSettings DefaultInputSettings { get; }
+    InputSettings InputSettings { get; }
 
     /// <summary>
     /// Gets the layer settings.
@@ -97,7 +97,7 @@ public sealed class GameSettings : IGameSettings {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Input)]
-    public InputSettings DefaultInputSettings { get; } = new();
+    public InputSettings InputSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

@@ -18,12 +18,7 @@ public enum DisplayModes : byte {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.DefaultGraphics)]
-public sealed class GraphicsSettings : VersionedData {
-    /// <summary>
-    /// The settings file name.
-    /// </summary>
-    public const string SettingsFileName = "Graphics.m2d";
-
+public sealed class GraphicsSettings {
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
     /// </summary>

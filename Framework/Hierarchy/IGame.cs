@@ -20,6 +20,11 @@ public interface IGame {
     event EventHandler<Point> ViewportSizeChanged;
 
     /// <summary>
+    /// Gets the audio settings.
+    /// </summary>
+    AudioSettings AudioSettings { get; }
+
+    /// <summary>
     /// Gets the content manager.
     /// </summary>
     ContentManager? Content { get; }
@@ -66,6 +71,11 @@ public interface IGame {
     SpriteBatch? SpriteBatch { get; }
 
     /// <summary>
+    /// Gets the user settings.
+    /// </summary>
+    UserSettings UserSettings { get; }
+
+    /// <summary>
     /// Gets the size of the viewport.
     /// </summary>
     Point ViewportSize { get; }
@@ -76,7 +86,7 @@ public interface IGame {
     double GameSpeed { get; set; }
 
     /// <summary>
-    /// Exits thie game.
+    /// Exits the game.
     /// </summary>
     void Exit();
 
@@ -101,17 +111,12 @@ public interface IGame {
     /// <summary>
     /// Saves the applies graphics settings.
     /// </summary>
-    void SaveAndApplyGraphicsSettings();
+    void SaveAndApplyUserSettings();
 
     /// <summary>
     /// Saves the current graphics settings.
     /// </summary>
-    void SaveGraphicsSettings();
-
-    /// <summary>
-    /// Saves the current input bindings.
-    /// </summary>
-    void SaveInputBindings();
+    void SaveUserSettings();
 
     /// <summary>
     /// Pops the top scene in the stack. The scene will no longer be updated or rendered. The next scene in the stack will become CurrentScene.

@@ -21,8 +21,8 @@ public class BaseGame : Game, IGame {
     private readonly Stack<IScene> _sceneStack = new();
 
     private double _gameSpeed = 1d;
-    private GraphicsSettings _graphicsSettings = new();
     private IGameProject _project = new GameProject();
+    private UserSettings _userSettings = new();
     private Point _viewportSize;
 
     /// <inheritdoc />
@@ -44,6 +44,15 @@ public class BaseGame : Game, IGame {
         this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
         this.Content.RootDirectory = "Content";
     }
+
+    /// <inheritdoc />
+    public AudioSettings AudioSettings => this.UserSettings.Audio;
+
+    /// <inheritdoc />
+    public GraphicsSettings GraphicsSettings => this.UserSettings.Graphics;
+
+    /// <inheritdoc />
+    public InputBindings InputBindings => this.UserSettings.InputBindings;
 
     /// <inheritdoc />
     public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
@@ -79,18 +88,6 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public GraphicsSettings GraphicsSettings {
-        get => this._graphicsSettings;
-        private set {
-            this._graphicsSettings = value;
-            this.ApplyGraphicsSettings();
-        }
-    }
-
-    /// <inheritdoc />
-    public InputBindings InputBindings { get; private set; } = new();
-
-    /// <inheritdoc />
     public InputState InputState { get; protected set; }
 
     /// <summary>
@@ -109,6 +106,15 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
+
+    /// <inheritdoc />
+    public UserSettings UserSettings {
+        get => this._userSettings;
+        private set {
+            this._userSettings = value;
+            this.ApplyGraphicsSettings();
+        }
+    }
 
     /// <summary>
     /// Gets the graphics device manager.
@@ -154,19 +160,14 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public void SaveAndApplyGraphicsSettings() {
-        this.SaveGraphicsSettings();
+    public void SaveAndApplyUserSettings() {
+        this.SaveUserSettings();
         this.ApplyGraphicsSettings();
     }
-
+    
     /// <inheritdoc />
-    public void SaveGraphicsSettings() {
-        this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.Project.Name, this.GraphicsSettings);
-    }
-
-    /// <inheritdoc />
-    public void SaveInputBindings() {
-        this.SaveDataManager.Save(InputBindings.SettingsFileName, this.Project.Name, this.InputBindings);
+    public void SaveUserSettings() {
+        this.SaveDataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
     }
 
     /// <inheritdoc />
@@ -212,21 +213,14 @@ public class BaseGame : Game, IGame {
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         if (IsDesignMode) {
-            this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
+            this.UserSettings = new UserSettings(this.Project.Settings);
         }
         else {
-            if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
-                this.GraphicsSettings = graphicsSettings;
+            if (this.SaveDataManager.TryLoad<UserSettings>(UserSettings.FileName, this.Project.Name, out var userSettings) && userSettings != null) {
+                this.UserSettings = userSettings;
             }
             else {
-                this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
-            }
-
-            if (this.SaveDataManager.TryLoad<InputBindings>(InputBindings.SettingsFileName, this.Project.Name, out var inputBindings) && inputBindings != null) {
-                this.InputBindings = inputBindings;
-            }
-            else {
-                this.InputBindings = this.Project.Settings.DefaultInputSettings.DefaultBindings.Clone();
+                this.UserSettings = new UserSettings(this.Project.Settings);
             }
         }
 
@@ -335,21 +329,24 @@ public class BaseGame : Game, IGame {
 
         public event EventHandler<Point>? ViewportSizeChanged;
 
+        public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
 
         public IScene CurrentScene => Scene.Empty;
 
         public GraphicsDevice? GraphicsDevice => null;
 
-        public GraphicsSettings GraphicsSettings { get; } = new();
+        public GraphicsSettings GraphicsSettings => this.UserSettings.Graphics;
 
-        public InputBindings InputBindings { get; } = new();
+        public InputBindings InputBindings => this.UserSettings.InputBindings;
 
         public IGameProject Project { get; } = new GameProject();
 
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
         public SpriteBatch? SpriteBatch => null;
+
+        public UserSettings UserSettings { get; } = new();
 
         public Point ViewportSize => default;
 
@@ -376,13 +373,13 @@ public class BaseGame : Game, IGame {
         public void PushScene(IScene scene) {
         }
 
-        public void SaveAndApplyGraphicsSettings() {
-        }
-
-        public void SaveGraphicsSettings() {
+        public void SaveAndApplyUserSettings() {
         }
 
         public void SaveInputBindings() {
+        }
+
+        public void SaveUserSettings() {
         }
 
         public bool TryPopScene(out IScene scene) {

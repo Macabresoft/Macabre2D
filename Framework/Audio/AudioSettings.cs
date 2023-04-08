@@ -94,6 +94,21 @@ public class AudioSettings {
             this.VolumeChanged.SafeInvoke(this, AudioCategory.Voice);
         }
     }
+    
+    /// <summary>
+    /// Clones this instance.
+    /// </summary>
+    /// <returns>A clone of this instance.</returns>
+    public AudioSettings Clone() {
+        return new AudioSettings {
+            EffectVolume = this.EffectVolume,
+            MenuVolume = this.MenuVolume,
+            MusicVolume = this.MusicVolume,
+            NotificationVolume = this.NotificationVolume,
+            OverallVolume = this.OverallVolume,
+            VoiceVolume = this.VoiceVolume
+        };
+    }
 
     /// <summary>
     /// Gets the volume given an <see cref="AudioCategory" /> and instance volume.
