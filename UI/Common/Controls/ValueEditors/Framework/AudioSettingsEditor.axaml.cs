@@ -1,13 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
-using System.Linq;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
@@ -51,12 +44,6 @@ public class AudioSettingsEditor : ValueEditorControl<AudioSettings> {
             (editor, value) => editor.VoiceVolume = value);
 
     private readonly IUndoService _undoService;
-    private IDisposable _effectDisposable;
-    private IDisposable _menuDisposable;
-    private IDisposable _musicDisposable;
-    private IDisposable _notificationDisposable;
-    private IDisposable _overallDisposable;
-    private IDisposable _voiceDisposable;
 
     public AudioSettingsEditor() : this(null, Resolver.Resolve<IUndoService>()) {
     }
@@ -169,95 +156,7 @@ public class AudioSettingsEditor : ValueEditorControl<AudioSettings> {
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
-        base.OnApplyTemplate(e);
-
-        var sliders = this.GetLogicalDescendants().OfType<Slider>();
-        foreach (var slider in sliders) {
-            if (slider.Tag is AudioCategory category) {
-                if (category == AudioCategory.Default) {
-                    this._overallDisposable?.Dispose();
-                    this._overallDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.OverallVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-                else if (category == AudioCategory.Effect) {
-                    this._effectDisposable?.Dispose();
-                    this._effectDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.EffectVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-                else if (category == AudioCategory.Menu) {
-                    this._menuDisposable?.Dispose();
-                    this._menuDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.MenuVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-                else if (category == AudioCategory.Music) {
-                    this._musicDisposable?.Dispose();
-                    this._musicDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.MusicVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-                else if (category == AudioCategory.Notification) {
-                    this._notificationDisposable?.Dispose();
-                    this._notificationDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.NotificationVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-                else if (category == AudioCategory.Voice) {
-                    this._voiceDisposable?.Dispose();
-                    this._voiceDisposable = slider.AddDisposableHandler(PointerReleasedEvent, this.VoiceVolume_PointerReleased, RoutingStrategies.Tunnel);
-                }
-            }
-        }
-    }
-
-    private void EffectVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.EffectVolume) > 0.001f) {
-                this.EffectVolume = (float)slider.Value;
-            }
-        }
-    }
-
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
-    }
-
-    private void MenuVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.MenuVolume) > 0.001f) {
-                this.MenuVolume = (float)slider.Value;
-            }
-        }
-    }
-
-    private void MusicVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.MusicVolume) > 0.001f) {
-                this.MusicVolume = (float)slider.Value;
-            }
-        }
-    }
-
-    private void NotificationVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.NotificationVolume) > 0.001f) {
-                this.NotificationVolume = (float)slider.Value;
-            }
-        }
-    }
-
-    private void OverallVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.OverallVolume) > 0.001f) {
-                this.OverallVolume = (float)slider.Value;
-            }
-        }
-    }
-
-    private void VoiceVolume_PointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (sender is Slider slider) {
-            var value = (float)slider.Value;
-            if (Math.Abs(value - this.VoiceVolume) > 0.001f) {
-                this.VoiceVolume = (float)slider.Value;
-            }
-        }
     }
 }
