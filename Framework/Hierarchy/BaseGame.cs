@@ -226,7 +226,7 @@ public class BaseGame : Game, IGame {
                 this.InputBindings = inputBindings;
             }
             else {
-                this.InputBindings = this.Project.Settings.InputSettings.DefaultBindings.Clone();
+                this.InputBindings = this.Project.Settings.DefaultInputSettings.DefaultBindings.Clone();
             }
         }
 

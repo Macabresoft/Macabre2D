@@ -17,7 +17,7 @@ public class InputActionsDisplayNameHandler  : IDisplayNameHandler {
     public string GetDisplayName(object value) {
         var displayName = string.Empty;
         if (value is InputAction inputAction) {
-            displayName = this._projectService.CurrentProject.Settings.InputSettings.GetName(inputAction);
+            displayName = this._projectService.CurrentProject.Settings.DefaultInputSettings.GetName(inputAction);
         }
 
         return displayName;

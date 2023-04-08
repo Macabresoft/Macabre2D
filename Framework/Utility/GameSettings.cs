@@ -10,14 +10,14 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IGameSettings {
     /// <summary>
-    /// Gets the audio settings.
-    /// </summary>
-    AudioSettings AudioSettings { get; }
-
-    /// <summary>
     /// Gets the common view height used when a camera does not override with its own value.
     /// </summary>
     float CommonViewHeight { get; }
+
+    /// <summary>
+    /// Gets the default audio settings.
+    /// </summary>
+    AudioSettings DefaultAudioSettings { get; }
 
     /// <summary>
     /// Gets the default graphics settings.
@@ -25,14 +25,9 @@ public interface IGameSettings {
     GraphicsSettings DefaultGraphicsSettings { get; }
 
     /// <summary>
-    /// Gets the default resolution.
+    /// Gets the default input settings.
     /// </summary>
-    Point DefaultResolution { get; }
-
-    /// <summary>
-    /// Gets the input settings.
-    /// </summary>
-    InputSettings InputSettings { get; }
+    InputSettings DefaultInputSettings { get; }
 
     /// <summary>
     /// Gets the layer settings.
@@ -92,7 +87,7 @@ public sealed class GameSettings : IGameSettings {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Audio)]
-    public AudioSettings AudioSettings { get; } = new();
+    public AudioSettings DefaultAudioSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -102,7 +97,7 @@ public sealed class GameSettings : IGameSettings {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Input)]
-    public InputSettings InputSettings { get; } = new();
+    public InputSettings DefaultInputSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -115,10 +110,6 @@ public sealed class GameSettings : IGameSettings {
         get => this._commonViewHeight;
         set => this._commonViewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
     }
-
-    /// <inheritdoc />
-    [DataMember]
-    public Point DefaultResolution { get; set; }
 
     /// <inheritdoc />
     [DataMember]
