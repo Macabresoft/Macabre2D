@@ -1,13 +1,19 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using System.Runtime.Serialization;
 
 /// <summary>
 /// Interface for an instance of a <see cref="AudioClipAsset" />.
 /// </summary>
-public interface IAudioClipInstance {
+public interface IAudioClipInstance : IDisposable {
+    /// <summary>
+    /// Gets the audio category.
+    /// </summary>
+    AudioCategory Category { get; }
+
     /// <summary>
     /// Gets the state.
     /// </summary>
@@ -60,13 +66,23 @@ public interface IAudioClipInstance {
 /// </summary>
 public sealed class AudioClipInstance : IAudioClipInstance {
     private readonly SoundEffectInstance _instance;
+    private readonly AudioSettings _settings;
+    private float _volume;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
     /// </summary>
-    public AudioClipInstance(SoundEffectInstance instance) {
+    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, AudioCategory category) {
         this._instance = instance;
+        this._settings = settings;
+        this._volume = this._instance.Volume;
+        this.Category = category;
+
+        this._settings.VolumeChanged += this.Settings_VolumeChanged;
     }
+
+    /// <inheritdoc />
+    public AudioCategory Category { get; }
 
     /// <summary>
     /// Gets an empty instance of <see cref="IAudioClipInstance" />.
@@ -98,8 +114,16 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     /// <inheritdoc />
     [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
-        get => this._instance.Volume;
-        set => this._instance.Volume = MathHelper.Clamp(value, 0f, 1f);
+        get => this._volume;
+        set {
+            this._volume = MathHelper.Clamp(value, 0f, 1f);
+            this._instance.Volume = this.GetVolume();
+        }
+    }
+
+    /// <inheritdoc />
+    public void Dispose() {
+        this._settings.VolumeChanged -= this.Settings_VolumeChanged;
     }
 
     /// <inheritdoc />
@@ -112,6 +136,7 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     /// <inheritdoc />
     public void Play() {
         this._instance.IsLooped = this.ShouldLoop;
+        this._instance.Volume = this.GetVolume();
         this._instance.Play();
     }
 
@@ -125,12 +150,26 @@ public sealed class AudioClipInstance : IAudioClipInstance {
         this._instance.Stop(isImmediate);
     }
 
+    private float GetVolume() {
+        return this._settings.GetVolume(this.Category, this._volume);
+    }
+
+    private void Settings_VolumeChanged(object? sender, AudioCategory e) {
+        if (this.State == SoundState.Playing && (e == AudioCategory.Default || e == this.Category)) {
+            this._instance.Volume = this.GetVolume();
+        }
+    }
+
     private sealed class EmptyAudioClipInstance : IAudioClipInstance {
+        public AudioCategory Category => AudioCategory.Default;
         public SoundState State => SoundState.Stopped;
         public float Pan { get; set; }
         public float Pitch { get; set; }
         public bool ShouldLoop { get; set; }
         public float Volume { get; set; }
+
+        public void Dispose() {
+        }
 
         public void Pause() {
         }

@@ -8,6 +8,11 @@ public static class CommonCategories {
     /// Category for animation properties.
     /// </summary>
     public const string Animation = "Animation";
+    
+    /// <summary>
+    /// Category for audio.
+    /// </summary>
+    public const string Audio = "Audio";
 
     /// <summary>
     /// Category for collision map.

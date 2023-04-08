@@ -91,6 +91,10 @@
           <DependentUpon>SpriteSheetFontEditorView.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\AudioSettingsEditor.axaml.cs">
+          <DependentUpon>AudioSettingsEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

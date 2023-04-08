@@ -10,6 +10,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IGameSettings {
     /// <summary>
+    /// Gets the audio settings.
+    /// </summary>
+    AudioSettings AudioSettings { get; }
+
+    /// <summary>
     /// Gets the common view height used when a camera does not override with its own value.
     /// </summary>
     float CommonViewHeight { get; }
@@ -83,6 +88,11 @@ public interface IGameSettings {
 public sealed class GameSettings : IGameSettings {
     private float _commonViewHeight = 10f;
     private ushort _pixelsPerUnit = 32;
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Audio)]
+    public AudioSettings AudioSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

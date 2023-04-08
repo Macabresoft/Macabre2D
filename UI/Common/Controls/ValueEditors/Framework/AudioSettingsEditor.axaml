@@ -1,0 +1,88 @@
+<valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                 x:TypeArguments="framework:AudioSettings"
+                                 x:Class="Macabresoft.Macabre2D.UI.Common.AudioSettingsEditor">
+    <valueEditors:ValueEditorControl.Styles>
+        <Style Selector="valueEditors|FloatEditor">
+            <Setter Property="ValueMaximum" Value="1" />
+            <Setter Property="ValueMinimum" Value="0" />
+        </Style>
+        <Style Selector="Slider">
+            <Setter Property="Maximum" Value="1" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="{StaticResource StandardMarginHorizontal}" />
+            <Setter Property="TickFrequency" Value="0.01" />
+            <Setter Property="IsSnapToTickEnabled" Value="True" />
+        </Style>
+    </valueEditors:ValueEditorControl.Styles>
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
+          ColumnDefinitions="*, *"
+          DataContext="{Binding $parent[valueEditors:AudioSettingsEditor]}">
+        <Design.DataContext>
+            <valueEditors:AudioSettingsEditor />
+        </Design.DataContext>
+
+        <valueEditors:FloatEditor Grid.Row="0"
+                                  Grid.Column="0"
+                                  Value="{Binding OverallVolume}"
+                                  Title="Overall Volume" />
+
+        <Slider Grid.Row="0"
+                Grid.Column="1"
+                Value="{Binding OverallVolume, Mode=OneWay}"
+                Tag="{x:Static framework:AudioCategory.Default}" />
+
+        <valueEditors:FloatEditor Grid.Row="1"
+                                  Grid.Column="0"
+                                  Value="{Binding EffectVolume}"
+                                  Title="Effect Volume" />
+
+        <Slider Grid.Row="1"
+                Grid.Column="1"
+                Tag="{x:Static framework:AudioCategory.Effect}"
+                Value="{Binding EffectVolume, Mode=OneWay}" />
+
+        <valueEditors:FloatEditor Grid.Row="2"
+                                  Grid.Column="0"
+                                  Value="{Binding MenuVolume}"
+                                  Title="Menu Volume" />
+
+        <Slider Grid.Row="2"
+                Grid.Column="1"
+                Tag="{x:Static framework:AudioCategory.Menu}"
+                Value="{Binding MenuVolume, Mode=OneWay}" />
+
+        <valueEditors:FloatEditor Grid.Row="3"
+                                  Grid.Column="0"
+                                  Value="{Binding MusicVolume}"
+                                  Title="Music Volume" />
+
+        <Slider Grid.Row="3"
+                Grid.Column="1"
+                Tag="{x:Static framework:AudioCategory.Music}"
+                Value="{Binding MusicVolume, Mode=OneWay}" />
+
+        <valueEditors:FloatEditor Grid.Row="4"
+                                  Grid.Column="0"
+                                  Value="{Binding NotificationVolume}"
+                                  Title="Notification Volume" />
+
+        <Slider Grid.Row="4"
+                Grid.Column="1"
+                Tag="{x:Static framework:AudioCategory.Notification}"
+                Value="{Binding NotificationVolume, Mode=OneWay}" />
+
+        <valueEditors:FloatEditor Grid.Row="5"
+                                  Grid.Column="0"
+                                  Value="{Binding VoiceVolume}"
+                                  Title="Voice Volume" />
+
+        <Slider Grid.Row="5"
+                Grid.Column="1"
+                Tag="{x:Static framework:AudioCategory.Voice}"
+                Value="{Binding VoiceVolume, Mode=OneWay}" />
+    </Grid>
+</valueEditors:ValueEditorControl>

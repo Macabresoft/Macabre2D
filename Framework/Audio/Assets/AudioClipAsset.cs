@@ -17,6 +17,8 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// </summary>
     public static readonly string[] ValidFileExtensions = { ".wav", ".mp3", ".wma" };
 
+    private AudioCategory _category;
+
     private float _defaultPan;
     private float _defaultPitch;
     private bool _defaultShouldLoop;
@@ -24,6 +26,15 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets or sets the category.
+    /// </summary>
+    [DataMember(Order = 1)]
+    public AudioCategory Category {
+        get => this._category;
+        set => this.Set(ref this._category, value);
+    }
 
 
     /// <summary>
@@ -81,15 +92,16 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// <summary>
     /// Gets an audio clip instance for the loaded sound effect.
     /// </summary>
+    /// <param name="settings">The audio settings.</param>
     /// <param name="volume">The volume.</param>
     /// <param name="pan">The panning.</param>
     /// <param name="pitch">The pitch.</param>
     /// <param name="shouldLoop">A value indicating whether or not the instance should loop.</param>
     /// <returns>An audio clip instance.</returns>
-    public IAudioClipInstance GetInstance(float volume, float pan, float pitch, bool shouldLoop) {
+    public IAudioClipInstance GetInstance(AudioSettings settings, float volume, float pan, float pitch, bool shouldLoop) {
         var instance = AudioClipInstance.Empty;
         if (this.Content is { } soundEffect) {
-            instance = new AudioClipInstance(soundEffect.CreateInstance());
+            instance = new AudioClipInstance(soundEffect.CreateInstance(), settings, this.Category);
             instance.Volume = volume;
             instance.Pan = pan;
             instance.Pitch = pitch;
@@ -102,9 +114,10 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// <summary>
     /// Gets an audio clip instance for the loaded sound effect.
     /// </summary>
+    /// <param name="settings">The audio settings.</param>
     /// <returns>An audio clip instance.</returns>
-    public IAudioClipInstance GetInstance() {
-        return this.GetInstance(this.DefaultVolume, this.DefaultPan, this.DefaultPitch, this.DefaultShouldLoop);
+    public IAudioClipInstance GetInstance(AudioSettings settings) {
+        return this.GetInstance(settings, this.DefaultVolume, this.DefaultPan, this.DefaultPitch, this.DefaultShouldLoop);
     }
 
     private static string GetImporterName(string fileExtension) {
