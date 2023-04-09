@@ -14,6 +14,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
+    /// Occurs when the scene is deactivated and made to no longer be the current scene on <see cref="IGame" />.
+    /// </summary>
+    event EventHandler Deactivated;
+
+    /// <summary>
     /// Occurs when the scene is reactivated and made the current scene on <see cref="IGame" />.
     /// </summary>
     /// <remarks>
@@ -42,6 +47,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the game currently running this scene.
     /// </summary>
     IGame Game => BaseGame.Empty;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not this is active.
+    /// </summary>
+    bool IsActive { get; }
 
     /// <summary>
     /// Gets the loops.
@@ -119,6 +129,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// </summary>
     /// <param name="action">The action.</param>
     void Invoke(Action action);
+
+    /// <summary>
+    /// Raises the <see cref="Deactivated" /> event.
+    /// </summary>
+    void RaiseDeactivated();
 
     /// <summary>
     /// Raises the <see cref="Reactivated" /> event.
@@ -226,6 +241,9 @@ public sealed class Scene : GridContainer, IScene {
     public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
+    public event EventHandler? Deactivated;
+
+    /// <inheritdoc />
     public event EventHandler? Reactivated;
 
     /// <summary>
@@ -287,6 +305,9 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public bool IsActive { get; private set; }
+
+    /// <inheritdoc />
     [DataMember]
     public Version Version { get; set; } = new(0, 0, 0, 0);
 
@@ -316,6 +337,7 @@ public sealed class Scene : GridContainer, IScene {
         if (!this._isInitialized) {
             try {
                 this._isBusy = true;
+                this.IsActive = true;
                 this.Assets = assetManager;
                 this._game = game;
                 this.Initialize(this, this);
@@ -364,7 +386,14 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public void RaiseDeactivated() {
+        this.IsActive = false;
+        this.Deactivated?.SafeInvoke(this);
+    }
+
+    /// <inheritdoc />
     public void RaiseReactivated() {
+        this.IsActive = true;
         this.Reactivated?.SafeInvoke(this);
     }
 

@@ -20,7 +20,13 @@ public class EmptyObject : IScene {
     public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
+    public event EventHandler? Deactivated;
+
+    /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? Reactivated;
 
     /// <inheritdoc />
     public event EventHandler? TransformChanged;
@@ -29,10 +35,10 @@ public class EmptyObject : IScene {
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
-    public Vector2 WorldPosition => Vector2.Zero;
+    public bool IsActive => false;
 
     /// <inheritdoc />
-    public event EventHandler? Reactivated;
+    public Vector2 WorldPosition => Vector2.Zero;
 
     /// <inheritdoc />
     public Color BackgroundColor {
@@ -166,10 +172,6 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void RaiseReactivated() {
-    }
-
-    /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) {
         return false;
     }
@@ -181,6 +183,14 @@ public class EmptyObject : IScene {
     /// <inheritdoc />
     public void OnRemovedFromSceneTree() {
         throw new NotSupportedException("An empty entity should never be added to a scene tree, much less removed.");
+    }
+
+    /// <inheritdoc />
+    public void RaiseDeactivated() {
+    }
+
+    /// <inheritdoc />
+    public void RaiseReactivated() {
     }
 
     /// <inheritdoc />

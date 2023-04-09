@@ -155,7 +155,14 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public void PushScene(IScene scene) {
-        scene.Initialize(this, Scene.IsNullOrEmpty(this.CurrentScene) ? this.CreateAssetManager() : this.CurrentScene.Assets);
+        if (Scene.IsNullOrEmpty(this.CurrentScene)) {
+            scene.Initialize(this, this.CreateAssetManager());
+        }
+        else {
+            this.CurrentScene.RaiseDeactivated();
+            scene.Initialize(this, this.CurrentScene.Assets);
+        }
+
         this._sceneStack.Push(scene);
     }
 
@@ -164,7 +171,7 @@ public class BaseGame : Game, IGame {
         this.SaveUserSettings();
         this.ApplyGraphicsSettings();
     }
-    
+
     /// <inheritdoc />
     public void SaveUserSettings() {
         this.SaveDataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
