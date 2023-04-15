@@ -5,14 +5,57 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
+/// Base class for entity references.
+/// </summary>
+public abstract class EntityReference : PropertyChangedNotifier {
+    private Guid _entityId;
+
+    /// <summary>
+    /// Gets or sets the entity identifier.
+    /// </summary>
+    public Guid EntityId {
+        get => this._entityId;
+        set {
+            if (this._entityId != value) {
+                this._entityId = value;
+                this.ResetEntity();
+                this.RaisePropertyChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets an untyped version of the entity.
+    /// </summary>
+    public IEntity? UntypedEntity { get; protected set; }
+
+    /// <summary>
+    /// Gets the scene.
+    /// </summary>
+    protected IScene Scene { get; private set; } = Framework.Scene.Empty;
+
+    /// <summary>
+    /// Initializes this instance.
+    /// </summary>
+    /// <param name="scene">The scene.</param>
+    public void Initialize(IScene scene) {
+        this.Scene = scene;
+        this.ResetEntity();
+    }
+
+    /// <summary>
+    /// Sets the entity.
+    /// </summary>
+    protected abstract void ResetEntity();
+}
+
+/// <summary>
 /// A reference to an entity using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TEntity">The type of entity.</typeparam>
 [DataContract]
-public class EntityReference<TEntity> : PropertyChangedNotifier where TEntity : class, IEntity {
+public class EntityReference<TEntity> : EntityReference where TEntity : class, IEntity {
     private TEntity? _entity;
-    private Guid _entityId;
-    private IScene _scene = Scene.Empty;
 
     /// <summary>
     /// Gets the entity.
@@ -22,33 +65,15 @@ public class EntityReference<TEntity> : PropertyChangedNotifier where TEntity : 
         private set => this.Set(ref this._entity, value);
     }
 
-    /// <summary>
-    /// Gets or sets the entity identifier.
-    /// </summary>
-    public Guid EntityId {
-        get => this._entityId;
-        set {
-            if (this.Set(ref this._entityId, value)) {
-                this.SetEntity();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Initializes this instance.
-    /// </summary>
-    /// <param name="scene">The scene.</param>
-    public void Initialize(IScene scene) {
-        this._scene = scene;
-        this.SetEntity();
-    }
-
-    private void SetEntity() {
-        if (this._entityId == Guid.Empty || Scene.IsNullOrEmpty(this._scene)) {
+    /// <inheritdoc />
+    protected override void ResetEntity() {
+        if (this.EntityId == Guid.Empty || Framework.Scene.IsNullOrEmpty(this.Scene)) {
             this.Entity = null;
         }
         else {
-            this.Entity = this._scene.FindEntity<TEntity>(this._entityId);
+            this.Entity = this.Scene.FindEntity<TEntity>(this.EntityId);
         }
+
+        this.UntypedEntity = this.Entity;
     }
 }

@@ -1,0 +1,40 @@
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           x:TypeArguments="framework:EntityReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.EntityReferenceEditor">
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+          DataContext="{Binding $parent[local:EntityReferenceEditor]}">
+        <Design.DataContext>
+            <local:EntityReferenceEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <TextBox Grid.Column="1"
+                 IsReadOnly="True"
+                 VerticalAlignment="Top"
+                 Text="{Binding PathText}"
+                 ToolTip.Tip="{Binding PathText}" />
+
+        <Button Grid.Column="2"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding SelectCommand}"
+                ToolTip.Tip="Search for a prefab">
+            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+        </Button>
+        <Button Grid.Column="3"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear the prefab">
+            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
+    </Grid>
+</common:ValueEditorControl>
