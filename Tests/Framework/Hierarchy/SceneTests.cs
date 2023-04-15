@@ -17,6 +17,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             scene.FindEntity<IEntity>(child.Id).Should().Be(child);
+            scene.FindEntity<Entity>(child.Id).Should().Be(child);
         }
     }
 
@@ -31,6 +32,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             deserialized.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+            deserialized.FindEntity<Entity>(child.Id).Should().BeEquivalentTo(child);
         }
     }
 
@@ -48,6 +50,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             scene.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+            scene.FindEntity<Entity>(child.Id).Should().BeEquivalentTo(child);
         }
     }
 
@@ -68,6 +71,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             deserialized.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+            deserialized.FindEntity<Entity>(child.Id).Should().BeEquivalentTo(child);
         }
     }
 
@@ -78,6 +82,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             scene.FindEntity<IScene>(scene.Id).Should().Be(scene);
+            scene.FindEntity<Scene>(scene.Id).Should().Be(scene);
         }
     }
 
@@ -90,6 +95,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             deserialized.FindEntity<IScene>(scene.Id).Should().Be(deserialized);
+            deserialized.FindEntity<Scene>(scene.Id).Should().Be(deserialized);
         }
     }
 
@@ -111,6 +117,44 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             scene.FindEntity<TestRenderableEntity>(scene.Id).Should().BeNull();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindLoop_ShouldFindLoop() {
+        var scene = new Scene();
+        var loop = scene.AddLoop<RenderLoop>();
+
+        using (new AssertionScope()) {
+            scene.FindLoop<RenderLoop>(loop.Id).Should().Be(loop);
+            scene.FindLoop<ILoop>(loop.Id).Should().Be(loop);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindLoop_ShouldFindLoop_WhenSerialized() {
+        var scene = new Scene();
+        var loop = scene.AddLoop<SimplePhysicsLoop>();
+
+        var serialized = Serializer.Instance.SerializeToString(scene);
+        var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
+
+        using (new AssertionScope()) {
+            deserialized.FindLoop<SimplePhysicsLoop>(loop.Id).Should().BeEquivalentTo(loop);
+            deserialized.FindLoop<ILoop>(loop.Id).Should().BeEquivalentTo(loop);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindLoop_ShouldNotFindLoop_WhenMismatched() {
+        var scene = new Scene();
+        var loop = scene.AddLoop<SimplePhysicsLoop>();
+
+        using (new AssertionScope()) {
+            scene.FindLoop<RenderLoop>(loop.Id).Should().BeNull();
         }
     }
 

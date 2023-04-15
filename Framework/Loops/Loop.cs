@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -7,7 +8,7 @@ using Macabresoft.Core;
 /// <summary>
 /// Interface for an system which runs operations for a <see cref="IScene" />.
 /// </summary>
-public interface ILoop : IUpdateableGameObject, INameable {
+public interface ILoop : IUpdateableGameObject, INameable, IIdentifiable {
     /// <summary>
     /// Gets the loop.
     /// </summary>
@@ -68,4 +69,9 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
 
     /// <inheritdoc />
     public abstract void Update(FrameTime frameTime, InputState inputState);
+
+    /// <inheritdoc />
+    [DataMember]
+    [EditorExclude]
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

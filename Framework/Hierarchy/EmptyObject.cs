@@ -119,10 +119,14 @@ public class EmptyObject : IScene {
     public IEntity FindChild(string name) {
         return this;
     }
-
-
+    
     /// <inheritdoc />
     public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
+        return null;
+    }
+
+    /// <inheritdoc />
+    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop {
         return null;
     }
 

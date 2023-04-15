@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework;
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Loops; 
 
 using System;
 using System.Collections.Generic;

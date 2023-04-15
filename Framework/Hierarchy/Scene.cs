@@ -112,6 +112,14 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity;
 
     /// <summary>
+    /// Finds a loop by its identifier.
+    /// </summary>
+    /// <param name="id">The loop identifier.</param>
+    /// <typeparam name="TLoop">The loop type.</typeparam>
+    /// <returns>The loop if found.</returns>
+    TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop;
+
+    /// <summary>
     /// Gets the first found loop of the specified type.
     /// </summary>
     /// <typeparam name="T">The type of loop.</typeparam>
@@ -342,6 +350,11 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         return this.FindChild(id) as TEntity;
+    }
+
+    /// <inheritdoc />
+    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop {
+        return this.Loops.OfType<TLoop>().FirstOrDefault(x => x.Id == id);
     }
 
     /// <inheritdoc />
