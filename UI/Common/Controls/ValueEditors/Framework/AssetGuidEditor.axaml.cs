@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Linq;
@@ -70,19 +70,16 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
 
     public ICommand ClearCommand { get; }
 
+    public ICommand SelectCommand { get; }
+
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    public ICommand SelectCommand { get; }
-
     protected override void OnValueChanged() {
         base.OnValueChanged();
-
-        if (this.Value != Guid.Empty) {
-            this.ResetPath();
-        }
+        this.ResetPath();
     }
 
     private void Clear() {
@@ -91,7 +88,7 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
         if (originalValue != Guid.Empty) {
             this._undoService.Do(
                 () => this.Value = Guid.Empty,
-                () => { this.Value = originalValue; });
+                () => this.Value = originalValue);
         }
     }
 
@@ -103,7 +100,6 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
         this.PathText = null;
 
         if (this._assetManager != null &&
-            this.Value != Guid.Empty &&
             this.Value != Guid.Empty &&
             this._assetManager.TryGetMetadata(this.Value, out var metadata) &&
             metadata != null) {
