@@ -298,7 +298,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public T GetOrAddChild<T>() where T : class, IEntity, new() {
-        if (this.TryGetChild<T>(out var entity) && entity != null) {
+        if (this.TryGetChild<T>(out var entity)) {
             return entity;
         }
 

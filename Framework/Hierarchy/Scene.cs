@@ -104,6 +104,14 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     void AddLoop(ILoop loop);
 
     /// <summary>
+    /// Finds an entity by its identifier.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <returns>The entity if found.</returns>
+    TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity;
+
+    /// <summary>
     /// Gets the first found loop of the specified type.
     /// </summary>
     /// <typeparam name="T">The type of loop.</typeparam>
@@ -325,6 +333,15 @@ public sealed class Scene : GridContainer, IScene {
         if (this._isInitialized) {
             loop.Initialize(this);
         }
+    }
+
+    /// <inheritdoc />
+    public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
+        if (this is TEntity entity && entity.Id == id) {
+            return entity;
+        }
+
+        return this.FindChild(id) as TEntity;
     }
 
     /// <inheritdoc />

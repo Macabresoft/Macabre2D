@@ -105,6 +105,7 @@ public class EmptyObject : IScene {
         return new T();
     }
 
+
     /// <inheritdoc />
     public void AddLoop(ILoop loop) {
     }
@@ -117,6 +118,12 @@ public class EmptyObject : IScene {
     /// <inheritdoc />
     public IEntity FindChild(string name) {
         return this;
+    }
+
+
+    /// <inheritdoc />
+    public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
+        return null;
     }
 
     /// <inheritdoc />
@@ -148,6 +155,7 @@ public class EmptyObject : IScene {
     public Vector2 GetWorldPosition(Vector2 originOffset) {
         return this.WorldPosition;
     }
+
 
     /// <inheritdoc />
     public void Initialize(IScene scene, IEntity parent) {
@@ -222,6 +230,7 @@ public class EmptyObject : IScene {
     public T ResolveDependency<T>() where T : new() {
         return new T();
     }
+
 
     /// <inheritdoc />
     public T ResolveDependency<T>(Func<T> objectFactory) where T : class {

@@ -70,6 +70,7 @@ public sealed class Serializer : ISerializer {
     public Serializer() {
         this._jsonSerializer = new JsonSerializer {
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            MaxDepth = 512,
             MissingMemberHandling = MissingMemberHandling.Ignore,
             Formatting = Formatting.Indented,
             ObjectCreationHandling = ObjectCreationHandling.Auto,

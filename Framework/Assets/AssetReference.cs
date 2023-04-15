@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
-/// A reference to an asset using identifier and type. Held by entities for serialization.
+/// A reference to an asset using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
@@ -17,11 +17,11 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TA
     private Guid _contentId = Guid.Empty;
 
     /// <summary>
-    /// Gets the asset.
+    /// Gets or sets the asset.
     /// </summary>
     public TAsset? Asset {
         get => this._asset;
-        set => this.Set(ref this._asset, value);
+        private set => this.Set(ref this._asset, value);
     }
 
     /// <summary>

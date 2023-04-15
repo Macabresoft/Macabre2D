@@ -1,5 +1,6 @@
-namespace Macabresoft.Macabre2D.Tests.Framework;
+namespace Macabresoft.Macabre2D.Tests.Framework.Hierarchy;
 
+using System;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -8,6 +9,111 @@ using NUnit.Framework;
 
 [TestFixture]
 public sealed class SceneTests {
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindChild() {
+        var scene = new Scene();
+        var child = scene.AddChild<Entity>();
+
+        using (new AssertionScope()) {
+            scene.FindEntity<IEntity>(child.Id).Should().Be(child);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindChild_WhenSerialized() {
+        var scene = new Scene();
+        var child = scene.AddChild<Entity>();
+
+        var serialized = Serializer.Instance.SerializeToString(scene);
+        var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
+
+        using (new AssertionScope()) {
+            deserialized.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindDeepChild() {
+        const int Depth = 25;
+        var scene = new Scene();
+        var child = scene.AddChild<Entity>();
+
+        for (var i = 1; i < Depth; i++) {
+            child = child.AddChild<Entity>();
+            child.Name = Guid.NewGuid().ToString(); // Make them different for comparison.
+        }
+
+        using (new AssertionScope()) {
+            scene.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindDeepChild_WhenSerialized() {
+        const int Depth = 25;
+        var scene = new Scene();
+        var child = scene.AddChild<Entity>();
+
+        for (var i = 1; i < Depth; i++) {
+            child = child.AddChild<Entity>();
+            child.Name = Guid.NewGuid().ToString(); // Make them different for comparison.
+        }
+
+        var serialized = Serializer.Instance.SerializeToString(scene);
+        var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
+
+        using (new AssertionScope()) {
+            deserialized.FindEntity<IEntity>(child.Id).Should().BeEquivalentTo(child);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindSelf() {
+        var scene = new Scene();
+
+        using (new AssertionScope()) {
+            scene.FindEntity<IScene>(scene.Id).Should().Be(scene);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldFindSelf_WhenSerialized() {
+        var scene = new Scene();
+        var serialized = Serializer.Instance.SerializeToString(scene);
+        var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
+
+        using (new AssertionScope()) {
+            deserialized.FindEntity<IScene>(scene.Id).Should().Be(deserialized);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldNotFindChild_WhenInvalidType() {
+        var scene = new Scene();
+        var child = scene.AddChild<Entity>();
+
+        using (new AssertionScope()) {
+            scene.FindEntity<TestRenderableEntity>(child.Id).Should().BeNull();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void FindEntity_ShouldNotFindSelf_WhenInvalidType() {
+        var scene = new Scene();
+
+        using (new AssertionScope()) {
+            scene.FindEntity<TestRenderableEntity>(scene.Id).Should().BeNull();
+        }
+    }
+
     [Test]
     [Category("Unit Tests")]
     public static void ReorderSystem_FirstChildPlusOne_ShouldWork() {
