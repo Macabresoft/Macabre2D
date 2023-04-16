@@ -4,12 +4,12 @@
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                            xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           x:TypeArguments="framework:EntityReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.EntityReferenceEditor">
+                           x:TypeArguments="framework:LoopReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.LoopReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-          DataContext="{Binding $parent[local:EntityReferenceEditor]}">
+          DataContext="{Binding $parent[local:LoopReferenceEditor]}">
         <Design.DataContext>
-            <local:EntityReferenceEditor />
+            <local:LoopReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
@@ -26,14 +26,14 @@
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding SelectCommand}"
-                ToolTip.Tip="Search for an entity">
+                ToolTip.Tip="Search for a loop">
             <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
         </Button>
         <Button Grid.Column="3"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
-                ToolTip.Tip="Clear the entity">
+                ToolTip.Tip="Clear the loop">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>

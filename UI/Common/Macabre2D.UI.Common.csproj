@@ -107,6 +107,14 @@
           <DependentUpon>EntityReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\LoopReferenceEditor.axaml.cs">
+          <DependentUpon>LoopReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Dialogs\LoopSelectionDialog.axaml.cs">
+          <DependentUpon>LoopSelectionDialog.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

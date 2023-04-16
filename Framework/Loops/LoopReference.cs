@@ -10,6 +10,11 @@ public abstract class LoopReference : PropertyChangedNotifier {
     private Guid _loopId;
 
     /// <summary>
+    /// Gets the type of the loop referenced.
+    /// </summary>
+    public abstract Type Type { get; }
+
+    /// <summary>
     /// Gets or sets the loop identifier.
     /// </summary>
     public Guid LoopId {
@@ -54,6 +59,9 @@ public abstract class LoopReference : PropertyChangedNotifier {
 /// <typeparam name="TLoop">The type of loop.</typeparam>
 public class LoopReference<TLoop> : LoopReference where TLoop : class, ILoop {
     private TLoop? _loop;
+
+    /// <inheritdoc />
+    public override Type Type => typeof(TLoop);
 
     /// <summary>
     /// Gets the loop.

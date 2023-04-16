@@ -15,8 +15,7 @@ using Unity.Resolution;
 /// </summary>
 public interface ICommonDialogService : IBaseDialogService {
     /// <summary>
-    /// Opens a dialog that allows the user to pick a <see cref="IContentNode" /> whose asset inherits from the specified base
-    /// type.
+    /// Opens a dialog that allows the user to pick a <see cref="IContentNode" /> whose asset inherits from the specified base type.
     /// </summary>
     /// <param name="baseAssetType">The base asset type.</param>
     /// <param name="allowDirectorySelection">
@@ -27,8 +26,7 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
 
     /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which inherits from the specified base
-    /// type.
+    /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which inherits from the specified base type.
     /// </summary>
     /// <param name="baseEntityType">The base entity type.</param>
     /// <returns>The selected entity.</returns>
@@ -39,6 +37,13 @@ public interface ICommonDialogService : IBaseDialogService {
     /// </summary>
     /// <returns>A task.</returns>
     Task OpenLicenseDialog();
+
+    /// <summary>
+    /// Opens a dialog that allows the user to pick an <see cref="ILoop" /> which inherits from the specified base type.
+    /// </summary>
+    /// <param name="baseLoopType">The base loop type.</param>
+    /// <returns>The selected entity.</returns>
+    Task<ILoop> OpenLoopSelectionDialog(Type baseLoopType);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="Type" />.
@@ -124,6 +129,19 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     public async Task OpenLicenseDialog() {
         var window = Resolver.Resolve<LicenseDialog>();
         await window.ShowDialog(this.MainWindow);
+    }
+
+    /// <inheritdoc />
+    public async Task<ILoop> OpenLoopSelectionDialog(Type baseLoopType) {
+        ILoop selectedLoop = null;
+        var window = Resolver.Resolve<LoopSelectionDialog>(new ParameterOverride(typeof(Type), baseLoopType));
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+
+        if (result) {
+            selectedLoop = window.ViewModel.SelectedLoop;
+        }
+
+        return selectedLoop;
     }
 
     /// <inheritdoc />
