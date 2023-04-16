@@ -95,6 +95,18 @@
           <DependentUpon>AudioSettingsEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\FilteredSceneTree.axaml.cs">
+          <DependentUpon>FilteredEntityTree.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Dialogs\EntitySelectionDialog.axaml.cs">
+          <DependentUpon>EntitySelectionDialog.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\EntityReferenceEditor.axaml.cs">
+          <DependentUpon>EntityReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

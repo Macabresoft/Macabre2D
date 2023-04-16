@@ -11,6 +11,11 @@ public abstract class EntityReference : PropertyChangedNotifier {
     private Guid _entityId;
 
     /// <summary>
+    /// Gets the type of the entity referenced.
+    /// </summary>
+    public abstract Type Type { get; }
+
+    /// <summary>
     /// Gets or sets the entity identifier.
     /// </summary>
     public Guid EntityId {
@@ -56,6 +61,9 @@ public abstract class EntityReference : PropertyChangedNotifier {
 [DataContract]
 public class EntityReference<TEntity> : EntityReference where TEntity : class, IEntity {
     private TEntity? _entity;
+
+    /// <inheritdoc />
+    public override Type Type => typeof(TEntity);
 
     /// <summary>
     /// Gets the entity.

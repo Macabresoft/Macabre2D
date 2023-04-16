@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.ComponentModel;
@@ -8,7 +8,6 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
 
@@ -28,9 +27,7 @@ public class EntityReferenceEditor : ValueEditorControl<EntityReference> {
             nameof(SelectCommand),
             editor => editor.SelectCommand);
 
-    private readonly ILocalDialogService _dialogService;
-
-    private readonly ISceneService _sceneService;
+    private readonly ICommonDialogService _dialogService;
     private readonly IUndoService _undoService;
 
     private ICommand _clearCommand;
@@ -38,19 +35,16 @@ public class EntityReferenceEditor : ValueEditorControl<EntityReference> {
 
     public EntityReferenceEditor() : this(
         null,
-        Resolver.Resolve<ILocalDialogService>(),
-        Resolver.Resolve<ISceneService>(),
+        Resolver.Resolve<ICommonDialogService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
     [InjectionConstructor]
     public EntityReferenceEditor(
         ValueControlDependencies dependencies,
-        ILocalDialogService dialogService,
-        ISceneService sceneService,
+        ICommonDialogService dialogService,
         IUndoService undoService) : base(dependencies) {
         this._dialogService = dialogService;
-        this._sceneService = sceneService;
         this._undoService = undoService;
 
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
@@ -115,31 +109,14 @@ public class EntityReferenceEditor : ValueEditorControl<EntityReference> {
     }
 
     private async Task Select() {
-        throw new NotImplementedException();
-        /*var contentNode = await this._dialogService.OpenAssetSelectionDialog(typeof(PrefabAsset), false);
-        if (contentNode is ContentFile file) {
-            var originalId = this.Value.Asset;
-            var newAsset = file.Asset as PrefabAsset;
+        var entity = await this._dialogService.OpenEntitySelectionDialog(this.Value.Type);
+        if (entity != null) {
+            var originalId = this.Value.EntityId;
+            var newId = entity.Id;
             this._undoService.Do(
-                () =>
-                {
-                    if (newAsset != null) {
-                        this.Value.LoadAsset(newAsset);
-                    }
-                    else {
-                        this.Value.Clear();
-                    }
-                },
-                () =>
-                {
-                    if (originalId != null) {
-                        this.Value.LoadAsset(originalId);
-                    }
-                    else {
-                        this.Value.Clear();
-                    }
-                });
-        }*/
+                () => this.Value.EntityId = newId,
+                () => this.Value.EntityId = originalId);
+        }
     }
 
     private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {

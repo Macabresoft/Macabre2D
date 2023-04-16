@@ -1,0 +1,37 @@
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       x:Class="Macabresoft.Macabre2D.UI.Common.EntitySelectionDialog"
+                       Height="600"
+                       Width="800"
+                       ShowInTaskbar="False"
+                       WindowStartupLocation="CenterOwner"
+                       Title="Make a Selection">
+    <Design.DataContext>
+        <local:EntitySelectionViewModel />
+    </Design.DataContext>
+    <Grid Margin="{StaticResource StandardMarginAll}"
+          RowDefinitions="*, Auto">
+
+        <local:FilteredSceneTree Grid.Row="0"
+                                 Root="{Binding Scene, Mode=OneTime}"
+                                 SelectedItem="{Binding SelectedEntity}"
+                                 Margin="{StaticResource StandardMarginAll}" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="1"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:EntitySelectionDialog]}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding $parent[local:EntitySelectionDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:EntitySelectionDialog]}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</avaloniaEx:BaseDialog>

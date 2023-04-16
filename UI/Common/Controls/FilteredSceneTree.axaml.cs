@@ -5,25 +5,25 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 
-public class FilteredContentTree : UserControl {
-    public static readonly StyledProperty<FilteredContentWrapper> RootProperty =
-        AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(nameof(Root));
+public class FilteredSceneTree : UserControl {
+    public static readonly StyledProperty<FilteredEntityWrapper> RootProperty =
+        AvaloniaProperty.Register<FilteredSceneTree, FilteredEntityWrapper>(nameof(Root));
 
-    public static readonly StyledProperty<FilteredContentWrapper> SelectedItemProperty =
-        AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(
+    public static readonly StyledProperty<FilteredEntityWrapper> SelectedItemProperty =
+        AvaloniaProperty.Register<FilteredSceneTree, FilteredEntityWrapper>(
             nameof(SelectedItem),
             defaultBindingMode: BindingMode.TwoWay);
 
-    public FilteredContentTree() {
+    public FilteredSceneTree() {
         this.InitializeComponent();
     }
 
-    public FilteredContentWrapper Root {
+    public FilteredEntityWrapper Root {
         get => this.GetValue(RootProperty);
         set => this.SetValue(RootProperty, value);
     }
 
-    public FilteredContentWrapper SelectedItem {
+    public FilteredEntityWrapper SelectedItem {
         get => this.GetValue(SelectedItemProperty);
         set => this.SetValue(SelectedItemProperty, value);
     }

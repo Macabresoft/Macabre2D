@@ -141,6 +141,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType.IsAssignableTo(typeof(EntityReference))) {
+            var editor = this.CreateValueEditorFromType(typeof(EntityReferenceEditor), owner, value, memberType, member, propertyPath);
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
         else if (!memberType.IsValueType) {
             var editors = this.CreateControls(propertyPath, value, owner);
             result.AddRange(editors);

@@ -119,7 +119,7 @@ public class EmptyObject : IScene {
     public IEntity FindChild(string name) {
         return this;
     }
-    
+
     /// <inheritdoc />
     public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
         return null;
@@ -133,6 +133,11 @@ public class EmptyObject : IScene {
     /// <inheritdoc />
     public IEnumerable<T> GetDescendents<T>() {
         return Enumerable.Empty<T>();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<IEntity> GetDescendents(Type type) {
+        return Enumerable.Empty<IEntity>();
     }
 
     /// <inheritdoc />

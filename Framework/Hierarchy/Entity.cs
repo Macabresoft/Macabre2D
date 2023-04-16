@@ -81,6 +81,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEnumerable<T> GetDescendents<T>();
 
     /// <summary>
+    /// Gets all descendents of the specified type.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>Descendents of the specified type.</returns>
+    IEnumerable<IEntity> GetDescendents(Type type);
+
+    /// <summary>
     /// Gets the child of the specified type if it exists; otherwise, adds a new child.
     /// </summary>
     /// <typeparam name="T">The type of child to find.</typeparam>
@@ -293,6 +300,13 @@ public class Entity : Transformable, IEntity {
     public IEnumerable<T> GetDescendents<T>() {
         var descendents = new List<T>(this.Children.OfType<T>());
         descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents<T>()));
+        return descendents;
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<IEntity> GetDescendents(Type type) {
+        var descendents = new List<IEntity>(this.Children.Where(type.IsInstanceOfType));
+        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents(type)));
         return descendents;
     }
 

@@ -3,14 +3,11 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabresoft.Core;
 
 /// <summary>
 /// A wrapper for content being filtered for a custom tree view.
 /// </summary>
 public class FilteredContentWrapper {
-    private readonly ObservableCollectionExtended<FilteredContentWrapper> _children = new();
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FilteredContentWrapper" /> class.
     /// </summary>

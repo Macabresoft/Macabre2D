@@ -27,6 +27,14 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
 
     /// <summary>
+    /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which inherits from the specified base
+    /// type.
+    /// </summary>
+    /// <param name="baseEntityType">The base entity type.</param>
+    /// <returns>The selected entity.</returns>
+    Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType);
+
+    /// <summary>
     /// Opens a dialog to show the licenses.
     /// </summary>
     /// <returns>A task.</returns>
@@ -97,6 +105,19 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         }
 
         return selectedNode;
+    }
+
+    /// <inheritdoc />
+    public async Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType) {
+        IEntity selectedEntity = null;
+        var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(Type), baseEntityType));
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+
+        if (result && window.ViewModel is { SelectedEntity.IsSelectable: true }) {
+            selectedEntity = window.ViewModel.SelectedEntity.Entity;
+        }
+
+        return selectedEntity;
     }
 
     /// <inheritdoc />

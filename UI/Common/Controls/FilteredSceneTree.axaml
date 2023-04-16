@@ -3,11 +3,7 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Common.FilteredContentTree">
-    <UserControl.Resources>
-        <local:AssetToIconConverter x:Key="AssetToIconConverter" />
-    </UserControl.Resources>
-
+             x:Class="Macabresoft.Macabre2D.UI.Common.FilteredSceneTree">
     <Grid RowDefinitions="Auto, *"
           ColumnDefinitions="*, Auto">
         <StackPanel Grid.Row="0"
@@ -32,8 +28,8 @@
                   Grid.Row="1"
                   Name="_treeView"
                   BorderThickness="0"
-                  Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
-                  SelectedItem="{Binding $parent[local:FilteredContentTree].SelectedItem, Mode=TwoWay}">
+                  Items="{Binding  $parent[local:FilteredSceneTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                  SelectedItem="{Binding $parent[local:FilteredSceneTree].SelectedItem, Mode=TwoWay}">
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True" />
@@ -42,22 +38,23 @@
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="local:FilteredEntityWrapper"
                                   ItemsSource="{Binding Children}">
-                    <Grid ColumnDefinitions="Auto, *">
+                    <Grid ColumnDefinitions="Auto, Auto, *">
                         <avaloniaEx:Icon Grid.Column="0"
-                                         Content="{StaticResource DirectoryIcon}"
-                                         IsVisible="{Binding IsDirectory}"
+                                         Content="{StaticResource CheckMarkIcon}"
+                                         IsVisible="{Binding IsSelectable}"
                                          Margin="{StaticResource StandardMarginRight}"
-                                         Foreground="{StaticResource YellowBrush}" />
-
-                        <avaloniaEx:Icon Grid.Column="0"
-                                         Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
-                                         IsVisible="{Binding !IsDirectory}"
-                                         Margin="{StaticResource StandardMarginRight}"
-                                         Foreground="{StaticResource TextControlForeground}" />
+                                         Foreground="{StaticResource GreenBrush}" />
 
                         <TextBlock Grid.Column="1"
-                                   Text="{Binding Node.Name}"
-                                   HorizontalAlignment="Stretch" />
+                                   Text="{Binding Entity.Name}"
+                                   HorizontalAlignment="Stretch"
+                                   IsEnabled="{Binding IsSelectable}" />
+
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding EntityType, StringFormat='({0})'}"
+                                   TextTrimming="CharacterEllipsis"
+                                   IsEnabled="{Binding IsSelectable}"
+                                   Foreground="{StaticResource SystemAccentBrush}" />
                     </Grid>
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
