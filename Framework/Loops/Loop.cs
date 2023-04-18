@@ -26,7 +26,7 @@ public interface ILoop : IUpdateableGameObject, INameable, IIdentifiable {
 /// Base class for a system which runs operations for a <see cref="IScene" />.
 /// </summary>
 [DataContract]
-[Category("System")]
+[Category("Loop")]
 public abstract class Loop : PropertyChangedNotifier, ILoop {
     private bool _isEnabled = true;
 
