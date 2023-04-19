@@ -42,9 +42,13 @@ public class LayersEditor : ValueEditorControl<Layers> {
     }
 
     private IReadOnlyCollection<Layers> GetEnabledLayers() {
-        return Enum.GetValues<Layers>()
-            .Where(x => (this._projectService.CurrentProject.Settings.LayerSettings.EnabledLayers & x) != Layers.None)
-            .ToList();
+        if (this._projectService.CurrentProject?.Settings?.LayerSettings is { } layerSettings) {
+            return Enum.GetValues<Layers>()
+                .Where(x => (layerSettings.EnabledLayers & x) != Layers.None)
+                .ToList();
+        }
+
+        return Enum.GetValues<Layers>().ToList();
     }
 
     private void InitializeComponent() {
