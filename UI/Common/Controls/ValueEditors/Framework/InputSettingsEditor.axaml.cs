@@ -79,6 +79,7 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
 
         var existingRows = grid.RowDefinitions.Count;
         var rowValues = Enum.GetValues<InputAction>().ToList();
+        rowValues.Remove(InputAction.None);
         var gamePadButtons = Enum.GetValues<Buttons>().ToList();
         gamePadButtons.Remove(Buttons.None);
         var keys = Enum.GetValues<Keys>().ToList();

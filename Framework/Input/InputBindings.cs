@@ -1,12 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 /// <summary>
-/// A class which defines input bindings between <see cref="InputAction" /> and <see cref="Keys" />, <see cref="Buttons" />, and <see cref="MouseButton" />.
+/// A class which defines input bindings between <see cref="InputAction" /> and <see cref="Keys" />, <see cref="Buttons" />
+/// , and <see cref="MouseButton" />.
 /// </summary>
 [DataContract]
 public class InputBindings : VersionedData {
@@ -35,6 +36,18 @@ public class InputBindings : VersionedData {
         this._keyBindings = new Dictionary<InputAction, Keys>(keyBindings);
         this._mouseBindings = new Dictionary<InputAction, MouseButton>(mouseBindings);
     }
+
+    /// <summary>
+    /// Gets the left analog input.
+    /// </summary>
+    [DataMember]
+    public CardinalAnalogInput LeftAnalog { get; } = new();
+
+    /// <summary>
+    /// Gets the right analog input.
+    /// </summary>
+    [DataMember]
+    public CardinalAnalogInput RightAnalog { get; } = new();
 
     /// <summary>
     /// Gets or sets a value indicating whether or not the left analog stick is enabled.
@@ -69,11 +82,7 @@ public class InputBindings : VersionedData {
     /// </summary>
     /// <returns>A clone of this instance.</returns>
     public InputBindings Clone() {
-        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) {
-            IsMouseEnabled = this.IsMouseEnabled,
-            IsLeftAnalogEnabled = this.IsLeftAnalogEnabled,
-            IsRightAnalogEnabled = this.IsRightAnalogEnabled
-        };
+        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) { IsMouseEnabled = this.IsMouseEnabled, IsLeftAnalogEnabled = this.IsLeftAnalogEnabled, IsRightAnalogEnabled = this.IsRightAnalogEnabled };
     }
 
     /// <summary>

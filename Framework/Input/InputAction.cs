@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 /// Unnamed actions that can be performed by user input.
 /// </summary>
 public enum InputAction : byte {
+    None,
+    
     [Display(Name = "Action 1")]
     Action01,
 

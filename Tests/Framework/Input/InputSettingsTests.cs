@@ -5,6 +5,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
 using NUnit.Framework;
+using System.Linq;
 
 [TestFixture]
 public class InputSettingsTests {
@@ -28,7 +29,7 @@ public class InputSettingsTests {
     [Test]
     public static void GetName_ShouldGetEmpty_WhenNoValues() {
         var inputSettings = new InputSettings();
-        var enumValues = Enum.GetValues<InputAction>();
+        var enumValues = Enum.GetValues<InputAction>().ToList();
 
         using (new AssertionScope()) {
             foreach (var value in enumValues) {
@@ -36,7 +37,7 @@ public class InputSettingsTests {
             }
         }
     }
-    
+
     [Category("Unit Tests")]
     [Test]
     public static void IsActionEnabled_ShouldReturnTrue_WhenExists() {
