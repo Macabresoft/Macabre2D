@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -39,77 +40,90 @@ public class InputActionControl : UserControl {
             (editor, value) => editor.SelectedMouseButton = value,
             defaultBindingMode: BindingMode.TwoWay);
 
-    private readonly InputSettings _inputSettings;
+    public static readonly StyledProperty<InputAction> ActionProperty =
+        AvaloniaProperty.Register<InputActionControl, InputAction>(
+            nameof(Action),
+            defaultBindingMode: BindingMode.OneTime,
+            notifying: OnSettingsOrActionChanging);
+
+    public static readonly StyledProperty<InputSettings> InputSettingsProperty =
+        AvaloniaProperty.Register<InputActionControl, InputSettings>(
+            nameof(InputSettings),
+            defaultBindingMode: BindingMode.OneTime,
+            notifying: OnSettingsOrActionChanging);
+
+
     private readonly IUndoService _undoService;
     private string _actionName;
     private Buttons _selectedGamePadButtons;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
 
-    public InputActionControl() : this(Resolver.Resolve<IUndoService>(), null, InputAction.Action01, Array.Empty<Buttons>(), Array.Empty<Keys>(), Array.Empty<MouseButton>()) {
+    static InputActionControl() {
+        var gamePadButtons = Enum.GetValues<Buttons>().ToList();
+        gamePadButtons.Remove(Buttons.None);
+        AvailableGamePadButtons = gamePadButtons;
+        AvailableKeys = Enum.GetValues<Keys>().ToList();
+        AvailableMouseButtons = Enum.GetValues<MouseButton>().ToList();
     }
 
-    public InputActionControl(
-        IUndoService undoService,
-        InputSettings inputSettings,
-        InputAction action,
-        IReadOnlyCollection<Buttons> availableGamePadButtons,
-        IReadOnlyCollection<Keys> availableKeys,
-        IReadOnlyCollection<MouseButton> availableMouseButtons) {
+    public InputActionControl() : this(Resolver.Resolve<IUndoService>()) {
+    }
+
+    public InputActionControl(IUndoService undoService) {
         this._undoService = undoService;
-        this._inputSettings = inputSettings;
-        this.Action = action;
-        this.AvailableGamePadButtons = availableGamePadButtons;
-        this.AvailableKeys = availableKeys;
-        this.AvailableMouseButtons = availableMouseButtons;
-
-        this._actionName = this._inputSettings.GetName(this.Action);
-        this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
-
         this.InitializeComponent();
     }
 
-    public InputAction Action { get; }
+    public static IReadOnlyCollection<Buttons> AvailableGamePadButtons { get; }
+
+    public static IReadOnlyCollection<Keys> AvailableKeys { get; }
+
+    public static IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
+
+    public InputAction Action {
+        get => this.GetValue(ActionProperty);
+        set => this.SetValue(ActionProperty, value);
+    }
 
     public string ActionName {
         get => this._actionName;
         set {
-            if (value != this._actionName) {
-                var originalValue = this._inputSettings.GetName(this.Action);
+            if (value != this._actionName && this.InputSettings is { } inputSettings) {
+                var originalValue = inputSettings.GetName(this.Action);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(ActionNameProperty, ref this._actionName, value);
-                        this._inputSettings.SetName(this.Action, value);
+                        inputSettings.SetName(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(ActionNameProperty, ref this._actionName, originalValue);
-                        this._inputSettings.SetName(this.Action, originalValue);
+                        inputSettings.SetName(this.Action, originalValue);
                     });
             }
         }
     }
 
-    public IReadOnlyCollection<Buttons> AvailableGamePadButtons { get; }
-
-    public IReadOnlyCollection<Keys> AvailableKeys { get; }
-
-    public IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
+    public InputSettings InputSettings {
+        get => this.GetValue(InputSettingsProperty);
+        set => this.SetValue(InputSettingsProperty, value);
+    }
 
     public Buttons SelectedGamePadButtons {
         get => this._selectedGamePadButtons;
         set {
-            if (value != this._selectedGamePadButtons) {
-                this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
+            if (value != this._selectedGamePadButtons && this.InputSettings is { } inputSettings) {
+                inputSettings.DefaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, value);
-                        this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, value);
+                        inputSettings.DefaultBindings.SetGamePadBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, originalValue);
-                        this._inputSettings.DefaultBindings.SetGamePadBinding(this.Action, originalValue);
+                        inputSettings.DefaultBindings.SetGamePadBinding(this.Action, originalValue);
                     });
             }
         }
@@ -118,17 +132,17 @@ public class InputActionControl : UserControl {
     public Keys SelectedKey {
         get => this._selectedKey;
         set {
-            if (value != this._selectedKey) {
-                this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
+            if (value != this._selectedKey && this.InputSettings is { } inputSettings) {
+                inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedKeyProperty, ref this._selectedKey, value);
-                        this._inputSettings.DefaultBindings.SetKeyBinding(this.Action, value);
+                        inputSettings.DefaultBindings.SetKeyBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedKeyProperty, ref this._selectedKey, originalValue);
-                        this._inputSettings.DefaultBindings.SetKeyBinding(this.Action, originalValue);
+                        inputSettings.DefaultBindings.SetKeyBinding(this.Action, originalValue);
                     });
             }
         }
@@ -137,17 +151,17 @@ public class InputActionControl : UserControl {
     public MouseButton SelectedMouseButton {
         get => this._selectedMouseButton;
         set {
-            if (value != this._selectedMouseButton) {
-                this._inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
+            if (value != this._selectedMouseButton && this.InputSettings is { } inputSettings) {
+                inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedMouseButtonProperty, ref this._selectedMouseButton, value);
-                        this._inputSettings.DefaultBindings.SetMouseBinding(this.Action, value);
+                        inputSettings.DefaultBindings.SetMouseBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedMouseButtonProperty, ref this._selectedMouseButton, originalValue);
-                        this._inputSettings.DefaultBindings.SetMouseBinding(this.Action, originalValue);
+                        inputSettings.DefaultBindings.SetMouseBinding(this.Action, originalValue);
                     });
             }
         }
@@ -155,5 +169,29 @@ public class InputActionControl : UserControl {
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private static void OnSettingsOrActionChanging(IAvaloniaObject control, bool isBeforeChange) {
+        if (control is InputActionControl inputActionControl) {
+            if (!isBeforeChange) {
+                inputActionControl.Reset();
+            }
+        }
+    }
+
+    private void RaisePropertyChanged<T>(AvaloniaProperty<T> property, T value) {
+        this.RaisePropertyChanged(property, Optional<T>.Empty, new BindingValue<T>(value));
+    }
+
+    private void Reset() {
+        if (this.InputSettings is { } inputSettings && this.Action != InputAction.None) {
+            this._actionName = inputSettings.GetName(this.Action);
+            inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
+
+            this.RaisePropertyChanged(ActionNameProperty, this._actionName);
+            this.RaisePropertyChanged(SelectedGamePadButtonsProperty, this._selectedGamePadButtons);
+            this.RaisePropertyChanged(SelectedKeyProperty, this._selectedKey);
+            this.RaisePropertyChanged(SelectedMouseButtonProperty, this._selectedMouseButton);
+        }
     }
 }

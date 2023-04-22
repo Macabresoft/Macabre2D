@@ -80,10 +80,6 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
         var existingRows = grid.RowDefinitions.Count;
         var rowValues = Enum.GetValues<InputAction>().ToList();
         rowValues.Remove(InputAction.None);
-        var gamePadButtons = Enum.GetValues<Buttons>().ToList();
-        gamePadButtons.Remove(Buttons.None);
-        var keys = Enum.GetValues<Keys>().ToList();
-        var mouseButtons = Enum.GetValues<MouseButton>().ToList();
 
         for (var i = 0; i <= rowValues.Count; i++) {
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
@@ -96,8 +92,10 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
             var row = i * 2 + existingRows;
             var action = rowValues[i];
 
-            var control = new InputActionControl(this._undoService, this.Value, action, gamePadButtons, keys, mouseButtons) {
-                [Grid.RowProperty] = row
+            var control = new InputActionControl(this._undoService) {
+                [Grid.RowProperty] = row,
+                InputSettings = this.Value,
+                Action = action
             };
 
             grid.Children.Add(control);
