@@ -1,7 +1,6 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                           x:TypeArguments="framework:InputAction"
                           x:Class="Macabresoft.Macabre2D.UI.Common.InputActionEditor">
