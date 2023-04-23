@@ -1,9 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 
 /// <summary>
 /// A class which defines input bindings between <see cref="InputAction" /> and <see cref="Keys" />, <see cref="Buttons" />
@@ -50,22 +50,10 @@ public class InputBindings : VersionedData {
     public CardinalAnalogInput RightAnalog { get; } = new();
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not the left analog stick is enabled.
-    /// </summary>
-    [DataMember]
-    public bool IsLeftAnalogEnabled { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets a value indicating whether or not the mouse is enabled.
     /// </summary>
     [DataMember]
     public bool IsMouseEnabled { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether or not the right analog stick is enabled.
-    /// </summary>
-    [DataMember]
-    public bool IsRightAnalogEnabled { get; set; } = true;
 
     /// <summary>
     /// Clears all bindings for the specified action.
@@ -82,7 +70,13 @@ public class InputBindings : VersionedData {
     /// </summary>
     /// <returns>A clone of this instance.</returns>
     public InputBindings Clone() {
-        return new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) { IsMouseEnabled = this.IsMouseEnabled, IsLeftAnalogEnabled = this.IsLeftAnalogEnabled, IsRightAnalogEnabled = this.IsRightAnalogEnabled };
+        var inputBindings = new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) {
+            IsMouseEnabled = this.IsMouseEnabled
+        };
+
+        this.LeftAnalog.CopyTo(inputBindings.LeftAnalog);
+        this.RightAnalog.CopyTo(inputBindings.RightAnalog);
+        return inputBindings;
     }
 
     /// <summary>
