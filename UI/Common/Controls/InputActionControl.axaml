@@ -25,6 +25,7 @@
 
         <local:StringEditor Grid.Row="0"
                             Grid.Column="1"
+                            IsVisible="{Binding !IsPredefined}"
                             Value="{Binding ActionName}" />
 
         <Grid RowDefinitions="Auto, Auto, Auto"

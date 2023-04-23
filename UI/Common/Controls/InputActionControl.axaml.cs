@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -40,6 +41,13 @@ public class InputActionControl : UserControl {
             (editor, value) => editor.SelectedMouseButton = value,
             defaultBindingMode: BindingMode.TwoWay);
 
+    public static readonly DirectProperty<InputActionControl, bool> IsPredefinedProperty =
+        AvaloniaProperty.RegisterDirect<InputActionControl, bool>(
+            nameof(IsPredefined),
+            editor => editor.IsPredefined,
+            (editor, value) => editor.IsPredefined = value,
+            defaultBindingMode: BindingMode.OneWay);
+    
     public static readonly StyledProperty<InputAction> ActionProperty =
         AvaloniaProperty.Register<InputActionControl, InputAction>(
             nameof(Action),
@@ -58,6 +66,7 @@ public class InputActionControl : UserControl {
     private Buttons _selectedGamePadButtons;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
+    private bool _isPredefined;
 
     static InputActionControl() {
         var gamePadButtons = Enum.GetValues<Buttons>().ToList();
@@ -73,6 +82,11 @@ public class InputActionControl : UserControl {
     public InputActionControl(IUndoService undoService) {
         this._undoService = undoService;
         this.InitializeComponent();
+    }
+    
+    public bool IsPredefined {
+        get => this._isPredefined;
+        set => this.SetAndRaise(IsPredefinedProperty, ref this._isPredefined, value);
     }
 
     public static IReadOnlyCollection<Buttons> AvailableGamePadButtons { get; }
@@ -192,6 +206,8 @@ public class InputActionControl : UserControl {
             this.RaisePropertyChanged(SelectedGamePadButtonsProperty, this._selectedGamePadButtons);
             this.RaisePropertyChanged(SelectedKeyProperty, this._selectedKey);
             this.RaisePropertyChanged(SelectedMouseButtonProperty, this._selectedMouseButton);
+
+            this.IsPredefined = InputSettings.PredefinedActions.Contains(this.Action);
         }
     }
 }

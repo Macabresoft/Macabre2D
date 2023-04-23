@@ -19,8 +19,7 @@
         
         <local:BoolEditor Grid.Row="0"
                           Value="{Binding Value.IsEnabled}"
-                          Title="{Binding Title}"
-                          ValuePropertyName="IsEnabled"/>
+                          Title="{Binding Title}" />
 
         <Grid Grid.Column="0"
               Grid.Row="1"

@@ -11,6 +11,19 @@ using Newtonsoft.Json;
 [DataContract]
 [Category(CommonCategories.Input)]
 public class InputSettings {
+    /// <summary>
+    /// A set of predefined actions.
+    /// </summary>
+    public static readonly IReadOnlySet<InputAction> PredefinedActions = new HashSet<InputAction>() {
+        InputAction.None,
+        InputAction.Confirm,
+        InputAction.Cancel,
+        InputAction.Up,
+        InputAction.Down,
+        InputAction.Left,
+        InputAction.Right
+    };
+    
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, string> _actionToName = new();
 
@@ -29,7 +42,7 @@ public class InputSettings {
     /// <param name="action">The action.</param>
     /// <returns>The name of the action.</returns>
     public string GetName(InputAction action) {
-        if (action == InputAction.None) {
+        if (PredefinedActions.Contains(action)) {
             return action.ToString();
         }
         
@@ -42,7 +55,7 @@ public class InputSettings {
     /// <param name="action">The action.</param>
     /// <returns>A value indicating whether or not the action is enabled.</returns>
     public bool IsActionEnabled(InputAction action) {
-        return action != InputAction.None && this._actionToName.TryGetValue(action, out var name) && !string.IsNullOrEmpty(name);
+        return action != InputAction.None && (PredefinedActions.Contains(action) || (this._actionToName.TryGetValue(action, out var name) && !string.IsNullOrEmpty(name)));
     }
 
     /// <summary>
@@ -53,20 +66,22 @@ public class InputSettings {
     /// <returns></returns>
     public bool SetName(InputAction action, string name) {
         var result = false;
-        if (string.IsNullOrEmpty(name)) {
-            if (this._actionToName.TryGetValue(action, out var originalName)) {
-                this._nameToAction.Remove(originalName);
-                this._actionToName.Remove(action);
+        if (!PredefinedActions.Contains(action)) {
+            if (string.IsNullOrEmpty(name)) {
+                if (this._actionToName.TryGetValue(action, out var originalName)) {
+                    this._nameToAction.Remove(originalName);
+                    this._actionToName.Remove(action);
+                }
             }
-        }
-        else if (!this._nameToAction.ContainsKey(name)) {
-            if (this._actionToName.TryGetValue(action, out var originalName)) {
-                this._nameToAction.Remove(originalName);
-            }
+            else if (!this._nameToAction.ContainsKey(name)) {
+                if (this._actionToName.TryGetValue(action, out var originalName)) {
+                    this._nameToAction.Remove(originalName);
+                }
 
-            this._actionToName[action] = name;
-            this._nameToAction[name] = action;
-            result = true;
+                this._actionToName[action] = name;
+                this._nameToAction[name] = action;
+                result = true;
+            }
         }
 
         return result;

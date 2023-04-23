@@ -54,5 +54,15 @@ public enum InputAction : byte {
     Action15,
 
     [Display(Name = "Action 16")]
-    Action16
+    Action16,
+    
+    // Directions
+    Up,
+    Down,
+    Left,
+    Right,
+    
+    // Menu
+    Confirm,
+    Cancel
 }

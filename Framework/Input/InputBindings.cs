@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 /// </summary>
 [DataContract]
 public class InputBindings : VersionedData {
+   
     /// <summary>
     /// The settings file name.
     /// </summary>
