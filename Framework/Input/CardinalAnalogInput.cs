@@ -1,17 +1,18 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Represents analog input in the cardinal directions.
 /// </summary>
 [DataContract]
-public class CardinalAnalogInput {
+public class CardinalAnalogInput : PropertyChangedNotifier {
     /// <summary>
     /// Gets or sets the <see cref="InputAction" /> for down on this analog stick.
     /// </summary>
     [DataMember]
-    public InputAction Down { get; set; }
+    public InputAction Down { get; set; } = InputAction.None;
 
     /// <summary>
     /// Gets or sets a value indicating whether or not this analog stick is enabled.
@@ -23,19 +24,19 @@ public class CardinalAnalogInput {
     /// Gets or sets the <see cref="InputAction" /> for left on this analog stick.
     /// </summary>
     [DataMember]
-    public InputAction Left { get; set; }
+    public InputAction Left { get; set; } = InputAction.None;
 
     /// <summary>
     /// Gets or sets the <see cref="InputAction" /> for right on this analog stick.
     /// </summary>
     [DataMember]
-    public InputAction Right { get; set; }
+    public InputAction Right { get; set; } = InputAction.None;
 
     /// <summary>
     /// Gets or sets the <see cref="InputAction" /> for up on this analog stick.
     /// </summary>
     [DataMember]
-    public InputAction Up { get; set; }
+    public InputAction Up { get; set; } = InputAction.None;
 
     /// <summary>
     /// Copies these analog input settings to another analog input.

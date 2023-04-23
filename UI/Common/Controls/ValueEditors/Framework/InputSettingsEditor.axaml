@@ -5,12 +5,28 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:InputSettings"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.InputSettingsEditor">
-    <Grid DataContext="{Binding $parent[local:InputSettingsEditor]}">
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+          DataContext="{Binding $parent[local:InputSettingsEditor]}">
         <Design.DataContext>
             <local:InputSettingsEditor />
         </Design.DataContext>
-        
-        <ItemsControl Items="{Binding Actions}">
+
+        <local:CardinalAnalogInputEditor Grid.Row="0"
+                                         Value="{Binding Value.DefaultBindings.LeftAnalog}"
+                                         Title="Left Analog Stick" />
+
+        <Border Grid.Row="1"
+                Classes="HorizontalSeparator" />
+
+        <local:CardinalAnalogInputEditor Grid.Row="2"
+                                         Value="{Binding Value.DefaultBindings.RightAnalog}"
+                                         Title="Right Analog Stick" />
+
+        <Border Grid.Row="3" 
+                Classes="HorizontalSeparator" />
+
+        <ItemsControl Grid.Row="4"
+                      Items="{Binding Actions}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <local:InputActionControl InputSettings="{Binding $parent[local:InputSettingsEditor].Value}"

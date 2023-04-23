@@ -119,6 +119,10 @@
           <DependentUpon>LayerNameEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\CardinalAnalogInputEditor.axaml.cs">
+          <DependentUpon>CardinalAnalogInputEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

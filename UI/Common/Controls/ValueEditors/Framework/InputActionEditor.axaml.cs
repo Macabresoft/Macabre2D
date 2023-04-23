@@ -23,9 +23,12 @@ public class InputActionEditor : ValueEditorControl<InputAction> {
     public IReadOnlyCollection<InputAction> EnabledInputActions { get; }
 
     private IReadOnlyCollection<InputAction> GetEnabledInputActions() {
-        return Enum.GetValues<InputAction>()
+        var actions = Enum.GetValues<InputAction>()
             .Where(x => this._projectService.CurrentProject.Settings.InputSettings.IsActionEnabled(x))
             .ToList();
+
+        actions.Insert(0, InputAction.None);
+        return actions;
     }
 
     private void InitializeComponent() {

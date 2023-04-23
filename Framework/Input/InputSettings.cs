@@ -29,6 +29,10 @@ public class InputSettings {
     /// <param name="action">The action.</param>
     /// <returns>The name of the action.</returns>
     public string GetName(InputAction action) {
+        if (action == InputAction.None) {
+            return action.ToString();
+        }
+        
         return this._actionToName.TryGetValue(action, out var name) ? name : string.Empty;
     }
 
@@ -38,7 +42,7 @@ public class InputSettings {
     /// <param name="action">The action.</param>
     /// <returns>A value indicating whether or not the action is enabled.</returns>
     public bool IsActionEnabled(InputAction action) {
-        return this._actionToName.TryGetValue(action, out var name) && !string.IsNullOrEmpty(name);
+        return action != InputAction.None && this._actionToName.TryGetValue(action, out var name) && !string.IsNullOrEmpty(name);
     }
 
     /// <summary>
