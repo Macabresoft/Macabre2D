@@ -16,23 +16,23 @@
         <Design.DataContext>
             <local:CardinalAnalogInputEditor />
         </Design.DataContext>
-        
+
         <local:BoolEditor Grid.Row="0"
-                          Value="{Binding Value.IsEnabled}"
+                          Value="{Binding IsAnalogStickEnabled}"
                           Title="{Binding Title}" />
 
         <Grid Grid.Column="0"
               Grid.Row="1"
               ColumnDefinitions="*, *, *"
               RowDefinitions="Auto, Auto, Auto, Auto"
-              IsEnabled="{Binding Value.IsEnabled}">
+              IsEnabled="{Binding IsAnalogStickEnabled}">
             <TextBlock Grid.Column="1"
                        Grid.Row="0"
                        Text="Up"
                        Classes="Direction" />
             <local:InputActionEditor Grid.Column="1"
                                      Grid.Row="1"
-                                     Value="{Binding Value.Up}" />
+                                     Value="{Binding UpAction}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="1"
@@ -40,7 +40,7 @@
                        Classes="Direction" />
             <local:InputActionEditor Grid.Column="0"
                                      Grid.Row="2"
-                                     Value="{Binding Value.Left}" />
+                                     Value="{Binding LeftAction}" />
 
             <TextBlock Grid.Column="2"
                        Grid.Row="1"
@@ -48,7 +48,7 @@
                        Classes="Direction" />
             <local:InputActionEditor Grid.Column="2"
                                      Grid.Row="2"
-                                     Value="{Binding Value.Right}" />
+                                     Value="{Binding RightAction}" />
 
             <TextBlock Grid.Column="1"
                        Grid.Row="2"
@@ -56,7 +56,7 @@
                        Classes="Direction" />
             <local:InputActionEditor Grid.Column="1"
                                      Grid.Row="3"
-                                     Value="{Binding Value.Down}" />
+                                     Value="{Binding DownAction}" />
 
         </Grid>
     </Grid>
