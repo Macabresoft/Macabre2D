@@ -115,6 +115,10 @@
           <DependentUpon>LoopSelectionDialog.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\LayerNameControl.axaml.cs">
+          <DependentUpon>LayerNameEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
