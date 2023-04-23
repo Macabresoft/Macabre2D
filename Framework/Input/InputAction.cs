@@ -7,7 +7,17 @@ using System.ComponentModel.DataAnnotations;
 /// </summary>
 public enum InputAction : byte {
     None,
-    
+
+    // Menu
+    Confirm,
+    Cancel,
+
+    // Directions
+    Up,
+    Down,
+    Left,
+    Right,
+
     [Display(Name = "Action 1")]
     Action01,
 
@@ -54,15 +64,5 @@ public enum InputAction : byte {
     Action15,
 
     [Display(Name = "Action 16")]
-    Action16,
-    
-    // Directions
-    Up,
-    Down,
-    Left,
-    Right,
-    
-    // Menu
-    Confirm,
-    Cancel
+    Action16
 }
