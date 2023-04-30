@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 /// </summary>
 [DataContract]
 public class InputBindings : VersionedData {
-   
     /// <summary>
     /// The settings file name.
     /// </summary>
@@ -39,18 +38,6 @@ public class InputBindings : VersionedData {
     }
 
     /// <summary>
-    /// Gets the left analog input.
-    /// </summary>
-    [DataMember]
-    public CardinalAnalogInput LeftAnalog { get; } = new();
-
-    /// <summary>
-    /// Gets the right analog input.
-    /// </summary>
-    [DataMember]
-    public CardinalAnalogInput RightAnalog { get; } = new();
-
-    /// <summary>
     /// Gets or sets a value indicating whether or not the mouse is enabled.
     /// </summary>
     [DataMember]
@@ -75,8 +62,6 @@ public class InputBindings : VersionedData {
             IsMouseEnabled = this.IsMouseEnabled
         };
 
-        this.LeftAnalog.CopyTo(inputBindings.LeftAnalog);
-        this.RightAnalog.CopyTo(inputBindings.RightAnalog);
         return inputBindings;
     }
 
