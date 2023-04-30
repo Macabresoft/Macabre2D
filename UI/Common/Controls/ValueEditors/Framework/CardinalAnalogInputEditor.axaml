@@ -44,7 +44,7 @@
 
             <TextBlock Grid.Column="2"
                        Grid.Row="1"
-                       Text="Left"
+                       Text="Right"
                        Classes="Direction" />
             <local:InputActionEditor Grid.Column="2"
                                      Grid.Row="2"
