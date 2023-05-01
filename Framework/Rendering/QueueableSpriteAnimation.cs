@@ -6,7 +6,7 @@ using System.Linq;
 /// <summary>
 /// A wrapper for <see cref="SpriteAnimation" /> that allows it to be queued.
 /// </summary>
-public sealed class QueueableSpriteAnimation {
+public class QueueableSpriteAnimation {
     private int _currentFrameIndex;
     private int _currentStepIndex;
 
