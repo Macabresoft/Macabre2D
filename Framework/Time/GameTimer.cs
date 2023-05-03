@@ -58,17 +58,19 @@ public class GameTimer {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     public void Decrement(FrameTime frameTime) {
-        if (this.State != TimerState.Disabled) {
-            this.TimeRunning -= (float)frameTime.SecondsPassed;
+        this.Decrement((float)frameTime.SecondsPassed);
+    }
 
-            if (this.State == TimerState.Finished && this.TimeRunning < this.TimeLimit) {
-                this.State = TimerState.Running;
-            }
-
-            if (this.TimeRunning <= 0f) {
-                this.TimeRunning = 0f;
-            }
-        }
+    /// <summary>
+    /// Decrements the timer by a multiplied frame time.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="multiplier">
+    /// The multiplier by which to apply to the seconds passed. For instance, if the multiplier is 0.5
+    /// and the seconds passed is 10, this timer will be decremented by 5 seconds.
+    /// </param>
+    public void Decrement(FrameTime frameTime, float multiplier) {
+        this.Decrement((float)(frameTime.SecondsPassed * multiplier));
     }
 
     /// <summary>
@@ -76,14 +78,19 @@ public class GameTimer {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     public void Increment(FrameTime frameTime) {
-        if (this.State == TimerState.Running) {
-            this.TimeRunning += (float)frameTime.SecondsPassed;
+        this.Increment((float)frameTime.SecondsPassed);
+    }
 
-            if (this.TimeRunning >= this.TimeLimit) {
-                this.TimeRunning = this.TimeLimit;
-                this.State = TimerState.Finished;
-            }
-        }
+    /// <summary>
+    /// Increments the timer by a multiplied frame time.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="multiplier">
+    /// The multiplier by which to apply to the seconds passed. For instance, if the multiplier is 0.5
+    /// and the seconds passed is 10, this timer will be incremented by 5 seconds.
+    /// </param>
+    public void Increment(FrameTime frameTime, float multiplier) {
+        this.Increment((float)(frameTime.SecondsPassed * multiplier));
     }
 
     /// <summary>
@@ -139,5 +146,30 @@ public class GameTimer {
     public void Stop() {
         this.Pause();
         this.TimeRunning = 0f;
+    }
+
+    private void Decrement(float seconds) {
+        if (this.State != TimerState.Disabled) {
+            this.TimeRunning -= seconds;
+
+            if (this.State == TimerState.Finished && this.TimeRunning < this.TimeLimit) {
+                this.State = TimerState.Running;
+            }
+
+            if (this.TimeRunning <= 0f) {
+                this.TimeRunning = 0f;
+            }
+        }
+    }
+
+    private void Increment(float seconds) {
+        if (this.State == TimerState.Running) {
+            this.TimeRunning += seconds;
+
+            if (this.TimeRunning >= this.TimeLimit) {
+                this.TimeRunning = this.TimeLimit;
+                this.State = TimerState.Finished;
+            }
+        }
     }
 }
