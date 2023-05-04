@@ -40,7 +40,7 @@
                 </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="local:FilteredEntityWrapper"
+                <TreeDataTemplate DataType="local:FilteredContentWrapper"
                                   ItemsSource="{Binding Children}">
                     <Grid ColumnDefinitions="Auto, *">
                         <avaloniaEx:Icon Grid.Column="0"
