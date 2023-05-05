@@ -92,7 +92,7 @@ public class QueueableSpriteAnimation {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="millisecondsPerFrame">The milliseconds per frame.</param>
     /// <param name="isAnimationOver">A value indicating whether or not the animation is over.</param>
-    public void Update(FrameTime frameTime, int millisecondsPerFrame, out bool isAnimationOver) {
+    public virtual void Update(FrameTime frameTime, int millisecondsPerFrame, out bool isAnimationOver) {
         isAnimationOver = false;
         this.MillisecondsPassed += frameTime.MillisecondsPassed;
 
