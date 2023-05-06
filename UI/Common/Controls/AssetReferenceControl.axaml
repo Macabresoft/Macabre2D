@@ -2,31 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Common.AssetReferenceControl">
-    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+             x:Class="Macabresoft.Macabre2D.UI.Common.AssetReferenceControl"
+             SearchIcon="{StaticResource DocumentSearchIcon}">
+    <Grid ColumnDefinitions="*, Auto, Auto"
           DataContext="{Binding $parent[local:AssetReferenceControl]}">
         <Design.DataContext>
             <local:AssetReferenceControl />
         </Design.DataContext>
-
-        <TextBlock Grid.Column="0"
-                   Classes="Label"
-                   Text="{Binding Title}" />
-
-        <TextBox Grid.Column="1"
+        
+        <TextBox Grid.Column="0"
                  IsReadOnly="True"
                  VerticalAlignment="Top"
                  Text="{Binding PathText}"
                  ToolTip.Tip="{Binding PathText}" />
 
-        <Button Grid.Column="2"
+        <Button Grid.Column="1"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding SelectCommand}"
                 ToolTip.Tip="Search for an asset">
-            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+            <avaloniaEx:Icon Content="{Binding SearchIcon}" />
         </Button>
-        <Button Grid.Column="3"
+        <Button Grid.Column="2"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"

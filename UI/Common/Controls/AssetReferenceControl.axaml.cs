@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 
 public class AssetReferenceControl : UserControl {
     public static readonly StyledProperty<ICommand> ClearCommandProperty =
@@ -12,11 +13,11 @@ public class AssetReferenceControl : UserControl {
     public static readonly StyledProperty<string> PathTextProperty =
         AvaloniaProperty.Register<AssetReferenceControl, string>(nameof(PathText));
 
+    public static readonly StyledProperty<StreamGeometry> SearchIconProperty =
+        AvaloniaProperty.Register<AssetReferenceControl, StreamGeometry>(nameof(SearchIcon));
+
     public static readonly StyledProperty<ICommand> SelectCommandProperty =
         AvaloniaProperty.Register<AssetReferenceControl, ICommand>(nameof(SelectCommand));
-
-    public static readonly StyledProperty<string> TitleProperty =
-        AvaloniaProperty.Register<AssetReferenceControl, string>(nameof(Title));
 
     public AssetReferenceControl() {
         this.InitializeComponent();
@@ -32,14 +33,14 @@ public class AssetReferenceControl : UserControl {
         set => this.SetValue(PathTextProperty, value);
     }
 
+    public StreamGeometry SearchIcon {
+        get => this.GetValue(SearchIconProperty);
+        set => this.SetValue(SearchIconProperty, value);
+    }
+
     public ICommand SelectCommand {
         get => this.GetValue(SelectCommandProperty);
         set => this.SetValue(SelectCommandProperty, value);
-    }
-
-    public string Title {
-        get => this.GetValue(TitleProperty);
-        set => this.SetValue(TitleProperty, value);
     }
 
     private void InitializeComponent() {

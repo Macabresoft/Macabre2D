@@ -9,7 +9,7 @@
     <common:ValueEditorControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
     </common:ValueEditorControl.Resources>
-    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+    <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:AutoTileSetEditor]}">
         <Design.DataContext>
@@ -37,29 +37,12 @@
                    HorizontalAlignment="Left"
                    Width="{Binding #_spriteBorder.Bounds.Width}"
                    Text="{Binding Bitmap.Size, StringFormat=(\{0\})}" />
-
-        <TextBox Grid.Column="1"
-                 Grid.Row="1"
-                 IsReadOnly="True"
-                 VerticalAlignment="Top"
-                 Text="{Binding PathText}"
-                 ToolTip.Tip="{Binding PathText}" />
-
-        <Button Grid.Column="2"
-                Grid.Row="1"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding SelectTileSetCommand}"
-                ToolTip.Tip="Search for a sprite">
-            <avaloniaEx:Icon Content="{StaticResource ImageSearchIcon}" />
-        </Button>
-        <Button Grid.Column="3"
-                Grid.Row="1"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding ClearCommand}"
-                ToolTip.Tip="Clear the tile set">
-            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-        </Button>
+        
+        <common:AssetReferenceControl Grid.Column="1"
+                                      Grid.Row="1"
+                                      SearchIcon="{StaticResource ImageSearchIcon}"
+                                      PathText="{Binding PathText}"
+                                      SelectCommand="{Binding SelectTileSetCommand}"
+                                      ClearCommand="{Binding ClearCommand}"></common:AssetReferenceControl>
     </Grid>
 </common:ValueEditorControl>

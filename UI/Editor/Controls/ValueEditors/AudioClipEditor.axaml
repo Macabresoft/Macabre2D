@@ -5,12 +5,17 @@
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            x:TypeArguments="framework:AudioClipReference"
                            x:Class="Macabresoft.Macabre2D.UI.Editor.AudioClipEditor">
-    <Grid DataContext="{Binding $parent[local:AudioClipEditor]}">
+    <Grid ColumnDefinitions="Auto, *"
+        DataContext="{Binding $parent[local:AudioClipEditor]}">
         <Design.DataContext>
             <local:AudioClipEditor />
         </Design.DataContext>
+        
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
 
-        <common:AssetReferenceControl Title="{Binding Title}"
+        <common:AssetReferenceControl Grid.Column="1"
                                       PathText="{Binding PathText}"
                                       SelectCommand="{Binding SelectCommand}"
                                       ClearCommand="{Binding ClearCommand}" />
