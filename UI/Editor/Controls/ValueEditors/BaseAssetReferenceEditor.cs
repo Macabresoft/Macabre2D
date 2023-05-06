@@ -9,7 +9,6 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
-using Unity;
 
 public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueEditorControl<TAssetReference> where TAssetReference : class, IAssetReference<TAsset> where TAsset : class, IAsset {
     public static readonly DirectProperty<BaseAssetReferenceEditor<TAssetReference, TAsset>, ICommand> ClearCommandProperty =
@@ -31,15 +30,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
     private ICommand _clearCommand;
     private string _pathText;
 
-    public BaseAssetReferenceEditor() : this(
-        null,
-        Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<ILocalDialogService>(),
-        Resolver.Resolve<IUndoService>()) {
-    }
-
-    [InjectionConstructor]
-    public BaseAssetReferenceEditor(
+    protected BaseAssetReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ILocalDialogService dialogService,
@@ -49,7 +40,6 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         this.UndoService = undoService;
 
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
-        this.ResetPath();
     }
 
     public ICommand SelectCommand { get; }
@@ -69,6 +59,21 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
     protected ILocalDialogService DialogService { get; }
 
     protected IUndoService UndoService { get; }
+
+    protected virtual void Clear() {
+        var asset = this.Value.Asset;
+
+        if (asset != null) {
+            this.UndoService.Do(
+                () => this.Value.Clear(),
+                () => { this.Value.LoadAsset(asset); });
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
+        base.OnAttachedToVisualTree(e);
+        this.ResetPath();
+    }
 
     protected override void OnValueChanged() {
         base.OnValueChanged();
@@ -91,6 +96,18 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         }
     }
 
+    protected virtual void ResetPath() {
+        this.PathText = null;
+
+        if (this.AssetManager != null &&
+            this.Value?.Asset != null &&
+            this.Value.ContentId != Guid.Empty &&
+            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
+            metadata != null) {
+            this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
+        }
+    }
+
     protected virtual async Task Select() {
         var contentNode = await this.DialogService.OpenAssetSelectionDialog(typeof(TAsset), false);
         if (contentNode is ContentFile { Asset: TAsset newAsset }) {
@@ -106,28 +123,6 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
                         this.Value.Clear();
                     }
                 });
-        }
-    }
-
-    private void Clear() {
-        var asset = this.Value.Asset;
-
-        if (asset != null) {
-            this.UndoService.Do(
-                () => this.Value.Clear(),
-                () => { this.Value.LoadAsset(asset); });
-        }
-    }
-
-    private void ResetPath() {
-        this.PathText = null;
-
-        if (this.AssetManager != null &&
-            this.Value?.Asset != null &&
-            this.Value.ContentId != Guid.Empty &&
-            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
-            metadata != null) {
-            this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
     }
 
