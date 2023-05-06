@@ -1,10 +1,10 @@
-<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           x:TypeArguments="framework:ShaderReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderReferenceEditor">
+<local:BaseAssetReferenceEditor xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                                 xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 x:TypeArguments="framework:ShaderReference, framework:ShaderAsset"
+                                 x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderReferenceEditor">
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:ShaderReferenceEditor]}">
         <Design.DataContext>
@@ -20,4 +20,4 @@
                                       SelectCommand="{Binding SelectCommand}"
                                       ClearCommand="{Binding ClearCommand}" />
     </Grid>
-</common:ValueEditorControl>
+</local:BaseAssetReferenceEditor>
