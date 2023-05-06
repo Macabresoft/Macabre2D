@@ -6,36 +6,63 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
+/// Interface for an asset reference.
+/// </summary>
+/// <typeparam name="TAsset">The asset.</typeparam>
+public interface IAssetReference<TAsset> : INotifyPropertyChanged where TAsset : class, IAsset {
+    /// <summary>
+    /// Gets the asset.
+    /// </summary>
+    TAsset? Asset { get; }
+
+    /// <summary>
+    /// Gets or sets the asset identifier.
+    /// </summary>
+    public Guid ContentId { get; set; }
+
+    /// <summary>
+    /// Clears the asset reference.
+    /// </summary>
+    void Clear();
+
+    /// <summary>
+    /// Initializes this reference with the asset manager.
+    /// </summary>
+    /// <param name="assetManager">The asset manager.</param>
+    void Initialize(IAssetManager assetManager);
+
+    /// <summary>
+    /// Loads this instance with an asset.
+    /// </summary>
+    /// <param name="asset">The asset.</param>
+    void LoadAsset(TAsset asset);
+}
+
+/// <summary>
 /// A reference to an asset using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 [DataContract]
-public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
+public class AssetReference<TAsset, TContent> : PropertyChangedNotifier, IAssetReference<TAsset> where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private TAsset? _asset;
     private IAssetManager _assetManager = AssetManager.Empty;
     private Guid _contentId = Guid.Empty;
 
-    /// <summary>
-    /// Gets or sets the asset.
-    /// </summary>
+    /// <inheritdoc />
     public TAsset? Asset {
         get => this._asset;
         private set => this.Set(ref this._asset, value);
     }
 
-    /// <summary>
-    /// Gets or sets the asset identifier.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public Guid ContentId {
         get => this._contentId;
         set => this.Set(ref this._contentId, value);
     }
 
-    /// <summary>
-    /// Clears the asset reference.
-    /// </summary>
+    /// <inheritdoc />
     public virtual void Clear() {
         if (this.Asset != null) {
             this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
@@ -45,10 +72,7 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TA
         this.ContentId = Guid.Empty;
     }
 
-    /// <summary>
-    /// Initializes this reference with the asset manager.
-    /// </summary>
-    /// <param name="assetManager"></param>
+    /// <inheritdoc />
     public void Initialize(IAssetManager assetManager) {
         this._assetManager = assetManager;
 
@@ -57,10 +81,7 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier where TA
         }
     }
 
-    /// <summary>
-    /// Loads this instance with an asset.
-    /// </summary>
-    /// <param name="asset">The asset.</param>
+    /// <inheritdoc />
     public virtual void LoadAsset(TAsset asset) {
         if (this.Asset != null) {
             this.Asset.PropertyChanged -= this.Asset_PropertyChanged;

@@ -1,40 +1,12 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Avalonia;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
-using ReactiveUI;
 using Unity;
 
-public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
-    public static readonly DirectProperty<AudioClipEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<AudioClipEditor, ICommand>(
-            nameof(ClearCommand),
-            editor => editor.ClearCommand);
-
-    public static readonly DirectProperty<AudioClipEditor, string> PathTextProperty =
-        AvaloniaProperty.RegisterDirect<AudioClipEditor, string>(
-            nameof(PathText),
-            editor => editor.PathText);
-
-    public static readonly DirectProperty<AudioClipEditor, ICommand> SelectCommandProperty =
-        AvaloniaProperty.RegisterDirect<AudioClipEditor, ICommand>(
-            nameof(SelectCommand),
-            editor => editor.SelectCommand);
-
-    private readonly IAssetManager _assetManager;
-    private readonly ILocalDialogService _dialogService;
-    private readonly IUndoService _undoService;
-
-    private ICommand _clearCommand;
-    private string _pathText;
-
+public class AudioClipEditor : BaseAssetReferenceEditor<AudioClipReference, AudioClipAsset> {
     public AudioClipEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -47,99 +19,11 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ILocalDialogService dialogService,
-        IUndoService undoService) : base(dependencies) {
-        this._assetManager = assetManager;
-        this._dialogService = dialogService;
-        this._undoService = undoService;
-
-        this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
-        this.ResetPath();
+        IUndoService undoService) : base(dependencies, assetManager, dialogService, undoService) {
         this.InitializeComponent();
-    }
-
-    public ICommand ClearCommand {
-        get => this._clearCommand;
-        private set => this.SetAndRaise(ClearCommandProperty, ref this._clearCommand, value);
-    }
-
-    public string PathText {
-        get => this._pathText;
-        private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
-    }
-
-    public ICommand SelectCommand { get; }
-
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
-
-        if (this.Value != null) {
-            this.ClearCommand = ReactiveCommand.Create(
-                this.Clear,
-                this.Value.WhenAny(x => x.ContentId, y => y.Value != Guid.Empty));
-
-            this.ResetPath();
-            this.Value.PropertyChanged += this.Value_PropertyChanged;
-        }
-    }
-
-    protected override void OnValueChanging() {
-        base.OnValueChanging();
-
-        if (this.Value != null) {
-            this.Value.PropertyChanged -= this.Value_PropertyChanged;
-        }
-    }
-
-    private void Clear() {
-        var asset = this.Value.Asset;
-
-        if (asset != null) {
-            this._undoService.Do(
-                () => this.Value.Clear(),
-                () => { this.Value.LoadAsset(asset); });
-        }
     }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
-    }
-
-    private void ResetPath() {
-        this.PathText = null;
-
-        if (this._assetManager != null &&
-            this.Value?.Asset != null &&
-            this.Value.ContentId != Guid.Empty &&
-            this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
-            metadata != null) {
-            this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
-        }
-    }
-
-    private async Task Select() {
-        var contentNode = await this._dialogService.OpenAssetSelectionDialog(typeof(AudioClipAsset), false);
-        if (contentNode is ContentFile { Asset: AudioClipAsset newAsset }) {
-            var originalAsset = this.Value.Asset;
-            this._undoService.Do(
-                () =>
-                {
-                    this.Value.LoadAsset(newAsset);
-                },
-                () =>
-                {
-                    if (originalAsset != null) {
-                        this.Value.LoadAsset(originalAsset);
-                    }
-                    else {
-                        this.Value.Clear();
-                    }
-                });
-        }
-    }
-
-    private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AudioClipReference.ContentId)) {
-            this.ResetPath();
-        }
     }
 }
