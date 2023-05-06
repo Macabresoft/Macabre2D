@@ -60,7 +60,7 @@
             <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\AudioClipEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\AudioClipReferenceEditor.axaml.cs">
             <DependentUpon>AudioClipEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
