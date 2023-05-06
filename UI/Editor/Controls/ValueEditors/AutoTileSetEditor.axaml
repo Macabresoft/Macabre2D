@@ -1,13 +1,13 @@
-<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           x:TypeArguments="framework:AutoTileSetReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
-    <common:ValueEditorControl.Resources>
+<local:BaseSpriteSheetAssetReferenceEditor xmlns="https://github.com/avaloniaui"
+                                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                                           x:TypeArguments="framework:AutoTileSetReference, framework:AutoTileSet"
+                                           x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
+    <local:BaseSpriteSheetAssetReferenceEditor.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </common:ValueEditorControl.Resources>
+    </local:BaseSpriteSheetAssetReferenceEditor.Resources>
     <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:AutoTileSetEditor]}">
@@ -24,9 +24,7 @@
                 Grid.Row="1"
                 Name="_spriteBorder"
                 IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Classes="Preview"
-                Background="{Binding TileMap.Color, Converter={StaticResource ColorConverter}}"
-                BorderBrush="{Binding $self.Background}">
+                Classes="Preview">
             <Image Source="{Binding Bitmap}" />
         </Border>
 
@@ -41,7 +39,7 @@
                                       Grid.Row="1"
                                       SearchIcon="{StaticResource ImageSearchIcon}"
                                       PathText="{Binding PathText}"
-                                      SelectCommand="{Binding SelectTileSetCommand}"
+                                      SelectCommand="{Binding SelectCommand}"
                                       ClearCommand="{Binding ClearCommand}" />
     </Grid>
-</common:ValueEditorControl>
+</local:BaseSpriteSheetAssetReferenceEditor>
