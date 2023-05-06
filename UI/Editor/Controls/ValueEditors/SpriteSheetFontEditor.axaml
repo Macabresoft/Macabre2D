@@ -21,8 +21,7 @@
                 Grid.Row="1"
                 Name="_spriteBorder"
                 IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Classes="Preview"
-                BorderBrush="{Binding $self.Background}">
+                Classes="Preview">
             <Image Source="{Binding Bitmap}" />
         </Border>
 
