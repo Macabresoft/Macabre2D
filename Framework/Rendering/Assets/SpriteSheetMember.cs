@@ -20,5 +20,5 @@ public class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable, INameab
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    public SpriteSheetAsset? SpriteSheet { get; internal set; }
+    public SpriteSheet? SpriteSheet { get; internal set; }
 }

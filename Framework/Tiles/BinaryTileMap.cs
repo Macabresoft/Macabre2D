@@ -129,7 +129,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(SpriteSheetAsset.SpriteSize)) {
+        if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

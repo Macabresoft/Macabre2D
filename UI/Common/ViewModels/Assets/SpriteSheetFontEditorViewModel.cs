@@ -41,7 +41,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     public SpriteSheetFontEditorViewModel(
         IUndoService undoService,
         SpriteSheetFont font,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
         this.ClearSpriteCommand = ReactiveCommand.Create(

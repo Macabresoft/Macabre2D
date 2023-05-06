@@ -22,7 +22,7 @@ public class AssetToIconConverter : IValueConverter {
                     PrefabAsset => application.TryFindResource("EntityIcon", out result),
                     SceneAsset => application.TryFindResource("SceneIcon", out result),
                     ShaderAsset => application.TryFindResource("ShaderIcon", out result),
-                    SpriteSheetAsset => application.TryFindResource("SpriteSheetIcon", out result),
+                    SpriteSheet => application.TryFindResource("SpriteSheetIcon", out result),
                     _ => application.TryFindResource("FileIcon", out result)
                 },
                 INameableCollection => value switch {

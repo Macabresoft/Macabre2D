@@ -75,7 +75,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         },
         new FileDialogFilter {
             Name = "Images",
-            Extensions = SpriteSheetAsset.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
+            Extensions = SpriteSheet.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
         },
         new FileDialogFilter {
             Name = "Prefabs",

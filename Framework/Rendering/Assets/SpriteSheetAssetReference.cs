@@ -6,10 +6,10 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// An asset reference for an asset packaged inside of a <see cref="SpriteSheetAsset" />.
+/// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
 /// </summary>
 /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
-public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheetAsset, Texture2D> where TPackagedAsset : SpriteSheetMember {
+public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet, Texture2D> where TPackagedAsset : SpriteSheetMember {
     private TPackagedAsset? _packagedAsset;
     private Guid _packagedAssetId;
 
@@ -54,7 +54,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     }
 
     /// <inheritdoc />
-    public override void LoadAsset(SpriteSheetAsset asset) {
+    public override void LoadAsset(SpriteSheet asset) {
         base.LoadAsset(asset);
         this.ResolvePackagedAsset();
     }

@@ -142,15 +142,15 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 this.AssetEditor = spriteSheetAsset switch {
                     AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
                         new ParameterOverride(typeof(AutoTileSet), tileSet),
-                        new ParameterOverride(typeof(SpriteSheetAsset), spriteSheet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
                         new ParameterOverride(typeof(SpriteAnimation), animation),
-                        new ParameterOverride(typeof(SpriteSheetAsset), spriteSheet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     SpriteSheetFont font => this._container.Resolve<SpriteSheetFontEditorView>(
                         new ParameterOverride(typeof(SpriteSheetFont), font),
-                        new ParameterOverride(typeof(SpriteSheetAsset), spriteSheet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     _ => null
                 };

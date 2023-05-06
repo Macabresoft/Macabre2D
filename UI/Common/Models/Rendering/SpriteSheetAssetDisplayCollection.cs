@@ -21,7 +21,7 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteSheetAssetDisplayCollection(SpriteSheetAsset spriteSheet, ContentFile file) {
+    public SpriteSheetAssetDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
         this.SpriteSheet = spriteSheet;
         this._file = file;
         this.Assets = this.SpriteSheet.GetAssets<TAsset>();
@@ -58,7 +58,7 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    public SpriteSheetAsset SpriteSheet { get; }
+    public SpriteSheet SpriteSheet { get; }
 
     /// <inheritdoc />
     public IEnumerator<TAsset> GetEnumerator() {

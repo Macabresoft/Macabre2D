@@ -140,7 +140,7 @@ public class ProjectEditorViewModel : BaseViewModel {
                 case SpriteAnimation spriteAnimation:
                     this.ResetScene(spriteAnimation);
                     break;
-                case SpriteSheetAsset spriteSheet:
+                case SpriteSheet spriteSheet:
                     this.ResetScene(spriteSheet);
                     break;
             }
@@ -262,7 +262,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         }
     }
 
-    private void ResetScene(SpriteSheetAsset spriteSheet) {
+    private void ResetScene(SpriteSheet spriteSheet) {
     }
 
     private void ResetSize(Rect overallSceneArea, Rect viewableSceneArea) {

@@ -350,7 +350,7 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
+        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(SpriteSheet.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

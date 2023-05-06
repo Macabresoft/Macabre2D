@@ -43,7 +43,7 @@ public class QueueableSpriteAnimation {
     /// <summary>
     /// Gets the sprite sheet associated with this animation.
     /// </summary>
-    public SpriteSheetAsset? SpriteSheet => this.Animation?.SpriteSheet;
+    public SpriteSheet? SpriteSheet => this.Animation?.SpriteSheet;
 
     /// <summary>
     /// Gets or sets the current sprite index.

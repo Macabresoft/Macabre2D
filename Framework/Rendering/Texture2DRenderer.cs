@@ -28,5 +28,5 @@ public sealed class Texture2DRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheetAsset SpriteSheet { get; } = new();
+    protected override SpriteSheet SpriteSheet { get; } = new();
 }

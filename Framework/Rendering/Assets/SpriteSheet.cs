@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 [DataContract(Name = "Sprite Sheet")]
 [Category("Sprite Sheet")]
-public class SpriteSheetAsset : AssetPackage<Texture2D> {
+public class SpriteSheet : AssetPackage<Texture2D> {
     /// <summary>
     /// The valid file extensions for a <see cref="Texture2D" />.
     /// </summary>
@@ -44,9 +44,9 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     private Point _spriteSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteSheetAsset" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheet" /> class.
     /// </summary>
-    public SpriteSheetAsset() {
+    public SpriteSheet() {
         this._autoTileSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._autoTileSets.PropertyChanged += this.RaisePropertyChanged;
         this._spriteAnimations.CollectionChanged += this.SpriteSheetMember_CollectionChanged;

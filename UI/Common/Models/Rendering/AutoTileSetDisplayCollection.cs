@@ -11,6 +11,6 @@ public class AutoTileSetDisplayCollection : SpriteSheetAssetDisplayCollection<Au
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public AutoTileSetDisplayCollection(SpriteSheetAsset spriteSheet, ContentFile file) : base(spriteSheet, file) {
+    public AutoTileSetDisplayCollection(SpriteSheet spriteSheet, ContentFile file) : base(spriteSheet, file) {
     }
 }

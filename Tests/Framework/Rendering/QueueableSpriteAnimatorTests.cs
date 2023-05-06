@@ -211,7 +211,7 @@ public static class QueueableSpriteAnimatorTests {
         }
 
         var animation = new SpriteAnimation(steps);
-        animation.SpriteSheet = new SpriteSheetAsset {
+        animation.SpriteSheet = new SpriteSheet {
             Columns = 2,
             Rows = 2
         };

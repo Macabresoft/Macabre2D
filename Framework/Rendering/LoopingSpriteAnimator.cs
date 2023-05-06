@@ -59,7 +59,7 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     }
 
     private void AnimationReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(SpriteAnimationReference.Asset) or nameof(SpriteAnimationReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
+        if (e.PropertyName is nameof(SpriteAnimationReference.Asset) or nameof(SpriteAnimationReference.PackagedAsset) or nameof(Framework.SpriteSheet.SpriteSize)) {
             if (this.TryResetAnimation()) {
                 this.TryStart();
             }

@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// A reference to a sprite on a <see cref="SpriteSheetAsset" />.
+/// A reference to a sprite on a <see cref="SpriteSheet" />.
 /// </summary>
-public class SpriteReference : AssetReference<SpriteSheetAsset, Texture2D> {
+public class SpriteReference : AssetReference<SpriteSheet, Texture2D> {
     private byte _spriteIndex;
 
     /// <summary>
-    /// Gets or sets the sprite index on a <see cref="SpriteSheetAsset" />. The sprite sheet is read from left to right, top to
+    /// Gets or sets the sprite index on a <see cref="SpriteSheet" />. The sprite sheet is read from left to right, top to
     /// bottom.
     /// </summary>
     [DataMember]
@@ -30,7 +30,7 @@ public class SpriteReference : AssetReference<SpriteSheetAsset, Texture2D> {
     protected override void OnAssetPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnAssetPropertyChanged(sender, e);
 
-        if (e.PropertyName is nameof(SpriteSheetAsset.Rows) or nameof(SpriteSheetAsset.Columns) && sender is SpriteSheetAsset spriteSheet) {
+        if (e.PropertyName is nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns) && sender is SpriteSheet spriteSheet) {
             if (this.SpriteIndex > spriteSheet.Rows * spriteSheet.Columns) {
                 this.SpriteIndex = 0;
             }

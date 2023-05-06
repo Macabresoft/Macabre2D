@@ -28,7 +28,7 @@ public class SpriteRenderer : BaseSpriteEntity {
     public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
-    protected override SpriteSheetAsset? SpriteSheet => this.SpriteReference.Asset;
+    protected override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {

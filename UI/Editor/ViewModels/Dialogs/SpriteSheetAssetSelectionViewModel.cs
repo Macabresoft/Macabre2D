@@ -32,7 +32,7 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheetAsset), false, file => ShouldDisplay(file, out _));
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false, file => ShouldDisplay(file, out _));
         this.SelectedContentNode = this.RootContentDirectory;
     }
 
@@ -106,8 +106,8 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         }
     }
 
-    private static bool ShouldDisplay(ContentFile file, [NotNullWhen(true)] out SpriteSheetAsset spriteSheet) {
-        spriteSheet = file.Asset as SpriteSheetAsset;
+    private static bool ShouldDisplay(ContentFile file, [NotNullWhen(true)] out SpriteSheet spriteSheet) {
+        spriteSheet = file.Asset as SpriteSheet;
         return spriteSheet != null && spriteSheet.GetAssets<TAsset>().Any();
     }
 }

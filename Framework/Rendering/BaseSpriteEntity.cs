@@ -53,7 +53,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    protected abstract SpriteSheetAsset? SpriteSheet { get; }
+    protected abstract SpriteSheet? SpriteSheet { get; }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {

@@ -15,10 +15,10 @@ public class ContentServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void MoveContent_ShouldMoveDirectory() {
-        var metadata = new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg");
+        var metadata = new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg");
         var existing = new[] {
             metadata,
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -41,10 +41,10 @@ public class ContentServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void MoveContent_ShouldMoveFile() {
-        var metadata = new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg");
+        var metadata = new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg");
         var existing = new[] {
             metadata,
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -68,10 +68,10 @@ public class ContentServiceTests {
     [Category("Unit Tests")]
     public void RefreshContent_Should_ArchiveMetadataWithMissingContent() {
         var metadataToArchive = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(Enumerable.Empty<ContentMetadata>(), metadataToArchive, Enumerable.Empty<string>());
@@ -96,18 +96,18 @@ public class ContentServiceTests {
     [Category("Unit Tests")]
     public void RefreshContent_Should_HandleAComplexSituation() {
         var existing = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var metadataToArchive = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var newContentFiles = new[] {
@@ -125,11 +125,11 @@ public class ContentServiceTests {
     [Category("Unit Tests")]
     public void RefreshContent_Should_Rebuild_WhenMetadataCountsDoNotMatch() {
         var existing = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -145,11 +145,11 @@ public class ContentServiceTests {
     [Category("Unit Tests")]
     public void RefreshContent_Should_Rebuild_WhenMetadataFilesDoNotMatch() {
         var existing = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -167,10 +167,10 @@ public class ContentServiceTests {
     [Category("Unit Tests")]
     public void RefreshContent_Should_ResolveExistingMetadata() {
         var existing = new[] {
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
         };
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());

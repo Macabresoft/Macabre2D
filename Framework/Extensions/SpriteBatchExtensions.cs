@@ -20,7 +20,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Color color,
@@ -42,7 +42,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,
@@ -125,7 +125,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Color color) {
@@ -145,7 +145,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,

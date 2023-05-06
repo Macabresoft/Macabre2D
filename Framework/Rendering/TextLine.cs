@@ -142,7 +142,7 @@ public class TextLine : RenderableEntity {
         this.BoundingAreaChanged.SafeInvoke(this);
     }
 
-    private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheetAsset? spriteSheet) {
+    private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheet? spriteSheet) {
         spriteSheet = this.FontReference.Asset;
         return !string.IsNullOrEmpty(this.Text) &&
                this.CharacterHeight > 0f &&

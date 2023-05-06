@@ -16,11 +16,11 @@ public sealed class SpriteDisplayModel {
     /// <param name="image">The image.</param>
     /// <param name="index">The index of the sprite on the sprite sheet.</param>
     /// <param name="spriteSheet">The sprite sheet.</param>
-    public SpriteDisplayModel(IImage image, byte index, SpriteSheetAsset spriteSheet) {
+    public SpriteDisplayModel(IImage image, byte index, SpriteSheet spriteSheet) {
         this.Index = index;
         this.SpriteSheet = spriteSheet;
 
-        var sizeAndLocation = SpriteSheetAsset.GetSpriteSizeAndLocation(
+        var sizeAndLocation = Framework.SpriteSheet.GetSpriteSizeAndLocation(
             new Point((int)image.Size.Width, (int)image.Size.Height),
             this.SpriteSheet.Columns,
             this.SpriteSheet.Rows,
@@ -53,5 +53,5 @@ public sealed class SpriteDisplayModel {
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    public SpriteSheetAsset SpriteSheet { get; }
+    public SpriteSheet SpriteSheet { get; }
 }

@@ -45,7 +45,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     public AutoTileSetEditorViewModel(
         IUndoService undoService,
         AutoTileSet tileSet,
-        SpriteSheetAsset spriteSheet,
+        SpriteSheet spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
         this.ClearSpriteCommand = ReactiveCommand.Create(

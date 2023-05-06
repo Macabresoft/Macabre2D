@@ -54,7 +54,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheetAsset? SpriteSheet => this.CurrentAnimation?.SpriteSheet;
+    protected override SpriteSheet? SpriteSheet => this.CurrentAnimation?.SpriteSheet;
 
     /// <summary>
     /// Get the number of milliseconds in a single frame.
