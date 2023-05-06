@@ -1,7 +1,6 @@
 <common:ValueEditorControl xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            x:TypeArguments="framework:SpriteReference"
@@ -9,7 +8,7 @@
     <common:ValueEditorControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
     </common:ValueEditorControl.Resources>
-    <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto"
+    <Grid ColumnDefinitions="Auto, Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:SpriteReferenceEditor]}">
         <Design.DataContext>
@@ -48,28 +47,11 @@
                        IsEnabled="{Binding ContentPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                        ToolTip.Tip="Adjust the sprite index" />
 
-        <TextBox Grid.Column="2"
-                 Grid.Row="1"
-                 IsReadOnly="True"
-                 VerticalAlignment="Top"
-                 Text="{Binding ContentPath}"
-                 ToolTip.Tip="{Binding ContentPath}" />
-
-        <Button Grid.Column="3"
-                Grid.Row="1"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding SelectSpriteCommand}"
-                ToolTip.Tip="Search for a sprite">
-            <avaloniaEx:Icon Content="{StaticResource ImageSearchIcon}" />
-        </Button>
-        <Button Grid.Column="4"
-                Grid.Row="1"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding ClearSpriteCommand}"
-                ToolTip.Tip="Clear the sprite">
-            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-        </Button>
+        <common:AssetReferenceControl Grid.Column="2"
+                                      Grid.Row="1"
+                                      SearchIcon="{StaticResource ImageSearchIcon}"
+                                      PathText="{Binding ContentPath}"
+                                      SelectCommand="{Binding SelectSpriteCommand}"
+                                      ClearCommand="{Binding ClearSpriteCommand}" />
     </Grid>
 </common:ValueEditorControl>

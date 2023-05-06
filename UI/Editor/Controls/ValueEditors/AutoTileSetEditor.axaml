@@ -2,7 +2,6 @@
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            x:TypeArguments="framework:AutoTileSetReference"
                            x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
@@ -37,12 +36,12 @@
                    HorizontalAlignment="Left"
                    Width="{Binding #_spriteBorder.Bounds.Width}"
                    Text="{Binding Bitmap.Size, StringFormat=(\{0\})}" />
-        
+
         <common:AssetReferenceControl Grid.Column="1"
                                       Grid.Row="1"
                                       SearchIcon="{StaticResource ImageSearchIcon}"
                                       PathText="{Binding PathText}"
                                       SelectCommand="{Binding SelectTileSetCommand}"
-                                      ClearCommand="{Binding ClearCommand}"></common:AssetReferenceControl>
+                                      ClearCommand="{Binding ClearCommand}" />
     </Grid>
 </common:ValueEditorControl>

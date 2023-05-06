@@ -1,12 +1,11 @@
 <common:ValueEditorControl xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            x:TypeArguments="framework:ShaderReference"
                            x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderReferenceEditor">
-    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+    <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:ShaderReferenceEditor]}">
         <Design.DataContext>
             <local:ShaderReferenceEditor />
@@ -16,25 +15,9 @@
                    Classes="Label"
                    Text="{Binding Title}" />
 
-        <TextBox Grid.Column="1"
-                 IsReadOnly="True"
-                 VerticalAlignment="Top"
-                 Text="{Binding PathText}"
-                 ToolTip.Tip="{Binding PathText}" />
-
-        <Button Grid.Column="2"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding SelectCommand}"
-                ToolTip.Tip="Search for a shader">
-            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
-        </Button>
-        <Button Grid.Column="3"
-                VerticalAlignment="Top"
-                Classes="Icon"
-                Command="{Binding ClearCommand}"
-                ToolTip.Tip="Clear the shader">
-            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-        </Button>
+        <common:AssetReferenceControl Grid.Column="1"
+                                      PathText="{Binding PathText}"
+                                      SelectCommand="{Binding SelectCommand}"
+                                      ClearCommand="{Binding ClearCommand}" />
     </Grid>
 </common:ValueEditorControl>
