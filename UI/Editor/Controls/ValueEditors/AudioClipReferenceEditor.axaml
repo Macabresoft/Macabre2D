@@ -4,11 +4,11 @@
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                                  x:TypeArguments="framework:AudioClipReference, framework:AudioClipAsset"
-                                 x:Class="Macabresoft.Macabre2D.UI.Editor.AudioClipEditor">
+                                 x:Class="Macabresoft.Macabre2D.UI.Editor.AudioClipReferenceEditor">
     <Grid ColumnDefinitions="Auto, *"
-        DataContext="{Binding $parent[local:AudioClipEditor]}">
+        DataContext="{Binding $parent[local:AudioClipReferenceEditor]}">
         <Design.DataContext>
-            <local:AudioClipEditor />
+            <local:AudioClipReferenceEditor />
         </Design.DataContext>
         
         <TextBlock Grid.Column="0"

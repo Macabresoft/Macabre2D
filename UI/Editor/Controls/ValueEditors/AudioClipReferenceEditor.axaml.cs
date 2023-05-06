@@ -6,8 +6,8 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class AudioClipEditor : BaseAssetReferenceEditor<AudioClipReference, AudioClipAsset> {
-    public AudioClipEditor() : this(
+public class AudioClipReferenceEditor : BaseAssetReferenceEditor<AudioClipReference, AudioClipAsset> {
+    public AudioClipReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ILocalDialogService>(),
@@ -15,7 +15,7 @@ public class AudioClipEditor : BaseAssetReferenceEditor<AudioClipReference, Audi
     }
 
     [InjectionConstructor]
-    public AudioClipEditor(
+    public AudioClipReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ILocalDialogService dialogService,
