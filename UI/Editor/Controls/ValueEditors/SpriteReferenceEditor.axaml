@@ -1,13 +1,13 @@
-<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           x:TypeArguments="framework:SpriteReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteReferenceEditor">
-    <common:ValueEditorControl.Resources>
+<local:BaseSpriteSheetReferenceEditor xmlns="https://github.com/avaloniaui"
+                                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                      xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                                      xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                                      xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                      x:TypeArguments="framework:SpriteReference"
+                                      x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteReferenceEditor">
+    <local:BaseSpriteSheetReferenceEditor.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </common:ValueEditorControl.Resources>
+    </local:BaseSpriteSheetReferenceEditor.Resources>
     <Grid ColumnDefinitions="Auto, Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:SpriteReferenceEditor]}">
@@ -44,14 +44,14 @@
                        Maximum="{Binding MaxIndex}"
                        Minimum="0"
                        VerticalAlignment="Top"
-                       IsEnabled="{Binding ContentPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       IsEnabled="{Binding PathText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                        ToolTip.Tip="Adjust the sprite index" />
 
         <common:AssetReferenceControl Grid.Column="2"
                                       Grid.Row="1"
                                       SearchIcon="{StaticResource ImageSearchIcon}"
-                                      PathText="{Binding ContentPath}"
-                                      SelectCommand="{Binding SelectSpriteCommand}"
-                                      ClearCommand="{Binding ClearSpriteCommand}" />
+                                      PathText="{Binding PathText}"
+                                      SelectCommand="{Binding SelectCommand}"
+                                      ClearCommand="{Binding ClearCommand}" />
     </Grid>
-</common:ValueEditorControl>
+</local:BaseSpriteSheetReferenceEditor>
