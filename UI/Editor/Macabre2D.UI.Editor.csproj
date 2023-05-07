@@ -84,6 +84,10 @@
           <DependentUpon>SpriteSheetFontEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\SpriteSheetReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteSheetReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
