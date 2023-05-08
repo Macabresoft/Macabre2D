@@ -60,6 +60,7 @@ public static class CloneExtensions {
         if (Serializer.Instance.DeserializeFromString(json, member.GetType()) is T tempClone) {
             result = true;
             clone = tempClone;
+            clone.Id = Guid.NewGuid();
         }
         else {
             clone = null;
