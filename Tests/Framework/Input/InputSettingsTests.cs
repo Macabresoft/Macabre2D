@@ -13,7 +13,7 @@ public class InputSettingsTests {
     [Test]
     public static void GetName_ShouldGetEmpty_WhenNoValues() {
         var inputSettings = new InputSettings();
-        var enumValues = Enum.GetValues<InputAction>().ToList();
+        var enumValues = Enum.GetValues<InputAction>().Where(x => !InputSettings.PredefinedActions.Contains(x)).ToList();
         enumValues.Remove(InputAction.None);
 
         using (new AssertionScope()) {
@@ -63,7 +63,7 @@ public class InputSettingsTests {
     [Test]
     public static void IsActionEnabled_ShouldReturnFalse_WhenNoValues() {
         var inputSettings = new InputSettings();
-        var enumValues = Enum.GetValues<InputAction>();
+        var enumValues = Enum.GetValues<InputAction>().Where(x => !InputSettings.PredefinedActions.Contains(x));
         using (new AssertionScope()) {
             foreach (var value in enumValues) {
                 inputSettings.IsActionEnabled(value).Should().BeFalse();
@@ -93,7 +93,7 @@ public class InputSettingsTests {
     [Test]
     public static void SetName_ShouldDisableAction_WhenSetEmpty() {
         var inputSettings = new InputSettings();
-        var enumValues = Enum.GetValues<InputAction>();
+        var enumValues = Enum.GetValues<InputAction>().Where(x => !InputSettings.PredefinedActions.Contains(x)).ToList();
         foreach (var value in enumValues) {
             inputSettings.SetName(value, value.ToString());
         }
@@ -126,7 +126,7 @@ public class InputSettingsTests {
     [Test]
     public static void TryGetAction_ShouldReturnTrue_WhenExists() {
         var inputSettings = new InputSettings();
-        var enumValues = Enum.GetValues<InputAction>();
+        var enumValues = Enum.GetValues<InputAction>().Where(x => !InputSettings.PredefinedActions.Contains(x)).ToList();
 
         foreach (var value in enumValues) {
             inputSettings.SetName(value, value.ToString());
