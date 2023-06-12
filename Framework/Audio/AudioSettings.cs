@@ -94,7 +94,7 @@ public class AudioSettings {
             this.VolumeChanged.SafeInvoke(this, AudioCategory.Voice);
         }
     }
-    
+
     /// <summary>
     /// Clones this instance.
     /// </summary>

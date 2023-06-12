@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// Pre-defined audio categories that can be adjusted independently.
