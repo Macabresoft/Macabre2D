@@ -31,14 +31,14 @@ public class QueueableSpriteAnimation {
     public SpriteAnimation Animation { get; }
 
     /// <summary>
-    /// Gets a value indicating whether this should loop indefinitely when no other animation
+    /// Gets or sets a value indicating whether this should loop indefinitely when no other animation
     /// has been queued.
     /// </summary>
     /// <value>
     /// <c>true</c> if this should loop indefinitely when no other animation has been queued;
     /// otherwise, <c>false</c>.
     /// </value>
-    public bool ShouldLoopIndefinitely { get; }
+    public bool ShouldLoopIndefinitely { get; set; }
 
     /// <summary>
     /// Gets the sprite sheet associated with this animation.

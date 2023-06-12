@@ -14,12 +14,16 @@ using Macabresoft.Core;
 [Category(CommonCategories.Animation)]
 public class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
-    private QueueableSpriteAnimation? _currentAnimation;
 
     /// <summary>
     /// An event for when an animation finishes.
     /// </summary>
     public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
+
+    /// <summary>
+    /// Gets the currently queued animation if it exists.
+    /// </summary>
+    public QueueableSpriteAnimation? QueuedAnimation { get; private set; }
 
     /// <summary>
     /// Enqueues the specified animation.
@@ -58,11 +62,11 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// <param name="animation">The animation.</param>
     /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
     public void Play(SpriteAnimation animation, bool shouldLoop) {
-        if (this._currentAnimation != null) {
-            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation.Animation);
+        if (this.QueuedAnimation != null) {
+            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation.Animation);
         }
 
-        this._currentAnimation = new QueueableSpriteAnimation(animation, shouldLoop);
+        this.QueuedAnimation = new QueueableSpriteAnimation(animation, shouldLoop);
         this._queuedSpriteAnimations.Clear();
         this.IsEnabled = true;
         this.IsPlaying = true;
@@ -98,39 +102,39 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
         this.IsPlaying = false;
 
         if (eraseQueue) {
-            if (this._currentAnimation != null) {
-                this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation.Animation);
+            if (this.QueuedAnimation != null) {
+                this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation.Animation);
             }
 
-            this._currentAnimation = null;
+            this.QueuedAnimation = null;
             this._queuedSpriteAnimations.Clear();
         }
         else {
-            this._currentAnimation?.Reset();
+            this.QueuedAnimation?.Reset();
         }
     }
 
     /// <inheritdoc />
     protected override QueueableSpriteAnimation? GetCurrentAnimation() {
-        if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
-            this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
+        if (this.QueuedAnimation == null && this._queuedSpriteAnimations.Any()) {
+            this.QueuedAnimation = this._queuedSpriteAnimations.Dequeue();
         }
 
-        return this._currentAnimation;
+        return this.QueuedAnimation;
     }
 
     /// <inheritdoc />
     protected override void HandleAnimationFinished() {
         if (this._queuedSpriteAnimations.Any()) {
-            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
-            var millisecondsPassed = this._currentAnimation?.MillisecondsPassed ?? 0d;
-            this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
-            this._currentAnimation.Reset();
-            this._currentAnimation.MillisecondsPassed = millisecondsPassed;
+            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
+            var millisecondsPassed = this.QueuedAnimation?.MillisecondsPassed ?? 0d;
+            this.QueuedAnimation = this._queuedSpriteAnimations.Dequeue();
+            this.QueuedAnimation.Reset();
+            this.QueuedAnimation.MillisecondsPassed = millisecondsPassed;
         }
-        else if (this._currentAnimation?.ShouldLoopIndefinitely == false) {
-            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
-            this._currentAnimation = null;
+        else if (this.QueuedAnimation?.ShouldLoopIndefinitely == false) {
+            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
+            this.QueuedAnimation = null;
         }
     }
 
