@@ -491,7 +491,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public override bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity) where T : default {
+    public override bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) where T : default {
         entity = default;
         return false;
     }

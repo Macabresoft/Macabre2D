@@ -44,7 +44,7 @@ public sealed class EditorGrid : BaseDrawer {
 
         this.UseDynamicLineThickness = true;
 
-        if (!this.TryGetParentEntity(out this._camera)) {
+        if (!this.TryGetAncestor(out this._camera)) {
             throw new NotSupportedException("Could not find a camera ancestor.");
         }
 
@@ -207,7 +207,7 @@ public sealed class EditorGrid : BaseDrawer {
             if (this._entityService.Selected is IGridContainer container) {
                 gridContainer = container;
             }
-            else if (this._entityService.Selected.TryGetParentEntity(out container)) {
+            else if (this._entityService.Selected.TryGetAncestor(out container)) {
                 gridContainer = container;
             }
         }

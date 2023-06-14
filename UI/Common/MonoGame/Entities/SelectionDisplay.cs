@@ -145,7 +145,7 @@ public class SelectionDisplay : BaseDrawer {
 
             if (!IsNullOrEmpty(this._entityService.Selected, out var selected)) {
                 this._selectedBoundable = selected as IBoundable;
-                this._boundables.AddRange(selected.GetDescendents<IBoundable>());
+                this._boundables.AddRange(selected.GetDescendants<IBoundable>());
 
                 if (this._selectedBoundable != null) {
                     this._boundables.Add(this._selectedBoundable);

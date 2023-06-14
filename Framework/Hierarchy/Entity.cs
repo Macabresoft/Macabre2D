@@ -74,18 +74,18 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEntity FindChild(string name);
 
     /// <summary>
-    /// Get all descendents of the specified type.
+    /// Get all descendants of the specified type.
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
-    /// <returns>Descendents of the specified type.</returns>
-    IEnumerable<T> GetDescendents<T>();
+    /// <returns>Descendants of the specified type.</returns>
+    IEnumerable<T> GetDescendants<T>();
 
     /// <summary>
-    /// Gets all descendents of the specified type.
+    /// Gets all descendants of the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
-    /// <returns>Descendents of the specified type.</returns>
-    IEnumerable<IEntity> GetDescendents(Type type);
+    /// <returns>Descendants of the specified type.</returns>
+    IEnumerable<IEntity> GetDescendants(Type type);
 
     /// <summary>
     /// Gets the child of the specified type if it exists; otherwise, adds a new child.
@@ -147,12 +147,12 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     bool TryGetChild<T>(out T? entity) where T : class, IEntity;
 
     /// <summary>
-    /// Tries the get the parent. This entity could be a parent going all the way up to the scene.
+    /// Tries the get an ancestor of specified type. This entity could be a parent going all the way up to the scene.
     /// </summary>
     /// <typeparam name="T">The type of parent entity.</typeparam>
     /// <param name="entity">The parent entity.</param>
     /// <returns>A value indicating whether or not the entity was found.</returns>
-    bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity);
+    bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity);
 }
 
 /// <summary>
@@ -297,16 +297,16 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetDescendents<T>() {
+    public IEnumerable<T> GetDescendants<T>() {
         var descendents = new List<T>(this.Children.OfType<T>());
-        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents<T>()));
+        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendants<T>()));
         return descendents;
     }
 
     /// <inheritdoc />
-    public IEnumerable<IEntity> GetDescendents(Type type) {
+    public IEnumerable<IEntity> GetDescendants(Type type) {
         var descendents = new List<IEntity>(this.Children.Where(type.IsInstanceOfType));
-        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents(type)));
+        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendants(type)));
         return descendents;
     }
 
@@ -400,12 +400,12 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public virtual bool TryGetParentEntity<T>([NotNullWhen(true)] out T? entity) {
+    public virtual bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) {
         if (this.Parent is T parent) {
             entity = parent;
         }
         else {
-            this.Parent.TryGetParentEntity(out entity);
+            this.Parent.TryGetAncestor(out entity);
         }
 
         return entity != null;

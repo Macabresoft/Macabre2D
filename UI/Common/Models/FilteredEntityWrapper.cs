@@ -25,7 +25,7 @@ public class FilteredEntityWrapper {
 
         var children = new List<FilteredEntityWrapper>(
             this.Entity.Children
-                .Where(x => this.IsSelectable || this.Entity.GetDescendents(entityType).Any())
+                .Where(x => this.IsSelectable || this.Entity.GetDescendants(entityType).Any())
                 .Select(x => new FilteredEntityWrapper(x, entityType)));
 
         this.Children = children;

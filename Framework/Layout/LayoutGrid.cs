@@ -69,7 +69,7 @@ public class LayoutGrid : Entity, ILayoutArranger {
             this._boundable.BoundingAreaChanged -= this.Boundable_BoundingAreaChanged;
         }
 
-        if (this.TryGetParentEntity(out this._boundable)) {
+        if (this.TryGetAncestor(out this._boundable)) {
             this._boundable.BoundingAreaChanged += this.Boundable_BoundingAreaChanged;
         }
 

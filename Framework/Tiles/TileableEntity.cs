@@ -276,7 +276,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     private void ResetGridContainer() {
         this.CurrentGrid.PropertyChanged -= this.GridContainer_PropertyChanged;
 
-        if (this.TryGetParentEntity<IGridContainer>(out var gridContainer)) {
+        if (this.TryGetAncestor<IGridContainer>(out var gridContainer)) {
             this.CurrentGrid = gridContainer;
             this.CurrentGrid.PropertyChanged += this.GridContainer_PropertyChanged;
         }

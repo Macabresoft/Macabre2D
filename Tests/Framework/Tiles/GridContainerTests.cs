@@ -89,7 +89,7 @@ public sealed class GridContainerTests {
         public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
-            if (this.TryGetParentEntity(out IGridContainer container)) {
+            if (this.TryGetAncestor(out IGridContainer container)) {
                 this.Container = container;
             }
         }

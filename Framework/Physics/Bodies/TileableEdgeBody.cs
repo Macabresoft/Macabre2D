@@ -37,7 +37,7 @@ public sealed class TileableEdgeBody : QuadBody {
             this._tileable.TilesChanged -= this.OnRequestReset;
         }
 
-        if (this.TryGetParentEntity(out this._tileable) && this._tileable != null) {
+        if (this.TryGetAncestor(out this._tileable) && this._tileable != null) {
             this._tileable.BoundingAreaChanged += this.Tileable_BoundingAreaChanged;
             this._tileable.TilesChanged += this.OnRequestReset;
         }

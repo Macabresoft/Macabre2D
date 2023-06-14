@@ -131,12 +131,12 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetDescendents<T>() {
+    public IEnumerable<T> GetDescendants<T>() {
         return Enumerable.Empty<T>();
     }
 
     /// <inheritdoc />
-    public IEnumerable<IEntity> GetDescendents(Type type) {
+    public IEnumerable<IEntity> GetDescendants(Type type) {
         return Enumerable.Empty<IEntity>();
     }
 
@@ -257,7 +257,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool TryGetParentEntity<T>(out T? entity) {
+    public bool TryGetAncestor<T>(out T? entity) {
         entity = default;
         return false;
     }

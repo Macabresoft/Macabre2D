@@ -166,7 +166,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
 
         if (snapToAxis &&
             this.EntityService.Selected != null &&
-            this.EntityService.Selected.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
+            this.EntityService.Selected.TryGetAncestor<IGridContainer>(out var gridContainer) &&
             gridContainer != null) {
             newPosition = gridContainer.GetNearestTilePosition(newPosition);
         }

@@ -118,7 +118,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     private void ResetGizmo() {
-        this.SelectedGizmo = this.CurrentScene.GetDescendents<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
+        this.SelectedGizmo = this.CurrentScene.GetDescendants<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
     }
 
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -27,7 +27,7 @@ public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
-        this.TryGetParentEntity(out this._camera);
+        this.TryGetAncestor(out this._camera);
         this.RenderOptions.OffsetType = PixelOffsetType.TopRight;
     }
 

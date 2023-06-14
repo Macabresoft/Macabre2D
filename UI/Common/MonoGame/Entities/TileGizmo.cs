@@ -50,7 +50,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
-        if (!this.TryGetParentEntity(out this._camera)) {
+        if (!this.TryGetAncestor(out this._camera)) {
             throw new NotSupportedException("Could not find a camera ancestor.");
         }
     }

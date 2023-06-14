@@ -49,7 +49,7 @@ public class TileableBoxBody : PhysicsBody {
             this._tileable.TilesChanged -= this.OnRequestReset;
         }
 
-        if (this.TryGetParentEntity(out this._tileable) && this._tileable != null) {
+        if (this.TryGetAncestor(out this._tileable) && this._tileable != null) {
             this._tileable.TilesChanged += this.OnRequestReset;
             this.ResetColliders();
         }

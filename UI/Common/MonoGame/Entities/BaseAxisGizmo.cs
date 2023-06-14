@@ -84,7 +84,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         base.Initialize(scene, entity);
         this.LineThickness = 3f;
 
-        if (this.TryGetParentEntity(out this._camera)) {
+        if (this.TryGetAncestor(out this._camera)) {
             this.Camera.BoundingAreaChanged += this.Camera_BoundingAreaChanged;
             this.Camera.PropertyChanged += this.Camera_PropertyChanged;
         }
