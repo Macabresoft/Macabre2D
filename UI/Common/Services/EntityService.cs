@@ -14,11 +14,6 @@ public interface IEntityService : ISelectionService<IEntity> {
     /// Gets the available entity types.
     /// </summary>
     IReadOnlyCollection<Type> AvailableTypes { get; }
-    
-    /// <summary>
-    /// Gets the available templates.
-    /// </summary>
-    IReadOnlyCollection<IEntityTemplate> AvailableTemplates { get; }
 }
 
 /// <summary>
@@ -39,15 +34,7 @@ public sealed class EntityService : SelectionService<IEntity>, IEntityService {
             !x.IsAssignableTo(typeof(IScene)) &&
             x.Assembly != typeof(IGizmo).Assembly &&
             x.GetConstructor(Type.EmptyTypes) != null).ToList();
-        
-        this.AvailableTemplates = this.AssemblyService.LoadTypes(typeof(IEntityTemplate))
-            .Where(x => x.GetConstructor(Type.EmptyTypes) != null)
-            .Select(x => this.AssemblyService.CreateObjectFromType(x)).Cast<IEntityTemplate>()
-            .ToList();
     }
-    
-    /// <inheritdoc />
-    public IReadOnlyCollection<IEntityTemplate> AvailableTemplates { get; }
 
     /// <inheritdoc />
     public IReadOnlyCollection<Type> AvailableTypes { get; }
