@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
@@ -61,8 +62,9 @@ public interface ISimplePhysicsLoop : ILoop {
     /// <param name="direction">The direction.</param>
     /// <param name="distance">The distance.</param>
     /// <param name="layers">The layers.</param>
+    /// <param name="hitEntity">The hit entity.</param>
     /// <returns>A value indicating whether or not anything was hit.</returns>
-    bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers);
+    bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers, [NotNullWhen(true)] out IEntity? hitEntity);
 }
 
 /// <summary>
@@ -158,9 +160,16 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     /// <inheritdoc />
-    public bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers) {
+    public bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers, out IEntity? hitEntity) {
+        hitEntity = null;
         var ray = new LineSegment(start, direction, distance);
-        return !ray.BoundingArea.IsEmpty && this.GetFilteredColliders(ray.BoundingArea, layers).Any(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(ray.BoundingArea));
+
+        if (!ray.BoundingArea.IsEmpty) {
+            var collider = this.GetFilteredColliders(ray.BoundingArea, layers).FirstOrDefault(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(ray.BoundingArea));
+            hitEntity = collider?.Body;
+        }
+
+        return hitEntity != null;
     }
 
     /// <inheritdoc />
