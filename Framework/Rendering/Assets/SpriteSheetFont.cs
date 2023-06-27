@@ -13,7 +13,7 @@ public class SpriteSheetFont : SpriteSheetMember {
     public const string DefaultName = "Font";
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<byte, byte> _characterIndexToSpriteIndex = new();
+    private readonly Dictionary<byte, SpriteSheetFontCharacter> _characterIndexToCharacter = new();
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<char, byte> _characterToIndex = new();
@@ -29,7 +29,15 @@ public class SpriteSheetFont : SpriteSheetMember {
             this._characterToIndex[character] = index;
         }
 
-        this._characterIndexToSpriteIndex[index] = spriteIndex;
+        if (this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
+            spriteCharacter.SpriteIndex = spriteIndex;
+        }
+        else {
+            this._characterIndexToCharacter[index] = new SpriteSheetFontCharacter() {
+                SpriteIndex = spriteIndex
+            };
+        }
+
         this.RaisePropertyChanged(nameof(SpriteSheetFont));
     }
 
@@ -41,8 +49,12 @@ public class SpriteSheetFont : SpriteSheetMember {
     /// <returns>A value indicating whether or not the sprite was found.</returns>
     public bool TryGetSpriteIndex(char character, out byte spriteIndex) {
         spriteIndex = 0;
-        return this._characterToIndex.TryGetValue(character, out var index) &&
-               this._characterIndexToSpriteIndex.TryGetValue(index, out spriteIndex);
+        if (this._characterToIndex.TryGetValue(character, out var index) && this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
+            spriteIndex = spriteCharacter.SpriteIndex;
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -52,7 +64,7 @@ public class SpriteSheetFont : SpriteSheetMember {
     public void UnsetSprite(char character) {
         if (this._characterToIndex.TryGetValue(character, out var index)) {
             this._characterToIndex.Remove(character);
-            this._characterIndexToSpriteIndex.Remove(index);
+            this._characterIndexToCharacter.Remove(index);
         }
 
         this.RaisePropertyChanged(nameof(SpriteSheetFont));
