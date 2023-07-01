@@ -214,7 +214,7 @@ public class TextLine : RenderableEntity {
                     this._spriteCharacters.Add(spriteCharacter);
 
                     if (spriteCharacter.Kerning != 0) {
-                        this._characterToOffset[character] = 0.5f * spriteCharacter.Kerning * this.Settings.UnitsPerPixel;
+                        this._characterToOffset[character] = spriteCharacter.Kerning * this.Settings.UnitsPerPixel;
                         this._characterToWidth[character] = (spriteSheet.SpriteSize.X + this.Kerning + spriteCharacter.Kerning) * this.Settings.UnitsPerPixel;
                     }
                     else {
