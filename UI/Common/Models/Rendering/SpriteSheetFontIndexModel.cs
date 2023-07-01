@@ -8,6 +8,7 @@ using Macabresoft.Macabre2D.Framework;
 /// </summary>
 public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
     private readonly SpriteSheetFont _font;
+    private int _kerning;
     private byte? _spriteIndex;
 
     /// <summary>
@@ -20,6 +21,7 @@ public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
         this.Character = character;
 
         if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
+            this._kerning = spriteCharacter.Kerning;
             this._spriteIndex = spriteCharacter.SpriteIndex;
         }
     }
@@ -28,6 +30,18 @@ public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
     /// Gets the character.
     /// </summary>
     public char Character { get; }
+
+    /// <summary>
+    /// Gets or sets the kerning.
+    /// </summary>
+    public int Kerning {
+        get => this._kerning;
+        set {
+            if (this.Set(ref this._kerning, value) && this._spriteIndex.HasValue) {
+                this._font.SetSprite(this._spriteIndex.Value, this.Character, this.Kerning);
+            }
+        }
+    }
 
     /// <summary>
     /// Gets or sets the sprite index.
@@ -40,7 +54,7 @@ public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
                     this._font.UnsetSprite(this.Character);
                 }
                 else {
-                    this._font.SetSprite(this._spriteIndex.Value, this.Character);
+                    this._font.SetSprite(this._spriteIndex.Value, this.Character, this.Kerning);
                 }
             }
         }

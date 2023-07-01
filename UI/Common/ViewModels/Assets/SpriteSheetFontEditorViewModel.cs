@@ -18,7 +18,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     private const string Symbols = ".?!,-=+:";
     private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string WhiteSpace = " ";
-
     private readonly IUndoService _undoService;
     private SpriteSheetFontIndexModel _selectedCharacter;
     private SpriteDisplayModel _selectedSprite;
@@ -58,7 +57,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// </summary>
     public IReadOnlyCollection<SpriteSheetFontIndexModel> Characters { get; }
 
-
     /// <summary>
     /// Clears the selected sprite from the selected tile.
     /// </summary>
@@ -84,6 +82,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 this.RaiseAndSetIfChanged(ref this._selectedCharacter, value);
                 this._selectedSprite = this._selectedCharacter != null ? this.SpriteCollection.FirstOrDefault(x => x.Index == this._selectedCharacter.SpriteIndex) : null;
                 this.RaisePropertyChanged(nameof(this.SelectedSprite));
+                this.RaisePropertyChanged(nameof(this.SelectedKerning));
             }
         }
     }
@@ -104,6 +103,28 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 {
                     this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
                     selectedCharacter.SpriteIndex = this._selectedSprite?.Index;
+                });
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Gets or sets the selected kerning.
+    /// </summary>
+    public int SelectedKerning {
+        get => this._selectedCharacter is { } selectedCharacter ? selectedCharacter.Kerning : 0;
+        set {
+            if (this._selectedCharacter is { } selectedCharacter && selectedCharacter.Kerning != value)
+            {
+                var previousKerning = selectedCharacter.Kerning;
+                this._undoService.Do(() =>
+                {
+                    this._selectedCharacter.Kerning = value;
+                    this.RaisePropertyChanged();
+                }, () =>
+                {
+                    this._selectedCharacter.Kerning = previousKerning;
+                    this.RaisePropertyChanged();
                 });
             }
         }

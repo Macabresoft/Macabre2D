@@ -10,7 +10,6 @@
     </Design.DataContext>
     <UserControl.Resources>
         <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
-        <local:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="Auto, *"
           ColumnDefinitions="*, Auto, *"
@@ -68,16 +67,24 @@
         <GridSplitter Grid.Row="1"
                       Grid.Column="1"
                       Classes="CardSplitter" />
-
-        <ScrollViewer Grid.Row="1"
-                      Grid.Column="2"
-                      VerticalAlignment="Top"
-                      VerticalContentAlignment="Top"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Visible">
-            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                  SelectedSprite="{Binding SelectedSprite}"
-                                                  ThumbnailSize="{Binding SelectedThumbnailSize}" />
-        </ScrollViewer>
+        
+        <Grid Grid.Row="1"
+              Grid.Column="2"
+              RowDefinitions="Auto, *">
+            
+            <local:IntEditor Grid.Row="0"
+                             Title="Kerning"
+                             Value="{Binding SelectedKerning}" />
+            
+            <ScrollViewer Grid.Row="1"
+                          VerticalAlignment="Top"
+                          VerticalContentAlignment="Top"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Visible">
+                <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                      SelectedSprite="{Binding SelectedSprite}"
+                                                      ThumbnailSize="{Binding SelectedThumbnailSize}" />
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

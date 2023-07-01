@@ -24,7 +24,8 @@ public class SpriteSheetFont : SpriteSheetMember {
     /// </summary>
     /// <param name="spriteIndex">The sprite.</param>
     /// <param name="character">The character.</param>
-    public void SetSprite(byte spriteIndex, char character) {
+    /// <param name="kerning">The kerning.</param>
+    public void SetSprite(byte spriteIndex, char character, int kerning) {
         if (!this._characterToIndex.TryGetValue(character, out var index)) {
             index = (byte)this._characterToIndex.Count;
             this._characterToIndex[character] = index;
@@ -32,11 +33,13 @@ public class SpriteSheetFont : SpriteSheetMember {
 
         if (this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
             spriteCharacter.Character = character;
+            spriteCharacter.Kerning = kerning;
             spriteCharacter.SpriteIndex = spriteIndex;
         }
         else {
             this._characterIndexToCharacter[index] = new SpriteSheetFontCharacter() {
                 Character = character,
+                Kerning = kerning,
                 SpriteIndex = spriteIndex
             };
         }
@@ -53,7 +56,6 @@ public class SpriteSheetFont : SpriteSheetMember {
     public bool TryGetSpriteCharacter(char character, [NotNullWhen(true)] out SpriteSheetFontCharacter? spriteSheetCharacter) {
         if (this._characterToIndex.TryGetValue(character, out var index) && this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
             spriteSheetCharacter = spriteCharacter;
-            spriteCharacter.Character = character;
         }
         else {
             spriteSheetCharacter = null;
