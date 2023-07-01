@@ -19,8 +19,8 @@ public class SpriteSheetFontIndexModel : PropertyChangedNotifier {
         this._font = font;
         this.Character = character;
 
-        if (this._font.TryGetSpriteIndex(character, out var spriteIndex)) {
-            this._spriteIndex = spriteIndex;
+        if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
+            this._spriteIndex = spriteCharacter.SpriteIndex;
         }
     }
 

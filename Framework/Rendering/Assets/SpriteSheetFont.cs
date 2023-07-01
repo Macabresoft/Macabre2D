@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -30,10 +31,12 @@ public class SpriteSheetFont : SpriteSheetMember {
         }
 
         if (this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
+            spriteCharacter.Character = character;
             spriteCharacter.SpriteIndex = spriteIndex;
         }
         else {
             this._characterIndexToCharacter[index] = new SpriteSheetFontCharacter() {
+                Character = character,
                 SpriteIndex = spriteIndex
             };
         }
@@ -42,19 +45,21 @@ public class SpriteSheetFont : SpriteSheetMember {
     }
 
     /// <summary>
-    /// Tries to get the sprite index associated with the specified character.
+    /// Tries to get the sprite character associated with the specified character.
     /// </summary>
     /// <param name="character">The character.</param>
-    /// <param name="spriteIndex">The sprite index.</param>
+    /// <param name="spriteSheetCharacter">The sprite sheet character.</param>
     /// <returns>A value indicating whether or not the sprite was found.</returns>
-    public bool TryGetSpriteIndex(char character, out byte spriteIndex) {
-        spriteIndex = 0;
+    public bool TryGetSpriteCharacter(char character, [NotNullWhen(true)] out SpriteSheetFontCharacter? spriteSheetCharacter) {
         if (this._characterToIndex.TryGetValue(character, out var index) && this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
-            spriteIndex = spriteCharacter.SpriteIndex;
-            return true;
+            spriteSheetCharacter = spriteCharacter;
+            spriteCharacter.Character = character;
+        }
+        else {
+            spriteSheetCharacter = null;
         }
 
-        return false;
+        return spriteSheetCharacter != null;
     }
 
     /// <summary>

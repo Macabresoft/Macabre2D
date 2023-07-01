@@ -109,50 +109,25 @@ public class OffsetOptions : PropertyChangedNotifier {
     /// automatically when <see cref="OffsetType" /> changes.
     /// </remarks>
     public void ResetOffset() {
-        if (this._offsetType != PixelOffsetType.Custom) {
-            var size = this._size.Value;
+        var size = this.Size;
 
-            if (size == Vector2.Zero) {
-                this._offset = size;
+        if (this._offsetType != PixelOffsetType.Custom) {
+            if (this.Size != Vector2.Zero) {
+                this._offset = this.OffsetType switch {
+                    PixelOffsetType.Bottom => new Vector2(-size.X * 0.5f, 0f),
+                    PixelOffsetType.BottomLeft => Vector2.Zero,
+                    PixelOffsetType.BottomRight => new Vector2(-size.X, 0f),
+                    PixelOffsetType.Center => new Vector2(-size.X * 0.5f, -size.Y * 0.5f),
+                    PixelOffsetType.Left => new Vector2(0f, -size.Y * 0.5f),
+                    PixelOffsetType.Right => new Vector2(-size.X, -size.Y * 0.5f),
+                    PixelOffsetType.Top => new Vector2(-size.X * 0.5f, -size.Y),
+                    PixelOffsetType.TopLeft => new Vector2(0f, -size.Y),
+                    PixelOffsetType.TopRight => new Vector2(-size.X, -size.Y),
+                    _ => this._offset
+                };
             }
             else {
-                switch (this.OffsetType) {
-                    case PixelOffsetType.Bottom:
-                        this._offset = new Vector2(-size.X * 0.5f, 0f);
-                        break;
-
-                    case PixelOffsetType.BottomLeft:
-                        this._offset = Vector2.Zero;
-                        break;
-
-                    case PixelOffsetType.BottomRight:
-                        this._offset = new Vector2(-size.X, 0f);
-                        break;
-
-                    case PixelOffsetType.Center:
-                        this._offset = new Vector2(-size.X * 0.5f, -size.Y * 0.5f);
-                        break;
-
-                    case PixelOffsetType.Left:
-                        this._offset = new Vector2(0f, -size.Y * 0.5f);
-                        break;
-
-                    case PixelOffsetType.Right:
-                        this._offset = new Vector2(-size.X, -size.Y * 0.5f);
-                        break;
-
-                    case PixelOffsetType.Top:
-                        this._offset = new Vector2(-size.X * 0.5f, -size.Y);
-                        break;
-
-                    case PixelOffsetType.TopLeft:
-                        this._offset = new Vector2(0f, -size.Y);
-                        break;
-
-                    case PixelOffsetType.TopRight:
-                        this._offset = new Vector2(-size.X, -size.Y);
-                        break;
-                }
+                this._offset = Vector2.Zero;
             }
 
             this.RaisePropertyChanged(nameof(this.Offset));

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -14,7 +13,9 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<byte> _spriteIndexes = new();
+    private readonly Dictionary<char, float> _characterToWidth = new();
+    private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
+    private float _characterHeight;
     private int _kerning;
     private string _text = string.Empty;
 
@@ -38,16 +39,6 @@ public class TextLine : RenderableEntity {
     public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <summary>
-    /// Gets the character height.
-    /// </summary>
-    public float CharacterHeight { get; private set; }
-
-    /// <summary>
-    /// Gets the character width.
-    /// </summary>
-    public float CharacterWidth { get; private set; }
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -63,7 +54,6 @@ public class TextLine : RenderableEntity {
         set {
             if (value != this._kerning) {
                 this._kerning = value;
-                this.ResetCharacterSizes();
                 this.RequestRefresh();
             }
         }
@@ -95,35 +85,32 @@ public class TextLine : RenderableEntity {
         base.Initialize(scene, parent);
 
         this.FontReference.Initialize(this.Scene.Assets);
-        this.ResetCharacterSizes();
+        this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
-        this.Refresh();
+        this._boundingArea.Reset();
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.CouldBeVisible(out var spriteSheet) && this.SpriteBatch is { } spriteBatch) {
-            for (var i = 0; i < this._spriteIndexes.Count; i++) {
+        if (!this.BoundingArea.IsEmpty && this.FontReference.Asset is { } spriteSheet && this.SpriteBatch is { } spriteBatch) {
+            var position = this.BoundingArea.Minimum;
+
+            foreach (var character in this._spriteCharacters) {
                 spriteSheet.Draw(
                     spriteBatch,
                     this.Settings.PixelsPerUnit,
-                    this._spriteIndexes[i],
-                    this.GetCharacterPosition(i),
+                    character.SpriteIndex,
+                    position,
                     this.Color,
                     this.RenderOptions.Orientation);
+
+                if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
+                    position = new Vector2(position.X + width, position.Y);
+                }
             }
         }
-    }
-
-    /// <summary>
-    /// Gets the character position for the character that is <see cref="characterIndex" /> characters into <see cref="Text" />.
-    /// </summary>
-    /// <param name="characterIndex">The character index.</param>
-    /// <returns>The position of the character for rendering purposes.</returns>
-    protected virtual Vector2 GetCharacterPosition(int characterIndex) {
-        return new Vector2(this.BoundingArea.Minimum.X + characterIndex * this.CharacterWidth, this.BoundingArea.Minimum.Y);
     }
 
     /// <inheritdoc />
@@ -132,27 +119,16 @@ public class TextLine : RenderableEntity {
         this.RequestRefresh();
     }
 
-    /// <summary>
-    /// Refreshes this instance.
-    /// </summary>
-    protected virtual void Refresh() {
-        this.ResetIndexes();
-        this.RenderOptions.InvalidateSize();
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
-    }
-
-    private bool CouldBeVisible([NotNullWhen(true)] out SpriteSheet? spriteSheet) {
-        spriteSheet = this.FontReference.Asset;
+    private bool CouldBeVisible() {
         return !string.IsNullOrEmpty(this.Text) &&
-               this.CharacterHeight > 0f &&
-               this.CharacterWidth > 0f &&
-               spriteSheet != null;
+               this._characterHeight > 0f &&
+               this._spriteCharacters.Any() &&
+               this.FontReference.Asset != null;
     }
 
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
-        if (this.CouldBeVisible(out _) && this.RenderOptions.Size.X != 0f && this.RenderOptions.Size.Y != 0f) {
+        if (this.CouldBeVisible() && this.RenderOptions.Size != Vector2.Zero) {
             var unitsPerPixel = this.Settings.UnitsPerPixel;
             var (x, y) = this.RenderOptions.Size;
             var width = x * unitsPerPixel;
@@ -188,14 +164,23 @@ public class TextLine : RenderableEntity {
 
     private Vector2 CreateSize() {
         if (this.FontReference.Asset is { } spriteSheet) {
-            return new Vector2(this._spriteIndexes.Count * (spriteSheet.SpriteSize.X + this.Kerning), spriteSheet.SpriteSize.Y);
+            var unitWidth = 0f;
+
+            foreach (var character in this._spriteCharacters) {
+                if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
+                    unitWidth += width;
+                }
+            }
+
+            this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
+            return new Vector2(unitWidth * this.Settings.PixelsPerUnit, spriteSheet.SpriteSize.Y);
         }
 
         return Vector2.Zero;
     }
 
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        this.ResetCharacterSizes();
+        this.RenderOptions.InvalidateSize();
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -204,30 +189,24 @@ public class TextLine : RenderableEntity {
         }
     }
 
-
     private void RequestRefresh() {
         if (this.IsInitialized) {
-            this.Refresh();
-        }
-    }
-
-    private void ResetCharacterSizes() {
-        if (this.FontReference.Asset is { } spriteSheet) {
-            this.CharacterWidth = (spriteSheet.SpriteSize.X + this.Kerning) * this.Settings.UnitsPerPixel;
-            this.CharacterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
+            this.ResetIndexes();
+            this.RenderOptions.InvalidateSize();
+            this._boundingArea.Reset();
+            this.BoundingAreaChanged.SafeInvoke(this);
         }
     }
 
     private void ResetIndexes() {
-        this._spriteIndexes.Clear();
+        this._spriteCharacters.Clear();
+        this._characterToWidth.Clear();
 
-        if (this.FontReference.PackagedAsset is { } font) {
+        if (this.FontReference.PackagedAsset is { SpriteSheet: { } spriteSheet } font) {
             foreach (var character in this.Text) {
-                if (font.TryGetSpriteIndex(character, out var spriteIndex)) {
-                    this._spriteIndexes.Add(spriteIndex);
-                }
-                else {
-                    this._spriteIndexes.Add(0);
+                if (font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
+                    this._spriteCharacters.Add(spriteCharacter);
+                    this._characterToWidth[character] = (spriteSheet.SpriteSize.X + this.Kerning + spriteCharacter.Kerning) * this.Settings.UnitsPerPixel;
                 }
             }
         }
