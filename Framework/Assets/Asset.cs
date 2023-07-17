@@ -23,7 +23,12 @@ public interface IAsset : INotifyPropertyChanged {
     /// <summary>
     /// Gets a value indicating whether or not this asset should be ignored when building a content file.
     /// </summary>
-    bool IgnoreInBuild { get; set; }
+    bool IgnoreInBuild { get; }
+    
+    /// <summary>
+    /// Gets the developer notes for this asset.
+    /// </summary>
+    string Notes { get; }
 
     /// <summary>
     /// Gets the content build commands used by MGCB to compile this piece of content.
@@ -57,6 +62,7 @@ public interface IAsset<TContent> : IAsset {
 [DataContract]
 public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent> {
     private bool _ignoreInBuild;
+    private string _notes = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
@@ -81,6 +87,13 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     public bool IgnoreInBuild {
         get => this._ignoreInBuild;
         set => this.Set(ref this._ignoreInBuild, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string Notes {
+        get => this._notes;
+        set => this.Set(ref this._notes, value);
     }
 
     /// <inheritdoc />
