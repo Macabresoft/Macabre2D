@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Avalonia.Input;
 using Microsoft.Xna.Framework.Input;
@@ -29,17 +30,19 @@ public sealed class MonoGameKeyboard {
     /// </summary>
     /// <returns>The keyboard state.</returns>
     public KeyboardState GetState() {
-        if (this._focusElement.IsPointerOver && !this._focusElement.IsKeyboardFocusWithin && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+        if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
             // we assume the user wants keyboard input into the control when his mouse is over
             // it in order for the events to register we must focus it
             this._focusElement.Focus();
         }
+        
+        Debug.WriteLine($"{this._focusElement.IsFocused} - {this._pressedKeys.Count} - {this._focusElement.IsKeyboardFocusWithin}");
 
-        return this._focusElement.IsFocused ? new KeyboardState(this._pressedKeys.ToArray()) : new KeyboardState();
+        return this._focusElement.IsKeyboardFocusWithin ? new KeyboardState(this._pressedKeys.ToArray()) : new KeyboardState();
     }
 
     private void OnKeyDown(object sender, KeyEventArgs e) {
-        if (this._focusElement.IsFocused && e.Key.TryConvertKey(out var key)) {
+        if (e.Key.TryConvertKey(out var key)) {
             this._pressedKeys.Add(key);
         }
     }

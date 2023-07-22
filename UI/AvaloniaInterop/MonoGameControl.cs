@@ -5,14 +5,12 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.AvaloniaInterop.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -44,8 +42,8 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     };
 
     private readonly Stopwatch _stopwatch = new();
-    private byte[] _bufferData = Array.Empty<byte>();
     private WriteableBitmap _bitmap = new(new PixelSize(1, 1), Vector.One, PixelFormat.Rgba8888, AlphaFormat.Opaque);
+    private byte[] _bufferData = Array.Empty<byte>();
     private bool _isInitialized;
     private MonoGameKeyboard _keyboard;
     private MonoGameMouse _mouse;
@@ -57,7 +55,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
         GameProperty.Changed.Subscribe(this);
         this.Focusable = true;
     }
-    
+
     /// <summary>
     /// Gets or sets the fallback background brush.
     /// </summary>
@@ -75,6 +73,21 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     }
 
     /// <inheritdoc />
+    public void OnCompleted() {
+    }
+
+    /// <inheritdoc />
+    public void OnError(Exception error) {
+    }
+
+    /// <inheritdoc />
+    public void OnNext(AvaloniaPropertyChangedEventArgs<IAvaloniaGame> value) {
+        if (this._isInitialized) {
+            this.Initialize();
+        }
+    }
+
+    /// <inheritdoc />
     public override void Render(DrawingContext context) {
         if (this.CanDraw(out var game, out var device)) {
             this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
@@ -87,7 +100,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
                 if (this._bufferData.Length != size) {
                     this._bufferData = new byte[size];
                 }
-                
+
                 device.GetBackBufferData(this._bufferData);
                 Marshal.Copy(this._bufferData, 0, bitmapLock.Address, this._bufferData.Length);
             }
@@ -142,7 +155,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
             if (window.TryGetPlatformHandle() is { } platformHandle) {
                 this._presentationParameters.DeviceWindowHandle = platformHandle.Handle;
             }
-            
+
             this.ResetDevice(game.GraphicsDevice, this.Bounds.Size);
             this.RunFrame();
         }
@@ -200,20 +213,5 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
         }
 
         return false;
-    }
-
-    /// <inheritdoc />
-    public void OnCompleted() {
-    }
-
-    /// <inheritdoc />
-    public void OnError(Exception error) {
-    }
-
-    /// <inheritdoc />
-    public void OnNext(AvaloniaPropertyChangedEventArgs<IAvaloniaGame> value) {
-        if (this._isInitialized) {
-            this.Initialize();
-        }
     }
 }

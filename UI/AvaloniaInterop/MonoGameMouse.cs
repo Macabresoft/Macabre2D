@@ -1,7 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop;
 
 using System;
+using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
@@ -17,7 +20,6 @@ public sealed class MonoGameMouse {
     public MonoGameMouse(InputElement focusElement) {
         this._focusElement = focusElement ?? throw new ArgumentNullException(nameof(focusElement));
         this._focusElement.PointerWheelChanged += this.HandleMouseScrollWheel;
-
         this._focusElement.PointerMoved += this.HandlePointerMoved;
         this._focusElement.PointerEntered += this.HandlePointerMoved;
         this._focusElement.PointerExited += this.HandlePointerMoved;
@@ -40,7 +42,7 @@ public sealed class MonoGameMouse {
             if (!this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
-
+            
             var scrollWheelValue = this.State.ScrollWheelValue + (int)e.Delta.Y;
 
             this.State = new MouseState(
@@ -54,17 +56,17 @@ public sealed class MonoGameMouse {
                 ButtonState.Released);
         }
     }
-
+    
     private void HandlePointer(object sender, PointerEventArgs e) {
         if (e.Handled) {
             return;
         }
 
         if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            if (this._focusElement.IsKeyboardFocusWithin) {
+            if (!this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
-
+            
             var position = e.GetPosition(this._focusElement);
 
             var leftButtonState = ButtonState.Released;
@@ -103,10 +105,6 @@ public sealed class MonoGameMouse {
         }
 
         if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            if (this._focusElement.IsKeyboardFocusWithin) {
-                this._focusElement.Focus();
-            }
-
             var position = e.GetPosition(this._focusElement);
 
             this.State = new MouseState(
