@@ -19,22 +19,23 @@ public class App : Application {
             .AddNewExtension<AvaloniaUnityContainerExtension>()
             .AddNewExtension<CommonContainerExtension>()
             .AddNewExtension<EditorContainerExtension>();
-        
+
         AvaloniaXamlLoader.Load(this);
     }
 
     /// <inheritdoc />
     public override void OnFrameworkInitializationCompleted() {
         if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            /*var splashScreen = new SplashScreen();
-            splashScreen.Show();*/
+            var splashScreen = new SplashScreen();
+            desktop.MainWindow = splashScreen;
+            splashScreen.Show();
             BaseGame.IsDesignMode = true;
             var mainWindow = new MainWindow();
-            Resolver.Container.RegisterInstance(mainWindow);
 
+            Resolver.Container.RegisterInstance(mainWindow);
             Resolver.Resolve<IEditorSettingsService>().Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
-            
+
             DisplayNameHelper.Instance.RegisterHandler(typeof(InputAction), Resolver.Resolve<InputActionsDisplayNameHandler>());
             DisplayNameHelper.Instance.RegisterHandler(typeof(Layers), Resolver.Resolve<LayersDisplayNameHandler>());
 
@@ -44,9 +45,8 @@ public class App : Application {
 
             mainWindow.Initialize();
             desktop.MainWindow = mainWindow;
-            /*
+            mainWindow.Show();
             splashScreen.Close();
-        */
         }
 
         base.OnFrameworkInitializationCompleted();
