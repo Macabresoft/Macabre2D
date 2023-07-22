@@ -2,13 +2,11 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Unity;
 
-public class VersionEditor : ValueEditorControl<Version> {
+public partial class VersionEditor : ValueEditorControl<Version> {
     public static readonly DirectProperty<VersionEditor, int> BuildValueProperty =
         AvaloniaProperty.RegisterDirect<VersionEditor, int>(
             nameof(BuildValue),
@@ -71,7 +69,7 @@ public class VersionEditor : ValueEditorControl<Version> {
         this.UpdateDisplayValues();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(this.Value)) {
@@ -82,22 +80,23 @@ public class VersionEditor : ValueEditorControl<Version> {
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 
     private void UpdateDisplayValues() {
         if (this.Value != null) {
+            var oldMajor = this._majorValue;
+            var oldMinor = this._minorValue;
+            var oldBuild = this._buildValue;
+            var oldRevision = this._revisionValue;
             this._majorValue = this.Value.Major;
             this._minorValue = this.Value.Minor;
             this._buildValue = this.Value.Build;
             this._revisionValue = this.Value.Revision;
             Dispatcher.UIThread.Post(() =>
             {
-                this.RaisePropertyChanged(MajorValueProperty, Optional<int>.Empty, this.MajorValue);
-                this.RaisePropertyChanged(MinorValueProperty, Optional<int>.Empty, this.MinorValue);
-                this.RaisePropertyChanged(BuildValueProperty, Optional<int>.Empty, this.BuildValue);
-                this.RaisePropertyChanged(RevisionValueProperty, Optional<int>.Empty, this.RevisionValue);
+                this.RaisePropertyChanged(MajorValueProperty, oldMajor, this.MajorValue);
+                this.RaisePropertyChanged(MinorValueProperty, oldMinor, this.MinorValue);
+                this.RaisePropertyChanged(BuildValueProperty, oldBuild, this.BuildValue);
+                this.RaisePropertyChanged(RevisionValueProperty, oldRevision, this.RevisionValue);
             });
         }
     }

@@ -8,20 +8,19 @@ using Microsoft.Xna.Framework.Input;
 /// A wrapper for MonoGame's <see cref="MouseState" />.
 /// </summary>
 public sealed class MonoGameMouse {
-    private readonly IInputElement _focusElement;
+    private readonly InputElement _focusElement;
 
     /// <summary>
     /// Creates a new instance of the mouse helper.
     /// </summary>
     /// <param name="focusElement">The element that will be used as the focus point.</param>
-    public MonoGameMouse(IInputElement focusElement) {
+    public MonoGameMouse(InputElement focusElement) {
         this._focusElement = focusElement ?? throw new ArgumentNullException(nameof(focusElement));
         this._focusElement.PointerWheelChanged += this.HandleMouseScrollWheel;
 
         this._focusElement.PointerMoved += this.HandlePointerMoved;
-        this._focusElement.PointerEnter += this.HandlePointerMoved;
-        this._focusElement.PointerLeave += this.HandlePointerMoved;
-
+        this._focusElement.PointerEntered += this.HandlePointerMoved;
+        this._focusElement.PointerExited += this.HandlePointerMoved;
         this._focusElement.PointerPressed += this.HandlePointer;
         this._focusElement.PointerReleased += this.HandlePointer;
     }
@@ -38,7 +37,7 @@ public sealed class MonoGameMouse {
         }
 
         if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
+            if (!this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
 
@@ -62,7 +61,7 @@ public sealed class MonoGameMouse {
         }
 
         if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
+            if (this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
 
@@ -72,7 +71,7 @@ public sealed class MonoGameMouse {
             var rightButtonState = ButtonState.Released;
             var middleButtonState = ButtonState.Released;
 
-            if (e.GetCurrentPoint(this._focusElement).Properties is PointerPointProperties properties) {
+            if (e.GetCurrentPoint(this._focusElement).Properties is var properties) {
                 if (properties.IsLeftButtonPressed) {
                     leftButtonState = ButtonState.Pressed;
                 }
@@ -104,7 +103,7 @@ public sealed class MonoGameMouse {
         }
 
         if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
+            if (this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
 

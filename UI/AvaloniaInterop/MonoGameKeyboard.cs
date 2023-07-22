@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 /// A wrapper for MonoGame's <see cref="KeyboardState" />.
 /// </summary>
 public sealed class MonoGameKeyboard {
-    private readonly IInputElement _focusElement;
+    private readonly InputElement _focusElement;
     private readonly HashSet<Keys> _pressedKeys = new();
 
     /// <summary>
@@ -18,7 +18,7 @@ public sealed class MonoGameKeyboard {
     /// </summary>
     /// <param name="focusElement">The focus element.</param>
     /// <exception cref="ArgumentNullException">focusElement</exception>
-    public MonoGameKeyboard(IInputElement focusElement) {
+    public MonoGameKeyboard(InputElement focusElement) {
         this._focusElement = focusElement ?? throw new ArgumentNullException(nameof(focusElement));
         this._focusElement.KeyDown += this.OnKeyDown;
         this._focusElement.KeyUp += this.OnKeyUp;
@@ -29,7 +29,7 @@ public sealed class MonoGameKeyboard {
     /// </summary>
     /// <returns>The keyboard state.</returns>
     public KeyboardState GetState() {
-        if (this._focusElement.IsPointerOver && KeyboardDevice.Instance.FocusedElement != this._focusElement && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+        if (this._focusElement.IsPointerOver && !this._focusElement.IsKeyboardFocusWithin && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
             // we assume the user wants keyboard input into the control when his mouse is over
             // it in order for the events to register we must focus it
             this._focusElement.Focus();

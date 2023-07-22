@@ -1,12 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class AudioSettingsEditor : ValueEditorControl<AudioSettings> {
+public partial class AudioSettingsEditor : ValueEditorControl<AudioSettings> {
     public static readonly DirectProperty<AudioSettingsEditor, float> EffectVolumeProperty =
         AvaloniaProperty.RegisterDirect<AudioSettingsEditor, float>(
             nameof(EffectVolume),
@@ -154,9 +153,5 @@ public class AudioSettingsEditor : ValueEditorControl<AudioSettings> {
                     this.RaisePropertyChanged(VoiceVolumeProperty, value, this.VoiceVolume);
                 });
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

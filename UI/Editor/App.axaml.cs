@@ -26,8 +26,8 @@ public class App : Application {
     /// <inheritdoc />
     public override void OnFrameworkInitializationCompleted() {
         if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            var splashScreen = new SplashScreen();
-            splashScreen.Show();
+            /*var splashScreen = new SplashScreen();
+            splashScreen.Show();*/
             BaseGame.IsDesignMode = true;
             var mainWindow = new MainWindow();
             Resolver.Container.RegisterInstance(mainWindow);
@@ -42,9 +42,11 @@ public class App : Application {
                 Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
             }
 
-            mainWindow.InitializeComponent();
+            mainWindow.Initialize();
             desktop.MainWindow = mainWindow;
+            /*
             splashScreen.Close();
+        */
         }
 
         base.OnFrameworkInitializationCompleted();

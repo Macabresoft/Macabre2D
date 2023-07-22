@@ -6,15 +6,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.11.0"/>
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303"/>
-        <PackageReference Include="NSubstitute" Version="5.0.0"/>
-        <PackageReference Include="nunit" Version="3.13.3"/>
-        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2"/>
+        <PackageReference Include="FluentAssertions" Version="6.11.0" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+        <PackageReference Include="NSubstitute" Version="5.0.0" />
+        <PackageReference Include="nunit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj"/>
+        <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
 </Project>

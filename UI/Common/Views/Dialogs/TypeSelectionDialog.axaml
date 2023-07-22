@@ -16,19 +16,18 @@
           RowDefinitions="Auto, *, Auto">
         <AutoCompleteBox Grid.Row="0"
                          Text="{Binding FilterText}"
-                         Items="{Binding Types}"
+                         ItemsSource="{Binding Types}"
                          ValueMemberBinding="{Binding Name}"
                          SelectionChanged="AutoCompleteBox_OnSelectionChanged"
                          FilterMode="Contains"
                          Watermark="Filter..." />
 
-        <avaloniaEx:AlternatingListBox Grid.Row="1"
-                                       Margin="{StaticResource StandardMarginAll}"
-                                       Items="{Binding FilteredTypes, Mode=OneWay}"
-                                       SelectedItem="{Binding SelectedType}"
-                                       SelectionMode="Single"
-                                       VirtualizationMode="None">
-            <avaloniaEx:AlternatingListBox.ItemTemplate>
+        <ListBox Grid.Row="1"
+                 Margin="{StaticResource StandardMarginAll}"
+                 ItemsSource="{Binding FilteredTypes, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedType}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal"
                                 Margin="{StaticResource StandardMarginAll}">
@@ -38,8 +37,8 @@
                                    Text="{Binding FullName, StringFormat={}({0}), Mode=OneTime}" />
                     </StackPanel>
                 </DataTemplate>
-            </avaloniaEx:AlternatingListBox.ItemTemplate>
-        </avaloniaEx:AlternatingListBox>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"

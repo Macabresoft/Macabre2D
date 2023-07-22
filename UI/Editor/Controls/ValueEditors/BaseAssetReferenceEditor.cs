@@ -75,8 +75,12 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         this.ResetPath();
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<TAssetReference> args) {
+        base.OnValueChanged(args);
+
+        if (args.OldValue is { HasValue: true, Value: { } reference }) {
+            reference.PropertyChanged -= this.Value_PropertyChanged;
+        }
 
         if (this.Value != null) {
             this.ClearCommand = ReactiveCommand.Create(
@@ -85,14 +89,6 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
 
             this.ResetPath();
             this.Value.PropertyChanged += this.Value_PropertyChanged;
-        }
-    }
-
-    protected override void OnValueChanging() {
-        base.OnValueChanging();
-
-        if (this.Value != null) {
-            this.Value.PropertyChanged -= this.Value_PropertyChanged;
         }
     }
 

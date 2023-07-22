@@ -60,7 +60,7 @@ public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
         }
     }
 
-    protected override void OnValueChanged() {
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<T> args) {
         if (!this.IgnoreUpdates && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
             var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
             var eventArgs = new ValueChangedEventArgs<object>(originalValue, this.Value);

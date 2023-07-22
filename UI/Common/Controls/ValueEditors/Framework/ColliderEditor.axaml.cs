@@ -10,7 +10,7 @@ using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class ColliderEditor : ValueEditorControl<Collider> {
+public partial class ColliderEditor : ValueEditorControl<Collider> {
     public static readonly DirectProperty<ColliderEditor, IReadOnlyCollection<Type>> DerivedTypesProperty =
         AvaloniaProperty.RegisterDirect<ColliderEditor, IReadOnlyCollection<Type>>(
             nameof(DerivedTypes),
@@ -59,7 +59,7 @@ public class ColliderEditor : ValueEditorControl<Collider> {
         }
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(IValueEditor.Collection)) {
@@ -67,8 +67,8 @@ public class ColliderEditor : ValueEditorControl<Collider> {
         }
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Collider> args) {
+        base.OnValueChanged(args);
         this.ResetColliderEditors();
     }
 
@@ -82,10 +82,6 @@ public class ColliderEditor : ValueEditorControl<Collider> {
             this._valueControlService.ReturnControls(this._controlCollection);
             this._controlCollection = null;
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ResetColliderEditors() {

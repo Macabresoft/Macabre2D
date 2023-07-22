@@ -16,7 +16,7 @@
                    Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
-                  Items="{Binding EnumType, Converter={x:Static avaloniaEx:EnumTypeToValuesConverter.Instance}}"
+                  ItemsSource="{Binding EnumType, Converter={x:Static avaloniaEx:EnumTypeToValuesConverter.Instance}}"
                   SelectedItem="{Binding Value}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

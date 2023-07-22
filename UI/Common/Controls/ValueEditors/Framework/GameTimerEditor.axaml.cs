@@ -6,7 +6,7 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class GameTimerEditor : ValueEditorControl<GameTimer> {
+public partial class GameTimerEditor : ValueEditorControl<GameTimer> {
     public static readonly DirectProperty<GameTimerEditor, float> TimeLimitProperty =
         AvaloniaProperty.RegisterDirect<GameTimerEditor, float>(
             nameof(TimeLimit),
@@ -30,7 +30,7 @@ public class GameTimerEditor : ValueEditorControl<GameTimer> {
         set => this.SetAndRaise(TimeLimitProperty, ref this._timeLimit, value);
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(this.Value)) {
@@ -51,10 +51,6 @@ public class GameTimerEditor : ValueEditorControl<GameTimer> {
                 });
             }
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void UpdateDisplayValues() {

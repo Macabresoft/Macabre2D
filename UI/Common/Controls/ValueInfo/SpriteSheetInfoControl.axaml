@@ -11,7 +11,7 @@
         </Design.DataContext>
 
         <ItemsControl Grid.Row="0"
-                      Items="{Binding SpriteCollection.Sprites}"
+                      ItemsSource="{Binding SpriteCollection.Sprites}"
                       HorizontalAlignment="Stretch">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

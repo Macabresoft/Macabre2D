@@ -32,7 +32,7 @@
         <ListBox Grid.Row="1"
                  Grid.Column="0"
                  MinWidth="512"
-                 Items="{Binding Characters}"
+                 ItemsSource="{Binding Characters}"
                  SelectedItem="{Binding SelectedCharacter}">
             <ListBox.ItemTemplate>
                 <DataTemplate>

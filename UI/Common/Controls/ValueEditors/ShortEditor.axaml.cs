@@ -4,7 +4,7 @@ using System;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class ShortEditor : BaseNumericEditor<short> {
+public partial class ShortEditor : BaseNumericEditor<short> {
     public ShortEditor() : this(null) {
     }
 
@@ -15,9 +15,5 @@ public class ShortEditor : BaseNumericEditor<short> {
 
     protected override short ConvertValue(object calculatedValue) {
         return Convert.ToInt16(calculatedValue);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

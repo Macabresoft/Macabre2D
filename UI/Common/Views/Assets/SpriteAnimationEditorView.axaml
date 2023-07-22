@@ -88,8 +88,7 @@
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
-                 VirtualizationMode="None"
-                 Items="{Binding Steps}"
+                 ItemsSource="{Binding Steps}"
                  SelectedItem="{Binding SelectedStep}">
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">

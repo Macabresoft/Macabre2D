@@ -17,7 +17,7 @@
         <Grid Grid.Row="0"
               ColumnDefinitions="*, Auto, Auto">
             <AutoCompleteBox Grid.Column="0"
-                             Items="{Binding Licenses}"
+                             ItemsSource="{Binding Licenses}"
                              ValueMemberBinding="{Binding Product}"
                              FilterMode="Contains"
                              Watermark="Filter..."
@@ -42,7 +42,7 @@
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="{StaticResource StandardMarginAll}">
-            <ItemsControl Items="{Binding FilteredLicenses}">
+            <ItemsControl ItemsSource="{Binding FilteredLicenses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <avaloniaEx:GroupBox Header="{Binding Product}"

@@ -33,7 +33,7 @@
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible">
-                <ItemsControl Items="{Binding SpriteSheets}">
+                <ItemsControl ItemsSource="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <common:SpriteDisplayCollectionControl Collection="{Binding}"

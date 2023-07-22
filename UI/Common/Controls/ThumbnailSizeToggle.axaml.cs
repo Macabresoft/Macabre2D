@@ -7,7 +7,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 
-public class ThumbnailSizeToggle : UserControl {
+public partial class ThumbnailSizeToggle : UserControl {
     public static readonly StyledProperty<ThumbnailSize> SelectedSizeProperty = AvaloniaProperty.Register<ThumbnailSizeToggle, ThumbnailSize>(
         nameof(SelectedSize),
         ThumbnailSize.Small,

@@ -9,7 +9,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteReference> {
+public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteReference> {
     public static readonly DirectProperty<SpriteReferenceEditor, int> MaxIndexProperty =
         AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, int>(
             nameof(MaxIndex),
@@ -91,14 +91,10 @@ public class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteRefere
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private void NumericUpDown_OnValueChanged(object _, NumericUpDownValueChangedEventArgs e) {
-        if (this.Value != null) {
-            var oldValue = (byte)e.OldValue;
-            var newValue = (byte)e.NewValue;
+        if (this.Value != null && e.OldValue.HasValue && e.NewValue.HasValue) {
+            var oldValue = (byte)e.OldValue.Value;
+            var newValue = (byte)e.NewValue.Value;
             if (oldValue != newValue && this.Value.SpriteIndex != newValue) {
                 this.UndoService.Do(() => { this.Value.SpriteIndex = newValue; }, () => { this.Value.SpriteIndex = oldValue; });
             }

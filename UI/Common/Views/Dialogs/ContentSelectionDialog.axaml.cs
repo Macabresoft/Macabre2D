@@ -4,19 +4,15 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Unity;
 
-public class ContentSelectionDialog : BaseDialog {
+public partial class ContentSelectionDialog : BaseDialog {
     public ContentSelectionDialog() {
     }
 
     [InjectionConstructor]
-    public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
+    public ContentSelectionDialog(ContentSelectionViewModel viewModel) : base() {
         this.DataContext = viewModel;
         this.InitializeComponent();
     }
 
     public ContentSelectionViewModel ViewModel => this.DataContext as ContentSelectionViewModel;
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

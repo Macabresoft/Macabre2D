@@ -1,13 +1,20 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 
-public class LayerNameControl : UserControl {
+public partial class LayerNameControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<Layers>>, IObserver<AvaloniaPropertyChangedEventArgs<LayerSettings>> {
+    public static readonly DirectProperty<LayerNameControl, bool> IsLayerEnabledProperty =
+        AvaloniaProperty.RegisterDirect<LayerNameControl, bool>(
+            nameof(IsLayerEnabled),
+            editor => editor.IsLayerEnabled,
+            (editor, value) => editor.IsLayerEnabled = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
     public static readonly DirectProperty<LayerNameControl, string> LayerNameProperty =
         AvaloniaProperty.RegisterDirect<LayerNameControl, string>(
             nameof(LayerName),
@@ -18,21 +25,12 @@ public class LayerNameControl : UserControl {
     public static readonly StyledProperty<Layers> LayerProperty =
         AvaloniaProperty.Register<LayerNameControl, Layers>(
             nameof(Layer),
-            defaultBindingMode: BindingMode.OneTime,
-            notifying: OnSettingsOrLayerChanging);
+            defaultBindingMode: BindingMode.OneTime);
 
     public static readonly StyledProperty<LayerSettings> LayerSettingsProperty =
         AvaloniaProperty.Register<LayerNameControl, LayerSettings>(
             nameof(LayerSettings),
-            defaultBindingMode: BindingMode.OneTime,
-            notifying: OnSettingsOrLayerChanging);
-
-    public static readonly DirectProperty<LayerNameControl, bool> IsLayerEnabledProperty =
-        AvaloniaProperty.RegisterDirect<LayerNameControl, bool>(
-            nameof(IsLayerEnabled),
-            editor => editor.IsLayerEnabled,
-            (editor, value) => editor.IsLayerEnabled = value,
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.OneTime);
 
 
     private readonly IUndoService _undoService;
@@ -53,7 +51,8 @@ public class LayerNameControl : UserControl {
         set {
             if (value != this._isLayerEnabled && this.LayerSettings is { } layerSettings) {
                 var originalValue = this.LayerSettings.IsLayerEnabled(this.Layer);
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                    {
                         this.SetAndRaise(IsLayerEnabledProperty, ref this._isLayerEnabled, value);
                         if (value) {
                             layerSettings.EnableLayers(this.Layer);
@@ -62,7 +61,8 @@ public class LayerNameControl : UserControl {
                             layerSettings.DisableLayers(this.Layer);
                         }
                     },
-                    () => {
+                    () =>
+                    {
                         this.SetAndRaise(IsLayerEnabledProperty, ref this._isLayerEnabled, originalValue);
                         if (originalValue) {
                             layerSettings.EnableLayers(this.Layer);
@@ -85,11 +85,13 @@ public class LayerNameControl : UserControl {
         set {
             if (value != this._layerName && this.LayerSettings is { } layerSettings) {
                 var originalValue = layerSettings.GetName(this.Layer);
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                    {
                         this.SetAndRaise(LayerNameProperty, ref this._layerName, value);
                         layerSettings.SetName(this.Layer, value);
                     },
-                    () => {
+                    () =>
+                    {
                         this.SetAndRaise(LayerNameProperty, ref this._layerName, originalValue);
                         layerSettings.SetName(this.Layer, originalValue);
                     });
@@ -102,20 +104,22 @@ public class LayerNameControl : UserControl {
         set => this.SetValue(LayerSettingsProperty, value);
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
+    public void OnCompleted() {
     }
 
-    private static void OnSettingsOrLayerChanging(IAvaloniaObject control, bool isBeforeChange) {
-        if (control is LayerNameControl layerNameControl) {
-            if (!isBeforeChange) {
-                layerNameControl.Reset();
-            }
-        }
+    public void OnError(Exception error) {
     }
 
-    private void RaisePropertyChanged<T>(AvaloniaProperty<T> property, T value) {
-        this.RaisePropertyChanged(property, Optional<T>.Empty, new BindingValue<T>(value));
+    public void OnNext(AvaloniaPropertyChangedEventArgs<LayerSettings> value) {
+        this.Reset();
+    }
+
+    public void OnNext(AvaloniaPropertyChangedEventArgs<Layers> value) {
+        this.Reset();
+    }
+
+    private void RaisePropertyChanged<T>(DirectPropertyBase<T> property, T value) {
+        this.RaisePropertyChanged(property, default, value);
     }
 
     private void Reset() {

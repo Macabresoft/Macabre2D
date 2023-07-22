@@ -3,12 +3,12 @@
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
-                          x:TypeArguments="monoGame:Vector2"
+                          x:TypeArguments="monoGame:Color"
                           x:Class="Macabresoft.Macabre2D.UI.Common.ColorEditor"
                           UpdateOnLostFocus="False">
-    <local:ValueEditorControl.Resources>
+    <UserControl.Resources>
         <local:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </local:ValueEditorControl.Resources>
+    </UserControl.Resources>
     <Grid ColumnDefinitions="Auto, Auto, Auto, *"
           RowDefinitions="Auto, Auto, Auto, Auto"
           DataContext="{Binding $parent[local:ColorEditor]}">

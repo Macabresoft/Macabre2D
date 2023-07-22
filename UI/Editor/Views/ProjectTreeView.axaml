@@ -88,7 +88,7 @@
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Grid RowDefinitions="Auto, *"
-                  Grid.ColumnDefinitions="Auto, *, Auto">
+                  ColumnDefinitions="Auto, *, Auto">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
                     <Button Command="{Binding AddCommand, Mode=OneWay}"
@@ -174,7 +174,7 @@
                           Grid.ColumnSpan="3"
                           Grid.Row="1"
                           Name="_treeView"
-                          Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                          ItemsSource="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">

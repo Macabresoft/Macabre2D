@@ -4,17 +4,13 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Unity;
 
-public class SpriteSheetAssetSelectionDialog : BaseDialog {
+public partial class SpriteSheetAssetSelectionDialog : BaseDialog {
     public SpriteSheetAssetSelectionDialog() {
     }
 
     [InjectionConstructor]
-    public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) {
+    public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) : base() {
         this.DataContext = viewModel;
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

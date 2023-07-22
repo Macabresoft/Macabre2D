@@ -7,7 +7,7 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class InputActionEditor : ValueEditorControl<InputAction> {
+public partial class InputActionEditor : ValueEditorControl<InputAction> {
     private readonly IProjectService _projectService;
 
     public InputActionEditor() : this(null, Resolver.Resolve<IProjectService>()) {
@@ -29,9 +29,5 @@ public class InputActionEditor : ValueEditorControl<InputAction> {
 
         actions.Insert(0, InputAction.None);
         return actions;
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -9,7 +9,7 @@ using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using Unity;
 
-public class FlagsEnumEditor : ValueEditorControl<object> {
+public partial class FlagsEnumEditor : ValueEditorControl<object> {
     public static readonly DirectProperty<FlagsEnumEditor, Type> EnumTypeProperty =
         AvaloniaProperty.RegisterDirect<FlagsEnumEditor, Type>(
             nameof(EnumType),
@@ -47,10 +47,6 @@ public class FlagsEnumEditor : ValueEditorControl<object> {
 
     private void Clear() {
         this.Value = Enum.Parse(this.EnumType, 0.ToString());
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void SelectAll() {

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-public class ValueCollectionsControl : UserControl {
+public partial class ValueCollectionsControl : UserControl {
     public static readonly StyledProperty<IEnumerable<ValueControlCollection>> CollectionsProperty =
         AvaloniaProperty.Register<ValueCollectionsControl, IEnumerable<ValueControlCollection>>(nameof(Collections), Enumerable.Empty<ValueControlCollection>());
 
@@ -36,10 +36,6 @@ public class ValueCollectionsControl : UserControl {
     public bool IsBusy {
         get => this.GetValue(IsBusyProperty);
         set => this.SetValue(IsBusyProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void SetIsExpanded(bool isExpanded) {

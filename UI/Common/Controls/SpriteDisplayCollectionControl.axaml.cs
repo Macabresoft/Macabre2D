@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 
-public class SpriteDisplayCollectionControl : UserControl {
+public partial class SpriteDisplayCollectionControl : UserControl {
     public static readonly StyledProperty<SpriteDisplayCollection> CollectionProperty =
         AvaloniaProperty.Register<SpriteDisplayCollectionControl, SpriteDisplayCollection>(
             nameof(Collection),
@@ -38,9 +38,5 @@ public class SpriteDisplayCollectionControl : UserControl {
     public ThumbnailSize ThumbnailSize {
         get => this.GetValue(ThumbnailSizeProperty);
         set => this.SetValue(ThumbnailSizeProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

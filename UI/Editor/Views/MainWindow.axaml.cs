@@ -4,9 +4,13 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 
-public class MainWindow : BaseDialog {
-    internal void InitializeComponent() {
+public partial class MainWindow : BaseDialog {
+
+    public MainWindow() : base() {
+    }
+    
+    internal void Initialize() {
         this.DataContext = Resolver.Resolve<MainWindowViewModel>();
-        AvaloniaXamlLoader.Load(this);
+        this.InitializeComponent();
     }
 }

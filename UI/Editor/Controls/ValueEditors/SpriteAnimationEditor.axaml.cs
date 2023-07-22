@@ -1,12 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class SpriteAnimationEditor : BaseSpriteSheetAssetReferenceEditor<SpriteAnimationReference, SpriteAnimation> {
+public partial class SpriteAnimationEditor : BaseSpriteSheetAssetReferenceEditor<SpriteAnimationReference, SpriteAnimation> {
     public SpriteAnimationEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -25,9 +24,5 @@ public class SpriteAnimationEditor : BaseSpriteSheetAssetReferenceEditor<SpriteA
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

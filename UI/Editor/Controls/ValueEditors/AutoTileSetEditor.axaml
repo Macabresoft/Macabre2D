@@ -5,9 +5,9 @@
                                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                                            x:TypeArguments="framework:AutoTileSetReference, framework:AutoTileSet"
                                            x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
-    <local:BaseSpriteSheetAssetReferenceEditor.Resources>
+    <UserControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </local:BaseSpriteSheetAssetReferenceEditor.Resources>
+    </UserControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:AutoTileSetEditor]}">

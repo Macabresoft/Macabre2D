@@ -12,7 +12,7 @@
         </Design.DataContext>
         <avaloniaEx:GroupBox Header="{Binding  Collection.Name}"
                              Margin="{StaticResource StandardMarginBottom}">
-            <ListBox Items="{Binding Collection.Sprites}"
+            <ListBox ItemsSource="{Binding Collection.Sprites}"
                      SelectedItem="{Binding SelectedSprite}">
                 <ListBox.Styles>
                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/SpriteListBoxItem.axaml" />

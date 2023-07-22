@@ -13,21 +13,20 @@
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
-        <avaloniaEx:AlternatingListBox Grid.Row="0"
-                                       Margin="{StaticResource StandardMarginAll}"
-                                       Items="{Binding Loops, Mode=OneWay}"
-                                       SelectedItem="{Binding SelectedLoop}"
-                                       SelectionMode="Single"
-                                       VirtualizationMode="None">
-            <avaloniaEx:AlternatingListBox.ItemTemplate>
+        <ListBox Grid.Row="0"
+                 Margin="{StaticResource StandardMarginAll}"
+                 ItemsSource="{Binding Loops, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedLoop}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal"
                                 Margin="{StaticResource StandardMarginAll}">
                         <TextBlock Text="{Binding Name, Mode=OneTime}" />
                     </StackPanel>
                 </DataTemplate>
-            </avaloniaEx:AlternatingListBox.ItemTemplate>
-        </avaloniaEx:AlternatingListBox>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"

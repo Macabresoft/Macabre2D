@@ -1,14 +1,12 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class PaddingEditor : ValueEditorControl<Padding> {
+public partial class PaddingEditor : ValueEditorControl<Padding> {
     public static readonly DirectProperty<PaddingEditor, float> BottomValueProperty =
         AvaloniaProperty.RegisterDirect<PaddingEditor, float>(
             nameof(BottomValue),
@@ -72,7 +70,7 @@ public class PaddingEditor : ValueEditorControl<Padding> {
         this.UpdateDisplayValues();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(this.Value)) {
@@ -92,11 +90,12 @@ public class PaddingEditor : ValueEditorControl<Padding> {
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private void UpdateDisplayValues() {
+        var oldLeft = this._leftValue;
+        var oldTop = this._topValue;
+        var oldRight = this._rightValue;
+        var oldBottom = this._bottomValue;
+
         this._leftValue = this.Value.Left;
         this._topValue = this.Value.Top;
         this._rightValue = this.Value.Right;
@@ -104,10 +103,10 @@ public class PaddingEditor : ValueEditorControl<Padding> {
 
         Dispatcher.UIThread.Post(() =>
         {
-            this.RaisePropertyChanged(LeftValueProperty, Optional<float>.Empty, this.LeftValue);
-            this.RaisePropertyChanged(TopValueProperty, Optional<float>.Empty, this.TopValue);
-            this.RaisePropertyChanged(LeftValueProperty, Optional<float>.Empty, this.RightValue);
-            this.RaisePropertyChanged(TopValueProperty, Optional<float>.Empty, this.BottomValue);
+            this.RaisePropertyChanged(LeftValueProperty, oldLeft, this.LeftValue);
+            this.RaisePropertyChanged(TopValueProperty, oldTop, this.TopValue);
+            this.RaisePropertyChanged(LeftValueProperty, oldRight, this.RightValue);
+            this.RaisePropertyChanged(TopValueProperty, oldBottom, this.BottomValue);
         });
     }
 }

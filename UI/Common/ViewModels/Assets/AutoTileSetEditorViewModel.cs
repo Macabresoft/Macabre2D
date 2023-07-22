@@ -152,7 +152,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     }
 
     private Size GetTileSize() {
-        var size = Size.Empty;
+        var size = new Size();
         if (this.SpriteCollection.Sprites.FirstOrDefault() is SpriteDisplayModel { Size: { Width: > 0, Height: > 0 } spriteSize }) {
             if (spriteSize.Width == spriteSize.Height) {
                 size = new Size(MaxTileSize, MaxTileSize);

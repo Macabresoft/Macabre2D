@@ -26,7 +26,7 @@ public interface IAssetSelectionService : ISelectionService<object> {
     /// <summary>
     /// Gets the asset editor.
     /// </summary>
-    IControl AssetEditor { get; }
+    Control AssetEditor { get; }
 
     /// <summary>
     /// Gets the selection type.
@@ -44,7 +44,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
-    private IControl _assetEditor;
+    private Control _assetEditor;
     private object _selected;
     private ProjectSelectionType _selectionType;
 
@@ -70,7 +70,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
-    public IControl AssetEditor {
+    public Control AssetEditor {
         get => this._assetEditor;
         private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }

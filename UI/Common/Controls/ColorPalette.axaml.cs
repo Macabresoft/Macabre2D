@@ -8,7 +8,7 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
-public class ColorPalette : UserControl {
+public partial class ColorPalette : UserControl {
     public static readonly StyledProperty<IEnumerable<Color>> AvailableColorsProperty = AvaloniaProperty.Register<ColorPalette, IEnumerable<Color>>(
         nameof(AvailableColors),
         DefinedColors.AllColors,
@@ -32,9 +32,5 @@ public class ColorPalette : UserControl {
     public Color SelectedColor {
         get => this.GetValue(SelectedColorProperty);
         set => this.SetValue(SelectedColorProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

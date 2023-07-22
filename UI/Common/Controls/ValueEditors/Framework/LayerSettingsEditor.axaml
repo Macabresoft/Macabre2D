@@ -9,7 +9,7 @@
             <local:LayerSettingsEditor />
         </Design.DataContext>
 
-        <ItemsControl Items="{Binding AvailableLayers}">
+        <ItemsControl ItemsSource="{Binding AvailableLayers}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <local:LayerNameControl LayerSettings="{Binding $parent[local:LayerSettingsEditor].Value}"

@@ -58,7 +58,7 @@ public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric>
         this.UpdateDisplayValue();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(this.Value)) {

@@ -14,7 +14,7 @@
               IsVisible="{Binding Collections, Converter={x:Static ObjectConverters.IsNotNull}}">
             <AutoCompleteBox Grid.Column="0"
                              Name="_autoCompleteBox"
-                             Items="{Binding Collections}"
+                             ItemsSource="{Binding Collections}"
                              ValueMemberBinding="{Binding Name}"
                              FilterMode="Contains"
                              Watermark="Filter..." />
@@ -37,7 +37,7 @@
                       VerticalScrollBarVisibility="Auto"
                       Margin="{StaticResource StandardMarginAll}">
             <Grid>
-                <ItemsControl Items="{Binding Collections}">
+                <ItemsControl ItemsSource="{Binding Collections}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <avaloniaEx:GroupBox Header="{Binding Name}"
@@ -50,7 +50,7 @@
                                     </MultiBinding>
                                 </avaloniaEx:GroupBox.IsVisible>
 
-                                <ItemsControl Items="{Binding ValueControls}" />
+                                <ItemsControl ItemsSource="{Binding ValueControls}" />
                             </avaloniaEx:GroupBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

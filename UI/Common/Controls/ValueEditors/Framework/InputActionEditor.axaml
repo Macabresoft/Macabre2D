@@ -15,7 +15,7 @@
                    Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
-                  Items="{Binding EnabledInputActions}"
+                  ItemsSource="{Binding EnabledInputActions}"
                   PlaceholderText="{Binding Value, Converter={x:Static local:ToDisplayNameConverter.Instance}}"
                   SelectedItem="{Binding Value}"
                   ToolTip.Tip="{Binding Value}">

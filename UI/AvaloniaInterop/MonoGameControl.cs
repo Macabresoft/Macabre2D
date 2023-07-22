@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -18,7 +19,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A control that renders a MonoGame instance inside of Avalonia.
 /// </summary>
-public sealed class MonoGameControl : Control {
+public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChangedEventArgs<IAvaloniaGame>> {
     /// <summary>
     /// Avalonia property for <see cref="Game" />.
     /// </summary>
@@ -29,9 +30,7 @@ public sealed class MonoGameControl : Control {
     /// <summary>
     /// Avalonia property for <see cref="Game" />.
     /// </summary>
-    public static readonly StyledProperty<IAvaloniaGame> GameProperty = AvaloniaProperty.Register<MonoGameControl, IAvaloniaGame>(
-        nameof(Game),
-        notifying: OnGameChanging);
+    public static readonly StyledProperty<IAvaloniaGame> GameProperty = AvaloniaProperty.Register<MonoGameControl, IAvaloniaGame>(nameof(Game));
 
     private readonly GameTime _gameTime = new();
 
@@ -55,9 +54,10 @@ public sealed class MonoGameControl : Control {
     /// Initializes a new instance of the <see cref="MonoGameControl" /> class.
     /// </summary>
     public MonoGameControl() {
+        GameProperty.Changed.Subscribe(this);
         this.Focusable = true;
     }
-
+    
     /// <summary>
     /// Gets or sets the fallback background brush.
     /// </summary>
@@ -104,7 +104,7 @@ public sealed class MonoGameControl : Control {
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size finalSize) {
         finalSize = base.ArrangeOverride(finalSize);
-        if (finalSize != this._bitmap.Size && this.Game?.GraphicsDevice is GraphicsDevice device) {
+        if (finalSize != this._bitmap.Size && this.Game?.GraphicsDevice is { } device) {
             this.ResetDevice(device, finalSize);
         }
 
@@ -136,17 +136,15 @@ public sealed class MonoGameControl : Control {
     }
 
     private void Initialize() {
-        if (this.Game is IAvaloniaGame game && this.GetVisualRoot() is Window window) {
+        if (this.Game is { } game && this.GetVisualRoot() is Window window) {
             game.Initialize(this._mouse, this._keyboard);
-            this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
+
+            if (window.TryGetPlatformHandle() is { } platformHandle) {
+                this._presentationParameters.DeviceWindowHandle = platformHandle.Handle;
+            }
+            
             this.ResetDevice(game.GraphicsDevice, this.Bounds.Size);
             this.RunFrame();
-        }
-    }
-
-    private static void OnGameChanging(IAvaloniaObject control, bool isBeforeChange) {
-        if (!isBeforeChange && control is MonoGameControl { _isInitialized: true } monoGameControl) {
-            monoGameControl.Initialize();
         }
     }
 
@@ -202,5 +200,20 @@ public sealed class MonoGameControl : Control {
         }
 
         return false;
+    }
+
+    /// <inheritdoc />
+    public void OnCompleted() {
+    }
+
+    /// <inheritdoc />
+    public void OnError(Exception error) {
+    }
+
+    /// <inheritdoc />
+    public void OnNext(AvaloniaPropertyChangedEventArgs<IAvaloniaGame> value) {
+        if (this._isInitialized) {
+            this.Initialize();
+        }
     }
 }

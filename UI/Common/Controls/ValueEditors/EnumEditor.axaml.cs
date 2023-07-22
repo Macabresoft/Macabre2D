@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class EnumEditor : ValueEditorControl<object> {
+public partial class EnumEditor : ValueEditorControl<object> {
     public static readonly DirectProperty<EnumEditor, Type> EnumTypeProperty =
         AvaloniaProperty.RegisterDirect<EnumEditor, Type>(
             nameof(EnumType),
@@ -21,8 +21,4 @@ public class EnumEditor : ValueEditorControl<object> {
     }
 
     public Type EnumType { get; }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

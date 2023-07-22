@@ -10,7 +10,7 @@
         <Design.DataContext>
             <local:ColliderEditor />
         </Design.DataContext>
-        <ComboBox Items="{Binding DerivedTypes}"
+        <ComboBox ItemsSource="{Binding DerivedTypes}"
                   SelectedItem="{Binding SelectedType}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

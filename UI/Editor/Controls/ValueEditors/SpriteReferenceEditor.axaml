@@ -5,9 +5,9 @@
                                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                       x:TypeArguments="framework:SpriteReference"
                                       x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteReferenceEditor">
-    <local:BaseSpriteSheetReferenceEditor.Resources>
+    <UserControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </local:BaseSpriteSheetReferenceEditor.Resources>
+    </UserControl.Resources>
     <Grid ColumnDefinitions="Auto, Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:SpriteReferenceEditor]}">

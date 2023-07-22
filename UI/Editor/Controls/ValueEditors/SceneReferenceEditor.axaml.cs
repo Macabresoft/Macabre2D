@@ -6,7 +6,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class SceneReferenceEditor : BaseAssetReferenceEditor<SceneReference, SceneAsset> {
+public partial class SceneReferenceEditor : BaseAssetReferenceEditor<SceneReference, SceneAsset> {
     public SceneReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),

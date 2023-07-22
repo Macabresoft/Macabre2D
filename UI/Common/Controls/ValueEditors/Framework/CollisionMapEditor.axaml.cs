@@ -14,7 +14,7 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
+public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
     private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new();
     private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
@@ -119,10 +119,6 @@ public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
             columnValues.Remove(rowValue);
             row++;
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ToggleChecked(Layers firstLayer, Layers secondLayer) {

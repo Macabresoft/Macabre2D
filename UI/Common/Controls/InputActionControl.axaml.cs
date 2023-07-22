@@ -3,22 +3,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework.Input;
 
-public class InputActionControl : UserControl {
+public partial class InputActionControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<InputAction>>, IObserver<AvaloniaPropertyChangedEventArgs<InputSettings>> {
     public static readonly DirectProperty<InputActionControl, string> ActionNameProperty =
         AvaloniaProperty.RegisterDirect<InputActionControl, string>(
             nameof(ActionName),
             editor => editor.ActionName,
             (editor, value) => editor.ActionName = value,
             defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly StyledProperty<InputAction> ActionProperty =
+        AvaloniaProperty.Register<InputActionControl, InputAction>(
+            nameof(Action),
+            defaultBindingMode: BindingMode.OneTime);
+
+    public static readonly StyledProperty<InputSettings> InputSettingsProperty =
+        AvaloniaProperty.Register<InputActionControl, InputSettings>(
+            nameof(InputSettings),
+            defaultBindingMode: BindingMode.OneTime);
+
+    public static readonly DirectProperty<InputActionControl, bool> IsPredefinedProperty =
+        AvaloniaProperty.RegisterDirect<InputActionControl, bool>(
+            nameof(IsPredefined),
+            editor => editor.IsPredefined,
+            (editor, value) => editor.IsPredefined = value,
+            defaultBindingMode: BindingMode.OneWay);
 
     public static readonly DirectProperty<InputActionControl, Buttons> SelectedGamePadButtonsProperty =
         AvaloniaProperty.RegisterDirect<InputActionControl, Buttons>(
@@ -41,32 +56,13 @@ public class InputActionControl : UserControl {
             (editor, value) => editor.SelectedMouseButton = value,
             defaultBindingMode: BindingMode.TwoWay);
 
-    public static readonly DirectProperty<InputActionControl, bool> IsPredefinedProperty =
-        AvaloniaProperty.RegisterDirect<InputActionControl, bool>(
-            nameof(IsPredefined),
-            editor => editor.IsPredefined,
-            (editor, value) => editor.IsPredefined = value,
-            defaultBindingMode: BindingMode.OneWay);
-    
-    public static readonly StyledProperty<InputAction> ActionProperty =
-        AvaloniaProperty.Register<InputActionControl, InputAction>(
-            nameof(Action),
-            defaultBindingMode: BindingMode.OneTime,
-            notifying: OnSettingsOrActionChanging);
-
-    public static readonly StyledProperty<InputSettings> InputSettingsProperty =
-        AvaloniaProperty.Register<InputActionControl, InputSettings>(
-            nameof(InputSettings),
-            defaultBindingMode: BindingMode.OneTime,
-            notifying: OnSettingsOrActionChanging);
-
 
     private readonly IUndoService _undoService;
     private string _actionName;
+    private bool _isPredefined;
     private Buttons _selectedGamePadButtons;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
-    private bool _isPredefined;
 
     static InputActionControl() {
         var gamePadButtons = Enum.GetValues<Buttons>().ToList();
@@ -81,12 +77,9 @@ public class InputActionControl : UserControl {
 
     public InputActionControl(IUndoService undoService) {
         this._undoService = undoService;
+        ActionProperty.Changed.Subscribe(this);
+        InputSettingsProperty.Changed.Subscribe(this);
         this.InitializeComponent();
-    }
-    
-    public bool IsPredefined {
-        get => this._isPredefined;
-        set => this.SetAndRaise(IsPredefinedProperty, ref this._isPredefined, value);
     }
 
     public static IReadOnlyCollection<Buttons> AvailableGamePadButtons { get; }
@@ -122,6 +115,11 @@ public class InputActionControl : UserControl {
     public InputSettings InputSettings {
         get => this.GetValue(InputSettingsProperty);
         set => this.SetValue(InputSettingsProperty, value);
+    }
+
+    public bool IsPredefined {
+        get => this._isPredefined;
+        set => this.SetAndRaise(IsPredefinedProperty, ref this._isPredefined, value);
     }
 
     public Buttons SelectedGamePadButtons {
@@ -181,20 +179,22 @@ public class InputActionControl : UserControl {
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
+    public void OnCompleted() {
     }
 
-    private static void OnSettingsOrActionChanging(IAvaloniaObject control, bool isBeforeChange) {
-        if (control is InputActionControl inputActionControl) {
-            if (!isBeforeChange) {
-                inputActionControl.Reset();
-            }
-        }
+    public void OnError(Exception error) {
     }
 
-    private void RaisePropertyChanged<T>(AvaloniaProperty<T> property, T value) {
-        this.RaisePropertyChanged(property, Optional<T>.Empty, new BindingValue<T>(value));
+    public void OnNext(AvaloniaPropertyChangedEventArgs<InputSettings> value) {
+        this.Reset();
+    }
+
+    public void OnNext(AvaloniaPropertyChangedEventArgs<InputAction> value) {
+        this.Reset();
+    }
+
+    private void RaisePropertyChanged<T>(DirectPropertyBase<T> property, T value) {
+        this.RaisePropertyChanged(property, default, value);
     }
 
     private void Reset() {

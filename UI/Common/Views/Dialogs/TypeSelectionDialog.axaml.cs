@@ -7,12 +7,12 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Unity;
 
-public class TypeSelectionDialog : BaseDialog {
+public partial class TypeSelectionDialog : BaseDialog {
     public TypeSelectionDialog() : base() {
     }
 
     [InjectionConstructor]
-    public TypeSelectionDialog(TypeSelectionViewModel viewModel) {
+    public TypeSelectionDialog(TypeSelectionViewModel viewModel) : base() {
         this.DataContext = viewModel;
         this.InitializeComponent();
     }
@@ -25,9 +25,5 @@ public class TypeSelectionDialog : BaseDialog {
         if (addedTypes.Count == 1) {
             this.ViewModel.SelectedType = addedTypes.First();
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

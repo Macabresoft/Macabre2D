@@ -17,7 +17,7 @@
 
         <avaloniaEx:FlagsComboBox Grid.Column="1"
                                   EnumType="{x:Type framework:Layers}"
-                                  Items="{Binding EnabledLayers}"
+                                  ItemsSource="{Binding EnabledLayers}"
                                   SelectedValue="{Binding Value}"/>
 
         <Button Grid.Column="2"

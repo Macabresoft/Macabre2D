@@ -11,7 +11,7 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public class LayersEditor : ValueEditorControl<Layers> {
+public partial class LayersEditor : ValueEditorControl<Layers> {
     public static readonly DirectProperty<FlagsEnumEditor, ICommand> SelectAllCommandProperty =
         AvaloniaProperty.RegisterDirect<FlagsEnumEditor, ICommand>(
             nameof(SelectAllCommand),
@@ -49,10 +49,6 @@ public class LayersEditor : ValueEditorControl<Layers> {
         }
 
         return Enum.GetValues<Layers>().ToList();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void SelectAll() {

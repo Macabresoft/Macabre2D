@@ -7,13 +7,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 
-public class VolumeSlider : UserControl {
+public partial class VolumeSlider : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<float>> {
     private const float Tolerance = 0.001f;
 
     public static readonly StyledProperty<float> ValueProperty =
-        AvaloniaProperty.Register<VolumeSlider, float>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
+        AvaloniaProperty.Register<VolumeSlider, float>(nameof(Value), defaultBindingMode: BindingMode.TwoWay);
 
     private IDisposable _pointerReleaseDispose;
 
@@ -26,6 +25,18 @@ public class VolumeSlider : UserControl {
         set => this.SetValue(ValueProperty, value);
     }
 
+    public void OnCompleted() {
+    }
+
+    public void OnError(Exception error) {
+    }
+
+    public void OnNext(AvaloniaPropertyChangedEventArgs<float> value) {
+        if (this.Content is Slider slider) {
+            slider.Value = this.Value;
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
         base.OnApplyTemplate(e);
 
@@ -36,19 +47,9 @@ public class VolumeSlider : UserControl {
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private void OnPointerReleased(object sender, PointerReleasedEventArgs e) {
         if (this.Content is Slider slider && Math.Abs(this.Value - slider.Value) > Tolerance) {
             this.Value = (float)slider.Value;
-        }
-    }
-
-    private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-        if (!isBeforeChange && control is VolumeSlider { Content: Slider slider } volumeSlider && Math.Abs(volumeSlider.Value - slider.Value) > Tolerance) {
-            slider.Value = volumeSlider.Value;
         }
     }
 }

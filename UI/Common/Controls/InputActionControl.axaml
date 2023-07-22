@@ -41,7 +41,7 @@
                                       Grid.Row="0"
                                       HorizontalAlignment="Stretch"
                                       EnumType="{x:Type monoGameInput:Buttons}"
-                                      Items="{Binding AvailableGamePadButtons}"
+                                      ItemsSource="{Binding AvailableGamePadButtons}"
                                       SelectedValue="{Binding SelectedGamePadButtons}"
                                       ToolTip.Tip="Game Pad Binding" />
 
@@ -51,7 +51,7 @@
                              ToolTip.Tip="Keyboard Binding" />
             <ComboBox Grid.Column="1"
                       Grid.Row="1"
-                      Items="{Binding AvailableKeys}"
+                      ItemsSource="{Binding AvailableKeys}"
                       SelectedItem="{Binding SelectedKey}"
                       HorizontalAlignment="Stretch"
                       ToolTip.Tip="Keyboard Binding" />
@@ -62,7 +62,7 @@
                              ToolTip.Tip="Mouse Binding" />
             <ComboBox Grid.Column="1"
                       Grid.Row="2"
-                      Items="{Binding AvailableMouseButtons}"
+                      ItemsSource="{Binding AvailableMouseButtons}"
                       SelectedItem="{Binding SelectedMouseButton}"
                       HorizontalAlignment="Stretch"
                       ToolTip.Tip="Mouse Binding" />

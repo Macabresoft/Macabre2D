@@ -2,15 +2,10 @@
 
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 
-public class SplashScreen : Window {
-    public SplashScreen() {
+public partial class SplashScreen : Window {
+    public SplashScreen() : base() {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void OnPointerPressed(object sender, PointerPressedEventArgs e) {

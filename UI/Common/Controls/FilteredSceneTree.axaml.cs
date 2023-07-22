@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 
-public class FilteredSceneTree : UserControl {
+public partial class FilteredSceneTree : UserControl {
     public static readonly StyledProperty<FilteredEntityWrapper> RootProperty =
         AvaloniaProperty.Register<FilteredSceneTree, FilteredEntityWrapper>(nameof(Root));
 
@@ -26,9 +26,5 @@ public class FilteredSceneTree : UserControl {
     public FilteredEntityWrapper SelectedItem {
         get => this.GetValue(SelectedItemProperty);
         set => this.SetValue(SelectedItemProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

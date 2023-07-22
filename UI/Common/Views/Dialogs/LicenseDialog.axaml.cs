@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
@@ -13,14 +12,14 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public class LicenseDialog : BaseDialog {
+public partial class LicenseDialog : BaseDialog {
     private readonly ObservableCollectionExtended<LicenseDefinition> _filteredLicenses = new();
 
     [InjectionConstructor]
-    public LicenseDialog() {
+    public LicenseDialog() : base() {
         this.CollapseCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(false));
         this.ExpandCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(true));
-        
+
         this.FilterLicenses(string.Empty);
         this.InitializeComponent();
     }
@@ -39,7 +38,7 @@ public class LicenseDialog : BaseDialog {
         }
     }
 
-    private void AutoCompleteBox_OnTextChanged(object sender, EventArgs e) {
+    private void AutoCompleteBox_OnTextChanged(object sender, TextChangedEventArgs e) {
         if (sender is AutoCompleteBox autoCompleteBox) {
             this.FilterLicenses(autoCompleteBox.Text);
         }
@@ -47,9 +46,5 @@ public class LicenseDialog : BaseDialog {
 
     private void FilterLicenses(string filterText) {
         this._filteredLicenses.Reset(!string.IsNullOrEmpty(filterText) ? this.Licenses.Where(x => x.Product.Contains(filterText, StringComparison.OrdinalIgnoreCase)) : this.Licenses);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

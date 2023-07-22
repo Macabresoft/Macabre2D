@@ -7,7 +7,7 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class LayersOverrideEditor : ValueEditorControl<LayersOverride> {
+public partial class LayersOverrideEditor : ValueEditorControl<LayersOverride> {
     public static readonly DirectProperty<LayersOverrideEditor, bool> IsOverrideEnabledProperty =
         AvaloniaProperty.RegisterDirect<LayersOverrideEditor, bool>(
             nameof(IsOverrideEnabled),
@@ -55,24 +55,18 @@ public class LayersOverrideEditor : ValueEditorControl<LayersOverride> {
         }
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<LayersOverride> args) {
+        base.OnValueChanged(args);
+
+        if (args.OldValue is { HasValue: true, Value: { } layersOverride }) {
+            layersOverride.PropertyChanged -= this.Value_PropertyChanged;
+        }
 
         if (this.Value != null) {
             this.LayersValue = this.Value.Value;
             this.IsOverrideEnabled = this.Value.IsEnabled;
             this.Value.PropertyChanged += this.Value_PropertyChanged;
         }
-    }
-
-    protected override void OnValueChanging() {
-        if (this.Value != null) {
-            this.Value.PropertyChanged -= this.Value_PropertyChanged;
-        }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {

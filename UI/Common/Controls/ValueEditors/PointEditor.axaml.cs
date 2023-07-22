@@ -1,14 +1,12 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Unity;
 using Point = Microsoft.Xna.Framework.Point;
 
-public class PointEditor : ValueEditorControl<Point> {
+public partial class PointEditor : ValueEditorControl<Point> {
     public static readonly StyledProperty<int> XMaximumProperty =
         AvaloniaProperty.Register<PointEditor, int>(nameof(XMaximum), int.MaxValue);
 
@@ -79,7 +77,7 @@ public class PointEditor : ValueEditorControl<Point> {
         this.UpdateDisplayValues();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (change.Property.Name == nameof(this.Value)) {
@@ -93,17 +91,15 @@ public class PointEditor : ValueEditorControl<Point> {
         }
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private void UpdateDisplayValues() {
+        var oldX = this._xValue;
+        var oldY = this._yValue;
         this._xValue = this.Value.X;
         this._yValue = this.Value.Y;
         Dispatcher.UIThread.Post(() =>
         {
-            this.RaisePropertyChanged(XValueProperty, Optional<int>.Empty, this.XValue);
-            this.RaisePropertyChanged(YValueProperty, Optional<int>.Empty, this.YValue);
+            this.RaisePropertyChanged(XValueProperty, oldX, this.XValue);
+            this.RaisePropertyChanged(YValueProperty, oldY, this.YValue);
         });
     }
 }

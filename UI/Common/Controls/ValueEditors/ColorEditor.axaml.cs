@@ -5,13 +5,12 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Unity;
 
-public class ColorEditor : ValueEditorControl<Color> {
+public partial class ColorEditor : ValueEditorControl<Color> {
     public static readonly DirectProperty<ColorEditor, byte> AlphaValueProperty =
         AvaloniaProperty.RegisterDirect<ColorEditor, byte>(
             nameof(AlphaValue),
@@ -87,7 +86,7 @@ public class ColorEditor : ValueEditorControl<Color> {
         this.UpdateDisplayValues();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
         base.OnPropertyChanged(change);
 
         if (this._isUpdating) {
@@ -117,10 +116,6 @@ public class ColorEditor : ValueEditorControl<Color> {
         if (!string.Equals(this.Value.ToHex(), this.HexValue, StringComparison.OrdinalIgnoreCase)) {
             Dispatcher.UIThread.Post(this.UpdateValueFromHex);
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void UpdateDisplayValues() {

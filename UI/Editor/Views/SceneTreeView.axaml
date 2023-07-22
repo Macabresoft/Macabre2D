@@ -45,7 +45,7 @@
 
                             <MenuItem Header="All Entities"
                                       Classes="MenuItemParent"
-                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                      ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
                                 <MenuItem.Styles>
                                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                 </MenuItem.Styles>
@@ -53,7 +53,7 @@
 
                             <MenuItem Header="All Loops"
                                       Classes="MenuItemParent"
-                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
+                                      ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
                                 <MenuItem.Styles>
                                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                 </MenuItem.Styles>
@@ -119,7 +119,7 @@
                       Grid.ColumnSpan="3"
                       Grid.Row="1"
                       Name="_treeView"
-                      Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                      ItemsSource="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"
                       LostFocus="TreeView_OnLostFocus">
                 <TreeView.Styles>
@@ -167,7 +167,7 @@
 
                                     <MenuItem Header="All Loops"
                                               Classes="MenuItemParent"
-                                              Items="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
+                                              ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
                                         <MenuItem.Styles>
                                             <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                         </MenuItem.Styles>
@@ -192,7 +192,7 @@
 
                                     <MenuItem Header="All Entities"
                                               Classes="MenuItemParent"
-                                              Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                              ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
                                         <MenuItem.Styles>
                                             <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                         </MenuItem.Styles>
@@ -282,7 +282,7 @@
 
                                         <MenuItem Header="All Entities"
                                                   Classes="MenuItemParent"
-                                                  Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                                  ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
                                             <MenuItem.Styles>
                                                 <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                             </MenuItem.Styles>

@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -13,7 +12,7 @@ using Microsoft.Xna.Framework;
 using ReactiveUI;
 using Unity;
 
-public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
+public partial class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
     public static readonly DirectProperty<RelativeVerticesEditor, ICommand> AddCommandProperty =
         AvaloniaProperty.RegisterDirect<RelativeVerticesEditor, ICommand>(
             nameof(AddCommand),
@@ -53,8 +52,8 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
 
     public IReadOnlyCollection<NotifyingWrapper<Vector2>> WrappedValues => this._wrappedValues;
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<RelativeVertices> args) {
+        base.OnValueChanged(args);
 
         if (!this._isUpdatingFromWrappedValue && this.Value != null) {
             foreach (var value in this._wrappedValues) {
@@ -90,10 +89,6 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
         finally {
             this._isUpdatingFromWrappedValue = false;
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void Remove(NotifyingWrapper<Vector2> wrapper) {

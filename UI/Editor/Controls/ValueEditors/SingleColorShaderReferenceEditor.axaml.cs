@@ -1,14 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System.ComponentModel;
-using Avalonia.Markup.Xaml;
+using Avalonia;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;
 using Unity;
 
-public class SingleColorShaderReferenceEditor : ValueEditorControl<SingleColorShaderReference> {
+public partial class SingleColorShaderReferenceEditor : ValueEditorControl<SingleColorShaderReference> {
     private readonly IUndoService _undoService;
     private bool _isEditing;
     private string _parameterName = string.Empty;
@@ -23,26 +23,18 @@ public class SingleColorShaderReferenceEditor : ValueEditorControl<SingleColorSh
         this.InitializeComponent();
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SingleColorShaderReference> args) {
+        base.OnValueChanged(args);
+
+        if (args.OldValue is { HasValue: true, Value: { } reference }) {
+            reference.PropertyChanged -= this.Value_PropertyChanged;
+        }
 
         if (this.Value != null) {
             this.Value.PropertyChanged += this.Value_PropertyChanged;
             this._parameterName = this.Value.ParameterName;
             this._parameterValue = this.Value.ParameterValue;
         }
-    }
-
-    protected override void OnValueChanging() {
-        base.OnValueChanging();
-
-        if (this.Value != null) {
-            this.Value.PropertyChanged -= this.Value_PropertyChanged;
-        }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void SetParameterName(string name) {

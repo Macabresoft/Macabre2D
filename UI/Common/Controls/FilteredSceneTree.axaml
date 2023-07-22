@@ -28,7 +28,7 @@
                   Grid.Row="1"
                   Name="_treeView"
                   BorderThickness="0"
-                  Items="{Binding  $parent[local:FilteredSceneTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                  ItemsSource="{Binding $parent[local:FilteredSceneTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                   SelectedItem="{Binding $parent[local:FilteredSceneTree].SelectedItem, Mode=TwoWay}">
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">

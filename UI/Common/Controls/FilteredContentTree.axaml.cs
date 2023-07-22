@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 
-public class FilteredContentTree : UserControl {
+public partial class FilteredContentTree : UserControl {
     public static readonly StyledProperty<FilteredContentWrapper> RootProperty =
         AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(nameof(Root));
 
@@ -26,9 +26,5 @@ public class FilteredContentTree : UserControl {
     public FilteredContentWrapper SelectedItem {
         get => this.GetValue(SelectedItemProperty);
         set => this.SetValue(SelectedItemProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,12 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class SpriteSheetFontEditor : BaseSpriteSheetAssetReferenceEditor<SpriteSheetFontReference, SpriteSheetFont> {
+public partial class SpriteSheetFontEditor : BaseSpriteSheetAssetReferenceEditor<SpriteSheetFontReference, SpriteSheetFont> {
     public SpriteSheetFontEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -25,9 +24,5 @@ public class SpriteSheetFontEditor : BaseSpriteSheetAssetReferenceEditor<SpriteS
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

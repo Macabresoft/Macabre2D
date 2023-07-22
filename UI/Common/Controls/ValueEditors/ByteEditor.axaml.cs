@@ -4,7 +4,7 @@ using System;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class ByteEditor : BaseNumericEditor<byte> {
+public partial class ByteEditor : BaseNumericEditor<byte> {
     public ByteEditor() : this(null) {
     }
 
@@ -15,9 +15,5 @@ public class ByteEditor : BaseNumericEditor<byte> {
 
     protected override byte ConvertValue(object calculatedValue) {
         return Convert.ToByte(calculatedValue);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

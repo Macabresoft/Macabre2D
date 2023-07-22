@@ -44,7 +44,7 @@
                  BorderBrush="{StaticResource ComboBoxBorderBrush}"
                  CornerRadius="{StaticResource ControlCornerRadius}"
                  MaxHeight="256"
-                 Items="{Binding WrappedValues}">
+                 ItemsSource="{Binding WrappedValues}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <local:Vector2Editor Value="{Binding Value}" />

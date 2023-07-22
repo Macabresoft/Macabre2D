@@ -6,7 +6,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class ShaderReferenceEditor : BaseAssetReferenceEditor<ShaderReference, ShaderAsset> {
+public partial class ShaderReferenceEditor : BaseAssetReferenceEditor<ShaderReference, ShaderAsset> {
     public ShaderReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -21,9 +21,5 @@ public class ShaderReferenceEditor : BaseAssetReferenceEditor<ShaderReference, S
         ILocalDialogService dialogService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, undoService) {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

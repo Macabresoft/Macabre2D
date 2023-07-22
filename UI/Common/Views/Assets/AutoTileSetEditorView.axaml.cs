@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class AutoTileSetEditorView : UserControl {
+public partial class AutoTileSetEditorView : UserControl {
     public AutoTileSetEditorView() {
     }
 
@@ -12,9 +12,5 @@ public class AutoTileSetEditorView : UserControl {
     public AutoTileSetEditorView(AutoTileSetEditorViewModel viewModel) {
         this.DataContext = viewModel;
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

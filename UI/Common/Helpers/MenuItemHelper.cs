@@ -16,8 +16,8 @@ public static class MenuItemHelper {
     /// <param name="availableTypes">The available types.</param>
     /// <param name="showFindOption">A value indicating whether or not the "Find..." option should be shown.</param>
     /// <returns>A list of menu items with separators where appropriate.</returns>
-    public static IReadOnlyCollection<IControl> CreateAddMenuItems(IReadOnlyCollection<Type> availableTypes, bool showFindOption) {
-        var items = new List<IControl>();
+    public static IReadOnlyCollection<Control> CreateAddMenuItems(IReadOnlyCollection<Type> availableTypes, bool showFindOption) {
+        var items = new List<Control>();
         if (availableTypes?.Any() == true) {
             if (showFindOption) {
                 items.Add(new MenuItem {

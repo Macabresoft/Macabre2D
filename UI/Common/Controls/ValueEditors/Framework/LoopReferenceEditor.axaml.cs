@@ -11,7 +11,7 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public class LoopReferenceEditor : ValueEditorControl<LoopReference> {
+public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
     public static readonly DirectProperty<LoopReferenceEditor, ICommand> ClearCommandProperty =
         AvaloniaProperty.RegisterDirect<LoopReferenceEditor, ICommand>(
             nameof(ClearCommand),
@@ -64,8 +64,12 @@ public class LoopReferenceEditor : ValueEditorControl<LoopReference> {
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<LoopReference> args) {
+        base.OnValueChanged(args);
+        
+        if (args.OldValue is { HasValue: true, Value: { } reference }) {
+            reference.PropertyChanged -= this.Value_PropertyChanged;
+        }
 
         if (this.Value != null) {
             this.ClearCommand = ReactiveCommand.Create(
@@ -74,14 +78,6 @@ public class LoopReferenceEditor : ValueEditorControl<LoopReference> {
 
             this.ResetPath();
             this.Value.PropertyChanged += this.Value_PropertyChanged;
-        }
-    }
-
-    protected override void OnValueChanging() {
-        base.OnValueChanging();
-
-        if (this.Value != null) {
-            this.Value.PropertyChanged -= this.Value_PropertyChanged;
         }
     }
 
@@ -94,10 +90,6 @@ public class LoopReferenceEditor : ValueEditorControl<LoopReference> {
                 () => this.Value.LoopId = Guid.Empty,
                 () => this.Value.LoopId = previousId);
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ResetPath() {

@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
+public partial class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
     public static readonly DirectProperty<SpriteSheetInfoControl, SpriteDisplayCollection> SpriteCollectionProperty =
         AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, SpriteDisplayCollection>(
             nameof(SpriteCollection),
@@ -29,9 +29,5 @@ public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
         base.OnDetachedFromVisualTree(e);
 
         this.SpriteCollection?.Dispose();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

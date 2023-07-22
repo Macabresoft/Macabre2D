@@ -6,7 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
-public class AssetReferenceControl : UserControl {
+public partial class AssetReferenceControl : UserControl {
     public static readonly StyledProperty<ICommand> ClearCommandProperty =
         AvaloniaProperty.Register<AssetReferenceControl, ICommand>(nameof(ClearCommand));
 
@@ -41,9 +41,5 @@ public class AssetReferenceControl : UserControl {
     public ICommand SelectCommand {
         get => this.GetValue(SelectCommandProperty);
         set => this.SetValue(SelectCommandProperty, value);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

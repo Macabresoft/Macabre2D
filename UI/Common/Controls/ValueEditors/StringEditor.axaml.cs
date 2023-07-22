@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class StringEditor : ValueEditorControl<string> {
+public partial class StringEditor : ValueEditorControl<string> {
     public static readonly DirectProperty<StringEditor, string> IntermediaryValueProperty =
         AvaloniaProperty.RegisterDirect<StringEditor, string>(
             nameof(IntermediaryValue),
@@ -45,8 +45,8 @@ public class StringEditor : ValueEditorControl<string> {
         set => this.SetValue(WatermarkProperty, value);
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<string> args) {
+        base.OnValueChanged(args);
 
         if (this.HasValueChanged()) {
             this.IntermediaryValue = this.Value;
@@ -59,10 +59,6 @@ public class StringEditor : ValueEditorControl<string> {
         }
 
         return this.IntermediaryValue != null;
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {

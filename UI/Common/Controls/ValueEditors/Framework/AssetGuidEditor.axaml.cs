@@ -6,13 +6,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public class AssetGuidEditor : ValueEditorControl<Guid> {
+public partial class AssetGuidEditor : ValueEditorControl<Guid> {
     public static readonly DirectProperty<AssetGuidEditor, ICommand> ClearCommandProperty =
         AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
             nameof(ClearCommand),
@@ -77,8 +76,8 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    protected override void OnValueChanged() {
-        base.OnValueChanged();
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
+        base.OnValueChanged(args);
         this.ResetPath();
     }
 
@@ -90,10 +89,6 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
                 () => this.Value = Guid.Empty,
                 () => this.Value = originalValue);
         }
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ResetPath() {

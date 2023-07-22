@@ -4,7 +4,7 @@ using System;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class FloatEditor : BaseNumericEditor<float> {
+public partial class FloatEditor : BaseNumericEditor<float> {
     public FloatEditor() : this(null) {
     }
 
@@ -15,9 +15,5 @@ public class FloatEditor : BaseNumericEditor<float> {
 
     protected override float ConvertValue(object calculatedValue) {
         return Convert.ToSingle(calculatedValue);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity;
 
-public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
+public partial class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
     public LayerSettingsEditor() : this(null) {
     }
 
@@ -21,8 +21,4 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
     }
 
     public IReadOnlyCollection<Layers> AvailableLayers { get; }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

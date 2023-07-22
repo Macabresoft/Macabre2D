@@ -6,7 +6,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class AutoTileSetEditor : BaseSpriteSheetAssetReferenceEditor<AutoTileSetReference, AutoTileSet> {
+public partial class AutoTileSetEditor : BaseSpriteSheetAssetReferenceEditor<AutoTileSetReference, AutoTileSet> {
     public AutoTileSetEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -25,9 +25,5 @@ public class AutoTileSetEditor : BaseSpriteSheetAssetReferenceEditor<AutoTileSet
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

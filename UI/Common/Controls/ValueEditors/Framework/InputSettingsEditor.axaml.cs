@@ -7,7 +7,7 @@ using Avalonia.Markup.Xaml;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
 
-public class InputSettingsEditor : ValueEditorControl<InputSettings> {
+public partial class InputSettingsEditor : ValueEditorControl<InputSettings> {
     public InputSettingsEditor() : this(null) {
     }
 
@@ -21,8 +21,4 @@ public class InputSettingsEditor : ValueEditorControl<InputSettings> {
     }
 
     public IReadOnlyCollection<InputAction> Actions { get; }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

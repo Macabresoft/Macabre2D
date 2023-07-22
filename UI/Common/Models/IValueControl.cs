@@ -5,7 +5,7 @@ using Avalonia;
 /// <summary>
 /// A control for values being displayed in the editor.
 /// </summary>
-public interface IValueControl : IAvaloniaObject {
+public interface IValueControl {
     /// <summary>
     /// Gets or sets the category.
     /// </summary>

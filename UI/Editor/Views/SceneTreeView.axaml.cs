@@ -11,7 +11,6 @@ using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
@@ -19,7 +18,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 
-public class SceneTreeView : UserControl {
+public partial class SceneTreeView : UserControl {
     public static readonly Thickness DefaultPadding = new(2D);
 
     public static readonly DirectProperty<SceneTreeView, INameable> DraggedObjectProperty =
@@ -57,19 +56,19 @@ public class SceneTreeView : UserControl {
         set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
     }
 
-    private bool CanInsert(IControl target) {
+    private bool CanInsert(Control target) {
         return target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
                target.DataContext != this.DraggedObject;
     }
 
     private void Drag(object sender, DragEventArgs e) {
-        if (e.Source is IControl { DataContext: { } } control) {
+        if (e.Source is Control { DataContext: not null } control) {
             this.ResetDropTarget(control, e);
         }
     }
 
     private void Drop(object sender, DragEventArgs e) {
-        if (e.Source is IControl control) {
+        if (e.Source is Control control) {
             if (!this.IsInsert(e)) {
                 switch (control.DataContext) {
                     case IEntity targetEntity when this.DraggedObject is IEntity:
@@ -117,15 +116,11 @@ public class SceneTreeView : UserControl {
         this.ResetDropTarget(null, null);
     }
 
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private bool IsInsert(DragEventArgs e) {
         var result = false;
 
         if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
-            IControl toCheck = null;
+            Control toCheck = null;
 
             if (this._currentDropTarget.DataContext is EntityCollection or LoopCollection) {
                 toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
@@ -152,7 +147,7 @@ public class SceneTreeView : UserControl {
         }
     }
 
-    private void ResetDropTarget(IControl newTarget, DragEventArgs e) {
+    private void ResetDropTarget(Control newTarget, DragEventArgs e) {
         if (this._currentDropTarget != null) {
             this._currentDropTarget.BorderThickness = EmptyThickness;
             this._currentDropTarget.Padding = DefaultPadding;
@@ -178,7 +173,7 @@ public class SceneTreeView : UserControl {
 
     private async void TreeNode_OnPointerMoved(object sender, PointerEventArgs e) {
         if (!this._isDragging && this.DraggedObject != null &&
-            sender is IControl { DataContext: ILoop or IEntity and not IScene } control &&
+            sender is Control { DataContext: ILoop or IEntity and not IScene } control &&
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
@@ -188,7 +183,7 @@ public class SceneTreeView : UserControl {
 
     private void TreeNode_OnPointerPressed(object sender, PointerPressedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
-            sender is IControl { DataContext: ILoop or IEntity and not IScene } control) {
+            sender is Control { DataContext: ILoop or IEntity and not IScene } control) {
             this.DraggedObject = control.DataContext as INameable;
         }
     }

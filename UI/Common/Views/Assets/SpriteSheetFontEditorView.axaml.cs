@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class SpriteSheetFontEditorView : UserControl {
+public partial class SpriteSheetFontEditorView : UserControl {
     public SpriteSheetFontEditorView() {
     }
 
@@ -12,9 +12,5 @@ public class SpriteSheetFontEditorView : UserControl {
     public SpriteSheetFontEditorView(SpriteSheetFontEditorViewModel viewModel) {
         this.DataContext = viewModel;
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

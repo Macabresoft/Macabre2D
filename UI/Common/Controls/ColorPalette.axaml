@@ -9,7 +9,7 @@
         <Design.DataContext>
             <local:ColorPalette />
         </Design.DataContext>
-        <ListBox Items="{Binding AvailableColors}"
+        <ListBox ItemsSource="{Binding AvailableColors}"
                  SelectedItem="{Binding SelectedColor}"
                  SelectionMode="Single"
                  VerticalAlignment="Center"

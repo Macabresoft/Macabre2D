@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class ContentFileInfoControl : ValueControl<ContentFile> {
+public partial class ContentFileInfoControl : ValueControl<ContentFile> {
     public static readonly DirectProperty<ContentFileInfoControl, FileInfo> FileInfoProperty =
         AvaloniaProperty.RegisterDirect<ContentFileInfoControl, FileInfo>(
             nameof(FileInfo),
@@ -24,8 +24,4 @@ public class ContentFileInfoControl : ValueControl<ContentFile> {
     }
 
     public FileInfo FileInfo { get; }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

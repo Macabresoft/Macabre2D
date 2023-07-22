@@ -10,7 +10,7 @@
             <local:InputSettingsEditor />
         </Design.DataContext>
         
-        <ItemsControl Items="{Binding Actions}">
+        <ItemsControl ItemsSource="{Binding Actions}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <local:InputActionControl InputSettings="{Binding $parent[local:InputSettingsEditor].Value}"

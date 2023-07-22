@@ -4,7 +4,7 @@ using System;
 using Avalonia.Markup.Xaml;
 using Unity;
 
-public class DoubleEditor : BaseNumericEditor<double> {
+public partial class DoubleEditor : BaseNumericEditor<double> {
     public DoubleEditor() : this(null) {
     }
 
@@ -15,9 +15,5 @@ public class DoubleEditor : BaseNumericEditor<double> {
 
     protected override double ConvertValue(object calculatedValue) {
         return Convert.ToDouble(calculatedValue);
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

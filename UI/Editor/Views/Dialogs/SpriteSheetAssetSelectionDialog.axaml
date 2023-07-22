@@ -37,7 +37,7 @@
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible">
-                <ItemsControl Items="{Binding SpriteSheets}">
+                <ItemsControl ItemsSource="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <avaloniaEx:GroupBox Header="{Binding Name}">
@@ -58,7 +58,7 @@
                                     </Image>
 
                                     <ListBox Grid.Column="1"
-                                             Items="{Binding Assets}"
+                                             ItemsSource="{Binding Assets}"
                                              SelectedItem="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedAsset}"
                                              Margin="{StaticResource StandardMarginLeft}">
                                         <ListBox.ItemTemplate>

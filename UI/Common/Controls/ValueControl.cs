@@ -1,10 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 
-public class ValueControl<T> : UserControl, IValueInfo<T> {
+public abstract class ValueControl<T> : UserControl, IValueInfo<T>, IObserver<AvaloniaPropertyChangedEventArgs<T>> {
+    public static readonly StyledProperty<string> CategoryProperty =
+        AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Category));
+
     public static readonly DirectProperty<ValueControl<T>, ValueControlCollection> CollectionProperty =
         AvaloniaProperty.RegisterDirect<ValueControl<T>, ValueControlCollection>(
             nameof(Collection),
@@ -18,15 +22,13 @@ public class ValueControl<T> : UserControl, IValueInfo<T> {
         AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Title));
 
     public static readonly StyledProperty<T> ValueProperty =
-        AvaloniaProperty.Register<ValueControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
-
-    public static readonly StyledProperty<string> CategoryProperty =
-        AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Category));
+        AvaloniaProperty.Register<ValueControl<T>, T>(nameof(Value), defaultBindingMode: BindingMode.TwoWay);
 
 
     private ValueControlCollection _collection;
 
     protected ValueControl() {
+        ValueProperty.Changed.Subscribe(this);
     }
 
     protected ValueControl(ValueControlDependencies dependencies) {
@@ -65,25 +67,21 @@ public class ValueControl<T> : UserControl, IValueInfo<T> {
         set => this.SetValue(ValueProperty, value);
     }
 
+    public void OnCompleted() {
+    }
+
+    public void OnError(Exception error) {
+    }
+
+    public void OnNext(AvaloniaPropertyChangedEventArgs<T> value) {
+        this.OnValueChanged(value);
+    }
+
     public void Teardown() {
         this.Owner = null;
         this.Value = default;
     }
 
-    protected virtual void OnValueChanged() {
-    }
-
-    protected virtual void OnValueChanging() {
-    }
-
-    private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-        if (control is ValueControl<T> valueControl) {
-            if (isBeforeChange) {
-                valueControl.OnValueChanging();
-            }
-            else {
-                valueControl.OnValueChanged();
-            }
-        }
+    protected virtual void OnValueChanged(AvaloniaPropertyChangedEventArgs<T> args) {
     }
 }

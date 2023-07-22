@@ -1,12 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public class AudioClipReferenceEditor : BaseAssetReferenceEditor<AudioClipReference, AudioClipAsset> {
+public partial class AudioClipReferenceEditor : BaseAssetReferenceEditor<AudioClipReference, AudioClipAsset> {
     public AudioClipReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
@@ -21,9 +20,5 @@ public class AudioClipReferenceEditor : BaseAssetReferenceEditor<AudioClipRefere
         ILocalDialogService dialogService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, undoService) {
         this.InitializeComponent();
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }

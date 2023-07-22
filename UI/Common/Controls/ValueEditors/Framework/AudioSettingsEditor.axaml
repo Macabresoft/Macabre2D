@@ -1,10 +1,10 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                                 x:TypeArguments="framework:AudioSettings"
-                                 x:Class="Macabresoft.Macabre2D.UI.Common.AudioSettingsEditor">
-    <local:ValueEditorControl.Styles>
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          x:TypeArguments="framework:AudioSettings"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.AudioSettingsEditor">
+    <UserControl.Styles>
         <Style Selector="local|FloatEditor">
             <Setter Property="ValueMaximum" Value="1" />
             <Setter Property="ValueMinimum" Value="0" />
@@ -17,7 +17,7 @@
             <Setter Property="TickFrequency" Value="0.01" />
             <Setter Property="IsSnapToTickEnabled" Value="True" />
         </Style>
-    </local:ValueEditorControl.Styles>
+    </UserControl.Styles>
     <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
           ColumnDefinitions="*, *"
           DataContext="{Binding $parent[local:AudioSettingsEditor]}">
@@ -35,45 +35,45 @@
                             Value="{Binding OverallVolume}" />
 
         <local:FloatEditor Grid.Row="1"
-                                  Grid.Column="0"
-                                  Value="{Binding EffectVolume}"
-                                  Title="Effect Volume" />
+                           Grid.Column="0"
+                           Value="{Binding EffectVolume}"
+                           Title="Effect Volume" />
 
         <local:VolumeSlider Grid.Row="1"
                             Grid.Column="1"
                             Value="{Binding EffectVolume}" />
 
         <local:FloatEditor Grid.Row="2"
-                                  Grid.Column="0"
-                                  Value="{Binding MenuVolume}"
-                                  Title="Menu Volume" />
+                           Grid.Column="0"
+                           Value="{Binding MenuVolume}"
+                           Title="Menu Volume" />
 
         <local:VolumeSlider Grid.Row="2"
                             Grid.Column="1"
                             Value="{Binding MenuVolume}" />
 
         <local:FloatEditor Grid.Row="3"
-                                  Grid.Column="0"
-                                  Value="{Binding MusicVolume}"
-                                  Title="Music Volume" />
+                           Grid.Column="0"
+                           Value="{Binding MusicVolume}"
+                           Title="Music Volume" />
 
         <local:VolumeSlider Grid.Row="3"
                             Grid.Column="1"
                             Value="{Binding MusicVolume}" />
 
         <local:FloatEditor Grid.Row="4"
-                                  Grid.Column="0"
-                                  Value="{Binding NotificationVolume}"
-                                  Title="Notification Volume" />
+                           Grid.Column="0"
+                           Value="{Binding NotificationVolume}"
+                           Title="Notification Volume" />
 
         <local:VolumeSlider Grid.Row="4"
                             Grid.Column="1"
                             Value="{Binding NotificationVolume}" />
 
         <local:FloatEditor Grid.Row="5"
-                                  Grid.Column="0"
-                                  Value="{Binding VoiceVolume}"
-                                  Title="Voice Volume" />
+                           Grid.Column="0"
+                           Value="{Binding VoiceVolume}"
+                           Title="Voice Volume" />
 
         <local:VolumeSlider Grid.Row="5"
                             Grid.Column="1"

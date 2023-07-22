@@ -238,7 +238,7 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     }
 
     private Size GetStepSize() {
-        var size = Size.Empty;
+        var size = new Size();
         if (this.SpriteCollection.Sprites.FirstOrDefault() is { Size: { Width: > 0, Height: > 0 } spriteSize }) {
             if (spriteSize.Width == spriteSize.Height) {
                 size = new Size(MaxStepSize, MaxStepSize);
