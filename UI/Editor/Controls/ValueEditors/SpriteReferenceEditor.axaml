@@ -45,6 +45,7 @@
                        Minimum="0"
                        VerticalAlignment="Top"
                        IsEnabled="{Binding PathText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       FormatString="{}{0:#,0}"
                        ToolTip.Tip="Adjust the sprite index" />
 
         <common:AssetReferenceControl Grid.Column="2"
