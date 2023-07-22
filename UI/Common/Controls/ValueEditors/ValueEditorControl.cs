@@ -11,7 +11,7 @@ public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
 
     public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
-    protected ValueEditorControl() {
+    protected ValueEditorControl() : base() {
     }
 
     protected ValueEditorControl(ValueControlDependencies dependencies) : base(dependencies) {

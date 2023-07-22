@@ -31,7 +31,7 @@ public abstract class ValueControl<T> : UserControl, IValueInfo<T>, IObserver<Av
         ValueProperty.Changed.Subscribe(this);
     }
 
-    protected ValueControl(ValueControlDependencies dependencies) {
+    protected ValueControl(ValueControlDependencies dependencies) : this() {
         if (dependencies != null) {
             if (dependencies.Value is T typedValue) {
                 this.Value = typedValue;
