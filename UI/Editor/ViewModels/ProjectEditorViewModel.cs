@@ -25,6 +25,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private EditorGrid _grid;
     private Rect _overallSceneArea;
     private LoopingSpriteAnimator _spriteAnimator;
+    private TextLine _textLine;
     private AutoTileMap _tileMap;
     private Rect _viewableSceneArea;
 
@@ -60,6 +61,31 @@ public class ProjectEditorViewModel : BaseViewModel {
     }
 
     /// <summary>
+    /// Gets the asset selection service.
+    /// </summary>
+    public IAssetSelectionService AssetSelectionService { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not an animation is showing.
+    /// </summary>
+    public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
+
+    /// <summary>
+    /// Gets the pause command.
+    /// </summary>
+    public ICommand PauseCommand { get; }
+
+    /// <summary>
+    /// Gets the play command.
+    /// </summary>
+    public ICommand PlayCommand { get; }
+
+    /// <summary>
+    /// Gets the stop command.
+    /// </summary>
+    public ICommand StopCommand { get; }
+
+    /// <summary>
     /// Gets or sets the animation preview framerate.
     /// </summary>
     public byte AnimationPreviewFramerate {
@@ -70,11 +96,6 @@ public class ProjectEditorViewModel : BaseViewModel {
             this.RaisePropertyChanged();
         }
     }
-
-    /// <summary>
-    /// Gets the asset selection service.
-    /// </summary>
-    public IAssetSelectionService AssetSelectionService { get; }
 
     /// <summary>
     /// Gets or sets the background color.
@@ -93,32 +114,12 @@ public class ProjectEditorViewModel : BaseViewModel {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not an animation is showing.
-    /// </summary>
-    public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
-
-    /// <summary>
     /// Gets or sets the overall area of the scene.
     /// </summary>
     public Rect OverallSceneArea {
         get => this._overallSceneArea;
         set => this.ResetSize(value, this.ViewableSceneArea);
     }
-
-    /// <summary>
-    /// Gets the pause command.
-    /// </summary>
-    public ICommand PauseCommand { get; }
-
-    /// <summary>
-    /// Gets the play command.
-    /// </summary>
-    public ICommand PlayCommand { get; }
-
-    /// <summary>
-    /// Gets the stop command.
-    /// </summary>
-    public ICommand StopCommand { get; }
 
     /// <summary>
     /// Gets or sets the viewable area of the scene.
@@ -133,12 +134,17 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._tileMap.IsEnabled = false;
             this._spriteAnimator.IsEnabled = false;
             this._grid.IsEnabled = false;
+            this._textLine.IsVisible = false;
+
             switch (this.AssetSelectionService.Selected) {
                 case AutoTileSet autoTileSet:
                     this.ResetScene(autoTileSet);
                     break;
                 case SpriteAnimation spriteAnimation:
                     this.ResetScene(spriteAnimation);
+                    break;
+                case SpriteSheetFont font:
+                    this.ResetScene(font);
                     break;
                 case SpriteSheet spriteSheet:
                     this.ResetScene(spriteSheet);
@@ -228,6 +234,9 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
         this._spriteAnimator.IsEnabled = false;
 
+        this._textLine = scene.AddChild<TextLine>();
+        this._textLine.IsVisible = false;
+
         // This applies the framerate to the sprite animator and also insures the frame rate is valid.
         this.AnimationPreviewFramerate = this._settingsService.Settings.AnimationPreviewFramerate;
 
@@ -259,6 +268,15 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._spriteAnimator.AnimationReference.Initialize(this._scene.Assets);
             this._spriteAnimator.Play();
             this._spriteAnimator.IsEnabled = true;
+        }
+    }
+
+    private void ResetScene(SpriteSheetFont font) {
+        if (font.SpriteSheet != null) {
+            this._textLine.IsVisible = true;
+            this._textLine.FontReference.Reset(font);
+            this._textLine.FontReference.Initialize(this._scene.Assets);
+            this._textLine.Text = font.CharacterLayout;
         }
     }
 
