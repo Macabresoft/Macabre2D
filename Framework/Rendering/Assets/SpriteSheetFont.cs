@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -20,7 +21,8 @@ public class SpriteSheetFont : SpriteSheetMember {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<char, byte> _characterToIndex = new();
 
-    private string _characterLayout = @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.?!,-=+: ";
+    [DataMember]
+    private string _characterLayout = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.?!,-=+: ";
 
     /// <summary>
     /// The character layout of this sprite sheet.

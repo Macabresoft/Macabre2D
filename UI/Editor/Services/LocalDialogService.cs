@@ -59,13 +59,13 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
         var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(
             new ParameterOverride("viewModel",
                 Resolver.Resolve<SpriteSheetAssetSelectionViewModel<TAsset>>()));
-
+        
         if (await window.ShowDialog<bool>(this.MainWindow) &&
-            window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: { } tileSet } viewModel &&
-            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is { } contentSpriteSheet &&
+            window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: { } asset } viewModel &&
+            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == asset.Id)) is { } contentSpriteSheet &&
             this._assetManager.TryGetMetadata(contentSpriteSheet.ContentId, out var metadata) &&
             metadata?.Asset is SpriteSheet spriteSheet) {
-            return (spriteSheet, tileSet.Id);
+            return (spriteSheet, asset.Id);
         }
 
         return (null, Guid.Empty);

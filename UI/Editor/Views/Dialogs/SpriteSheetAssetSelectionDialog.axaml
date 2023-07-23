@@ -12,9 +12,9 @@
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection"
                        VectorIcon="{StaticResource SpriteSheetIcon}">
-    <avaloniaEx:BaseDialog.Resources>
+    <Window.Resources>
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
-    </avaloniaEx:BaseDialog.Resources>
+    </Window.Resources>
     <Design.DataContext>
         <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetMember" />
     </Design.DataContext>

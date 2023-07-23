@@ -49,6 +49,11 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier, IAssetR
     private IAssetManager _assetManager = AssetManager.Empty;
     private Guid _contentId = Guid.Empty;
 
+    /// <summary>
+    /// An event called when an asset is loaded.
+    /// </summary>
+    public event EventHandler? AssetLoaded;
+
     /// <inheritdoc />
     public TAsset? Asset {
         get => this._asset;
@@ -91,6 +96,7 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier, IAssetR
         this.Asset.PropertyChanged += this.Asset_PropertyChanged;
         this.ContentId = this.Asset.ContentId;
         this._assetManager.LoadContentForAsset<TContent>(this.Asset);
+        this.AssetLoaded.SafeInvoke(this);
     }
 
     /// <summary>

@@ -13,8 +13,8 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly Dictionary<char, float> _characterToWidth = new();
     private readonly Dictionary<char, float> _characterToOffset = new();
+    private readonly Dictionary<char, float> _characterToWidth = new();
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
     private int _kerning;
@@ -86,6 +86,7 @@ public class TextLine : RenderableEntity {
         base.Initialize(scene, parent);
 
         this.FontReference.Initialize(this.Scene.Assets);
+        this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
         this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
@@ -102,7 +103,7 @@ public class TextLine : RenderableEntity {
                 if (this._characterToOffset.TryGetValue(character.Character, out var offset)) {
                     position = new Vector2(position.X + offset, position.Y);
                 }
-                
+
                 spriteSheet.Draw(
                     spriteBatch,
                     this.Settings.PixelsPerUnit,
@@ -182,6 +183,10 @@ public class TextLine : RenderableEntity {
         }
 
         return Vector2.Zero;
+    }
+
+    private void FontReference_AssetLoaded(object? sender, EventArgs e) {
+        this.RequestRefresh();
     }
 
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

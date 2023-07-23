@@ -15,6 +15,7 @@ using Unity;
 /// </summary>
 public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetMember {
     private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
+    private bool _isFinished;
     private TAsset _selectedAsset;
     private FilteredContentWrapper _selectedContentNode;
     private ThumbnailSize _selectedThumbnailSize;
@@ -78,7 +79,17 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
 
+    /// inheritdoc />
+    protected override void OnOk() {
+        this._isFinished = true;
+        base.OnOk();
+    }
+
     private void ResetSpriteSheets() {
+        if (this._isFinished) {
+            return;
+        }
+
         this._spriteSheets.Clear();
 
         if (this.SelectedContentNode != null) {
