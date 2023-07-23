@@ -119,6 +119,10 @@
             <DependentUpon>LayerNameEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Dialogs\SpriteFontLayoutDialog.axaml.cs">
+          <DependentUpon>SpriteFontLayoutDialog.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

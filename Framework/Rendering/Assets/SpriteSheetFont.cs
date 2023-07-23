@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -18,6 +19,22 @@ public class SpriteSheetFont : SpriteSheetMember {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<char, byte> _characterToIndex = new();
+
+    private string _characterLayout = @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.?!,-=+: ";
+
+    /// <summary>
+    /// The character layout of this sprite sheet.
+    /// </summary>
+    public string CharacterLayout {
+        get => this._characterLayout;
+        set {
+            this._characterLayout = new string(value.Distinct().ToArray());
+
+            foreach (var character in this._characterToIndex.Keys.Where(x => !this._characterLayout.Contains(x))) {
+                this.UnsetSprite(character);
+            }
+        }
+    }
 
     /// <summary>
     /// Sets the sprite for the specified character
@@ -37,7 +54,7 @@ public class SpriteSheetFont : SpriteSheetMember {
             spriteCharacter.SpriteIndex = spriteIndex;
         }
         else {
-            this._characterIndexToCharacter[index] = new SpriteSheetFontCharacter() {
+            this._characterIndexToCharacter[index] = new SpriteSheetFontCharacter {
                 Character = character,
                 Kerning = kerning,
                 SpriteIndex = spriteIndex

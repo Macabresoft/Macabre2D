@@ -53,6 +53,13 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types);
 
     /// <summary>
+    /// Shows a dialog to lay out a font.
+    /// </summary>
+    /// <param name="currentLayout">The current layout.</param>
+    /// <returns>The new layout.</returns>
+    Task<SpriteFontLayoutResult> ShowFontLayoutDialog(string currentLayout);
+
+    /// <summary>
     /// Shows a dialog to select a file.
     /// </summary>
     /// <param name="title">The title of the window.</param>
@@ -155,6 +162,13 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         }
 
         return selectedType;
+    }
+
+    /// <inheritdoc />
+    public async Task<SpriteFontLayoutResult> ShowFontLayoutDialog(string currentLayout) {
+        var window = Resolver.Resolve<SpriteFontLayoutDialog>(new ParameterOverride(typeof(string), currentLayout));
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+        return result ? window.ViewModel.Result : null;
     }
 
     /// <inheritdoc />

@@ -1,0 +1,41 @@
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       x:Class="Macabresoft.Macabre2D.UI.Common.SpriteFontLayoutDialog"
+                       Width="480"
+                       SizeToContent="Height"
+                       CanResize="False"
+                       ShowInTaskbar="False"
+                       WindowStartupLocation="CenterOwner"
+                       Title="Font Character Layout">
+    <Design.DataContext>
+        <local:SpriteFontLayoutViewModel />
+    </Design.DataContext>
+    <Grid Margin="{StaticResource StandardMarginAll}"
+          RowDefinitions="Auto, Auto, Auto">
+
+        <local:StringEditor Grid.Row="0"
+                            Value="{Binding Result.CharacterLayout}"
+                            Title="Layout" />
+
+        <CheckBox Grid.Row="1"
+                  IsChecked="{Binding Result.PerformAutoLayout}"
+                  Content="Perform Auto Layout" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="2"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteFontLayoutDialog]}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding $parent[local:SpriteFontLayoutDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteFontLayoutDialog]}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</avaloniaEx:BaseDialog>
