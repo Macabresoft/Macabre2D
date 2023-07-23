@@ -36,8 +36,6 @@ public sealed class MonoGameKeyboard {
             this._focusElement.Focus();
         }
         
-        Debug.WriteLine($"{this._focusElement.IsFocused} - {this._pressedKeys.Count} - {this._focusElement.IsKeyboardFocusWithin}");
-
         return this._focusElement.IsKeyboardFocusWithin ? new KeyboardState(this._pressedKeys.ToArray()) : new KeyboardState();
     }
 
