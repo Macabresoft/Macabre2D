@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Unity;
@@ -71,32 +72,7 @@ public interface ICommonDialogService : IBaseDialogService {
 /// A common dialog service.
 /// </summary>
 public abstract class CommonDialogService : BaseDialogService, ICommonDialogService {
-    private readonly List<FileDialogFilter> _fileFilters = new() {
-        new FileDialogFilter {
-            Name = "All",
-            Extensions = new List<string> { "*" }
-        },
-        new FileDialogFilter {
-            Name = @"Audio",
-            Extensions = AudioClipAsset.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
-        },
-        new FileDialogFilter {
-            Name = "Images",
-            Extensions = SpriteSheet.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
-        },
-        new FileDialogFilter {
-            Name = "Prefabs",
-            Extensions = new List<string> { PrefabAsset.FileExtension.TrimStart('.') }
-        },
-        new FileDialogFilter {
-            Name = "Scenes",
-            Extensions = new List<string> { SceneAsset.FileExtension.TrimStart('.') }
-        },
-        new FileDialogFilter {
-            Name = "Shaders",
-            Extensions = new List<string> { ShaderAsset.FileExtension.TrimStart('.') }
-        }
-    };
+    private readonly FilePickerOpenOptions _contentSelectionOptions = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CommonDialogService" /> class.
@@ -104,6 +80,27 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     /// <param name="container">The container.</param>
     /// <param name="mainWindow">The main window.</param>
     protected CommonDialogService(IUnityContainer container, Window mainWindow) : base(container, mainWindow) {
+        this._contentSelectionOptions.AllowMultiple = false;
+        this._contentSelectionOptions.FileTypeFilter = new[] {
+            new FilePickerFileType("All") {
+                Patterns = new[] { "*" }
+            },
+            new FilePickerFileType("Audio") {
+                Patterns = AudioClipAsset.ValidFileExtensions.Select(x => $"*{x}").ToArray()
+            },
+            new FilePickerFileType("Images") {
+                Patterns = SpriteSheet.ValidFileExtensions.Select(x => $"*{x}").ToArray()
+            },
+            new FilePickerFileType("Prefabs") {
+                Patterns = new[] { $"*{PrefabAsset.FileExtension}" }
+            },
+            new FilePickerFileType("Scenes") {
+                Patterns = new[] { $"*{SceneAsset.FileExtension}" }
+            },
+            new FilePickerFileType("Shaders") {
+                Patterns = new[] { $"*{ShaderAsset.FileExtension}" }
+            }
+        };
     }
 
     /// <inheritdoc />
@@ -173,12 +170,12 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
 
     /// <inheritdoc />
     public async Task<string> ShowSingleFileSelectionDialog(string title) {
-        var dialog = new OpenFileDialog {
-            AllowMultiple = false,
-            Filters = this._fileFilters
-        };
+        var result = await this.MainWindow.StorageProvider.OpenFilePickerAsync(this._contentSelectionOptions);
 
-        var result = await dialog.ShowAsync(this.MainWindow);
-        return result?.FirstOrDefault();
+        if (result.FirstOrDefault()?.TryGetLocalPath() is { } path) {
+            return path;
+        }
+
+        return null;
     }
 }
