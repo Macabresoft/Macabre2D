@@ -16,11 +16,6 @@ using Unity;
 /// A view model for editing <see cref="SpriteSheetFont" />.
 /// </summary>
 public class SpriteSheetFontEditorViewModel : BaseViewModel {
-    private const string LowercaseLetters = "";
-    private const string Numbers = "0123456789";
-    private const string Symbols = ".?!,-=+:";
-    private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.?!,-=+: ";
-    private const string WhiteSpace = " ";
     private readonly ObservableCollectionExtended<SpriteSheetFontIndexModel> _characters = new();
     private readonly ICommonDialogService _dialogService;
     private readonly SpriteSheetFont _font;
@@ -41,7 +36,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="undoService">The parent undo service.</param>
     /// <param name="font">The font being edited.</param>
-    /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The content file.</param>
     [InjectionConstructor]
     public SpriteSheetFontEditorViewModel(
@@ -56,7 +50,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedCharacter, x => x.Value != null));
-        this.SelectCharacterCommand = ReactiveCommand.Create<SpriteSheetFontIndexModel>(this.SelectCharacter);
         this.SpriteCollection = new SpriteDisplayCollection(font.SpriteSheet, file);
         this._characters.Reset(this.CreateCharacterModels());
         this.SelectedCharacter = this.Characters.First();
@@ -76,11 +69,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// Clears the selected sprite from the selected tile.
     /// </summary>
     public ICommand ClearSpriteCommand { get; }
-
-    /// <summary>
-    /// Gets the select tile command.
-    /// </summary>
-    public ICommand SelectCharacterCommand { get; }
 
     /// <summary>
     /// Gets the sprite collection.
@@ -206,14 +194,6 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
 
                 this._characters.Reset(previousCharacters);
             });
-        }
-    }
-
-    private void SelectCharacter(SpriteSheetFontIndexModel character) {
-        if (character != null) {
-            this.SelectedCharacter = character;
-            // HACK: this makes things work well in the UI, just trust me.
-            Dispatcher.UIThread.Post(() => this.RaisePropertyChanged(nameof(this.SelectedCharacter)), DispatcherPriority.ApplicationIdle);
         }
     }
 }
