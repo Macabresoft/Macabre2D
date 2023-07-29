@@ -39,6 +39,14 @@ public class SpriteSheetFont : SpriteSheetMember {
     }
 
     /// <summary>
+    /// Clears the sprites.
+    /// </summary>
+    public void ClearSprites() {
+        this._characterToIndex.Clear();
+        this._characterIndexToCharacter.Clear();
+    }
+
+    /// <summary>
     /// Sets the sprite for the specified character
     /// </summary>
     /// <param name="spriteIndex">The sprite.</param>

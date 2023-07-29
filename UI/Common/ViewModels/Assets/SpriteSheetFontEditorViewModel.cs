@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,7 +86,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// Gets the sprite collection.
     /// </summary>
     public SpriteDisplayCollection SpriteCollection { get; }
-
+    
     /// <summary>
     /// Gets or sets the selected tile.
     /// </summary>
@@ -175,14 +176,19 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
 
             this._undoService.Do(() =>
             {
-                this._font.CharacterLayout = result.CharacterLayout;
+                if (result.PerformAutoLayout) {
+                    this._font.ClearSprites();
 
-                if (result.PerformAutoLayout && this._font.SpriteSheet is { } spriteSheet && spriteSheet.Columns * spriteSheet.Rows >= this._font.CharacterLayout.Length) {
-                    for (var i = 0; i < this._font.CharacterLayout.Length; i++) {
-                        this._font.SetSprite((byte)i, this._font.CharacterLayout[i], 0);
+                    if (this._font.SpriteSheet is { } spriteSheet && spriteSheet.Columns * spriteSheet.Rows >= this._font.CharacterLayout.Length) {
+                        for (var i = 0; i < this._font.CharacterLayout.Length; i++) {
+                            this._font.SetSprite((byte)i, this._font.CharacterLayout[i], 0);
+                        }
                     }
                 }
-
+                else {
+                    this._font.CharacterLayout = result.CharacterLayout;
+                }
+                
                 this._characters.Reset(this.CreateCharacterModels());
             }, () =>
             {
