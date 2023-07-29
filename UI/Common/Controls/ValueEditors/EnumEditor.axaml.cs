@@ -6,10 +6,8 @@ using Avalonia.Markup.Xaml;
 using Unity;
 
 public partial class EnumEditor : ValueEditorControl<object> {
-    public static readonly DirectProperty<EnumEditor, Type> EnumTypeProperty =
-        AvaloniaProperty.RegisterDirect<EnumEditor, Type>(
-            nameof(EnumType),
-            editor => editor.EnumType);
+    public static readonly StyledProperty<Type> EnumTypeProperty =
+        AvaloniaProperty.Register<EnumEditor, Type>(nameof(EnumType));
 
     public EnumEditor() : this(null) {
     }
@@ -19,6 +17,9 @@ public partial class EnumEditor : ValueEditorControl<object> {
         this.EnumType = dependencies?.ValueType;
         this.InitializeComponent();
     }
-
-    public Type EnumType { get; }
+    
+    public Type EnumType {
+        get => this.GetValue(EnumTypeProperty);
+        set => this.SetValue(EnumTypeProperty, value);
+    }
 }
