@@ -166,6 +166,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
             {
                 if (result.PerformAutoLayout) {
                     this._font.ClearSprites();
+                    this._font.CharacterLayout = result.CharacterLayout;
 
                     if (this._font.SpriteSheet is { } spriteSheet && spriteSheet.Columns * spriteSheet.Rows >= this._font.CharacterLayout.Length) {
                         for (var i = 0; i < this._font.CharacterLayout.Length; i++) {
