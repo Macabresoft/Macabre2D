@@ -9,7 +9,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
         <ProjectReference Include="..\Gameplay\Macabre2D.Scripts.Gameplay.csproj" />
-        <ProjectReference Include="..\UI\Macabre2D.Scripts.UI.csproj" />
     </ItemGroup>
 
     <ItemGroup>
