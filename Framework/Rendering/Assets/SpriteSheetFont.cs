@@ -47,6 +47,21 @@ public class SpriteSheetFont : SpriteSheetMember {
     }
 
     /// <summary>
+    /// Gets the character's width with kerning taken into account.
+    /// </summary>
+    /// <param name="character">The character.</param>
+    /// <param name="additionalKerning">Additional kerning.</param>
+    /// <param name="settings">The settings.</param>
+    /// <returns>The width.</returns>
+    public float GetCharacterWidth(SpriteSheetFontCharacter character, int additionalKerning, IGameSettings settings) {
+        if (this.SpriteSheet is { } spriteSheet) {
+            return (spriteSheet.SpriteSize.X + additionalKerning + character.Kerning) * settings.UnitsPerPixel;
+        }
+
+        return 0f;
+    }
+
+    /// <summary>
     /// Sets the sprite for the specified character
     /// </summary>
     /// <param name="spriteIndex">The sprite.</param>

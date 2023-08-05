@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly Dictionary<char, float> _characterToOffset = new();
     private readonly Dictionary<char, float> _characterToWidth = new();
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
@@ -100,10 +99,6 @@ public class TextLine : RenderableEntity {
             var position = this.BoundingArea.Minimum;
 
             foreach (var character in this._spriteCharacters) {
-                if (this._characterToOffset.TryGetValue(character.Character, out var offset)) {
-                    position = new Vector2(position.X + offset, position.Y);
-                }
-
                 spriteSheet.Draw(
                     spriteBatch,
                     this.Settings.PixelsPerUnit,
@@ -211,20 +206,12 @@ public class TextLine : RenderableEntity {
     private void ResetIndexes() {
         this._spriteCharacters.Clear();
         this._characterToWidth.Clear();
-        this._characterToOffset.Clear();
 
         if (this.FontReference.PackagedAsset is { SpriteSheet: { } spriteSheet } font) {
             foreach (var character in this.Text) {
                 if (font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
                     this._spriteCharacters.Add(spriteCharacter);
-
-                    if (spriteCharacter.Kerning != 0) {
-                        this._characterToOffset[character] = spriteCharacter.Kerning * this.Settings.UnitsPerPixel;
-                        this._characterToWidth[character] = (spriteSheet.SpriteSize.X + this.Kerning + spriteCharacter.Kerning) * this.Settings.UnitsPerPixel;
-                    }
-                    else {
-                        this._characterToWidth[character] = (spriteSheet.SpriteSize.X + this.Kerning) * this.Settings.UnitsPerPixel;
-                    }
+                    this._characterToWidth[character] = font.GetCharacterWidth(spriteCharacter, this.Kerning, this.Settings);
                 }
             }
         }
