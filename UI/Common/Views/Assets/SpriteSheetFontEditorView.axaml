@@ -31,6 +31,9 @@
                     ToolTip.Tip="Set a new character layout for the font">
                 <avaloniaEx:Icon Content="{StaticResource AutoTextIcon}" />
             </Button>
+            
+            <local:IntEditor Title="Kerning"
+                             Value="{Binding Kerning}" />
         </StackPanel>
         
         <Button Classes="Icon"

@@ -1,11 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -74,13 +72,32 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// Gets the sprite collection.
     /// </summary>
     public SpriteDisplayCollection SpriteCollection { get; }
-    
+
+    /// <summary>
+    /// Gets or sets the overall kerning for the font. This is applied to all characters.
+    /// </summary>
+    public int Kerning {
+        get => this._font.Kerning;
+        set {
+            var originalValue = this._font.Kerning;
+            this._undoService.Do(() =>
+            {
+                this._font.Kerning = value;
+                this.RaisePropertyChanged();
+            }, () =>
+            {
+                this._font.Kerning = originalValue;
+                this.RaisePropertyChanged();
+            });
+        }
+    }
+
     /// <summary>
     /// Gets or sets the selected tile.
     /// </summary>
     public SpriteSheetFontIndexModel SelectedCharacter {
         get => this._selectedCharacter;
-        private set {
+        set {
             if (this._selectedCharacter != value) {
                 this.RaiseAndSetIfChanged(ref this._selectedCharacter, value);
                 this._selectedSprite = this._selectedCharacter != null ? this.SpriteCollection.FirstOrDefault(x => x.Index == this._selectedCharacter.SpriteIndex) : null;
@@ -177,7 +194,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 else {
                     this._font.CharacterLayout = result.CharacterLayout;
                 }
-                
+
                 this._characters.Reset(this.CreateCharacterModels());
             }, () =>
             {

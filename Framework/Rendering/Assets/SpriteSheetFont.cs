@@ -21,8 +21,12 @@ public class SpriteSheetFont : SpriteSheetMember {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<char, byte> _characterToIndex = new();
 
+    private readonly Dictionary<char, float> _characterToWidth = new();
+
     [DataMember]
     private string _characterLayout = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.?!,-=+: ";
+
+    private int _kerning;
 
     /// <summary>
     /// The character layout of this sprite sheet.
@@ -39,11 +43,26 @@ public class SpriteSheetFont : SpriteSheetMember {
     }
 
     /// <summary>
+    /// Gets or sets the default kerning for this.
+    /// </summary>
+    [DataMember]
+    public int Kerning {
+        get => this._kerning;
+        set {
+            if (this._kerning != value) {
+                this._kerning = value;
+                this._characterToWidth.Clear();
+            }
+        }
+    }
+
+    /// <summary>
     /// Clears the sprites.
     /// </summary>
     public void ClearSprites() {
         this._characterToIndex.Clear();
         this._characterIndexToCharacter.Clear();
+        this._characterToWidth.Clear();
     }
 
     /// <summary>
@@ -54,11 +73,16 @@ public class SpriteSheetFont : SpriteSheetMember {
     /// <param name="settings">The settings.</param>
     /// <returns>The width.</returns>
     public float GetCharacterWidth(SpriteSheetFontCharacter character, int additionalKerning, IGameSettings settings) {
-        if (this.SpriteSheet is { } spriteSheet) {
-            return (spriteSheet.SpriteSize.X + additionalKerning + character.Kerning) * settings.UnitsPerPixel;
+        var result = 0f;
+        if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
+            result = width;
+        }
+        else if (this.SpriteSheet is { } spriteSheet) {
+            result = (spriteSheet.SpriteSize.X + additionalKerning + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
+            this._characterToWidth[character.Character] = result;
         }
 
-        return 0f;
+        return result;
     }
 
     /// <summary>
