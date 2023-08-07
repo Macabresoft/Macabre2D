@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly Dictionary<char, float> _characterToWidth = new();
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
     private int _kerning;
@@ -95,7 +94,7 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (!this.BoundingArea.IsEmpty && this.FontReference.Asset is { } spriteSheet && this.SpriteBatch is { } spriteBatch) {
+        if (!this.BoundingArea.IsEmpty && this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             var position = this.BoundingArea.Minimum;
 
             foreach (var character in this._spriteCharacters) {
@@ -107,9 +106,7 @@ public class TextLine : RenderableEntity {
                     this.Color,
                     this.RenderOptions.Orientation);
 
-                if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
-                    position = new Vector2(position.X + width, position.Y);
-                }
+                position = new Vector2(position.X + font.GetCharacterWidth(character, this.Kerning, this.Settings), position.Y);
             }
         }
     }
@@ -164,15 +161,8 @@ public class TextLine : RenderableEntity {
     }
 
     private Vector2 CreateSize() {
-        if (this.FontReference.Asset is { } spriteSheet) {
-            var unitWidth = 0f;
-
-            foreach (var character in this._spriteCharacters) {
-                if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
-                    unitWidth += width;
-                }
-            }
-
+        if (this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet }) {
+            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, this.Kerning, this.Settings));
             this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
             return new Vector2(unitWidth * this.Settings.PixelsPerUnit, spriteSheet.SpriteSize.Y);
         }
@@ -205,13 +195,11 @@ public class TextLine : RenderableEntity {
 
     private void ResetIndexes() {
         this._spriteCharacters.Clear();
-        this._characterToWidth.Clear();
 
-        if (this.FontReference.PackagedAsset is { SpriteSheet: { } spriteSheet } font) {
+        if (this.FontReference.PackagedAsset is { } font) {
             foreach (var character in this.Text) {
                 if (font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
                     this._spriteCharacters.Add(spriteCharacter);
-                    this._characterToWidth[character] = font.GetCharacterWidth(spriteCharacter, this.Kerning, this.Settings);
                 }
             }
         }
