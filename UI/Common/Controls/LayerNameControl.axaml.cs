@@ -4,6 +4,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 
@@ -115,6 +116,11 @@ public partial class LayerNameControl : UserControl, IObserver<AvaloniaPropertyC
     }
 
     public void OnNext(AvaloniaPropertyChangedEventArgs<Layers> value) {
+        this.Reset();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e) {
+        base.OnLoaded(e);
         this.Reset();
     }
 

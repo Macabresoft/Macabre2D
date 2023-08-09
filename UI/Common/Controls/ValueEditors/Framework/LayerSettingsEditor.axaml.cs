@@ -1,10 +1,9 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
-using Avalonia.Markup.Xaml;
-using Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Macabresoft.Macabre2D.Framework;
 using Unity;
 
 public partial class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
