@@ -30,12 +30,6 @@ public sealed class MonoGameKeyboard {
     /// </summary>
     /// <returns>The keyboard state.</returns>
     public KeyboardState GetState() {
-        if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-            // we assume the user wants keyboard input into the control when his mouse is over
-            // it in order for the events to register we must focus it
-            this._focusElement.Focus();
-        }
-        
         return this._focusElement.IsKeyboardFocusWithin ? new KeyboardState(this._pressedKeys.ToArray()) : new KeyboardState();
     }
 
