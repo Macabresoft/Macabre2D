@@ -21,6 +21,12 @@
         <KeyBinding Command="{x:Static avaloniaEx:WindowHelper.ToggleWindowStateCommand}"
                     CommandParameter="{Binding $self}"
                     Gesture="Ctrl + M" />
+        <KeyBinding Command="{Binding SaveCommand}"
+                    Gesture="Ctrl + S" />
+        <KeyBinding Command="{Binding UndoCommand}"
+                    Gesture="Ctrl + Z" />
+        <KeyBinding Command="{Binding RedoCommand}"
+                    Gesture="Ctrl + Y" />
     </avaloniaEx:BaseDialog.KeyBindings>
     <avaloniaEx:BaseDialog.Menu>
         <Menu Grid.Column="2"
@@ -30,13 +36,11 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Save"
                           Command="{Binding SaveCommand}"
-                          InputGesture="Ctrl + S"
-                          HotKey="Ctrl + S" />
+                          InputGesture="Ctrl + S" />
 
                 <MenuItem Header="_Open Scene"
                           Command="{Binding OpenSceneCommand}"
-                          InputGesture="Ctrl + O"
-                          HotKey="Ctrl + O" />
+                          InputGesture="Ctrl + O" />
 
                 <Separator />
 
@@ -48,12 +52,10 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo"
                           Command="{Binding UndoCommand}"
-                          InputGesture="Ctrl + Z"
-                          HotKey="Ctrl + Z" />
+                          InputGesture="Ctrl + Z" />
                 <MenuItem Header="_Redo"
                           Command="{Binding RedoCommand}"
-                          InputGesture="Ctrl + Y"
-                          HotKey="Ctrl + Y" />
+                          InputGesture="Ctrl + Y" />
             </MenuItem>
 
             <MenuItem Header="_Project">
