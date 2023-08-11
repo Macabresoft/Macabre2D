@@ -10,7 +10,7 @@ public partial class SceneReferenceEditor : BaseAssetReferenceEditor<SceneRefere
     public SceneReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<ILocalDialogService>(),
+        Resolver.Resolve<ICommonDialogService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
@@ -18,7 +18,7 @@ public partial class SceneReferenceEditor : BaseAssetReferenceEditor<SceneRefere
     public SceneReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, undoService) {
         this.InitializeComponent();
     }

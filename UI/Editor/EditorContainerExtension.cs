@@ -11,7 +11,6 @@ using Unity.Lifetime;
 public sealed class EditorContainerExtension : UnityContainerExtension {
     /// <inheritdoc />
     protected override void Initialize() {
-        this.Container.RegisterType<ILocalDialogService, LocalDialogService>(new SingletonLifetimeManager())
-            .RegisterType<ICommonDialogService, ILocalDialogService>();
+        this.Container.RegisterType<ICommonDialogService, LocalDialogService>(new SingletonLifetimeManager());
     }
 }

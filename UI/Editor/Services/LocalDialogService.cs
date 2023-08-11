@@ -9,26 +9,9 @@ using Unity;
 using Unity.Resolution;
 
 /// <summary>
-/// An interface for a dialog service featuring dialogs exclusive to this project.
-/// </summary>
-public interface ILocalDialogService : ICommonDialogService {
-    /// <summary>
-    /// Opens a dialog that allows the user to pick a sprite.
-    /// </summary>
-    /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
-    Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
-
-    /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetMember" />.
-    /// </summary>
-    /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
-    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
-}
-
-/// <summary>
 /// A dialog service.
 /// </summary>
-public sealed class LocalDialogService : CommonDialogService, ILocalDialogService {
+public sealed class LocalDialogService : CommonDialogService {
     private readonly IAssetManager _assetManager;
 
     /// <summary>
@@ -42,7 +25,7 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
     }
 
     /// <inheritdoc />
-    public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
+    public override async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
         var window = Resolver.Resolve<SpriteSelectionDialog>();
         if (await window.ShowDialog<bool>(this.MainWindow) &&
             window.ViewModel.SelectedSprite is { SpriteSheet: { } contentSpriteSheet } sprite &&
@@ -55,7 +38,7 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
     }
 
     /// <inheritdoc />
-    public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember {
+    public override async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() {
         var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(
             new ParameterOverride("viewModel",
                 Resolver.Resolve<SpriteSheetAssetSelectionViewModel<TAsset>>()));

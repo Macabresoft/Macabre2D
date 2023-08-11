@@ -15,7 +15,7 @@ using Unity;
 public class MainWindowViewModel : UndoBaseViewModel {
     private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
-    private readonly ILocalDialogService _dialogService;
+    private readonly ICommonDialogService _dialogService;
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
@@ -44,7 +44,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     public MainWindowViewModel(
         IAssetSelectionService assetSelectionService,
         IContentService contentService,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IEditorService editorService,
         IEditorGame game,
         ISaveService saveService,

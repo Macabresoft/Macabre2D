@@ -33,7 +33,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
     protected BaseAssetReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IUndoService undoService) : base(dependencies) {
         this.AssetManager = assetManager;
         this.DialogService = dialogService;
@@ -56,7 +56,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
 
     protected IAssetManager AssetManager { get; }
 
-    protected ILocalDialogService DialogService { get; }
+    protected ICommonDialogService DialogService { get; }
 
     protected IUndoService UndoService { get; }
 

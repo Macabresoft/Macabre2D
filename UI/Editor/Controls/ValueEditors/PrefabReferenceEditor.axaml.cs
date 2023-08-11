@@ -9,7 +9,7 @@ public partial class PrefabReferenceEditor : BaseAssetReferenceEditor<PrefabRefe
     public PrefabReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<ILocalDialogService>(),
+        Resolver.Resolve<ICommonDialogService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
@@ -17,7 +17,7 @@ public partial class PrefabReferenceEditor : BaseAssetReferenceEditor<PrefabRefe
     public PrefabReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, undoService) {
         this.InitializeComponent();
     }

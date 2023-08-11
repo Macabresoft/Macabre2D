@@ -47,6 +47,18 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<ILoop> OpenLoopSelectionDialog(Type baseLoopType);
 
     /// <summary>
+    /// Opens a dialog that allows the user to pick a sprite.
+    /// </summary>
+    /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
+    Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+
+    /// <summary>
+    /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetMember" />.
+    /// </summary>
+    /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
+    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
+
+    /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="Type" />.
     /// </summary>
     /// <param name="types">The types to select from.</param>
@@ -147,6 +159,12 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
 
         return selectedLoop;
     }
+
+    /// <inheritdoc />
+    public abstract Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+
+    /// <inheritdoc />
+    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
 
     /// <inheritdoc />
     public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types) {

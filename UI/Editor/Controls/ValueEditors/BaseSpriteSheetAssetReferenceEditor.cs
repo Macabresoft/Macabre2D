@@ -11,7 +11,7 @@ public class BaseSpriteSheetAssetReferenceEditor<TAssetReference, TPackagedAsset
     public BaseSpriteSheetAssetReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IFileSystemService fileSystem,
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {

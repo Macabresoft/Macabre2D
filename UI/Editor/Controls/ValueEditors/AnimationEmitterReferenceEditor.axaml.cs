@@ -9,7 +9,7 @@ public partial class AnimationEmitterReferenceEditor : BaseSpriteSheetReferenceE
     public AnimationEmitterReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<ILocalDialogService>(),
+        Resolver.Resolve<ICommonDialogService>(),
         Resolver.Resolve<IFileSystemService>(),
         Resolver.Resolve<IPathService>(),
         Resolver.Resolve<IUndoService>()) {
@@ -19,7 +19,7 @@ public partial class AnimationEmitterReferenceEditor : BaseSpriteSheetReferenceE
     public AnimationEmitterReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
-        ILocalDialogService dialogService,
+        ICommonDialogService dialogService,
         IFileSystemService fileSystem,
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {
