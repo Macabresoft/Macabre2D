@@ -27,6 +27,11 @@ public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
     /// Runs one frame.
     /// </summary>
     void RunOneFrame();
+
+    /// <summary>
+    /// Performs a tick in the game's update loop.
+    /// </summary>
+    void Tick();
 }
 
 /// <summary>

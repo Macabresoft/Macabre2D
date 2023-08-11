@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -130,13 +131,23 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
         this.Start();
     }
 
+    /// <inheritdoc />
+    protected override void OnUnloaded(RoutedEventArgs e) {
+        base.OnUnloaded(e);
+
+        if (this.Game is { } game) {
+            game.Exit();
+            game.Tick(); // Required to finalize Exit() call.
+            game.Dispose();
+        }
+    }
+
     private bool CanDraw(out IAvaloniaGame game, out GraphicsDevice device) {
         game = this.Game;
         device = this.Game?.GraphicsDevice;
 
         return game != null && device != null &&
-               this.Bounds.Width > 0 &&
-               this.Bounds.Height > 0 &&
+               this.Bounds is { Width: > 0, Height: > 0 } &&
                this.HandleDeviceReset(device);
     }
 
