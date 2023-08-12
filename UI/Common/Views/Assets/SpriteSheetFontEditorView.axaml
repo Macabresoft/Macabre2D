@@ -19,7 +19,7 @@
                     Grid.Column="0"
                     Orientation="Horizontal">
             <Button Classes="Icon"
-                    Margin="{StaticResource StandardMarginVertical}"
+                    Margin="{StaticResource StandardMarginAll}"
                     Command="{Binding ClearSpriteCommand}"
                     ToolTip.Tip="Clear the selected tile's sprite assignment">
                 <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
@@ -32,18 +32,16 @@
                 <avaloniaEx:Icon Content="{StaticResource AutoTextIcon}" />
             </Button>
             
+            <Button Classes="Icon"
+                    Margin="{StaticResource StandardMarginAll}"
+                    Command="{Binding ImportFontSettingsCommand}"
+                    ToolTip.Tip="Import the layers and kerning from another font">
+                <avaloniaEx:Icon Content="{StaticResource ArrowDownload}" />
+            </Button>
+            
             <local:IntEditor Title="Kerning"
                              Value="{Binding Kerning}" />
         </StackPanel>
-        
-        <Button Classes="Icon"
-                Grid.Row="0"
-                Grid.Column="0"
-                Margin="{StaticResource StandardMarginVertical}"
-                Command="{Binding ClearSpriteCommand}"
-                ToolTip.Tip="Clear the selected tile's sprite assignment">
-            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-        </Button>
 
         <local:ThumbnailSizeToggle Grid.Row="0"
                                    Grid.Column="1"

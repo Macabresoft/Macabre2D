@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedCharacter, x => x.Value != null));
+        this.ImportFontSettingsCommand = ReactiveCommand.CreateFromTask(this.ImportFontSettings);
         this.SpriteCollection = new SpriteDisplayCollection(font.SpriteSheet, file);
         this._characters.Reset(this.CreateCharacterModels());
         this.SelectedCharacter = this.Characters.First();
@@ -67,6 +69,11 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     /// Clears the selected sprite from the selected tile.
     /// </summary>
     public ICommand ClearSpriteCommand { get; }
+
+    /// <summary>
+    /// Gets a command to import font settings from another font in the project. This includes kerning and layout.
+    /// </summary>
+    public ICommand ImportFontSettingsCommand { get; }
 
     /// <summary>
     /// Gets the sprite collection.
@@ -172,6 +179,31 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         return characters;
     }
 
+    private static IReadOnlyCollection<(char Character, byte SpriteIndex, int Kerning)> GetCharacterMappings(SpriteSheetFont font) {
+        return font.FontCharacters.Select(x => (x.Character, x.SpriteIndex, x.Kerning)).ToList();
+    }
+
+    private async Task ImportFontSettings() {
+        var result = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>();
+
+        if (result.SpriteSheet != null && result.PackagedAssetId != Guid.Empty) {
+            var font = result.SpriteSheet.GetAssets<SpriteSheetFont>().FirstOrDefault(x => x.Id == result.PackagedAssetId);
+
+            if (font != null && font != this._font) {
+                var originalLayout = this._font.CharacterLayout;
+                var originalKerning = this.Kerning;
+                var originalMappings = GetCharacterMappings(this._font);
+                var newMappings = GetCharacterMappings(font);
+
+                this._undoService.Do(() => {
+                    this.SetSprites(font.CharacterLayout, font.Kerning, newMappings);
+                }, () => {
+                    this.SetSprites(originalLayout, originalKerning, originalMappings);
+                });
+            }
+        }
+    }
+
     private async Task PerformAutoLayout() {
         var result = await this._dialogService.ShowFontLayoutDialog(this._font.CharacterLayout);
 
@@ -213,5 +245,22 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 this._characters.Reset(previousCharacters);
             });
         }
+    }
+
+    private void SetSprites(string characterLayout, int kerning, IReadOnlyCollection<(char Character, byte SpriteIndex, int Kerning)> mappings) {
+        this._font.ClearSprites();
+        this._font.CharacterLayout = characterLayout;
+        this._font.Kerning = kerning;
+
+        foreach (var character in mappings) {
+            this._font.SetSprite(character.SpriteIndex, character.Character, character.Kerning);
+        }
+
+        this.RaisePropertyChanged(nameof(this.SelectedSprite));
+        this.RaisePropertyChanged(nameof(this.SelectedKerning));
+        this.RaisePropertyChanged(nameof(this.Kerning));
+        this.RaisePropertyChanged(nameof(this.PerformAutoLayout));
+        
+        this._characters.Reset(this.CreateCharacterModels());
     }
 }

@@ -29,6 +29,11 @@ public class SpriteSheetFont : SpriteSheetMember {
     private int _kerning;
 
     /// <summary>
+    /// Gets the font characters and their settings.
+    /// </summary>
+    public IReadOnlyCollection<SpriteSheetFontCharacter> FontCharacters => this._characterIndexToCharacter.Values;
+
+    /// <summary>
     /// The character layout of this sprite sheet.
     /// </summary>
     public string CharacterLayout {
