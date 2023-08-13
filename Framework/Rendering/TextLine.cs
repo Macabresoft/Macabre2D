@@ -94,7 +94,21 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (!this.BoundingArea.IsEmpty && this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
+        this.RenderWithFont(this.FontReference);
+    }
+
+    /// <inheritdoc />
+    protected override void OnTransformChanged() {
+        base.OnTransformChanged();
+        this.RequestRefresh();
+    }
+
+    /// <summary>
+    /// Renders the text with the specified font.
+    /// </summary>
+    /// <param name="fontReference">The font reference.</param>
+    protected void RenderWithFont(SpriteSheetFontReference fontReference) {
+        if (!this.BoundingArea.IsEmpty && fontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             var position = this.BoundingArea.Minimum;
 
             foreach (var character in this._spriteCharacters) {
@@ -109,12 +123,6 @@ public class TextLine : RenderableEntity {
                 position = new Vector2(position.X + font.GetCharacterWidth(character, this.Kerning, this.Settings), position.Y);
             }
         }
-    }
-
-    /// <inheritdoc />
-    protected override void OnTransformChanged() {
-        base.OnTransformChanged();
-        this.RequestRefresh();
     }
 
     private bool CouldBeVisible() {
