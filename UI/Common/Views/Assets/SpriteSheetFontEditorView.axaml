@@ -44,7 +44,7 @@
         </StackPanel>
 
         <local:ThumbnailSizeToggle Grid.Row="0"
-                                   Grid.Column="1"
+                                   Grid.Column="2"
                                    HorizontalAlignment="Right"
                                    SelectedSize="{Binding SelectedThumbnailSize}" />
 
