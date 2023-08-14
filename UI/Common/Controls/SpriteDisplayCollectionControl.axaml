@@ -19,18 +19,24 @@
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Image Source="{Binding Bitmap}"
-                               MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                               MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                               Stretch="Uniform"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center">
-                            <ToolTip.Tip>
-                                <Image Source="{Binding Bitmap}"
-                                       MaxWidth="512"
-                                       MaxHeight="512" />
-                            </ToolTip.Tip>
-                        </Image>
+                        <Grid>
+                            <Image Source="{Binding Bitmap}"
+                                   MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                   MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <ToolTip.Tip>
+                                    <Image Source="{Binding Bitmap}"
+                                           MaxWidth="512"
+                                           MaxHeight="512" />
+                                </ToolTip.Tip>
+                            </Image>
+                            
+                            <TextBlock VerticalAlignment="Top"
+                                       HorizontalAlignment="Right"
+                                       Text="{Binding Index}" />
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
