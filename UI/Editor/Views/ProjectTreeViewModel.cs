@@ -368,10 +368,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.SpriteAnimations.Remove(animation);
                         spriteSheet.SpriteAnimations.Insert(index + 1, animation);
+                        this.AssetSelectionService.Selected = animation;
                     }, () =>
                     {
                         spriteSheet.SpriteAnimations.Remove(animation);
                         spriteSheet.SpriteAnimations.Insert(index, animation);
+                        this.AssetSelectionService.Selected = animation;
                     });
                 }
             }
@@ -382,10 +384,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.AutoTileSets.Remove(tileSet);
                         spriteSheet.AutoTileSets.Insert(index + 1, tileSet);
+                        this.AssetSelectionService.Selected = tileSet;
                     }, () =>
                     {
                         spriteSheet.AutoTileSets.Remove(tileSet);
                         spriteSheet.AutoTileSets.Insert(index, tileSet);
+                        this.AssetSelectionService.Selected = tileSet;
                     });
                 }
             }
@@ -396,10 +400,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.Fonts.Remove(font);
                         spriteSheet.Fonts.Insert(index + 1, font);
+                        this.AssetSelectionService.Selected = font;
                     }, () =>
                     {
                         spriteSheet.Fonts.Remove(font);
                         spriteSheet.Fonts.Insert(index, font);
+                        this.AssetSelectionService.Selected = font;
                     });
                 }
             }
@@ -415,10 +421,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.SpriteAnimations.Remove(animation);
                         spriteSheet.SpriteAnimations.Insert(index - 1, animation);
+                        this.AssetSelectionService.Selected = animation;
                     }, () =>
                     {
                         spriteSheet.SpriteAnimations.Remove(animation);
                         spriteSheet.SpriteAnimations.Insert(index, animation);
+                        this.AssetSelectionService.Selected = animation;
                     });
                 }
             }
@@ -429,10 +437,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.AutoTileSets.Remove(tileSet);
                         spriteSheet.AutoTileSets.Insert(index - 1, tileSet);
+                        this.AssetSelectionService.Selected = tileSet;
                     }, () =>
                     {
                         spriteSheet.AutoTileSets.Remove(tileSet);
                         spriteSheet.AutoTileSets.Insert(index, tileSet);
+                        this.AssetSelectionService.Selected = tileSet;
                     });
                 }
             }
@@ -443,10 +453,12 @@ public class ProjectTreeViewModel : BaseViewModel {
                     {
                         spriteSheet.Fonts.Remove(font);
                         spriteSheet.Fonts.Insert(index - 1, font);
+                        this.AssetSelectionService.Selected = font;
                     }, () =>
                     {
                         spriteSheet.Fonts.Remove(font);
                         spriteSheet.Fonts.Insert(index, font);
+                        this.AssetSelectionService.Selected = font;
                     });
                 }
             }
