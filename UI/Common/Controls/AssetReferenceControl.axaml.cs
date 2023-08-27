@@ -18,9 +18,17 @@ public partial class AssetReferenceControl : UserControl {
 
     public static readonly StyledProperty<ICommand> SelectCommandProperty =
         AvaloniaProperty.Register<AssetReferenceControl, ICommand>(nameof(SelectCommand));
+    
+    public static readonly StyledProperty<string> AssetNameProperty =
+        AvaloniaProperty.Register<AssetReferenceControl, string>(nameof(AssetName));
 
     public AssetReferenceControl() : base() {
         this.InitializeComponent();
+    }
+    
+    public string AssetName {
+        get => this.GetValue(AssetNameProperty);
+        set => this.SetValue(AssetNameProperty, value);
     }
 
     public ICommand ClearCommand {

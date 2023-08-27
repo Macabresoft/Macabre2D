@@ -5,30 +5,41 @@
              x:Class="Macabresoft.Macabre2D.UI.Common.AssetReferenceControl"
              SearchIcon="{StaticResource DocumentSearchIcon}">
     <Grid ColumnDefinitions="*, Auto, Auto"
+          RowDefinitions="Auto, Auto"
           DataContext="{Binding $parent[local:AssetReferenceControl]}">
         <Design.DataContext>
             <local:AssetReferenceControl />
         </Design.DataContext>
         
-        <TextBox Grid.Column="0"
+        <TextBox Grid.Row="0"
+                 Grid.Column="0"
                  IsReadOnly="True"
                  VerticalAlignment="Top"
                  Text="{Binding PathText}"
                  ToolTip.Tip="{Binding PathText}" />
 
-        <Button Grid.Column="1"
+        <Button Grid.Row="0"
+                Grid.Column="1"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding SelectCommand}"
                 ToolTip.Tip="Search for an asset">
             <avaloniaEx:Icon Content="{Binding SearchIcon}" />
         </Button>
-        <Button Grid.Column="2"
+        <Button Grid.Row="0"
+                Grid.Column="2"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
                 ToolTip.Tip="Clear the asset">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
+        
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   IsVisible="{Binding AssetName, Converter={x:Static ObjectConverters.IsNotNull}}"
+                   FontStyle="Italic"
+                   Text="{Binding AssetName}" />
     </Grid>
 </UserControl>

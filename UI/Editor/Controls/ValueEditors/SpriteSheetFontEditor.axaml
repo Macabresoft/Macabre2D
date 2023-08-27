@@ -37,6 +37,7 @@
                                       SearchIcon="{StaticResource ImageSearchIcon}"
                                       PathText="{Binding PathText}"
                                       SelectCommand="{Binding SelectCommand}"
-                                      ClearCommand="{Binding ClearCommand}" />
+                                      ClearCommand="{Binding ClearCommand}"
+                                      AssetName="{Binding Value.PackagedAsset.Name}" />
     </Grid>
 </local:BaseSpriteSheetAssetReferenceEditor>
