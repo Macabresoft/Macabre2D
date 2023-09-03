@@ -55,6 +55,27 @@ public readonly struct BoundingArea {
     }
 
     /// <summary>
+    /// Combines the two bounding areas by taking the minimum and maximum values of both into account.
+    /// </summary>
+    /// <param name="other">The other bounding area.</param>
+    /// <returns>The combined bounding area.</returns>
+    public BoundingArea Combine(BoundingArea other) {
+        if (this.IsEmpty) {
+            return other;
+        }
+
+        if (other.IsEmpty) {
+            return this;
+        }
+
+        return new BoundingArea(
+            Math.Min(this.Minimum.X, other.Minimum.X),
+            Math.Min(this.Maximum.X, other.Maximum.X),
+            Math.Min(this.Minimum.Y, other.Minimum.Y),
+            Math.Min(this.Maximum.Y, other.Maximum.Y));
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
     /// <param name="minimum">The minimum.</param>
