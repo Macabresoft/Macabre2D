@@ -9,7 +9,7 @@ public sealed class RaycastHit {
     /// <summary>
     /// The empty raycast hit.
     /// </summary>
-    public static readonly RaycastHit Empty = new(null, Vector2.Zero, Vector2.Zero);
+    public static readonly RaycastHit Empty = new(Collider.Empty, Vector2.Zero, Vector2.Zero);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RaycastHit" /> class.
@@ -17,7 +17,7 @@ public sealed class RaycastHit {
     /// <param name="collider">The collider.</param>
     /// <param name="contactPoint">The contact point.</param>
     /// <param name="normal">The normal.</param>
-    public RaycastHit(Collider? collider, Vector2 contactPoint, Vector2 normal) {
+    public RaycastHit(Collider collider, Vector2 contactPoint, Vector2 normal) {
         this.Collider = collider;
         this.ContactPoint = contactPoint;
         this.Normal = normal;
@@ -27,7 +27,7 @@ public sealed class RaycastHit {
     /// Gets the collider.
     /// </summary>
     /// <value>The collider.</value>
-    public Collider? Collider { get; }
+    public Collider Collider { get; }
 
     /// <summary>
     /// Gets the contact point.
