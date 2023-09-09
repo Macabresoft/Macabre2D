@@ -7,7 +7,9 @@ using Macabresoft.Core;
 /// <summary>
 /// Base class for entity references.
 /// </summary>
+[DataContract]
 public abstract class EntityReference : PropertyChangedNotifier {
+    [DataMember]
     private Guid _entityId;
 
     /// <summary>
@@ -58,7 +60,6 @@ public abstract class EntityReference : PropertyChangedNotifier {
 /// A reference to an entity using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TEntity">The type of entity.</typeparam>
-[DataContract]
 public class EntityReference<TEntity> : EntityReference where TEntity : class, IEntity {
     private TEntity? _entity;
 
