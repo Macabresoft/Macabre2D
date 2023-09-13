@@ -97,6 +97,17 @@ public class TextLine : RenderableEntity {
         this.RenderWithFont(this.FontReference);
     }
 
+    /// <summary>
+    /// Gets the kerning for rendering.
+    /// </summary>
+    /// <remarks>
+    /// Allows dynamic kerning by being overridable.
+    /// </remarks>
+    /// <returns>The kerning.</returns>
+    protected virtual int GetKerning() {
+        return this.Kerning;
+    }
+
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
@@ -110,6 +121,7 @@ public class TextLine : RenderableEntity {
     protected void RenderWithFont(SpriteSheetFontReference fontReference) {
         if (!this.BoundingArea.IsEmpty && fontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             var position = this.BoundingArea.Minimum;
+            var kerning = this.GetKerning();
 
             foreach (var character in this._spriteCharacters) {
                 spriteSheet.Draw(
@@ -120,9 +132,18 @@ public class TextLine : RenderableEntity {
                     this.Color,
                     this.RenderOptions.Orientation);
 
-                position = new Vector2(position.X + font.GetCharacterWidth(character, this.Kerning, this.Settings), position.Y);
+                position = new Vector2(position.X + font.GetCharacterWidth(character, kerning, this.Settings), position.Y);
             }
         }
+    }
+
+    /// <summary>
+    /// Resets the size and bounding area.
+    /// </summary>
+    protected void ResetSize() {
+        this.RenderOptions.InvalidateSize();
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private bool CouldBeVisible() {
@@ -170,7 +191,8 @@ public class TextLine : RenderableEntity {
 
     private Vector2 CreateSize() {
         if (this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet }) {
-            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, this.Kerning, this.Settings));
+            var kerning = this.GetKerning();
+            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, kerning, this.Settings));
             this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
             return new Vector2(unitWidth * this.Settings.PixelsPerUnit, spriteSheet.SpriteSize.Y);
         }
@@ -195,9 +217,7 @@ public class TextLine : RenderableEntity {
     private void RequestRefresh() {
         if (this.IsInitialized) {
             this.ResetIndexes();
-            this.RenderOptions.InvalidateSize();
-            this._boundingArea.Reset();
-            this.BoundingAreaChanged.SafeInvoke(this);
+            this.ResetSize();
         }
     }
 

@@ -79,12 +79,23 @@ public class SpriteSheetFont : SpriteSheetMember {
     /// <returns>The width.</returns>
     public float GetCharacterWidth(SpriteSheetFontCharacter character, int additionalKerning, IGameSettings settings) {
         var result = 0f;
-        if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
-            result = width;
-        }
-        else if (this.SpriteSheet is { } spriteSheet) {
-            result = (spriteSheet.SpriteSize.X + additionalKerning + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
-            this._characterToWidth[character.Character] = result;
+
+        if (this.SpriteSheet is { } spriteSheet) {
+            if (additionalKerning != 0) {
+                if (!this._characterToWidth.TryGetValue(character.Character, out var width)) {
+                    width = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
+                    this._characterToWidth[character.Character] = width;
+                }
+
+                result = width + additionalKerning * settings.UnitsPerPixel;
+            }
+            else if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
+                result = width;
+            }
+            else {
+                result = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
+                this._characterToWidth[character.Character] = result;
+            }
         }
 
         return result;
