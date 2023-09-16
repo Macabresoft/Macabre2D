@@ -17,20 +17,20 @@ public enum DisplayModes : byte {
 /// DefaultGraphics settings such as resolution and display mode.
 /// </summary>
 [DataContract]
-[Category(CommonCategories.DefaultGraphics)]
-public sealed class GraphicsSettings {
+[Category(CommonCategories.DefaultDisplay)]
+public sealed class DisplaySettings {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
+    /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
     /// </summary>
-    public GraphicsSettings() {
+    public DisplaySettings() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
+    /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
     /// </summary>
     /// <param name="displayMode">The display mode.</param>
     /// <param name="resolution">The resolution.</param>
-    public GraphicsSettings(DisplayModes displayMode, Point resolution) {
+    public DisplaySettings(DisplayModes displayMode, Point resolution) {
         this.DisplayMode = displayMode;
         this.Resolution = resolution;
     }
@@ -53,7 +53,7 @@ public sealed class GraphicsSettings {
     /// Clones this instance.
     /// </summary>
     /// <returns>A clone of this instance.</returns>
-    public GraphicsSettings Clone() {
-        return new GraphicsSettings(this.DisplayMode, this.Resolution);
+    public DisplaySettings Clone() {
+        return new DisplaySettings(this.DisplayMode, this.Resolution);
     }
 }

@@ -2,8 +2,10 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using Macabresoft.Macabre2D.Framework.UserSettingInstances;
 
 /// <summary>
 /// User customizable settings.
@@ -16,13 +18,13 @@ public class UserSettings : VersionedData {
     /// </summary>
     public const string FileName = "UserSettings.m2d";
 
-    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<string, bool> _boolSettings = new();
+    [DataMember]
+    private readonly List<NamedSetting> _customSettings = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
-    public UserSettings() : this(new AudioSettings(), new GraphicsSettings(), new InputBindings()) {
+    public UserSettings() : this(new AudioSettings(), new DisplaySettings(), new InputBindings()) {
     }
 
     /// <summary>
@@ -31,7 +33,7 @@ public class UserSettings : VersionedData {
     /// <param name="settings">The game settings.</param>
     public UserSettings(IGameSettings settings) {
         this.Audio = settings.DefaultAudioSettings.Clone();
-        this.Graphics = settings.DefaultGraphicsSettings.Clone();
+        this.Display = settings.DefaultDisplaySettings.Clone();
         this.InputBindings = settings.InputSettings.DefaultBindings.Clone();
     }
 
@@ -39,11 +41,11 @@ public class UserSettings : VersionedData {
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
     /// <param name="audio">The audio settings.</param>
-    /// <param name="graphics">The graphics settings.</param>
+    /// <param name="display">The graphics settings.</param>
     /// <param name="inputBindings">The input bindings.</param>
-    public UserSettings(AudioSettings audio, GraphicsSettings graphics, InputBindings inputBindings) {
+    public UserSettings(AudioSettings audio, DisplaySettings display, InputBindings inputBindings) {
         this.Audio = audio;
-        this.Graphics = graphics;
+        this.Display = display;
         this.InputBindings = inputBindings;
     }
 
@@ -55,7 +57,7 @@ public class UserSettings : VersionedData {
     /// <summary>
     /// Gets the graphics settings.
     /// </summary>
-    public GraphicsSettings Graphics { get; }
+    public DisplaySettings Display { get; }
 
     /// <summary>
     /// Gets the input bindings.
@@ -63,29 +65,37 @@ public class UserSettings : VersionedData {
     public InputBindings InputBindings { get; }
 
     /// <summary>
+    /// Adds a setting.
+    /// </summary>
+    /// <param name="setting">The setting to add.</param>
+    public void AddSetting(NamedSetting setting) {
+        this._customSettings.Add(setting);
+    }
+
+    /// <summary>
     /// Removes a setting by name.
     /// </summary>
-    /// <param name="setting">The setting's name.</param>
-    public void RemoveSetting(string setting) {
-        this._boolSettings.Remove(setting);
+    /// <param name="settingName">The setting's name.</param>
+    public void RemoveSetting(string settingName) {
+        this._customSettings.RemoveAll(x => x.Name == settingName);
+    }
+
+    /// <summary>
+    /// Removes a setting by name.
+    /// </summary>
+    /// <param name="setting">The setting.</param>
+    public void RemoveSetting(NamedSetting setting) {
+        this._customSettings.Remove(setting);
     }
 
     /// <summary>
     /// Attempts to get a <see cref="bool" /> setting if possible.
     /// </summary>
-    /// <param name="setting">The setting's name.</param>
+    /// <param name="settingName">The setting's name.</param>
     /// <param name="value">The value.</param>
     /// <returns>A value indicating whether or not the setting was found.</returns>
-    public bool TryGetSetting(string setting, out bool value) {
-        return this._boolSettings.TryGetValue(setting, out value);
-    }
-
-    /// <summary>
-    /// Updates a <see cref="bool" /> setting.
-    /// </summary>
-    /// <param name="setting">The setting's name.</param>
-    /// <param name="value">The value of the setting.</param>
-    public void UpdateSetting(string setting, bool value) {
-        this._boolSettings[setting] = value;
+    public bool TryGetSetting<T>(string settingName, [NotNullWhen(true)] out T? value) where T : NamedSetting {
+        value = this._customSettings.OfType<T>().FirstOrDefault(x => x.Name == settingName);
+        return value != null;
     }
 }

@@ -22,7 +22,7 @@ public static class CommonCategories {
     /// <summary>
     /// Category for default graphics.
     /// </summary>
-    public const string DefaultGraphics = "Default Graphics";
+    public const string DefaultDisplay = "Default Display";
 
     /// <summary>
     /// Fallback values.

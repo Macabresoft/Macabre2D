@@ -42,7 +42,7 @@ public interface IGame {
     /// <summary>
     /// Gets the graphics settings.
     /// </summary>
-    GraphicsSettings GraphicsSettings { get; }
+    DisplaySettings DisplaySettings { get; }
 
     /// <summary>
     /// Gets the input bindings.

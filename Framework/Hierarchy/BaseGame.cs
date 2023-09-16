@@ -49,7 +49,7 @@ public class BaseGame : Game, IGame {
     public AudioSettings AudioSettings => this.UserSettings.Audio;
 
     /// <inheritdoc />
-    public GraphicsSettings GraphicsSettings => this.UserSettings.Graphics;
+    public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
     public InputBindings InputBindings => this.UserSettings.InputBindings;
@@ -100,7 +100,7 @@ public class BaseGame : Game, IGame {
         get => this._project;
         protected set {
             this._project = value;
-            this.ApplyGraphicsSettings();
+            this.ApplyDisplaySettings();
         }
     }
 
@@ -112,7 +112,7 @@ public class BaseGame : Game, IGame {
         get => this._userSettings;
         private set {
             this._userSettings = value;
-            this.ApplyGraphicsSettings();
+            this.ApplyDisplaySettings();
         }
     }
 
@@ -169,7 +169,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public void SaveAndApplyUserSettings() {
         this.SaveUserSettings();
-        this.ApplyGraphicsSettings();
+        this.ApplyDisplaySettings();
     }
 
     /// <inheritdoc />
@@ -299,18 +299,18 @@ public class BaseGame : Game, IGame {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
     }
 
-    private void ApplyGraphicsSettings() {
-        if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
+    private void ApplyDisplaySettings() {
+        if (this.DisplaySettings.DisplayMode == DisplayModes.Borderless) {
             this.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             this.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             this.Window.IsBorderless = true;
             this.GraphicsDeviceManager.IsFullScreen = false;
         }
         else {
-            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
-            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.DisplaySettings.Resolution.X;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.DisplaySettings.Resolution.Y;
 
-            switch (this.GraphicsSettings.DisplayMode) {
+            switch (this.DisplaySettings.DisplayMode) {
                 case DisplayModes.Fullscreen:
                     this.Window.IsBorderless = false;
                     this.GraphicsDeviceManager.IsFullScreen = true;
@@ -343,7 +343,7 @@ public class BaseGame : Game, IGame {
 
         public GraphicsDevice? GraphicsDevice => null;
 
-        public GraphicsSettings GraphicsSettings => this.UserSettings.Graphics;
+        public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
         public InputBindings InputBindings => this.UserSettings.InputBindings;
 

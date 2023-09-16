@@ -22,7 +22,7 @@ public interface IGameSettings {
     /// <summary>
     /// Gets the default graphics settings.
     /// </summary>
-    GraphicsSettings DefaultGraphicsSettings { get; }
+    DisplaySettings DefaultDisplaySettings { get; }
 
     /// <summary>
     /// Gets the input settings.
@@ -91,8 +91,8 @@ public sealed class GameSettings : IGameSettings {
 
     /// <inheritdoc />
     [DataMember]
-    [Category(CommonCategories.DefaultGraphics)]
-    public GraphicsSettings DefaultGraphicsSettings { get; } = new();
+    [Category(CommonCategories.DefaultDisplay)]
+    public DisplaySettings DefaultDisplaySettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
