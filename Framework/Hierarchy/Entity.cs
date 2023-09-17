@@ -223,9 +223,9 @@ public class Entity : Transformable, IEntity {
     public IScene Scene { get; private set; } = Framework.Scene.Empty;
 
     /// <summary>
-    /// Gets the settings.
+    /// Gets the project.
     /// </summary>
-    protected IGameSettings Settings => this.Game.Project.Settings;
+    protected IGameProject Project => this.Game.Project;
 
     /// <summary>
     /// Gets the sprite batch.

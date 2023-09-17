@@ -59,7 +59,7 @@ public sealed class CircleDrawer : BaseDrawer {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawCircle(
                 spriteBatch,
-                this.Settings.PixelsPerUnit,
+                this.Project.PixelsPerUnit,
                 this.Radius,
                 this.WorldPosition,
                 this.Complexity,

@@ -20,7 +20,7 @@ public class LayersDisplayNameHandler : IDisplayNameHandler {
         var displayName = string.Empty;
         if (value is Layers layers) {
             foreach (var enumValue in Enum.GetValues<Layers>().Where(x => layers.HasFlag(x))) {
-                var enumName = this._projectService.CurrentProject.Settings.LayerSettings.GetName(enumValue);
+                var enumName = this._projectService.CurrentProject.LayerSettings.GetName(enumValue);
                 displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
             }
         }

@@ -128,7 +128,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         get => this._selectedGamePadButtons;
         set {
             if (value != this._selectedGamePadButtons) {
-                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                var defaultBindings = this._projectService.CurrentProject.DefaultUserSettings.Input;
                 defaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
                     {
@@ -148,7 +148,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         get => this._selectedKey;
         set {
             if (value != this._selectedKey) {
-                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                var defaultBindings = this._projectService.CurrentProject.DefaultUserSettings.Input;
                 defaultBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
                 this._undoService.Do(() =>
                     {
@@ -168,7 +168,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         get => this._selectedMouseButton;
         set {
             if (value != this._selectedMouseButton) {
-                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                var defaultBindings = this._projectService.CurrentProject.DefaultUserSettings.Input;
                 defaultBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
                 this._undoService.Do(() =>
                     {
@@ -204,7 +204,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
 
     private void Reset() {
         if (this.InputSettings is { } inputSettings && this.Action != InputAction.None) {
-            var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+            var defaultBindings = this._projectService.CurrentProject.DefaultUserSettings.Input;
             this._actionName = inputSettings.GetName(this.Action);
             defaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
 

@@ -2,9 +2,9 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
@@ -160,7 +160,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     /// <inheritdoc />
-    public bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers, out IEntity? hitEntity) {
+    public bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers, [NotNullWhen(true)] out IEntity? hitEntity) {
         hitEntity = null;
         var ray = new LineSegment(start, direction, distance);
 
@@ -178,7 +178,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     private IEnumerable<Collider> GetFilteredColliders(BoundingArea boundingArea, Layers layers) {
-        var enabledLayers = this.Game.Project.Settings.LayerSettings.EnabledLayers;
+        var enabledLayers = this.Game.Project.LayerSettings.EnabledLayers;
         return this.ColliderTree.RetrievePotentialCollisions(boundingArea).Where(x => (x.Layers & layers & enabledLayers) != Layers.None);
     }
 

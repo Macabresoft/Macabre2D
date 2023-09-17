@@ -48,7 +48,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is { } spriteBatch) {
-            var settings = this.Settings;
+            var settings = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);

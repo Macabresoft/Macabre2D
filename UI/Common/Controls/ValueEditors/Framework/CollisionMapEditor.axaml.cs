@@ -40,7 +40,7 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
             return;
         }
 
-        var enabledLayers = this._projectService.CurrentProject?.Settings.LayerSettings.EnabledLayers ?? Layers.Default;
+        var enabledLayers = this._projectService.CurrentProject?.LayerSettings.EnabledLayers ?? Layers.Default;
 
         var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
         var grid = new Grid();

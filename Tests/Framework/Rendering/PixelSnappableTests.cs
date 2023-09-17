@@ -11,52 +11,52 @@ public class PixelSnappableTests {
     [Category("Unit Tests")]
     [Test]
     public static void ShouldNotSnapToPixels_WithInherits_AndSettingsSetToFalse() {
-        var settings = Substitute.For<IGameSettings>();
-        settings.SnapToPixels.Returns(false);
+        var project = Substitute.For<IGameProject>();
+        project.SnapToPixels.Returns(false);
         var entity = new TestPixelSnappable(PixelSnap.Inherit);
 
         using (new AssertionScope()) {
-            entity.ShouldSnapToPixels(settings).Should().BeFalse();
+            entity.ShouldSnapToPixels(project).Should().BeFalse();
         }
     }
 
     [Category("Unit Tests")]
     [Test]
     public static void ShouldNotSnapToPixels_WithNo() {
-        var settings = Substitute.For<IGameSettings>();
+        var project = Substitute.For<IGameProject>();
         var entity = new TestPixelSnappable(PixelSnap.No);
 
         using (new AssertionScope()) {
-            settings.SnapToPixels.Returns(true);
-            entity.ShouldSnapToPixels(settings).Should().BeFalse();
-            settings.SnapToPixels.Returns(false);
-            entity.ShouldSnapToPixels(settings).Should().BeFalse();
+            project.SnapToPixels.Returns(true);
+            entity.ShouldSnapToPixels(project).Should().BeFalse();
+            project.SnapToPixels.Returns(false);
+            entity.ShouldSnapToPixels(project).Should().BeFalse();
         }
     }
 
     [Category("Unit Tests")]
     [Test]
     public static void ShouldSnapToPixels_WithInherits_AndSettingsSetToTrue() {
-        var settings = Substitute.For<IGameSettings>();
-        settings.SnapToPixels.Returns(true);
+        var project = Substitute.For<IGameProject>();
+        project.SnapToPixels.Returns(true);
         var entity = new TestPixelSnappable(PixelSnap.Inherit);
 
         using (new AssertionScope()) {
-            entity.ShouldSnapToPixels(settings).Should().BeTrue();
+            entity.ShouldSnapToPixels(project).Should().BeTrue();
         }
     }
 
     [Category("Unit Tests")]
     [Test]
     public static void ShouldSnapToPixels_WithYes() {
-        var settings = Substitute.For<IGameSettings>();
+        var project = Substitute.For<IGameProject>();
         var entity = new TestPixelSnappable(PixelSnap.Yes);
 
         using (new AssertionScope()) {
-            settings.SnapToPixels.Returns(true);
-            entity.ShouldSnapToPixels(settings).Should().BeTrue();
-            settings.SnapToPixels.Returns(false);
-            entity.ShouldSnapToPixels(settings).Should().BeTrue();
+            project.SnapToPixels.Returns(true);
+            entity.ShouldSnapToPixels(project).Should().BeTrue();
+            project.SnapToPixels.Returns(false);
+            entity.ShouldSnapToPixels(project).Should().BeTrue();
         }
     }
 

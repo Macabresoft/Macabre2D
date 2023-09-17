@@ -126,13 +126,13 @@ public class TextLine : RenderableEntity {
             foreach (var character in this._spriteCharacters) {
                 spriteSheet.Draw(
                     spriteBatch,
-                    this.Settings.PixelsPerUnit,
+                    this.Project.PixelsPerUnit,
                     character.SpriteIndex,
                     position,
                     this.Color,
                     this.RenderOptions.Orientation);
 
-                position = new Vector2(position.X + font.GetCharacterWidth(character, kerning, this.Settings), position.Y);
+                position = new Vector2(position.X + font.GetCharacterWidth(character, kerning, this.Project), position.Y);
             }
         }
     }
@@ -156,7 +156,7 @@ public class TextLine : RenderableEntity {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.CouldBeVisible() && this.RenderOptions.Size != Vector2.Zero) {
-            var unitsPerPixel = this.Settings.UnitsPerPixel;
+            var unitsPerPixel = this.Project.UnitsPerPixel;
             var (x, y) = this.RenderOptions.Size;
             var width = x * unitsPerPixel;
             var height = y * unitsPerPixel;
@@ -173,11 +173,11 @@ public class TextLine : RenderableEntity {
             var maximumX = points.Max(point => point.X);
             var maximumY = points.Max(point => point.Y);
 
-            if (this.ShouldSnapToPixels(this.Settings)) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Settings);
-                minimumY = minimumY.ToPixelSnappedValue(this.Settings);
-                maximumX = maximumX.ToPixelSnappedValue(this.Settings);
-                maximumY = maximumY.ToPixelSnappedValue(this.Settings);
+            if (this.ShouldSnapToPixels(this.Project)) {
+                minimumX = minimumX.ToPixelSnappedValue(this.Project);
+                minimumY = minimumY.ToPixelSnappedValue(this.Project);
+                maximumX = maximumX.ToPixelSnappedValue(this.Project);
+                maximumY = maximumY.ToPixelSnappedValue(this.Project);
             }
 
             result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -192,9 +192,9 @@ public class TextLine : RenderableEntity {
     private Vector2 CreateSize() {
         if (this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet }) {
             var kerning = this.GetKerning();
-            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, kerning, this.Settings));
-            this._characterHeight = spriteSheet.SpriteSize.Y * this.Settings.UnitsPerPixel;
-            return new Vector2(unitWidth * this.Settings.PixelsPerUnit, spriteSheet.SpriteSize.Y);
+            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, kerning, this.Project));
+            this._characterHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            return new Vector2(unitWidth * this.Project.PixelsPerUnit, spriteSheet.SpriteSize.Y);
         }
 
         return Vector2.Zero;

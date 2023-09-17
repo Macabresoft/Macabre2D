@@ -83,10 +83,10 @@ public class TextRenderer : RenderableEntity {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
             spriteBatch.Draw(
-                this.Settings.PixelsPerUnit,
+                this.Project.PixelsPerUnit,
                 font,
                 this.Text,
-                this.ShouldSnapToPixels(this.Settings) ? this._pixelPosition.Value : this.WorldPosition,
+                this.ShouldSnapToPixels(this.Project) ? this._pixelPosition.Value : this.WorldPosition,
                 this.Color,
                 this.RenderOptions.Orientation);
         }
@@ -99,7 +99,7 @@ public class TextRenderer : RenderableEntity {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
+        var inversePixelsPerUnit = this.Project.UnitsPerPixel;
         var (x, y) = this.RenderOptions.Size;
         var width = x * inversePixelsPerUnit;
         var height = y * inversePixelsPerUnit;
@@ -116,18 +116,18 @@ public class TextRenderer : RenderableEntity {
         var maximumX = points.Max(point => point.X);
         var maximumY = points.Max(point => point.Y);
 
-        if (this.ShouldSnapToPixels(this.Settings)) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Settings);
-            minimumY = minimumY.ToPixelSnappedValue(this.Settings);
-            maximumX = maximumX.ToPixelSnappedValue(this.Settings);
-            maximumY = maximumY.ToPixelSnappedValue(this.Settings);
+        if (this.ShouldSnapToPixels(this.Project)) {
+            minimumX = minimumX.ToPixelSnappedValue(this.Project);
+            minimumY = minimumY.ToPixelSnappedValue(this.Project);
+            maximumX = maximumX.ToPixelSnappedValue(this.Project);
+            maximumY = maximumY.ToPixelSnappedValue(this.Project);
         }
 
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
     private Vector2 CreatePixelPosition() {
-        return this.WorldPosition.ToPixelSnappedValue(this.Settings);
+        return this.WorldPosition.ToPixelSnappedValue(this.Project);
     }
 
     private Vector2 CreateSize() {

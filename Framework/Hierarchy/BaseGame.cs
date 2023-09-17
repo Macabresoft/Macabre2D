@@ -220,14 +220,14 @@ public class BaseGame : Game, IGame {
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         if (IsDesignMode) {
-            this.UserSettings = new UserSettings(this.Project.Settings);
+            this.UserSettings = new UserSettings(this.Project);
         }
         else {
             if (this.SaveDataManager.TryLoad<UserSettings>(UserSettings.FileName, this.Project.Name, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
             }
             else {
-                this.UserSettings = new UserSettings(this.Project.Settings);
+                this.UserSettings = new UserSettings(this.Project);
             }
         }
 

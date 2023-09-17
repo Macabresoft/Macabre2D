@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
@@ -42,7 +40,7 @@ public partial class LayersEditor : ValueEditorControl<Layers> {
     }
 
     private IReadOnlyCollection<Layers> GetEnabledLayers() {
-        if (this._projectService.CurrentProject?.Settings?.LayerSettings is { } layerSettings) {
+        if (this._projectService.CurrentProject?.LayerSettings is { } layerSettings) {
             return Enum.GetValues<Layers>()
                 .Where(x => (layerSettings.EnabledLayers & x) != Layers.None)
                 .ToList();
@@ -52,7 +50,7 @@ public partial class LayersEditor : ValueEditorControl<Layers> {
     }
 
     private void SelectAll() {
-        var all = this._projectService.CurrentProject.Settings.LayerSettings.EnabledLayers;
+        var all = this._projectService.CurrentProject.LayerSettings.EnabledLayers;
         if (all != this.Value) {
             this.Value = all;
         }

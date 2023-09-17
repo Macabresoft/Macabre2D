@@ -283,12 +283,12 @@ public class Camera : Entity, ICamera {
     /// <param name="position">The position to use.</param>
     /// <returns>The view matrix.</returns>
     protected Matrix GetViewMatrix(Vector2 position) {
-        var settings = this.Settings;
+        var settings = this.Project;
         var pixelsPerUnit = settings.PixelsPerUnit;
         var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
 
         var matrix =
-            Matrix.CreateTranslation(new Vector3(-position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-position.ToPixelSnappedValue(this.Project) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetOptions.Offset.X, this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y, 0f));
 
@@ -331,7 +331,7 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude) {
-        var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
+        var enabledLayers = this.Project.LayerSettings.EnabledLayers;
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender & enabledLayers) != Layers.None)
@@ -357,10 +357,10 @@ public class Camera : Entity, ICamera {
     }
 
     private void CalculateActualViewHeight() {
-        var viewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Settings.CommonViewHeight;
+        var viewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.CommonViewHeight;
 
-        if (this.ShouldSnapToPixels(this.Settings)) {
-            var originalPixelHeight = (uint)Math.Round(viewHeight * this.Settings.PixelsPerUnit, MidpointRounding.AwayFromZero);
+        if (this.ShouldSnapToPixels(this.Project)) {
+            var originalPixelHeight = (uint)Math.Round(viewHeight * this.Project.PixelsPerUnit, MidpointRounding.AwayFromZero);
             var viewportHeight = this.Game.ViewportSize.Y;
             if (originalPixelHeight < viewportHeight) {
                 var internalPixelHeight = originalPixelHeight;
@@ -371,7 +371,7 @@ public class Camera : Entity, ICamera {
                     count++;
                 }
 
-                this.ActualViewHeight = this.Settings.UnitsPerPixel * (viewportHeight / (float)count);
+                this.ActualViewHeight = this.Project.UnitsPerPixel * (viewportHeight / (float)count);
             }
             else {
                 this.ActualViewHeight = viewHeight;
@@ -402,11 +402,11 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.ShouldSnapToPixels(this.Settings)) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Settings);
-            minimumY = minimumY.ToPixelSnappedValue(this.Settings);
-            maximumX = maximumX.ToPixelSnappedValue(this.Settings);
-            maximumY = maximumY.ToPixelSnappedValue(this.Settings);
+        if (this.ShouldSnapToPixels(this.Project)) {
+            minimumX = minimumX.ToPixelSnappedValue(this.Project);
+            minimumY = minimumY.ToPixelSnappedValue(this.Project);
+            maximumX = maximumX.ToPixelSnappedValue(this.Project);
+            maximumY = maximumY.ToPixelSnappedValue(this.Project);
         }
 
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));

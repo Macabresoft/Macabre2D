@@ -67,7 +67,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
 
             foreach (var boundingArea in tileBoundingAreas) {
                 spriteBatch.Draw(
-                    this.Settings.PixelsPerUnit,
+                    this.Project.PixelsPerUnit,
                     spriteSheet,
                     this.SpriteReference.SpriteIndex,
                     boundingArea.Minimum,

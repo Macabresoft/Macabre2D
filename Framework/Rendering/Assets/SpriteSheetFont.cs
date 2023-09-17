@@ -75,25 +75,25 @@ public class SpriteSheetFont : SpriteSheetMember {
     /// </summary>
     /// <param name="character">The character.</param>
     /// <param name="additionalKerning">Additional kerning.</param>
-    /// <param name="settings">The settings.</param>
+    /// <param name="project">The project.</param>
     /// <returns>The width.</returns>
-    public float GetCharacterWidth(SpriteSheetFontCharacter character, int additionalKerning, IGameSettings settings) {
+    public float GetCharacterWidth(SpriteSheetFontCharacter character, int additionalKerning, IGameProject project) {
         var result = 0f;
 
         if (this.SpriteSheet is { } spriteSheet) {
             if (additionalKerning != 0) {
                 if (!this._characterToWidth.TryGetValue(character.Character, out var width)) {
-                    width = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
+                    width = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * project.UnitsPerPixel;
                     this._characterToWidth[character.Character] = width;
                 }
 
-                result = width + additionalKerning * settings.UnitsPerPixel;
+                result = width + additionalKerning * project.UnitsPerPixel;
             }
             else if (this._characterToWidth.TryGetValue(character.Character, out var width)) {
                 result = width;
             }
             else {
-                result = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * settings.UnitsPerPixel;
+                result = (spriteSheet.SpriteSize.X + character.Kerning + this.Kerning) * project.UnitsPerPixel;
                 this._characterToWidth[character.Character] = result;
             }
         }

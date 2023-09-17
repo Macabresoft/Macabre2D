@@ -40,7 +40,7 @@ public class ContentContainer {
         var projectFilePath = Path.Combine(this.PathService.ContentDirectoryPath, GameProject.ProjectFileName);
         this.FileSystem.DoesFileExist(projectFilePath).Returns(true);
 
-        var project = new GameProject(this.GameSettings, GameProject.DefaultProjectName, Guid.Empty);
+        var project = new GameProject(GameProject.DefaultProjectName, Guid.Empty);
         this.Serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
 
         this.SetupExistingMetadata();
@@ -70,8 +70,6 @@ public class ContentContainer {
     public IReadOnlyCollection<ContentMetadata> ExistingMetadata { get; }
 
     public IFileSystemService FileSystem { get; } = Substitute.For<IFileSystemService>();
-
-    public IGameSettings GameSettings { get; } = Substitute.For<IGameSettings>();
 
     public IContentService Instance { get; }
 

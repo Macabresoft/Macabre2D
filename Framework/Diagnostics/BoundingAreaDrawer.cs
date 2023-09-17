@@ -35,7 +35,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
             var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
             this.PrimitiveDrawer.DrawPolygon(
                 spriteBatch,
-                this.Settings.PixelsPerUnit,
+                this.Project.PixelsPerUnit,
                 this.Color,
                 lineThickness,
                 true,

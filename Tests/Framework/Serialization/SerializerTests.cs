@@ -10,35 +10,35 @@ public static class SerializerTests {
     [Test]
     [Category("Unit Tests")]
     public static void Serializer_GameSettingsSerializeTest() {
-        var gameSettings = new GameSettings {
+        var project = new GameProject {
             ErrorSpritesColor = Color.Red,
             FallbackBackgroundColor = Color.Coral,
             PixelsPerUnit = 200
         };
 
-        var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "GameSettingsForTest.m2dgs");
-        GameSettings deserializedGameSettings = null;
+        var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "ProjectForTest.m2dgs");
+        GameProject deserializedProject = null;
         var serializer = new Serializer();
         try {
-            serializer.Serialize(gameSettings, fileLocation);
-            deserializedGameSettings = serializer.Deserialize<GameSettings>(fileLocation);
+            serializer.Serialize(project, fileLocation);
+            deserializedProject = serializer.Deserialize<GameProject>(fileLocation);
         }
         finally {
             File.Delete(fileLocation);
         }
 
-        CompareGameSettings(gameSettings, deserializedGameSettings);
+        CompareGameSettings(project, deserializedProject);
 
-        var gameSettingsString = serializer.SerializeToString(gameSettings);
-        deserializedGameSettings = serializer.DeserializeFromString<GameSettings>(gameSettingsString);
+        var projectString = serializer.SerializeToString(project);
+        deserializedProject = serializer.DeserializeFromString<GameProject>(projectString);
 
-        CompareGameSettings(gameSettings, deserializedGameSettings);
+        CompareGameSettings(project, deserializedProject);
     }
 
-    private static void CompareGameSettings(IGameSettings originalSettings, IGameSettings deserializedSettings) {
-        Assert.NotNull(deserializedSettings);
-        Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
-        Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
-        Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
+    private static void CompareGameSettings(IGameProject originalProject, IGameProject deserializedProject) {
+        Assert.NotNull(deserializedProject);
+        Assert.AreEqual(originalProject.ErrorSpritesColor, deserializedProject.ErrorSpritesColor);
+        Assert.AreEqual(originalProject.FallbackBackgroundColor, deserializedProject.FallbackBackgroundColor);
+        Assert.AreEqual(originalProject.PixelsPerUnit, deserializedProject.PixelsPerUnit);
     }
 }

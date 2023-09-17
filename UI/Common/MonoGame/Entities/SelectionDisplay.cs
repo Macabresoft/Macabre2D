@@ -53,7 +53,7 @@ public class SelectionDisplay : BaseDrawer {
         }
 
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
-            var settings = this.Settings;
+            var settings = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);

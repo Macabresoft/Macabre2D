@@ -45,7 +45,7 @@ public class ToDisplayNameConverter : IValueConverter {
         if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
             if (enumType == typeof(Layers) && this._projectService.CurrentProject != null) {
                 foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
-                    var enumName = this._projectService.CurrentProject.Settings.LayerSettings.GetName((Layers)value);
+                    var enumName = this._projectService.CurrentProject.LayerSettings.GetName((Layers)value);
                     displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
                 }
             }
@@ -57,7 +57,7 @@ public class ToDisplayNameConverter : IValueConverter {
             }
         }
         else if (enumType == typeof(InputAction) && this._projectService.CurrentProject != null) {
-            displayName = this._projectService.CurrentProject.Settings.InputSettings.GetName((InputAction)enumValue);
+            displayName = this._projectService.CurrentProject.InputSettings.GetName((InputAction)enumValue);
         }
         else {
             displayName = enumValue.GetEnumDisplayName();

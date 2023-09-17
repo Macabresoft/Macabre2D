@@ -23,11 +23,11 @@ public class UserSettings : VersionedData {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
-    /// <param name="settings">The game settings.</param>
-    public UserSettings(IGameSettings settings) {
-        this.Audio = settings.DefaultUserSettings.Audio.Clone();
-        this.Display = settings.DefaultUserSettings.Display.Clone();
-        this.Input = settings.DefaultUserSettings.Input.Clone();
+    /// <param name="project">The game project.</param>
+    public UserSettings(IGameProject project) {
+        this.Audio = project.DefaultUserSettings.Audio.Clone();
+        this.Display = project.DefaultUserSettings.Display.Clone();
+        this.Input = project.DefaultUserSettings.Input.Clone();
     }
 
     /// <summary>

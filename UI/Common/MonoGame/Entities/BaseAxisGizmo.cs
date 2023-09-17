@@ -99,9 +99,9 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var lineOffset = lineThickness * this.Settings.UnitsPerPixel * -0.5f;
+            var lineOffset = lineThickness * this.Project.UnitsPerPixel * -0.5f;
             var lineOffsetVector = new Vector2(-lineOffset, lineOffset);
-            var pixelsPerUnit = this.Settings.PixelsPerUnit;
+            var pixelsPerUnit = this.Project.PixelsPerUnit;
 
             drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.DropShadowColor, lineThickness);
             drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.DropShadowColor, lineThickness);
@@ -127,8 +127,8 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
         var result = GizmoAxis.None;
 
-        var viewRatio = this.Settings.GetPixelAgnosticRatio(this.Camera.ActualViewHeight, this.Game.ViewportSize.Y);
-        var radius = viewRatio * GizmoPointSize * this.Settings.UnitsPerPixel * 0.5f;
+        var viewRatio = this.Project.GetPixelAgnosticRatio(this.Camera.ActualViewHeight, this.Game.ViewportSize.Y);
+        var radius = viewRatio * GizmoPointSize * this.Project.UnitsPerPixel * 0.5f;
         if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
             result = GizmoAxis.X;
         }

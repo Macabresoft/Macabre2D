@@ -68,7 +68,7 @@ public class AnimationEmitterReference : SpriteSheetReference {
     /// <param name="spawnWorldPosition">The new spawn position.</param>
     /// <param name="velocity">The velocity.</param>
     /// <param name="orientation">The orientation.</param>
-    /// <param name="settings">The settings.</param>
+    /// <param name="project">The project.</param>
     public void UpdateAnimations(
         FrameTime frameTime,
         int millisecondsPerFrame,
@@ -77,7 +77,7 @@ public class AnimationEmitterReference : SpriteSheetReference {
         Vector2 spawnWorldPosition,
         Vector2 velocity,
         SpriteEffects orientation,
-        IGameSettings settings) {
+        IGameProject project) {
         for (var i = this._runningAnimations.Count - 1; i >= 0; i--) {
             var animation = this._runningAnimations[i];
             animation.Update(frameTime, millisecondsPerFrame, out var isAnimationOver);
@@ -92,7 +92,7 @@ public class AnimationEmitterReference : SpriteSheetReference {
         if (this.TimeBetweenEmissions.State == TimerState.Finished && trySpawn && this.TryGetAvailableAnimation(out var newAnimation)) {
             var x = spawnWorldPosition.X + this.EmissionOffset.X + (-this.SpawnVariation.X * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.X);
             var y = spawnWorldPosition.Y + this.EmissionOffset.Y + (-this.SpawnVariation.Y * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.Y);
-            newAnimation.Position = new Vector2(x, y).ToPixelSnappedValue(settings);
+            newAnimation.Position = new Vector2(x, y).ToPixelSnappedValue(project);
             newAnimation.Velocity = velocity;
             newAnimation.Orientation = orientation;
             newAnimation.Reset();

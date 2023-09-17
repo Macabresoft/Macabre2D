@@ -68,7 +68,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             spriteSheet.Draw(
                 spriteBatch,
-                this.Settings.PixelsPerUnit,
+                this.Project.PixelsPerUnit,
                 this.SpriteIndex.Value,
                 this.GetRenderTransform(),
                 this.Color,
@@ -81,7 +81,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// </summary>
     /// <returns></returns>
     protected Vector2 GetRenderTransform() {
-        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this.WorldPosition;
+        return this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this.WorldPosition;
     }
 
     /// <inheritdoc />
@@ -112,7 +112,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.SpriteSheet is { } spriteSheet) {
-            var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
+            var inversePixelsPerUnit = this.Project.UnitsPerPixel;
             var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
             var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
             var offset = this.RenderOptions.Offset * inversePixelsPerUnit;
@@ -129,11 +129,11 @@ public abstract class BaseSpriteEntity : RenderableEntity {
             var maximumX = points.Max(x => x.X);
             var maximumY = points.Max(x => x.Y);
 
-            if (this.ShouldSnapToPixels(this.Settings)) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Settings);
-                minimumY = minimumY.ToPixelSnappedValue(this.Settings);
-                maximumX = maximumX.ToPixelSnappedValue(this.Settings);
-                maximumY = maximumY.ToPixelSnappedValue(this.Settings);
+            if (this.ShouldSnapToPixels(this.Project)) {
+                minimumX = minimumX.ToPixelSnappedValue(this.Project);
+                minimumY = minimumY.ToPixelSnappedValue(this.Project);
+                maximumX = maximumX.ToPixelSnappedValue(this.Project);
+                maximumY = maximumY.ToPixelSnappedValue(this.Project);
             }
 
             result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -146,7 +146,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     private Vector2 CreatePixelPosition() {
-        return this.GetWorldPosition(this.RenderOptions.Offset * this.Settings.UnitsPerPixel).ToPixelSnappedValue(this.Settings);
+        return this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel).ToPixelSnappedValue(this.Project);
     }
 
     private Vector2 CreateSize() {

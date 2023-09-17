@@ -24,7 +24,7 @@ public partial class InputActionEditor : ValueEditorControl<InputAction> {
 
     private IReadOnlyCollection<InputAction> GetEnabledInputActions() {
         var actions = Enum.GetValues<InputAction>()
-            .Where(x => this._projectService.CurrentProject.Settings.InputSettings.IsActionEnabled(x))
+            .Where(x => this._projectService.CurrentProject.InputSettings.IsActionEnabled(x))
             .ToList();
 
         actions.Insert(0, InputAction.None);
