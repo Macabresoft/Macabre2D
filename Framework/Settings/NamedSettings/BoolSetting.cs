@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework.UserSettingInstances;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
 

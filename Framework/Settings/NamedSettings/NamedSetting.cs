@@ -1,12 +1,13 @@
-﻿namespace Macabresoft.Macabre2D.Framework.UserSettingInstances;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Runtime.Serialization;
 
 /// <summary>
 /// Base class for instances of specific settings found in <see cref="UserSettings" />.
 /// </summary>
 [DataContract]
-public abstract class NamedSetting : INameable {
+public abstract class NamedSetting : IIdentifiable, INameable  {
     /// <summary>
     /// Gets or sets the category to which this setting belongs.
     /// </summary>
@@ -24,4 +25,10 @@ public abstract class NamedSetting : INameable {
     /// </summary>
     [DataMember]
     public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the identifier of this setting.
+    /// </summary>
+    [DataMember]
+    public Guid Id { get; set; } = Guid.NewGuid();
 }
