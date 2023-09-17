@@ -15,16 +15,6 @@ public interface IGameSettings {
     float CommonViewHeight { get; }
 
     /// <summary>
-    /// Gets the default audio settings.
-    /// </summary>
-    AudioSettings DefaultAudioSettings { get; }
-
-    /// <summary>
-    /// Gets the default graphics settings.
-    /// </summary>
-    DisplaySettings DefaultDisplaySettings { get; }
-
-    /// <summary>
     /// Gets the input settings.
     /// </summary>
     InputSettings InputSettings { get; }
@@ -64,6 +54,11 @@ public interface IGameSettings {
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort PixelsPerUnit { get; set; }
+    
+    /// <summary>
+    /// Gets the default user settings.
+    /// </summary>
+    UserSettings DefaultUserSettings { get; }
 
     /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -83,16 +78,9 @@ public interface IGameSettings {
 public sealed class GameSettings : IGameSettings {
     private float _commonViewHeight = 10f;
     private ushort _pixelsPerUnit = 32;
-
-    /// <inheritdoc />
+    
     [DataMember]
-    [Category(CommonCategories.Audio)]
-    public AudioSettings DefaultAudioSettings { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.DefaultDisplay)]
-    public DisplaySettings DefaultDisplaySettings { get; } = new();
+    public UserSettings DefaultUserSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

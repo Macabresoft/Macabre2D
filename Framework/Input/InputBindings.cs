@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 /// , and <see cref="MouseButton" />.
 /// </summary>
 [DataContract]
-public class InputBindings : VersionedData {
+public class InputBindings {
     /// <summary>
     /// The settings file name.
     /// </summary>

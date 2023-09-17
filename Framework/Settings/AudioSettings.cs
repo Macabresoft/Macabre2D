@@ -9,7 +9,7 @@ using Macabresoft.Core;
 /// Settings for audio.
 /// </summary>
 [DataContract]
-[Category(CommonCategories.Input)]
+[Category(CommonCategories.Audio)]
 public class AudioSettings {
     private float _effectVolume = 1f;
     private float _menuVolume = 1f;

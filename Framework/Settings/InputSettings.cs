@@ -29,13 +29,7 @@ public class InputSettings {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<string, InputAction> _nameToAction = new();
-
-    /// <summary>
-    /// Gets the default bindings.
-    /// </summary>
-    [DataMember]
-    public InputBindings DefaultBindings { get; } = new();
-
+    
     /// <summary>
     /// Gets the name of an input action.
     /// </summary>

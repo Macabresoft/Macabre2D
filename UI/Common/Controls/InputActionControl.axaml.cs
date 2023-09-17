@@ -57,6 +57,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
             defaultBindingMode: BindingMode.TwoWay);
 
 
+    private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
     private string _actionName;
     private bool _isPredefined;
@@ -72,10 +73,11 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         AvailableMouseButtons = Enum.GetValues<MouseButton>().ToList();
     }
 
-    public InputActionControl() : this(Resolver.Resolve<IUndoService>()) {
+    public InputActionControl() : this(Resolver.Resolve<IProjectService>(), Resolver.Resolve<IUndoService>()) {
     }
 
-    public InputActionControl(IUndoService undoService) {
+    public InputActionControl(IProjectService projectService, IUndoService undoService) {
+        this._projectService = projectService;
         this._undoService = undoService;
         ActionProperty.Changed.Subscribe(this);
         InputSettingsProperty.Changed.Subscribe(this);
@@ -125,17 +127,18 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public Buttons SelectedGamePadButtons {
         get => this._selectedGamePadButtons;
         set {
-            if (value != this._selectedGamePadButtons && this.InputSettings is { } inputSettings) {
-                inputSettings.DefaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
+            if (value != this._selectedGamePadButtons) {
+                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                defaultBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, value);
-                        inputSettings.DefaultBindings.SetGamePadBinding(this.Action, value);
+                        defaultBindings.SetGamePadBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, originalValue);
-                        inputSettings.DefaultBindings.SetGamePadBinding(this.Action, originalValue);
+                        defaultBindings.SetGamePadBinding(this.Action, originalValue);
                     });
             }
         }
@@ -144,17 +147,18 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public Keys SelectedKey {
         get => this._selectedKey;
         set {
-            if (value != this._selectedKey && this.InputSettings is { } inputSettings) {
-                inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
+            if (value != this._selectedKey) {
+                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                defaultBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedKeyProperty, ref this._selectedKey, value);
-                        inputSettings.DefaultBindings.SetKeyBinding(this.Action, value);
+                        defaultBindings.SetKeyBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedKeyProperty, ref this._selectedKey, originalValue);
-                        inputSettings.DefaultBindings.SetKeyBinding(this.Action, originalValue);
+                        defaultBindings.SetKeyBinding(this.Action, originalValue);
                     });
             }
         }
@@ -163,17 +167,18 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public MouseButton SelectedMouseButton {
         get => this._selectedMouseButton;
         set {
-            if (value != this._selectedMouseButton && this.InputSettings is { } inputSettings) {
-                inputSettings.DefaultBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
+            if (value != this._selectedMouseButton) {
+                var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
+                defaultBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedMouseButtonProperty, ref this._selectedMouseButton, value);
-                        inputSettings.DefaultBindings.SetMouseBinding(this.Action, value);
+                        defaultBindings.SetMouseBinding(this.Action, value);
                     },
                     () =>
                     {
                         this.SetAndRaise(SelectedMouseButtonProperty, ref this._selectedMouseButton, originalValue);
-                        inputSettings.DefaultBindings.SetMouseBinding(this.Action, originalValue);
+                        defaultBindings.SetMouseBinding(this.Action, originalValue);
                     });
             }
         }
@@ -199,8 +204,9 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
 
     private void Reset() {
         if (this.InputSettings is { } inputSettings && this.Action != InputAction.None) {
+            var defaultBindings = this._projectService.CurrentProject.Settings.DefaultUserSettings.Input;
             this._actionName = inputSettings.GetName(this.Action);
-            inputSettings.DefaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
+            defaultBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
 
             this.RaisePropertyChanged(ActionNameProperty, this._actionName);
             this.RaisePropertyChanged(SelectedGamePadButtonsProperty, this._selectedGamePadButtons);

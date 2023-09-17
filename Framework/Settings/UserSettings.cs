@@ -25,9 +25,9 @@ public class UserSettings : VersionedData {
     /// </summary>
     /// <param name="settings">The game settings.</param>
     public UserSettings(IGameSettings settings) {
-        this.Audio = settings.DefaultAudioSettings.Clone();
-        this.Display = settings.DefaultDisplaySettings.Clone();
-        this.InputBindings = settings.InputSettings.DefaultBindings.Clone();
+        this.Audio = settings.DefaultUserSettings.Audio.Clone();
+        this.Display = settings.DefaultUserSettings.Display.Clone();
+        this.Input = settings.DefaultUserSettings.Input.Clone();
     }
 
     /// <summary>
@@ -39,12 +39,14 @@ public class UserSettings : VersionedData {
     public UserSettings(AudioSettings audio, DisplaySettings display, InputBindings inputBindings) {
         this.Audio = audio;
         this.Display = display;
-        this.InputBindings = inputBindings;
+        this.Input = inputBindings;
     }
 
     /// <summary>
     /// Gets the audio settings.
     /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Audio)]
     public AudioSettings Audio { get; }
 
     /// <summary>
@@ -56,10 +58,14 @@ public class UserSettings : VersionedData {
     /// <summary>
     /// Gets the graphics settings.
     /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Display)]
     public DisplaySettings Display { get; }
 
     /// <summary>
     /// Gets the input bindings.
     /// </summary>
-    public InputBindings InputBindings { get; }
+    [DataMember]
+    [Category(CommonCategories.Input)]
+    public InputBindings Input { get; }
 }

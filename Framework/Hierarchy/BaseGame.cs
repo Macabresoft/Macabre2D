@@ -52,7 +52,7 @@ public class BaseGame : Game, IGame {
     public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
-    public InputBindings InputBindings => this.UserSettings.InputBindings;
+    public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
     public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
@@ -345,7 +345,7 @@ public class BaseGame : Game, IGame {
 
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
-        public InputBindings InputBindings => this.UserSettings.InputBindings;
+        public InputBindings InputBindings => this.UserSettings.Input;
 
         public IGameProject Project { get; } = new GameProject();
 

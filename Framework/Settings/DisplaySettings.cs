@@ -17,7 +17,7 @@ public enum DisplayModes : byte {
 /// DefaultGraphics settings such as resolution and display mode.
 /// </summary>
 [DataContract]
-[Category(CommonCategories.DefaultDisplay)]
+[Category(CommonCategories.Display)]
 public sealed class DisplaySettings {
     /// <summary>
     /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
