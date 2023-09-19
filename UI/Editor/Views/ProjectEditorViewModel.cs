@@ -89,10 +89,10 @@ public class ProjectEditorViewModel : BaseViewModel {
     /// Gets or sets the animation preview framerate.
     /// </summary>
     public byte AnimationPreviewFramerate {
-        get => this._settingsService.Settings.AnimationPreviewFramerate;
+        get => this._settingsService.Settings.AnimationPreviewFrameRate;
         set {
             this._spriteAnimator.FrameRate = value;
-            this._settingsService.Settings.AnimationPreviewFramerate = this._spriteAnimator.FrameRate;
+            this._settingsService.Settings.AnimationPreviewFrameRate = this._spriteAnimator.FrameRate;
             this.RaisePropertyChanged();
         }
     }
@@ -238,7 +238,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._textLine.IsVisible = false;
 
         // This applies the framerate to the sprite animator and also insures the frame rate is valid.
-        this.AnimationPreviewFramerate = this._settingsService.Settings.AnimationPreviewFramerate;
+        this.AnimationPreviewFramerate = this._settingsService.Settings.AnimationPreviewFrameRate;
 
         return scene;
     }
