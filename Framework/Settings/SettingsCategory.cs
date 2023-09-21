@@ -8,5 +8,6 @@ public enum SettingsCategory {
     Audio,
     Display,
     Input,
-    Graphics
+    Graphics,
+    Miscellaneous
 }

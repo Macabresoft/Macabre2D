@@ -8,12 +8,12 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A collection of <see cref="NamedSetting"/>.
+/// A collection of <see cref="NamedSetting" />.
 /// </summary>
 [DataContract]
 public class NamedSettingCollection : IReadOnlyCollection<NamedSetting> {
     [DataMember]
-    private readonly HashSet<NamedSetting> _customSettings = new();
+    private readonly List<NamedSetting> _customSettings = new();
 
     /// <inheritdoc />
     public int Count => this._customSettings.Count;
@@ -37,6 +37,28 @@ public class NamedSettingCollection : IReadOnlyCollection<NamedSetting> {
     /// <param name="setting">The setting.</param>
     public void RemoveSetting(NamedSetting setting) {
         this._customSettings.Remove(setting);
+    }
+
+    /// <summary>
+    /// Replaces one setting with another.
+    /// </summary>
+    /// <param name="existing">The existing setting.</param>
+    /// <param name="replacement">The replacement.</param>
+    public void Replace(NamedSetting existing, NamedSetting replacement) {
+        var index = this._customSettings.IndexOf(existing);
+        if (index >= 0) {
+            this._customSettings.Remove(existing);
+            this._customSettings.Insert(index, replacement);
+        }
+    }
+
+    /// <summary>
+    /// Resets this collection with new values.
+    /// </summary>
+    /// <param name="settings">The settings.</param>
+    public void Reset(IEnumerable<NamedSetting> settings) {
+        this._customSettings.Clear();
+        this._customSettings.AddRange(settings);
     }
 
     /// <summary>

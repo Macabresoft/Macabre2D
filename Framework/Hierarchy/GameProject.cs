@@ -121,6 +121,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public GameProject() : this(DefaultProjectName, Guid.Empty) {
     }
 
+    /// <summary>
+    /// Gets the default user settings.
+    /// </summary>
     [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
 

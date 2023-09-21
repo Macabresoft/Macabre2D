@@ -46,7 +46,16 @@
                  ItemsSource="{Binding Settings}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBox>A setting could go here</TextBox>
+                    <StackPanel Orientation="Vertical">
+                        <local:StringEditor Title="Name"
+                                            Value="{Binding Name}" />
+                        <local:EnumEditor Title="Category"
+                                          EnumType="{x:Type framework:SettingsCategory}"
+                                          Value="{Binding Category}" />
+                        <ComboBox ItemsSource="{Binding $parent[local:NamedSettingCollectionEditor].AvailableTypes}"
+                                  SelectedItem="{Binding SettingType}"
+                                  DisplayMemberBinding="{Binding Name}"/>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

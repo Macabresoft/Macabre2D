@@ -28,6 +28,7 @@ public class UserSettings : VersionedData {
         this.Audio = project.DefaultUserSettings.Audio.Clone();
         this.Display = project.DefaultUserSettings.Display.Clone();
         this.Input = project.DefaultUserSettings.Input.Clone();
+        this.CustomSettings.Reset(project.DefaultUserSettings.CustomSettings);
     }
 
     /// <summary>

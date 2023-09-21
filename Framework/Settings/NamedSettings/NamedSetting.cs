@@ -12,18 +12,17 @@ public abstract class NamedSetting : IIdentifiable, INameable {
     /// Gets the of the value.
     /// </summary>
     public abstract Type ValueType { get; }
+    
+    /// <summary>
+    /// Gets the untyped value of this setting.
+    /// </summary>
+    public abstract object UntypedValue { get; }
 
     /// <summary>
     /// Gets or sets the category to which this setting belongs.
     /// </summary>
     [DataMember]
-    public SettingsCategory Category { get; set; }
-
-    /// <summary>
-    /// Gets or sets the description of this setting. Can be used in game or simply for a developer's convenience.
-    /// </summary>
-    [DataMember]
-    public string Description { get; set; } = string.Empty;
+    public SettingsCategory Category { get; set; } = SettingsCategory.Miscellaneous;
 
     /// <summary>
     /// Gets or sets the identifier of this setting.
@@ -43,7 +42,6 @@ public abstract class NamedSetting : IIdentifiable, INameable {
     /// <param name="other">The other value.</param>
     public virtual void CopyInformationFromOther(NamedSetting other) {
         this.Category = other.Category;
-        this.Description = other.Description;
         this.Name = other.Name;
     }
 }

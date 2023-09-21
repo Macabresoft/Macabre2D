@@ -2,10 +2,11 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using Avalonia;
-using DynamicData.Binding;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
@@ -43,19 +44,34 @@ public partial class NamedSettingCollectionEditor : ValueEditorControl<NamedSett
 
     public ICommand AddCommand { get; }
 
-    public IReadOnlyCollection<Type> AvailableType { get; } = new[] {
-        typeof(bool),
-        typeof(string),
-        typeof(float),
-        typeof(int)
+    public IReadOnlyCollection<Type> AvailableTypes { get; } = new[] {
+        typeof(bool)
     };
 
     public ICommand RemoveCommand { get; }
 
     public IReadOnlyCollection<NamedSettingModel> Settings => this._settings;
 
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<NamedSettingCollection> args) {
+        base.OnValueChanged(args);
+
+        if (this.Value != null) {
+            this._settings.Reset(this.Value.Select(x => new NamedSettingModel(x, this.Value, this._undoService)));
+        }
+    }
+
     private void Add() {
-        this._undoService.Do(() => { }, () => { });
+        var newModel = new NamedSettingModel(new BoolSetting(), this.Value, this._undoService);
+
+        this._undoService.Do(() =>
+        {
+            this._settings.Add(newModel);
+            this.Value.AddSetting(newModel.Setting);
+        }, () =>
+        {
+            this._settings.Remove(newModel);
+            this.Value.RemoveSetting(newModel.Setting);
+        });
     }
 
     private void Remove(NamedSettingModel model) {
@@ -63,6 +79,14 @@ public partial class NamedSettingCollectionEditor : ValueEditorControl<NamedSett
             return;
         }
 
-        this._undoService.Do(() => { }, () => { });
+        this._undoService.Do(() =>
+        {
+            this._settings.Remove(model);
+            this.Value.RemoveSetting(model.Setting);
+        }, () =>
+        {
+            this._settings.Add(model);
+            this.Value.AddSetting(model.Setting);
+        });
     }
 }
