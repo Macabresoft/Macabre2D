@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using ReactiveUI;
 using Unity;
 

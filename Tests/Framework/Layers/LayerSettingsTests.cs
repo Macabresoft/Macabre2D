@@ -5,6 +5,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using NUnit.Framework;
 
 [TestFixture]

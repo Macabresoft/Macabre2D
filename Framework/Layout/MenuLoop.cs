@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework.Layout;
 
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A loop that handles navigating menus.

@@ -2,6 +2,7 @@
 
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A <see cref="Layers" /> wrapper that can be enabled or disabled.

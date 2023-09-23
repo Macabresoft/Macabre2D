@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A loop that calls updates on entities.

@@ -7,6 +7,7 @@ using System.Reflection;
 using Avalonia.Data.Converters;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// Converts from a <see cref="Type" /> or <see cref="Enum" /> to a display name.

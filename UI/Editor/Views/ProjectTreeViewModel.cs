@@ -312,7 +312,7 @@ public class ProjectTreeViewModel : BaseViewModel {
     private bool CanRemoveContent(object node) {
         return node is not RootContentDirectory &&
                node is not INameableCollection &&
-               !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId);
+               (this._sceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId));
     }
 
     private void Clone(object selected) {

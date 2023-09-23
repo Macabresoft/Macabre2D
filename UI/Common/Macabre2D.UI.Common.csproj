@@ -11,7 +11,8 @@
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\Scripts\Gameplay\Macabre2D.Scripts.Gameplay.csproj" />
+        <ProjectReference Include="..\..\Project\Common\Macabre2D.Project.Common.csproj" />
+        <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj" />
         <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
@@ -66,10 +67,6 @@
             <DependentUpon>FloatEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\LayersEditor.axaml.cs">
-            <DependentUpon>FlagsEnumEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\Framework\RelativeVerticesEditor.axaml.cs">
             <DependentUpon>LineStripEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
@@ -80,10 +77,6 @@
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\LayersOverrideEditor.axaml.cs">
             <DependentUpon>LayersOverrideEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\InputActionEditor.axaml.cs">
-            <DependentUpon>InputActionEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Assets\SpriteSheetFontEditorView.axaml.cs">
@@ -124,6 +117,14 @@
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\NamedSettingCollectionEditor.axaml.cs">
           <DependentUpon>NamedSettingCollectionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Project\InputActionEditor.axaml.cs">
+          <DependentUpon>InputActionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Project\LayersEditor.axaml.cs">
+          <DependentUpon>LayersEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
     </ItemGroup>

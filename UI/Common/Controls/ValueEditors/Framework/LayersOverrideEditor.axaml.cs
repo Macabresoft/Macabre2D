@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Unity;
 
 public partial class LayersOverrideEditor : ValueEditorControl<LayersOverride> {

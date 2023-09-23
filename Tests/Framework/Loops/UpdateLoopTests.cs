@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using NSubstitute;
 using NUnit.Framework;
 

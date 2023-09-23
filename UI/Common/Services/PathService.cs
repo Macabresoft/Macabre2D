@@ -90,6 +90,11 @@ public class PathService : IPathService {
     public const string ObjDirectoryName = "obj";
 
     /// <summary>
+    /// The name of the project directory.
+    /// </summary>
+    public const string ProjectDirectoryName = "Project";
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="PathService" /> class.
     /// </summary>
     [InjectionConstructor]
@@ -104,7 +109,7 @@ public class PathService : IPathService {
     public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) : this(
         editorBinDirectoryPath,
         platformsDirectoryPath,
-        new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ContentDirectoryName)).FullName) {
+        new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ProjectDirectoryName, ContentDirectoryName)).FullName) {
     }
 
     /// <summary>

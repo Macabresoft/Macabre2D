@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Unity;
 
 public partial class LayerSettingsEditor : ValueEditorControl<LayerSettings> {

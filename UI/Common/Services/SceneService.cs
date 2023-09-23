@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
@@ -229,14 +230,20 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
 
                     if (this._fileSystem.DoesFileExist(contentPath)) {
-                        var scene = this._serializer.Deserialize<Scene>(contentPath);
-                        if (scene != null) {
-                            sceneAsset.LoadContent(scene);
-                            this.CurrentSceneMetadata = metadata;
-                            this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
-                            this._entityService.Selected = scene;
-                            this._loopService.Selected = scene.Loops.FirstOrDefault();
-                            this._impliedSelected = scene;
+                        try {
+                            var scene = this._serializer.Deserialize<Scene>(contentPath);
+                            if (scene != null) {
+                                sceneAsset.LoadContent(scene);
+                                this.CurrentSceneMetadata = metadata;
+                                this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
+                                this._entityService.Selected = scene;
+                                this._loopService.Selected = scene.Loops.FirstOrDefault();
+                                this._impliedSelected = scene;
+                            }
+                        }
+                        catch {
+                            // TODO: might be good to show or log an error message here
+                            sceneAsset = null;
                         }
                     }
                 }

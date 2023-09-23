@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 

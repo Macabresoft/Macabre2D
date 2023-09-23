@@ -27,7 +27,8 @@ The full source code is available here from GitHub:
 
 * Clone the source: `git clone git@github.com:Macabresoft/Macabre2D.git`
 * Pull down LFS objects: `git lfs fetch --all`
-* Restore NuGet packages for Macabre2D.sln
+* Place your existing Macabre2D project or [pull down a template](https://github.com/Macabresoft/Macabre2D-Project-Template) into the `\Project\` folder
+* Restore NuGet packages and build Macabre2D.sln
 
 ### Compiling Shaders on Linux
 
@@ -44,7 +45,7 @@ Your game's code must be directly integrated with Macabre2D, giving you full con
 
 * Optionally fork Macabre2D
 * Clone Macabre2D
-* Create a separate repository for content which operates as a git repository inside of the `/Content/` folder
+* Create a separate repository for content which operates as a git repository inside of the `/Project/` folder ([use a template](https://github.com/Macabresoft/Macabre2D-Project-Template))
 * Run the `Macabre2D.UI.Editor` project once to generate default content
 * Add custom scripts to the Macabre2D.Scripts project (inside the Scripts folder, which is a link to inside `/Content`)
 

@@ -2,8 +2,8 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                          x:TypeArguments="framework:Layers"
+                          xmlns:project="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+                          x:TypeArguments="project:Layers"
                           x:Class="Macabresoft.Macabre2D.UI.Common.LayersEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:LayersEditor]}">
@@ -16,7 +16,7 @@
                    Text="{Binding Title}" />
 
         <avaloniaEx:FlagsComboBox Grid.Column="1"
-                                  EnumType="{x:Type framework:Layers}"
+                                  EnumType="{x:Type project:Layers}"
                                   ItemsSource="{Binding EnabledLayers}"
                                   SelectedValue="{Binding Value}"/>
 

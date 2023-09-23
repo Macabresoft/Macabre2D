@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// Event args for when a <see cref="Layers" /> has its name changed.

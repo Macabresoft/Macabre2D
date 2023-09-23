@@ -7,6 +7,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 
 public partial class LayerNameControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<Layers>>, IObserver<AvaloniaPropertyChangedEventArgs<LayerSettings>> {
     public static readonly DirectProperty<LayerNameControl, bool> IsLayerEnabledProperty =

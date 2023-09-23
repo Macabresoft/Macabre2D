@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 
 public partial class InputActionControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<InputAction>>, IObserver<AvaloniaPropertyChangedEventArgs<InputSettings>> {

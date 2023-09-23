@@ -59,4 +59,8 @@
             <DependentUpon>Licenses.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Project\Common\Macabre2D.Project.Common.csproj" />
+    </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Newtonsoft.Json;
 
 /// <summary>

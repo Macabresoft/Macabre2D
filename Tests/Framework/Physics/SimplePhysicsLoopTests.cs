@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Physics;
 
 using System;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;

@@ -2,6 +2,7 @@
 
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A <see cref="IDisplayNameHandler" /> for <see cref="Layers" />.
