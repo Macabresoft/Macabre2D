@@ -23,7 +23,9 @@ public partial class LayersEditor : ValueEditorControl<Layers> {
     [InjectionConstructor]
     public LayersEditor(ValueControlDependencies dependencies, IProjectService projectService) : base(dependencies) {
         this._projectService = projectService;
-        this.EnabledLayers = Enum.GetValues<Layers>().ToList();
+        var enabledLayers = Enum.GetValues<Layers>().ToList();
+        enabledLayers.Remove(Layers.None);
+        this.EnabledLayers = enabledLayers;
         this.ClearCommand = ReactiveCommand.Create(this.Clear);
         this.SelectAllCommand = ReactiveCommand.Create(this.SelectAll);
         this.InitializeComponent();
