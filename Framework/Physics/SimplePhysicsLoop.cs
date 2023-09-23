@@ -179,8 +179,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     private IEnumerable<Collider> GetFilteredColliders(BoundingArea boundingArea, Layers layers) {
-        var enabledLayers = this.Game.Project.LayerSettings.EnabledLayers;
-        return this.ColliderTree.RetrievePotentialCollisions(boundingArea).Where(x => (x.Layers & layers & enabledLayers) != Layers.None);
+        return this.ColliderTree.RetrievePotentialCollisions(boundingArea).Where(x => (x.Layers & layers) != Layers.None);
     }
 
     private void InsertColliders() {

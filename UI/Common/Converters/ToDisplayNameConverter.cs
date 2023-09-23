@@ -44,18 +44,11 @@ public class ToDisplayNameConverter : IValueConverter {
         var displayName = string.Empty;
 
         if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
-            if (enumType == typeof(Layers) && this._projectService.CurrentProject != null) {
-                foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
-                    var enumName = this._projectService.CurrentProject.LayerSettings.GetName((Layers)value);
-                    displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
-                }
+            foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
+                var enumName = value.GetEnumDisplayName();
+                displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
             }
-            else {
-                foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
-                    var enumName = value.GetEnumDisplayName();
-                    displayName = string.IsNullOrEmpty(displayName) ? enumName : $"{displayName}, {enumName}";
-                }
-            }
+            
         }
         else if (enumType == typeof(InputAction) && this._projectService.CurrentProject != null) {
             displayName = this._projectService.CurrentProject.InputSettings.GetName((InputAction)enumValue);

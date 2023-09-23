@@ -2,14 +2,21 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for a single project in the engine.
 /// </summary>
 public interface IGameProject : INotifyPropertyChanged {
+    /// <summary>
+    /// Gets all layers available in this project as a single enum.
+    /// </summary>
+    Layers AllLayers { get; }
+
     /// <summary>
     /// Gets the common view height used when a camera does not override with its own value.
     /// </summary>
@@ -24,11 +31,6 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the input settings.
     /// </summary>
     InputSettings InputSettings { get; }
-
-    /// <summary>
-    /// Gets the layer settings.
-    /// </summary>
-    LayerSettings LayerSettings { get; }
 
     /// <summary>
     /// Gets the name for this project.
@@ -113,6 +115,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public GameProject(string name, Guid startupSceneContentId) {
         this.Name = name;
         this.StartupSceneContentId = startupSceneContentId;
+        this.AllLayers = Enum.GetValues<Layers>().Aggregate((current, layer) => current | layer);
     }
 
     /// <summary>
@@ -120,6 +123,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// </summary>
     public GameProject() : this(DefaultProjectName, Guid.Empty) {
     }
+
+    /// <inheritdoc />
+    public Layers AllLayers { get; }
 
     /// <summary>
     /// Gets the default user settings.
@@ -131,11 +137,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     [Category(CommonCategories.Input)]
     public InputSettings InputSettings { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Layers)]
-    public LayerSettings LayerSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

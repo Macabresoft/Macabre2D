@@ -19,8 +19,7 @@ public sealed class CommonContainerExtension : UnityContainerExtension {
 
     private void RegisterDisplayNameHandlers() {
         this.Container
-            .RegisterType<InputActionsDisplayNameHandler>(new SingletonLifetimeManager())
-            .RegisterType<LayersDisplayNameHandler>(new SingletonLifetimeManager());
+            .RegisterType<InputActionsDisplayNameHandler>(new SingletonLifetimeManager());
     }
 
     private void RegisterFrameworkTypes() {

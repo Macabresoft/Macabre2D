@@ -43,8 +43,6 @@ public class RenderLoopTests {
         var game = Substitute.For<IGame>();
         var project = Substitute.For<IGameProject>();
         game.Project.Returns(project);
-        var layerSettings = new LayerSettings();
-        project.LayerSettings.Returns(layerSettings);
         var renderSystem = new RenderLoop();
         var scene = Substitute.For<IScene>();
         scene.Game.Returns(game);
@@ -134,10 +132,9 @@ public class RenderLoopTests {
         }
 
         public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-            var enabledLayers = this.Project.LayerSettings.EnabledLayers;
             var entities = renderTree
                 .RetrievePotentialCollisions(this.BoundingArea)
-                .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+                .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender) != Layers.None)
                 .ToList();
 
             foreach (var entity in entities) {

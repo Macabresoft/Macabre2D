@@ -41,13 +41,13 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
             return;
         }
 
-        var enabledLayers = this._projectService.CurrentProject?.LayerSettings.EnabledLayers ?? Layers.Default;
+        var allLayers = this._projectService.CurrentProject?.AllLayers ?? Layers.Default;
 
         var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
         var grid = new Grid();
         viewBox.Child = grid;
 
-        var rowValues = Enum.GetValues<Layers>().Where(x => (x & enabledLayers) != Layers.None).ToList();
+        var rowValues = Enum.GetValues<Layers>().Where(x => (x & allLayers) != Layers.None).ToList();
         rowValues.Remove(Layers.Default);
         rowValues.Remove(Layers.None);
         var columnValues = rowValues.ToList();

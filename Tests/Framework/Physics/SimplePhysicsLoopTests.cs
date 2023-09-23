@@ -24,8 +24,6 @@ public static class SimplePhysicsLoopTests {
         bool raycastHit) {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
-        var layerSettings = new LayerSettings();
-        project.LayerSettings.Returns(layerSettings);
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
 
@@ -53,8 +51,6 @@ public static class SimplePhysicsLoopTests {
         bool raycastHit) {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
-        var layerSettings = new LayerSettings();
-        project.LayerSettings.Returns(layerSettings);
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
 

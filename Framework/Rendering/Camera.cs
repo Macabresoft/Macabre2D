@@ -128,7 +128,7 @@ public class Camera : Entity, ICamera {
     public Layers LayersToRender { get; set; } = ~Layers.None;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not to override the common view height from <see cref="IGameSettings" />.
+    /// Gets or sets a value indicating whether or not to override the common view height from <see cref="IGameProject" />.
     /// </summary>
     [DataMember(Name = "Override Common View Height", Order = 10)]
     public bool OverrideCommonViewHeight {
@@ -332,10 +332,9 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude) {
-        var enabledLayers = this.Project.LayerSettings.EnabledLayers;
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender & enabledLayers) != Layers.None)
+            .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
             .OrderBy(x => x.RenderOrder)
             .ToList();
 
