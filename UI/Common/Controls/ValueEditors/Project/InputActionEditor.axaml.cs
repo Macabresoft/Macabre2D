@@ -3,20 +3,15 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Markup.Xaml;
-using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using Unity;
 
 public partial class InputActionEditor : ValueEditorControl<InputAction> {
-    private readonly IProjectService _projectService;
-
-    public InputActionEditor() : this(null, Resolver.Resolve<IProjectService>()) {
+    public InputActionEditor() : this(null) {
     }
 
     [InjectionConstructor]
-    public InputActionEditor(ValueControlDependencies dependencies, IProjectService projectService) : base(dependencies) {
-        this._projectService = projectService;
+    public InputActionEditor(ValueControlDependencies dependencies) : base(dependencies) {
         this.EnabledInputActions = this.GetEnabledInputActions();
         this.InitializeComponent();
     }
@@ -24,10 +19,7 @@ public partial class InputActionEditor : ValueEditorControl<InputAction> {
     public IReadOnlyCollection<InputAction> EnabledInputActions { get; }
 
     private IReadOnlyCollection<InputAction> GetEnabledInputActions() {
-        var actions = Enum.GetValues<InputAction>()
-            .Where(x => this._projectService.CurrentProject.InputSettings.IsActionEnabled(x))
-            .ToList();
-
+        var actions = Enum.GetValues<InputAction>().ToList();
         actions.Insert(0, InputAction.None);
         return actions;
     }

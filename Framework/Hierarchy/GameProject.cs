@@ -28,11 +28,6 @@ public interface IGameProject : INotifyPropertyChanged {
     UserSettings DefaultUserSettings { get; }
 
     /// <summary>
-    /// Gets the input settings.
-    /// </summary>
-    InputSettings InputSettings { get; }
-
-    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -132,12 +127,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// </summary>
     [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Input)]
-    public InputSettings InputSettings { get; } = new();
-
+    
     /// <inheritdoc />
     [DataMember]
     public float CommonViewHeight {

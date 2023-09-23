@@ -36,9 +36,7 @@ public class App : Application {
             Resolver.Container.RegisterInstance(mainWindow);
             Resolver.Resolve<IEditorSettingsService>().Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
-
-            DisplayNameHelper.Instance.RegisterHandler(typeof(InputAction), Resolver.Resolve<InputActionsDisplayNameHandler>());
-
+            
             if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
                 Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
             }

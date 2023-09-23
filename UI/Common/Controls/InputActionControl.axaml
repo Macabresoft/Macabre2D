@@ -11,28 +11,19 @@
         </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="Auto, Auto"
-          ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:InputActionControl]}"
           Margin="{StaticResource DoubleMarginVertical}">
         <Design.DataContext>
             <local:InputActionControl />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Row="0"
-                   Grid.Column="0"
                    Classes="Label"
                    Text="{Binding Action}" />
 
-        <local:StringEditor Grid.Row="0"
-                            Grid.Column="1"
-                            IsVisible="{Binding !IsPredefined}"
-                            Value="{Binding ActionName}" />
-
         <Grid RowDefinitions="Auto, Auto, Auto"
               ColumnDefinitions="Auto, *"
-              Grid.Row="1"
-              Grid.Column="0"
-              Grid.ColumnSpan="2">
+              Grid.Row="1">
             <avaloniaEx:Icon Grid.Column="0"
                              Grid.Row="0"
                              Content="{StaticResource GamePadIcon}"

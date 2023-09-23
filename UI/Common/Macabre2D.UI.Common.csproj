@@ -119,6 +119,9 @@
           <DependentUpon>LayersEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\InputBindingsEditor.axaml.cs">
+          <DependentUpon>InputSettingsEditor.axaml</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

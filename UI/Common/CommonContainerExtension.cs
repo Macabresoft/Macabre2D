@@ -11,15 +11,9 @@ using Unity.Lifetime;
 public sealed class CommonContainerExtension : UnityContainerExtension {
     /// <inheritdoc />
     protected override void Initialize() {
-        this.RegisterDisplayNameHandlers();
         this.RegisterFrameworkTypes();
         this.RegisterLibraryServices();
         this.RegisterLibraryTypes();
-    }
-
-    private void RegisterDisplayNameHandlers() {
-        this.Container
-            .RegisterType<InputActionsDisplayNameHandler>(new SingletonLifetimeManager());
     }
 
     private void RegisterFrameworkTypes() {

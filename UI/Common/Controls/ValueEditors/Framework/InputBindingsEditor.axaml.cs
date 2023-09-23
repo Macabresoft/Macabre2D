@@ -8,12 +8,12 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using Unity;
 
-public partial class InputSettingsEditor : ValueEditorControl<InputSettings> {
-    public InputSettingsEditor() : this(null) {
+public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
+    public InputBindingsEditor() : this(null) {
     }
 
     [InjectionConstructor]
-    public InputSettingsEditor(ValueControlDependencies dependencies) : base(dependencies) {
+    public InputBindingsEditor(ValueControlDependencies dependencies) : base(dependencies) {
         var actions = Enum.GetValues<InputAction>().ToList();
         actions.Remove(InputAction.None);
         this.Actions = actions;
