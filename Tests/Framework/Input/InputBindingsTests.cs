@@ -14,7 +14,7 @@ public class InputBindingsTests {
     public void TryGetBinding_ShouldReturnFalse_WhenNoBindings() {
         var bindings = new InputBindings();
 
-        var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
+        var result = bindings.TryGetBindings(InputAction.Confirm, out var controllerButton, out var key, out var mouseButton);
 
         using (new AssertionScope()) {
             result.Should().BeFalse();
@@ -28,11 +28,11 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenAllBindings() {
         var bindings = new InputBindings();
-        bindings.SetGamePadBinding(InputAction.Action01, Buttons.A);
-        bindings.SetKeyBinding(InputAction.Action01, Keys.A);
-        bindings.SetMouseBinding(InputAction.Action01, MouseButton.Left);
+        bindings.SetGamePadBinding(InputAction.Confirm, Buttons.A);
+        bindings.SetKeyBinding(InputAction.Confirm, Keys.A);
+        bindings.SetMouseBinding(InputAction.Confirm, MouseButton.Left);
 
-        var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
+        var result = bindings.TryGetBindings(InputAction.Confirm, out var controllerButton, out var key, out var mouseButton);
 
         using (new AssertionScope()) {
             result.Should().BeTrue();
@@ -46,9 +46,9 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenControllerBinding() {
         var bindings = new InputBindings();
-        bindings.SetGamePadBinding(InputAction.Action01, Buttons.A);
+        bindings.SetGamePadBinding(InputAction.Confirm, Buttons.A);
 
-        var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
+        var result = bindings.TryGetBindings(InputAction.Confirm, out var controllerButton, out var key, out var mouseButton);
 
         using (new AssertionScope()) {
             result.Should().BeTrue();
@@ -62,9 +62,9 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenKeyBinding() {
         var bindings = new InputBindings();
-        bindings.SetKeyBinding(InputAction.Action01, Keys.A);
+        bindings.SetKeyBinding(InputAction.Confirm, Keys.A);
 
-        var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
+        var result = bindings.TryGetBindings(InputAction.Confirm, out var controllerButton, out var key, out var mouseButton);
 
         using (new AssertionScope()) {
             result.Should().BeTrue();
@@ -78,9 +78,9 @@ public class InputBindingsTests {
     [Test]
     public void TryGetBinding_ShouldReturnTrue_WhenMouseBinding() {
         var bindings = new InputBindings();
-        bindings.SetMouseBinding(InputAction.Action01, MouseButton.Left);
+        bindings.SetMouseBinding(InputAction.Confirm, MouseButton.Left);
 
-        var result = bindings.TryGetBindings(InputAction.Action01, out var controllerButton, out var key, out var mouseButton);
+        var result = bindings.TryGetBindings(InputAction.Confirm, out var controllerButton, out var key, out var mouseButton);
 
         using (new AssertionScope()) {
             result.Should().BeTrue();
