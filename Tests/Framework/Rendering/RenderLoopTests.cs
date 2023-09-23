@@ -48,8 +48,8 @@ public class RenderLoopTests {
         scene.Game.Returns(game);
         renderSystem.Initialize(scene);
 
-        var includedRenderable = new TestRenderable { Layers = Layers.Layer01 };
-        var excludedRenderable = new TestRenderable { Layers = Layers.Layer06 | Layers.Layer01 };
+        var includedRenderable = new TestRenderable { Layers = (Layers)1 };
+        var excludedRenderable = new TestRenderable { Layers = (Layers)2 | (Layers)1 };
         scene.RenderableEntities.Returns(new[] { includedRenderable, excludedRenderable });
 
         var camera = new TestCamera();
@@ -120,8 +120,8 @@ public class RenderLoopTests {
         public event EventHandler BoundingAreaChanged;
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
-        public Layers LayersToExcludeFromRender => Layers.Layer06;
-        public Layers LayersToRender => Layers.Layer01;
+        public Layers LayersToExcludeFromRender => (Layers)2;
+        public Layers LayersToRender => (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public float ViewWidth => 4f;

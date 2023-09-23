@@ -31,10 +31,10 @@ public static class SimplePhysicsLoopTests {
         var circleBody = scene.AddChild<SimplePhysicsBody>();
         circleBody.SetWorldPosition(Vector2.Zero);
         circleBody.Collider = new CircleCollider(1f);
-        circleBody.Layers = Layers.Layer12;
+        circleBody.Layers = (Layers)1;
         scene.Initialize(game, Substitute.For<IAssetManager>());
 
-        var raycastLayer = layersCompatible ? Layers.Layer12 : Layers.Layer13;
+        var raycastLayer = layersCompatible ? circleBody.Layers : (Layers)2;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
         Assert.AreEqual(raycastHit, result);
     }

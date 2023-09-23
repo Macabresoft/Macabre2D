@@ -17,9 +17,9 @@ public static class UpdateLoopTests {
         var scene = new Scene();
         var updateLoop = scene.AddLoop<UpdateLoop>();
         updateLoop.LayersToUpdate.IsEnabled = true;
-        updateLoop.LayersToUpdate.Value = Layers.Layer06;
+        updateLoop.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
-        entity.Layers = Layers.Layer09;
+        entity.Layers = (Layers)2;
 
         scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
 
@@ -56,9 +56,9 @@ public static class UpdateLoopTests {
         var scene = new Scene();
         var updateLoop = scene.AddLoop<UpdateLoop>();
         updateLoop.LayersToUpdate.IsEnabled = true;
-        updateLoop.LayersToUpdate.Value = Layers.Layer03;
+        updateLoop.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
-        entity.Layers = Layers.Layer03;
+        entity.Layers = (Layers)1;
 
         scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
 
