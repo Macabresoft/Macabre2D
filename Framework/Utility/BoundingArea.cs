@@ -76,6 +76,14 @@ public readonly struct BoundingArea {
     }
 
     /// <summary>
+    /// Creates a <see cref="Vector2" /> that represents the size of this instance.
+    /// </summary>
+    /// <returns>The size.</returns>
+    public Vector2 ToSize() {
+        return new Vector2(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
     /// <param name="minimum">The minimum.</param>

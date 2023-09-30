@@ -17,7 +17,6 @@ using Microsoft.Xna.Framework.Graphics;
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _pixelPosition;
-    private bool _snapToPixels;
     private string _text = string.Empty;
 
     /// <inheritdoc />

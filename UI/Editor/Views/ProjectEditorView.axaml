@@ -56,7 +56,7 @@
                                Text="Framerate" />
 
                     <common:ByteEditor Grid.Column="1"
-                                       Value="{Binding AnimationPreviewFramerate}"
+                                       Value="{Binding AnimationPreviewFrameRate}"
                                        HorizontalAlignment="Left" />
 
                     <Button Grid.Column="3"

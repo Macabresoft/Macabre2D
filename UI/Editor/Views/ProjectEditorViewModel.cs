@@ -86,9 +86,9 @@ public class ProjectEditorViewModel : BaseViewModel {
     public ICommand StopCommand { get; }
 
     /// <summary>
-    /// Gets or sets the animation preview framerate.
+    /// Gets or sets the animation preview frame rate.
     /// </summary>
-    public byte AnimationPreviewFramerate {
+    public byte AnimationPreviewFrameRate {
         get => this._settingsService.Settings.AnimationPreviewFrameRate;
         set {
             this._spriteAnimator.FrameRate = value;
@@ -237,8 +237,8 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._textLine = scene.AddChild<TextLine>();
         this._textLine.IsVisible = false;
 
-        // This applies the framerate to the sprite animator and also insures the frame rate is valid.
-        this.AnimationPreviewFramerate = this._settingsService.Settings.AnimationPreviewFrameRate;
+        // This applies the frame rate to the sprite animator and also insures the frame rate is valid.
+        this.AnimationPreviewFrameRate = this._settingsService.Settings.AnimationPreviewFrameRate;
 
         return scene;
     }
