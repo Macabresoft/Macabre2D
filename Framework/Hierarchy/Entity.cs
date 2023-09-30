@@ -18,25 +18,26 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <summary>
     /// Gets the children.
     /// </summary>
-    /// <value>The children.</value>
     IReadOnlyCollection<IEntity> Children => Array.Empty<IEntity>();
 
     /// <summary>
     /// Gets the parent.
     /// </summary>
-    /// <value>The parent.</value>
     IEntity Parent => Framework.Scene.Empty;
 
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    /// <value>The scene.</value>
     IScene Scene => Framework.Scene.Empty;
+
+    /// <summary>
+    /// Gets the game project.
+    /// </summary>
+    IGameProject Project => GameProject.Empty;
 
     /// <summary>
     /// Gets the layers.
     /// </summary>
-    /// <value>The layers.</value>
     Layers Layers { get; set; }
 
     /// <summary>
@@ -226,7 +227,7 @@ public class Entity : Transformable, IEntity {
     /// <summary>
     /// Gets the project.
     /// </summary>
-    protected IGameProject Project => this.Game.Project;
+    public IGameProject Project => this.Game.Project;
 
     /// <summary>
     /// Gets the sprite batch.

@@ -62,7 +62,7 @@ public class TextLine : RenderableEntity {
     /// Gets or sets the render options.
     /// </summary>
     /// <value>The render options.</value>
-    [DataMember(Order = 4, Name = "Render Options")]
+    [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
@@ -154,39 +154,7 @@ public class TextLine : RenderableEntity {
     }
 
     private BoundingArea CreateBoundingArea() {
-        BoundingArea result;
-        if (this.CouldBeVisible() && this.RenderOptions.Size != Vector2.Zero) {
-            var unitsPerPixel = this.Project.UnitsPerPixel;
-            var (x, y) = this.RenderOptions.Size;
-            var width = x * unitsPerPixel;
-            var height = y * unitsPerPixel;
-            var offset = this.RenderOptions.Offset * unitsPerPixel;
-            var points = new List<Vector2> {
-                this.GetWorldPosition(offset),
-                this.GetWorldPosition(offset + new Vector2(width, 0f)),
-                this.GetWorldPosition(offset + new Vector2(width, height)),
-                this.GetWorldPosition(offset + new Vector2(0f, height))
-            };
-
-            var minimumX = points.Min(point => point.X);
-            var minimumY = points.Min(point => point.Y);
-            var maximumX = points.Max(point => point.X);
-            var maximumY = points.Max(point => point.Y);
-
-            if (this.ShouldSnapToPixels(this.Project)) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Project);
-                minimumY = minimumY.ToPixelSnappedValue(this.Project);
-                maximumX = maximumX.ToPixelSnappedValue(this.Project);
-                maximumY = maximumY.ToPixelSnappedValue(this.Project);
-            }
-
-            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-        }
-        else {
-            result = BoundingArea.Empty;
-        }
-
-        return result;
+        return this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
     }
 
     private Vector2 CreateSize() {

@@ -85,6 +85,11 @@ public interface IGameProject : INotifyPropertyChanged {
 [Category(CommonCategories.Miscellaneous)]
 public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <summary>
+    /// Gets an empty game project.
+    /// </summary>
+    public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
+    
+    /// <summary>
     /// The default project name.
     /// </summary>
     public const string DefaultProjectName = "Project";

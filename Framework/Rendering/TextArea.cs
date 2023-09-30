@@ -3,43 +3,40 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A text area.
 /// </summary>
-public class TextArea : Entity, IRenderableEntity {
+public class TextArea : RenderableEntity, IRenderableEntity {
+    private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<(SpriteSheetFontCharacter character, Vector2 position)> _spriteCharacters = new();
-    private BoundingArea _boundingArea;
-    private bool _isVisible = true;
+    private float _height;
     private int _kerning;
-    private int _renderOrder;
     private string _text = string.Empty;
+    private float _width;
 
     /// <inheritdoc />
-    public event EventHandler? BoundingAreaChanged;
+    public override event EventHandler? BoundingAreaChanged;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextLine" /> class.
+    /// </summary>
+    public TextArea() {
+        this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+    }
+
+    /// <inheritdoc />
+    public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
     /// Gets the font asset reference.
     /// </summary>
     [DataMember]
     public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    public BoundingArea BoundingArea {
-        get => this._boundingArea;
-        set {
-            this._boundingArea = value;
-            if (this.IsInitialized) {
-                this.BoundingAreaChanged.SafeInvoke(this);
-                this.RequestRefresh();
-            }
-        }
-    }
 
     /// <summary>
     /// Gets or sets the color.
@@ -48,12 +45,19 @@ public class TextArea : Entity, IRenderableEntity {
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public bool IsVisible {
-        get => this._isVisible && this.IsEnabled;
-        set => this.Set(ref this._isVisible, value);
+    public float Height {
+        get => this._height;
+        set {
+            this._height = value;
+            if (this.IsInitialized) {
+                this.ResetSize();
+                this.ResetLines();
+            }
+        }
     }
 
     /// <summary>
@@ -70,23 +74,13 @@ public class TextArea : Entity, IRenderableEntity {
         }
     }
 
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
+    /// <summary>
+    /// Gets or sets the render options.
+    /// </summary>
+    /// <value>The render options.</value>
+    [DataMember(Order = 4)]
+    public RenderOptions RenderOptions { get; private set; } = new();
 
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public int RenderOrder {
-        get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public bool RenderOutOfBounds { get; set; }
 
     /// <summary>
     /// Gets or sets the text.
@@ -102,18 +96,35 @@ public class TextArea : Entity, IRenderableEntity {
         }
     }
 
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
+    [DataMember]
+    public float Width {
+        get => this._width;
+        set {
+            this._width = value;
+            if (this.IsInitialized) {
+                this.ResetSize();
+                this.ResetLines();
+            }
+        }
+    }
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.FontReference.Initialize(this.Scene.Assets);
         this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
+        this.RenderOptions.Initialize(this.CreateSize);
+        this.ResetSize();
         this.ResetLines();
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
 
     /// <inheritdoc />
-    public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (!this.BoundingArea.IsEmpty && this.FontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             foreach (var (character, position) in this._spriteCharacters) {
                 spriteSheet.Draw(
@@ -122,7 +133,7 @@ public class TextArea : Entity, IRenderableEntity {
                     character.SpriteIndex,
                     position,
                     this.Color,
-                    SpriteEffects.FlipVertically);
+                    this.RenderOptions.Orientation);
             }
         }
     }
@@ -130,7 +141,35 @@ public class TextArea : Entity, IRenderableEntity {
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
-        this.RequestRefresh();
+
+        if (this.IsInitialized) {
+            this.ResetSize();
+            this.ResetLines();
+        }
+    }
+
+    /// <summary>
+    /// Resets the size and bounding area.
+    /// </summary>
+    protected void ResetSize() {
+        this.RenderOptions.InvalidateSize();
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
+    private bool CouldBeVisible() {
+        return !string.IsNullOrEmpty(this.Text) &&
+               this._height > 0f &&
+               this._width > 0f &&
+               this.FontReference.Asset != null;
+    }
+
+    private BoundingArea CreateBoundingArea() {
+        return this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
+    }
+
+    private Vector2 CreateSize() {
+        return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
     }
 
     private void FontReference_AssetLoaded(object? sender, EventArgs e) {

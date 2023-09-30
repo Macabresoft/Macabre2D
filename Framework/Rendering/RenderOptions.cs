@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -95,4 +97,45 @@ public sealed class RenderOptions : OffsetOptions {
     /// </summary>
     /// <value>The orientation.</value>
     public SpriteEffects Orientation { get; private set; } = SpriteEffects.FlipVertically;
+    
+    /// <summary>
+    /// Creates a bounding area for an entity.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <returns>The bounding area.</returns>
+    public BoundingArea CreateBoundingArea(IEntity entity) {
+        BoundingArea result;
+        if (this.Size != Vector2.Zero) {
+            var unitsPerPixel = entity.Project.UnitsPerPixel;
+            var (x, y) = this.Size;
+            var width = x * unitsPerPixel;
+            var height = y * unitsPerPixel;
+            var offset = this.Offset * unitsPerPixel;
+            var points = new List<Vector2> {
+                entity.GetWorldPosition(offset),
+                entity.GetWorldPosition(offset + new Vector2(width, 0f)),
+                entity.GetWorldPosition(offset + new Vector2(width, height)),
+                entity.GetWorldPosition(offset + new Vector2(0f, height))
+            };
+
+            var minimumX = points.Min(point => point.X);
+            var minimumY = points.Min(point => point.Y);
+            var maximumX = points.Max(point => point.X);
+            var maximumY = points.Max(point => point.Y);
+
+            if (entity is IPixelSnappable snappable && snappable.ShouldSnapToPixels(entity.Project)) {
+                minimumX = minimumX.ToPixelSnappedValue(entity.Project);
+                minimumY = minimumY.ToPixelSnappedValue(entity.Project);
+                maximumX = maximumX.ToPixelSnappedValue(entity.Project);
+                maximumY = maximumY.ToPixelSnappedValue(entity.Project);
+            }
+
+            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+        }
+        else {
+            result = BoundingArea.Empty;
+        }
+
+        return result;
+    }
 }
