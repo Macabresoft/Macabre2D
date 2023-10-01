@@ -1,9 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -110,39 +108,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     }
 
     private BoundingArea CreateBoundingArea() {
-        BoundingArea result;
-        if (this.SpriteSheet is { } spriteSheet) {
-            var inversePixelsPerUnit = this.Project.UnitsPerPixel;
-            var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
-            var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
-            var offset = this.RenderOptions.Offset * inversePixelsPerUnit;
-
-            var points = new List<Vector2> {
-                this.GetWorldPosition(offset),
-                this.GetWorldPosition(offset + new Vector2(width, 0f)),
-                this.GetWorldPosition(offset + new Vector2(width, height)),
-                this.GetWorldPosition(offset + new Vector2(0f, height))
-            };
-
-            var minimumX = points.Min(x => x.X);
-            var minimumY = points.Min(x => x.Y);
-            var maximumX = points.Max(x => x.X);
-            var maximumY = points.Max(x => x.Y);
-
-            if (this.ShouldSnapToPixels(this.Project)) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Project);
-                minimumY = minimumY.ToPixelSnappedValue(this.Project);
-                maximumX = maximumX.ToPixelSnappedValue(this.Project);
-                maximumY = maximumY.ToPixelSnappedValue(this.Project);
-            }
-
-            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-        }
-        else {
-            result = new BoundingArea();
-        }
-
-        return result;
+        return this.RenderOptions.CreateBoundingArea(this);
     }
 
     private Vector2 CreatePixelPosition() {
