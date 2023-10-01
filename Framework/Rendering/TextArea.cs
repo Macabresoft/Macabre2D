@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -148,15 +147,6 @@ public class TextArea : RenderableEntity, IRenderableEntity {
         }
     }
 
-    /// <summary>
-    /// Resets the size and bounding area.
-    /// </summary>
-    protected void ResetSize() {
-        this.RenderOptions.InvalidateSize();
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
-    }
-
     private bool CouldBeVisible() {
         return !string.IsNullOrEmpty(this.Text) &&
                this._height > 0f &&
@@ -205,6 +195,10 @@ public class TextArea : RenderableEntity, IRenderableEntity {
                         if (character == ' ') {
                             break;
                         }
+                        
+                        if (position.Y < this.BoundingArea.Minimum.Y) {
+                            return;
+                        }
                     }
 
                     this._spriteCharacters.Add((spriteCharacter, position));
@@ -212,5 +206,11 @@ public class TextArea : RenderableEntity, IRenderableEntity {
                 }
             }
         }
+    }
+
+    private void ResetSize() {
+        this.RenderOptions.InvalidateSize();
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }

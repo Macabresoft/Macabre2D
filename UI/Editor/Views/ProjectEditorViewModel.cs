@@ -25,7 +25,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private EditorGrid _grid;
     private Rect _overallSceneArea;
     private LoopingSpriteAnimator _spriteAnimator;
-    private TextLine _textLine;
+    private TextArea _textArea;
     private AutoTileMap _tileMap;
     private Rect _viewableSceneArea;
 
@@ -134,7 +134,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._tileMap.IsEnabled = false;
             this._spriteAnimator.IsEnabled = false;
             this._grid.IsEnabled = false;
-            this._textLine.IsVisible = false;
+            this._textArea.IsVisible = false;
 
             switch (this.AssetSelectionService.Selected) {
                 case AutoTileSet autoTileSet:
@@ -166,6 +166,11 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._camera = scene.AddChild<Camera>();
         this._camera.LocalPosition = CameraAdjustment;
+        
+        this._textArea = scene.AddChild<TextArea>();
+        this._textArea.IsVisible = false;
+        this._textArea.RenderOptions.OffsetType = PixelOffsetType.BottomLeft;
+
         this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
 
         this._grid = new EditorGrid(this._editorService, null);
@@ -233,10 +238,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
         this._spriteAnimator.IsEnabled = false;
-
-        this._textLine = scene.AddChild<TextLine>();
-        this._textLine.IsVisible = false;
-
+        
         // This applies the frame rate to the sprite animator and also insures the frame rate is valid.
         this.AnimationPreviewFrameRate = this._settingsService.Settings.AnimationPreviewFrameRate;
 
@@ -273,10 +275,10 @@ public class ProjectEditorViewModel : BaseViewModel {
 
     private void ResetScene(SpriteSheetFont font) {
         if (font.SpriteSheet != null) {
-            this._textLine.IsVisible = true;
-            this._textLine.FontReference.Reset(font);
-            this._textLine.FontReference.Initialize(this._scene.Assets);
-            this._textLine.Text = font.CharacterLayout;
+            this._textArea.IsVisible = true;
+            this._textArea.FontReference.Reset(font);
+            this._textArea.FontReference.Initialize(this._scene.Assets);
+            this._textArea.Text = font.CharacterLayout;
         }
     }
 
@@ -300,6 +302,11 @@ public class ProjectEditorViewModel : BaseViewModel {
             }
             else {
                 this._camera.ViewHeight = ViewHeightRequired;
+            }
+            
+            if (this._textArea != null) {
+                this._textArea.Width = this._camera.BoundingArea.Maximum.X + CameraAdjustment.X;
+                this._textArea.Height = this._camera.BoundingArea.Maximum.Y + CameraAdjustment.Y;
             }
         }
     }
