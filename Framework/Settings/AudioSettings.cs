@@ -100,14 +100,22 @@ public class AudioSettings {
     /// </summary>
     /// <returns>A clone of this instance.</returns>
     public AudioSettings Clone() {
-        return new AudioSettings {
-            EffectVolume = this.EffectVolume,
-            MenuVolume = this.MenuVolume,
-            MusicVolume = this.MusicVolume,
-            NotificationVolume = this.NotificationVolume,
-            OverallVolume = this.OverallVolume,
-            VoiceVolume = this.VoiceVolume
-        };
+        var settings = new AudioSettings();
+        this.CopyTo(settings);
+        return settings;
+    }
+
+    /// <summary>
+    /// Copies audio settings to another instance.
+    /// </summary>
+    /// <param name="other">The other instance.</param>
+    public void CopyTo(AudioSettings other) {
+        other.EffectVolume = this.EffectVolume;
+        other.MenuVolume = this.MenuVolume;
+        other.MusicVolume = this.MusicVolume;
+        other.NotificationVolume = this.NotificationVolume;
+        other.OverallVolume = this.OverallVolume;
+        other.VoiceVolume = this.VoiceVolume;
     }
 
     /// <summary>

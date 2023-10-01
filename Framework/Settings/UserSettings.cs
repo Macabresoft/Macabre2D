@@ -29,7 +29,7 @@ public class UserSettings : VersionedData {
         this.Audio = project.DefaultUserSettings.Audio.Clone();
         this.Display = project.DefaultUserSettings.Display.Clone();
         this.Input = project.DefaultUserSettings.Input.Clone();
-        this.CustomSettings = project.DefaultUserSettings.CustomSettings;
+        this.Custom = project.DefaultUserSettings.Custom;
     }
 
     /// <summary>
@@ -38,12 +38,12 @@ public class UserSettings : VersionedData {
     /// <param name="audio">The audio settings.</param>
     /// <param name="display">The graphics settings.</param>
     /// <param name="inputBindings">The input bindings.</param>
-    /// <param name="customSettings">The custom settings.</param>
-    public UserSettings(AudioSettings audio, DisplaySettings display, InputBindings inputBindings, CustomSettings customSettings) {
+    /// <param name="custom">The custom settings.</param>
+    public UserSettings(AudioSettings audio, DisplaySettings display, InputBindings inputBindings, CustomSettings custom) {
         this.Audio = audio;
         this.Display = display;
         this.Input = inputBindings;
-        this.CustomSettings = customSettings;
+        this.Custom = custom;
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public class UserSettings : VersionedData {
     /// Gets the custom user settings.
     /// </summary>
     [DataMember]
-    public CustomSettings CustomSettings { get; }
+    public CustomSettings Custom { get; }
 
     /// <summary>
     /// Gets the graphics settings.
@@ -72,4 +72,23 @@ public class UserSettings : VersionedData {
     [DataMember]
     [Category(CommonCategories.Input)]
     public InputBindings Input { get; }
+
+    /// <summary>
+    /// Clones this instance.
+    /// </summary>
+    /// <returns>A clone of this instance.</returns>
+    public UserSettings Clone() {
+        return new UserSettings(this.Audio, this.Display, this.Input, this.Custom);
+    }
+
+    /// <summary>
+    /// Copies settings to another instance.
+    /// </summary>
+    /// <param name="settings">The other instance.</param>
+    public void CopyTo(UserSettings settings) {
+        this.Audio.CopyTo(settings.Audio);
+        this.Display.CopyTo(settings.Display);
+        this.Input.CopyTo(settings.Input);
+        this.Custom.CopyTo(settings.Custom);
+    }
 }

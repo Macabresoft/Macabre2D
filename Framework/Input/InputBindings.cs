@@ -67,6 +67,30 @@ public class InputBindings {
     }
 
     /// <summary>
+    /// Copies settings to another instance.
+    /// </summary>
+    /// <param name="other">The other instance.</param>
+    public void CopyTo(InputBindings other) {
+        other._gamePadBindings.Clear();
+        other._keyBindings.Clear();
+        other._mouseBindings.Clear();
+
+        foreach (var (gamePadAction, gamePadButton) in this._gamePadBindings) {
+            other._gamePadBindings.Add(gamePadAction, gamePadButton);
+        }
+
+        foreach (var (keyAction, key) in this._keyBindings) {
+            other._keyBindings.Add(keyAction, key);
+        }
+
+        foreach (var (mouseAction, mouseButton) in this._mouseBindings) {
+            other._mouseBindings.Add(mouseAction, mouseButton);
+        }
+
+        other.IsMouseEnabled = this.IsMouseEnabled;
+    }
+
+    /// <summary>
     /// Removes a game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>

@@ -56,4 +56,13 @@ public sealed class DisplaySettings {
     public DisplaySettings Clone() {
         return new DisplaySettings(this.DisplayMode, this.Resolution);
     }
+
+    /// <summary>
+    /// Copies the settings to another instance.
+    /// </summary>
+    /// <param name="other">The other instance.</param>
+    public void CopyTo(DisplaySettings other) {
+        other.DisplayMode = this.DisplayMode;
+        other.Resolution = this.Resolution;
+    }
 }
