@@ -112,12 +112,12 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
+        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
         base.Initialize(scene, parent);
 
         this.FontReference.Initialize(this.Scene.Assets);
         this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
         this.RenderOptions.Initialize(this.CreateSize);
-        this.ResetSize();
         this.ResetLines();
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }

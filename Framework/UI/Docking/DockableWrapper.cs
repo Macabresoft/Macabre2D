@@ -3,9 +3,9 @@
 using System;
 using Macabresoft.Core;
 
-public class DockableWrapper : Entity, IDockable {
+public class DockableWrapper : BaseDockable, IDockable {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    public event EventHandler? BoundingAreaChanged;
+    public override event EventHandler? BoundingAreaChanged;
 
 
     public DockableWrapper() : base() {
@@ -13,13 +13,7 @@ public class DockableWrapper : Entity, IDockable {
     }
 
     // TODO: should sum up the bounding areas of its children
-    public BoundingArea BoundingArea => this._boundingArea.Value;
-    
-    public DockLocation Location { get; set; }
-    
-    public bool IsDockingEnabled { get; set; }
-    
-    public DockingMargin Margin { get; set; }
+    public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     private BoundingArea CreateBoundingArea() {
         throw new NotImplementedException();

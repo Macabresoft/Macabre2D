@@ -81,6 +81,10 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
+        this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
+        this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
+        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+
         base.Initialize(scene, parent);
 
         this.FontReference.Initialize(this.Scene.Assets);

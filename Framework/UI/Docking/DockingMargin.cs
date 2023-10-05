@@ -1,9 +1,13 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// A four way margin to be used in docking.
 /// </summary>
 public struct DockingMargin {
+    /// <summary>
+    /// A margin of zero.
+    /// </summary>
+    public static readonly DockingMargin Zero = new(0f);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DockingMargin" /> class.
@@ -39,22 +43,22 @@ public struct DockingMargin {
         this.Right = right;
         this.Bottom = bottom;
     }
-    
+
     /// <summary>
     /// The top margin.
     /// </summary>
     public float Top;
-    
+
     /// <summary>
     /// The bottom margin.
     /// </summary>
     public float Bottom;
-    
+
     /// <summary>
     /// The left margin.
     /// </summary>
     public float Left;
-    
+
     /// <summary>
     /// The right margin.
     /// </summary>
