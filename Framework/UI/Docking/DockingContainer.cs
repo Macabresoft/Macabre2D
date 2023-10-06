@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using Macabresoft.Core;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for a container that holds <see cref="IDockable" /> entities.
@@ -43,6 +44,45 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
 
     /// <inheritdoc />
     public void RequestRearrange(IDockable dockable) {
+        Vector2 amountToMove;
+        switch (dockable.Location) {
+            case DockLocation.Center: {
+                var dockableCenter = new Vector2(dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width, dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
+                var dockingCenter = new Vector2(this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width, this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height);
+                amountToMove = dockingCenter - dockableCenter;
+                break;
+            }
+            case DockLocation.Left:
+                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, 0f);
+                break;
+            case DockLocation.TopLeft:
+                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
+                break;
+            case DockLocation.Top:
+                amountToMove = new Vector2(0f, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
+                break;
+            case DockLocation.TopRight:
+                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
+                break;
+            case DockLocation.Right:
+                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, 0f);
+                break;
+            case DockLocation.BottomRight:
+                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
+                break;
+            case DockLocation.Bottom:
+                amountToMove = new Vector2(0f, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
+                break;
+            case DockLocation.BottomLeft:
+                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
+                break;
+            case DockLocation.None:
+                return;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        dockable.Move(amountToMove);
     }
 
     private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {

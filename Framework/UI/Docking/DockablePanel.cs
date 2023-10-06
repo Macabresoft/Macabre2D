@@ -5,6 +5,9 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
+/// <summary>
+/// A panel with defined height and width that can be docked. Useful for children that might not have bounding areas.
+/// </summary>
 public class DockablePanel : BaseDockable, IDockable {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _height;
