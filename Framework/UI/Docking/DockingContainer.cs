@@ -44,36 +44,42 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         }
     }
 
+    private float GetCenterX(IDockable dockable) {
+        return (this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width) - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
+    }
+    
+    private float GetCenterY(IDockable dockable) {
+        return (this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height) - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
+    }
+
     /// <inheritdoc />
     public void RequestRearrange(IDockable dockable) {
         Vector2 amountToMove;
         switch (dockable.Location) {
             case DockLocation.Center: {
-                var dockableCenter = new Vector2(dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width, dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
-                var dockingCenter = new Vector2(this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width, this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height);
-                amountToMove = dockingCenter - dockableCenter;
+                amountToMove = new Vector2(this.GetCenterX(dockable), this.GetCenterY(dockable));
                 break;
             }
             case DockLocation.Left:
-                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, 0f);
+                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.GetCenterY(dockable));
                 break;
             case DockLocation.TopLeft:
                 amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.Top:
-                amountToMove = new Vector2(0f, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
+                amountToMove = new Vector2(this.GetCenterX(dockable), this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.TopRight:
                 amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.Right:
-                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, 0f);
+                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.GetCenterY(dockable));
                 break;
             case DockLocation.BottomRight:
                 amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
                 break;
             case DockLocation.Bottom:
-                amountToMove = new Vector2(0f, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
+                amountToMove = new Vector2(this.GetCenterX(dockable), this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
                 break;
             case DockLocation.BottomLeft:
                 amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
