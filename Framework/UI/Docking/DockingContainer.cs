@@ -37,6 +37,8 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
 
         base.Initialize(scene, parent);
 
+        this.RearrangeAll();
+        
         if (this.Parent is IBoundable boundable) {
             boundable.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
         }
