@@ -85,11 +85,11 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         dockable.Move(amountToMove);
     }
 
-    private float GetAmountToCenterX(IDockable dockable) {
+    private float GetAmountToCenterX(IBoundable dockable) {
         return this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
     }
 
-    private float GetAmountToCenterY(IDockable dockable) {
+    private float GetAmountToCenterY(IBoundable dockable) {
         return this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
     }
 
