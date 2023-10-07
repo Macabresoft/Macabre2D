@@ -38,18 +38,10 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         base.Initialize(scene, parent);
 
         this.RearrangeAll();
-        
+
         if (this.Parent is IBoundable boundable) {
             boundable.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
         }
-    }
-
-    private float GetCenterX(IDockable dockable) {
-        return (this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width) - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
-    }
-    
-    private float GetCenterY(IDockable dockable) {
-        return (this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height) - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
     }
 
     /// <inheritdoc />
@@ -57,29 +49,29 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         Vector2 amountToMove;
         switch (dockable.Location) {
             case DockLocation.Center: {
-                amountToMove = new Vector2(this.GetCenterX(dockable), this.GetCenterY(dockable));
+                amountToMove = new Vector2(this.GetAmountToCenterX(dockable), this.GetAmountToCenterY(dockable));
                 break;
             }
             case DockLocation.Left:
-                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.GetCenterY(dockable));
+                amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.GetAmountToCenterY(dockable));
                 break;
             case DockLocation.TopLeft:
                 amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.Top:
-                amountToMove = new Vector2(this.GetCenterX(dockable), this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
+                amountToMove = new Vector2(this.GetAmountToCenterX(dockable), this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.TopRight:
                 amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Maximum.Y - dockable.BoundingArea.Maximum.Y);
                 break;
             case DockLocation.Right:
-                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.GetCenterY(dockable));
+                amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.GetAmountToCenterY(dockable));
                 break;
             case DockLocation.BottomRight:
                 amountToMove = new Vector2(this.BoundingArea.Maximum.X - dockable.BoundingArea.Maximum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
                 break;
             case DockLocation.Bottom:
-                amountToMove = new Vector2(this.GetCenterX(dockable), this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
+                amountToMove = new Vector2(this.GetAmountToCenterX(dockable), this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
                 break;
             case DockLocation.BottomLeft:
                 amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.BoundingArea.Minimum.Y - dockable.BoundingArea.Minimum.Y);
@@ -91,6 +83,14 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         }
 
         dockable.Move(amountToMove);
+    }
+
+    private float GetAmountToCenterX(IDockable dockable) {
+        return this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
+    }
+
+    private float GetAmountToCenterY(IDockable dockable) {
+        return this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
     }
 
     private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {
