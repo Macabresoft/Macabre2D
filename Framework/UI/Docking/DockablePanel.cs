@@ -62,6 +62,7 @@ public class DockablePanel : BaseDockable, IDockable {
         base.Initialize(scene, parent);
 
         this.OffsetOptions.Initialize(this.CreateSize);
+        this.ResetSize();
     }
 
     /// <inheritdoc />

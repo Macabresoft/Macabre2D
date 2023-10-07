@@ -85,6 +85,16 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
         dockable.Move(amountToMove);
     }
 
+    /// <inheritdoc />
+    protected override void OnAddChild(IEntity child) {
+        base.OnAddChild(child);
+
+        if (child is IDockable dockable) {
+            // TODO: this might need a Scene.Invoke?
+            this.RequestRearrange(dockable);
+        }
+    }
+
     private float GetAmountToCenterX(IBoundable dockable) {
         return this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
     }

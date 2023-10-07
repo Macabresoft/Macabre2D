@@ -22,6 +22,44 @@ public class DockingContainerTests {
     [TestCase(DockLocation.BottomRight, 10f, 5f, 5f, 0f)]
     [TestCase(DockLocation.TopLeft, 10f, 5f, 0f, 5f)]
     [TestCase(DockLocation.TopRight, 10f, 5f, 5f, 5f)]
+    public static void AddChild_ShouldAlignProperly(DockLocation dockLocation, float containerSize, float panelSize, float resultX, float resultY) {
+        var panels = new List<DockablePanel>();
+
+        foreach (var offset in OffsetTypes) {
+            CreateDependencies(
+                dockLocation,
+                offset,
+                new Vector2(containerSize),
+                new Vector2(panelSize),
+                false,
+                out var panel,
+                out var container,
+                out var scene);
+
+            panels.Add(panel);
+            panel.Initialize(scene, scene);
+            panel.Move(new Vector2(-100f, -100f)); // Requires rearrangement.
+            container.AddChild(panel);
+        }
+
+        using (new AssertionScope()) {
+            foreach (var panel in panels) {
+                panel.BoundingArea.Minimum.Should().BeEquivalentTo(new Vector2(resultX, resultY));
+            }
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    [TestCase(DockLocation.Center, 10f, 5f, 2.5f, 2.5f)]
+    [TestCase(DockLocation.Left, 10f, 5f, 0f, 2.5f)]
+    [TestCase(DockLocation.Top, 10f, 5f, 2.5f, 5f)]
+    [TestCase(DockLocation.Right, 10f, 5f, 5f, 2.5f)]
+    [TestCase(DockLocation.Bottom, 10f, 5f, 2.5f, 0f)]
+    [TestCase(DockLocation.BottomLeft, 10f, 5f, 0f, 0f)]
+    [TestCase(DockLocation.BottomRight, 10f, 5f, 5f, 0f)]
+    [TestCase(DockLocation.TopLeft, 10f, 5f, 0f, 5f)]
+    [TestCase(DockLocation.TopRight, 10f, 5f, 5f, 5f)]
     public static void Initialize_ShouldAlignProperly(DockLocation dockLocation, float containerSize, float panelSize, float resultX, float resultY) {
         var panels = new List<DockablePanel>();
 
@@ -31,7 +69,9 @@ public class DockingContainerTests {
                 offset,
                 new Vector2(containerSize),
                 new Vector2(panelSize),
+                true,
                 out var panel,
+                out _,
                 out _);
 
             panels.Add(panel);
@@ -43,7 +83,7 @@ public class DockingContainerTests {
             }
         }
     }
-    
+
     [Test]
     [Category("Unit Tests")]
     [TestCase(DockLocation.Center, 10f, 5f, 2.5f, 2.5f)]
@@ -64,8 +104,10 @@ public class DockingContainerTests {
                 offset,
                 new Vector2(containerSize),
                 new Vector2(panelSize),
+                true,
                 out var panel,
-                out var container);
+                out var container,
+                out _);
 
             panels.Add(panel);
             panel.Move(new Vector2(-100f, -100f)); // Requires rearrangement.
@@ -86,10 +128,12 @@ public class DockingContainerTests {
         PixelOffsetType boundingOffsetType,
         Vector2 containerSize,
         Vector2 dockableSize,
+        bool addPanelAsChild,
         out DockablePanel panel,
-        out DockingContainer container) {
+        out DockingContainer container,
+        out IScene scene) {
         var game = Substitute.For<IGame>();
-        var scene = Substitute.For<IScene>();
+        scene = Substitute.For<IScene>();
         var project = Substitute.For<IGameProject>();
         scene.Game.Returns(game);
         project.PixelsPerUnit = 1;
@@ -102,11 +146,19 @@ public class DockingContainerTests {
         };
 
         container = boundable.AddChild<DockingContainer>();
-        panel = container.AddChild<DockablePanel>();
+
+        panel = new DockablePanel {
+            Width = dockableSize.X,
+            Height = dockableSize.Y,
+            Location = dockLocation
+        };
+
         panel.OffsetOptions.OffsetType = boundingOffsetType;
-        panel.Location = dockLocation;
-        panel.Width = dockableSize.X;
-        panel.Height = dockableSize.Y;
+
+        if (addPanelAsChild) {
+            container.AddChild(panel);
+        }
+
         boundable.Initialize(scene, scene);
     }
 }
