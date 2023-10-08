@@ -70,9 +70,9 @@ public readonly struct BoundingArea {
 
         return new BoundingArea(
             Math.Min(this.Minimum.X, other.Minimum.X),
-            Math.Min(this.Maximum.X, other.Maximum.X),
+            Math.Max(this.Maximum.X, other.Maximum.X),
             Math.Min(this.Minimum.Y, other.Minimum.Y),
-            Math.Min(this.Maximum.Y, other.Maximum.Y));
+            Math.Max(this.Maximum.Y, other.Maximum.Y));
     }
 
     /// <summary>

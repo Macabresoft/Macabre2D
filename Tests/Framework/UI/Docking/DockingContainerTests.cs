@@ -10,7 +10,7 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class DockingContainerTests {
+public static class DockingContainerTests {
     [Test]
     [Category("Unit Tests")]
     [TestCase(DockLocation.Center, 10f, 5f, 2.5f, 2.5f)]
