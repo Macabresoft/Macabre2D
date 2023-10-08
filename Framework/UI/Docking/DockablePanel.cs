@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -30,11 +31,12 @@ public class DockablePanel : BaseDockable, IDockable {
     /// Gets or sets the height.
     /// </summary>
     [DataMember]
+    [Category(DockingCategoryName)]
     public float Height {
         get => this._height;
         set {
             this._height = value;
-            this.RequestRefresh();
+            this.RequestReset();
         }
     }
 
@@ -49,11 +51,12 @@ public class DockablePanel : BaseDockable, IDockable {
     /// Gets or sets the width.
     /// </summary>
     [DataMember]
+    [Category(DockingCategoryName)]
     public float Width {
         get => this._width;
         set {
             this._width = value;
-            this.RequestRefresh();
+            this.RequestReset();
         }
     }
 
@@ -61,28 +64,53 @@ public class DockablePanel : BaseDockable, IDockable {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.OffsetOptions.Initialize(this.CreateSize);
+        this.OffsetOptions.Initialize(this.CreateSizeForOffset);
         this.ResetSize();
     }
 
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
-        this.RequestRefresh();
+        this.RequestReset();
     }
-
-    private BoundingArea CreateBoundingArea() {
+    
+    /// <summary>
+    /// Creates the bounding area for this instance.
+    /// </summary>
+    /// <returns>The bounding area.</returns>
+    protected virtual BoundingArea CreateBoundingArea() {
         return this.OffsetOptions.CreateBoundingArea(this);
     }
 
-    private Vector2 CreateSize() {
+    /// <summary>
+    /// Creates the size for the offset of this instance. This is in pixels.
+    /// </summary>
+    /// <returns>The size.</returns>
+    protected virtual Vector2 CreateSizeForOffset() {
         return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
     }
 
-    private void RequestRefresh() {
+    /// <summary>
+    /// Tries to reset the bounding area and size.
+    /// </summary>
+    protected void RequestReset() {
         if (this.IsInitialized) {
-            this.ResetSize();
+            this.PerformReset();
         }
+    }
+
+    /// <summary>
+    /// Resets the bounding area and size.
+    /// </summary>
+    protected virtual void PerformReset() {
+        this.ResetSize();
+    }
+
+    /// <summary>
+    /// Invokes <see cref="BoundingAreaChanged"/>.
+    /// </summary>
+    protected void InvokeBoundingAreaChanged() {
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void ResetSize() {

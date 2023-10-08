@@ -3,7 +3,6 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A base for <see cref="IDockable" /> implementations.
@@ -26,17 +25,15 @@ public abstract class BaseDockable : Entity, IDockable {
         set {
             if (value != this._location) {
                 this._location = value;
-                this.RequestReset();
+                this.RequestRearrangeFromParent();
             }
         }
     }
 
-
-
     /// <summary>
     /// Requests a refresh from its parent.
     /// </summary>
-    protected void RequestReset() {
+    protected void RequestRearrangeFromParent() {
         if (this.Parent is IDockingContainer container) {
             container.RequestRearrange(this);
         }

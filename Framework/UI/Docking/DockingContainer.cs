@@ -1,8 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.ComponentModel;
 using System.Linq;
-using Macabresoft.Core;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -22,12 +23,23 @@ public interface IDockingContainer {
 /// <remarks>
 /// This should have a <see cref="IBoundable" /> parent (maybe a <see cref="Camera" />).
 /// </remarks>
-public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
-    /// <inheritdoc />
-    public override event EventHandler? BoundingAreaChanged;
+public class DockingContainer : DockablePanel, IDockingContainer {
+    private bool _inheritParentBoundingArea = true;
 
-    /// <inheritdoc />
-    public override BoundingArea BoundingArea => this.Parent is IBoundable boundable ? boundable.BoundingArea : BoundingArea.Empty;
+    /// <summary>
+    /// Gets or sets a value indicating whether or not this should inherit its parents <see cref="BoundingArea" />.
+    /// </summary>
+    [DataMember]
+    [Category(DockingCategoryName)]
+    public bool InheritParentBoundingArea {
+        get => this._inheritParentBoundingArea;
+        set {
+            if (value != this._inheritParentBoundingArea) {
+                this._inheritParentBoundingArea = value;
+                this.RequestReset();
+            }
+        }
+    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -48,7 +60,7 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
     public void RequestRearrange(IDockable dockable) {
         Vector2 amountToMove;
         switch (dockable.Location) {
-            case DockLocation.Center: 
+            case DockLocation.Center:
                 amountToMove = new Vector2(this.GetAmountToCenterX(dockable), this.GetAmountToCenterY(dockable));
                 break;
             case DockLocation.Left:
@@ -85,6 +97,20 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
     }
 
     /// <inheritdoc />
+    protected override BoundingArea CreateBoundingArea() {
+        if (this.InheritParentBoundingArea) {
+            return this.Parent is IBoundable boundable ? boundable.BoundingArea : BoundingArea.Empty;
+        }
+
+        return base.CreateBoundingArea();
+    }
+
+    /// <inheritdoc />
+    protected override Vector2 CreateSizeForOffset() {
+        return this.InheritParentBoundingArea ? Vector2.Zero : base.CreateSizeForOffset();
+    }
+
+    /// <inheritdoc />
     protected override void OnAddChild(IEntity child) {
         base.OnAddChild(child);
 
@@ -92,6 +118,12 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
             // TODO: this might need a Scene.Invoke?
             this.RequestRearrange(dockable);
         }
+    }
+
+    /// <inheritdoc />
+    protected override void PerformReset() {
+        base.PerformReset();
+        this.RearrangeAll();
     }
 
     private float GetAmountToCenterX(IBoundable dockable) {
@@ -103,8 +135,10 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
     }
 
     private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {
-        this.BoundingAreaChanged.SafeInvoke(this);
-        this.RearrangeAll();
+        if (this.InheritParentBoundingArea) {
+            this.InvokeBoundingAreaChanged();
+            this.RearrangeAll();
+        }
     }
 
     private void RearrangeAll() {

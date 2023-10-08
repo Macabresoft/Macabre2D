@@ -40,7 +40,7 @@ public class DockableWrapper : BaseDockable, IDockable {
         get => this._margin;
         set {
             this._margin = value;
-            this.RequestReset();
+            this.RequestRearrangeFromParent();
         }
     }
 
