@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A base for <see cref="IDockable" /> implementations.
@@ -10,7 +11,7 @@ using System.Runtime.Serialization;
 public abstract class BaseDockable : Entity, IDockable {
     private const string DockingCategoryName = "Docking (UI)";
     private DockLocation _location = DockLocation.Center;
-    private DockingMargin _margin = DockingMargin.Zero;
+    private Vector2 _margin = Vector2.Zero;
 
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
@@ -34,7 +35,7 @@ public abstract class BaseDockable : Entity, IDockable {
     /// <inheritdoc />
     [DataMember]
     [Category(DockingCategoryName)]
-    public DockingMargin Margin {
+    public Vector2 Margin {
         get => this._margin;
         set {
             this._margin = value;
