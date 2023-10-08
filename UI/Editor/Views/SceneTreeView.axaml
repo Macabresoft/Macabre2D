@@ -270,6 +270,11 @@
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
+                                    
+                                    <MenuItem Header="Re-initialize"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.ReinitializeCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Re-initializes this entity" />
                                     <Separator />
 
                                     <MenuItem Header="Add">

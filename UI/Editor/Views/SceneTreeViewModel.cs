@@ -58,7 +58,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService = sceneService;
         this._loopService = loopService;
         this._undoService = undoService;
-        
+
         this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
         this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x));
@@ -77,17 +77,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             x => this.CanClone(x.Value)));
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
+        this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
 
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
         this.AddLoopModels = this._loopService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
-    }
-
-    private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.SceneService.Selected)) {
-            this.RaisePropertyChanged(nameof(this.IsEntityOrLoopSelected));
-        }
     }
 
     /// <summary>
@@ -131,6 +126,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public IEntityService EntityService { get; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether an entity or loop is selected.
+    /// </summary>
+    public bool IsEntityOrLoopSelected => this.CanClone(this.SceneService.Selected);
+
+    /// <summary>
     /// Gets a command to move a child down.
     /// </summary>
     public ICommand MoveDownCommand { get; }
@@ -139,6 +139,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets a command to move a child up.
     /// </summary>
     public ICommand MoveUpCommand { get; }
+
+    /// <summary>
+    /// Gets a command to re-initialize the selected entity.
+    /// </summary>
+    public ICommand ReinitializeCommand { get; }
 
     /// <summary>
     /// Gets a command to remove a child.
@@ -314,11 +319,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether an entity or loop is selected.
-    /// </summary>
-    public bool IsEntityOrLoopSelected => this.CanClone(this.SceneService.Selected);
-
     private bool CanClone(object selected) {
         return (selected is IEntity entity && entity != this.SceneService.CurrentScene) || selected is ILoop;
     }
@@ -438,6 +438,10 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
+    private void Reinitialize(IEntity entity) {
+        entity?.Initialize(entity.Scene, entity.Parent);
+    }
+
     private void RemoveChild(object child) {
         switch (child) {
             case IEntity entity and not IScene:
@@ -484,6 +488,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             this._undoService.Do(
                 () => { nameable.Name = updatedName; },
                 () => { nameable.Name = originalName; });
+        }
+    }
+
+    private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(this.SceneService.Selected)) {
+            this.RaisePropertyChanged(nameof(this.IsEntityOrLoopSelected));
         }
     }
 }
