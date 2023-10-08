@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A dockable wrapper that wraps all of its direct children's bounding areas into one.
@@ -12,6 +15,8 @@ public class DockableWrapper : BaseDockable, IDockable {
     private readonly List<IBoundable> _boundables = new();
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private bool _isTransforming;
+
+    private Vector2 _margin = Vector2.Zero;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -25,6 +30,19 @@ public class DockableWrapper : BaseDockable, IDockable {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+    /// <summary>
+    /// A margin to apply to the bounding area.
+    /// </summary>
+    [DataMember]
+    [Category(DockingCategoryName)]
+    public Vector2 Margin {
+        get => this._margin;
+        set {
+            this._margin = value;
+            this.RequestReset();
+        }
+    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -63,9 +81,10 @@ public class DockableWrapper : BaseDockable, IDockable {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var boundingArea = BoundingArea.Empty;
-        foreach (var dockable in this._boundables) {
-            boundingArea = boundingArea.Combine(dockable.BoundingArea);
+        var boundingArea = this._boundables.Aggregate(BoundingArea.Empty, (current, dockable) => current.Combine(dockable.BoundingArea));
+
+        if (!boundingArea.IsEmpty && this._margin != Vector2.Zero) {
+            boundingArea = new BoundingArea(boundingArea.Minimum - this.Margin, boundingArea.Maximum + this.Margin);
         }
 
         return boundingArea;

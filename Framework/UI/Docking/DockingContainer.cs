@@ -48,10 +48,9 @@ public class DockingContainer : BaseDockable, IBoundable, IDockingContainer {
     public void RequestRearrange(IDockable dockable) {
         Vector2 amountToMove;
         switch (dockable.Location) {
-            case DockLocation.Center: {
+            case DockLocation.Center: 
                 amountToMove = new Vector2(this.GetAmountToCenterX(dockable), this.GetAmountToCenterY(dockable));
                 break;
-            }
             case DockLocation.Left:
                 amountToMove = new Vector2(this.BoundingArea.Minimum.X - dockable.BoundingArea.Minimum.X, this.GetAmountToCenterY(dockable));
                 break;

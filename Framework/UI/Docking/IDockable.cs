@@ -10,9 +10,4 @@ public interface IDockable : IBoundable, ITransformable {
     /// Gets or sets the dock location.
     /// </summary>
     DockLocation Location { get; set; }
-
-    /// <summary>
-    /// Gets or sets the margin.
-    /// </summary>
-    Vector2 Margin { get; set; }
 }

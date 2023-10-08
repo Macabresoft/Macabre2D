@@ -30,6 +30,33 @@ public static class DockableWrapperTests {
 
     [Test]
     [Category("Unit Tests")]
+    [TestCase(1f, 1f)]
+    [TestCase(-1f, -1f)]
+    [TestCase(1f, 0)]
+    [TestCase(0f, 1f)]
+    [TestCase(-1f, 0)]
+    [TestCase(0f, -1f)]
+    [TestCase(-1f, 1f)]
+    [TestCase(1f, -1f)]
+    [TestCase(100f, 2500f)]
+    public static void Margin_Should_ExpandBoundingArea(float marginX, float marginY) {
+        var child = new DockablePanel {
+            Width = 5f,
+            Height = 5f
+        };
+
+        var wrapper = CreateWrapper(child);
+        wrapper.Margin = new Vector2(marginX, marginY);
+
+        using (new AssertionScope()) {
+            wrapper.Margin.Should().NotBe(Vector2.Zero);
+            wrapper.BoundingArea.Maximum.Should().Be(child.BoundingArea.Maximum + wrapper.Margin);
+            wrapper.BoundingArea.Minimum.Should().Be(child.BoundingArea.Minimum - wrapper.Margin);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
     public static void Move_Should_ExpandBoundingArea_WhenChildDoesNotInheritTransform() {
         var childA = new DockablePanel {
             Width = 5f,
@@ -47,7 +74,7 @@ public static class DockableWrapperTests {
 
         var originalMaximum = wrapper.BoundingArea.Maximum;
         var originalMinimum = wrapper.BoundingArea.Minimum;
-        
+
         wrapper.Move(new Vector2(-10f));
 
         using (new AssertionScope()) {
