@@ -30,6 +30,35 @@ public static class DockableWrapperTests {
 
     [Test]
     [Category("Unit Tests")]
+    public static void Move_Should_ExpandBoundingArea_WhenChildDoesNotInheritTransform() {
+        var childA = new DockablePanel {
+            Width = 5f,
+            Height = 5f,
+            TransformInheritance = TransformInheritance.None
+        };
+
+        var childB = new DockablePanel {
+            Width = 5f,
+            Height = 5f,
+            TransformInheritance = TransformInheritance.Both
+        };
+
+        var wrapper = CreateWrapper(childA, childB);
+
+        var originalMaximum = wrapper.BoundingArea.Maximum;
+        var originalMinimum = wrapper.BoundingArea.Minimum;
+        
+        wrapper.Move(new Vector2(-10f));
+
+        using (new AssertionScope()) {
+            wrapper.BoundingArea.Maximum.Should().Be(originalMaximum);
+            wrapper.BoundingArea.Minimum.X.Should().BeLessThan(originalMinimum.X);
+            wrapper.BoundingArea.Minimum.Y.Should().BeLessThan(originalMinimum.Y);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
     public static void Move_Should_OnlyResetBoundingAreaOnce() {
         var children = new IEntity[10];
         var childChangeCalls = 0;
@@ -53,6 +82,13 @@ public static class DockableWrapperTests {
 
     private static DockableWrapper CreateWrapper(params IEntity[] children) {
         var scene = Substitute.For<IScene>();
+        var project = Substitute.For<IGameProject>();
+        var game = Substitute.For<IGame>();
+        scene.Game.Returns(game);
+        project.PixelsPerUnit = 1;
+        project.UnitsPerPixel.Returns(1f);
+        scene.Project.Returns(project);
+        game.Project.Returns(project);
         var wrapper = new DockableWrapper();
 
         foreach (var child in children) {
