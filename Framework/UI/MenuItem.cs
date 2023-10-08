@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework.Layout;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
@@ -25,7 +25,7 @@ public interface IMenuItem : IEntity {
 /// <summary>
 /// A menu item.
 /// </summary>
-public abstract class MenuItem : Entity, IMenuItem {
+public abstract class MenuItem : DockableWrapper, IMenuItem {
     /// <summary>
     /// Gets a reference to the menu item below this instance.
     /// </summary>
