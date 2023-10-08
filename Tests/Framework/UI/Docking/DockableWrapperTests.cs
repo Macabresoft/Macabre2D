@@ -28,6 +28,29 @@ public static class DockableWrapperTests {
         }
     }
 
+    [Test]
+    [Category("Unit Tests")]
+    public static void Move_Should_OnlyResetBoundingAreaOnce() {
+        var children = new IEntity[10];
+        var childChangeCalls = 0;
+        for (var i = 0; i < children.Length; i++) {
+            var child = new DockablePanel { Width = i + 1f, Height = i + 1f };
+            child.BoundingAreaChanged += (_, _) => childChangeCalls++;
+            children[i] = child;
+        }
+
+        var wrapper = CreateWrapper(children);
+        var wrapperChangeCalls = 0;
+        childChangeCalls = 0; // Reset it, because initialize will increase it.
+        wrapper.BoundingAreaChanged += (_, _) => wrapperChangeCalls++;
+        wrapper.Move(Vector2.One);
+
+        using (new AssertionScope()) {
+            childChangeCalls.Should().Be(children.Length);
+            wrapperChangeCalls.Should().Be(1);
+        }
+    }
+
     private static DockableWrapper CreateWrapper(params IEntity[] children) {
         var scene = Substitute.For<IScene>();
         var wrapper = new DockableWrapper();
