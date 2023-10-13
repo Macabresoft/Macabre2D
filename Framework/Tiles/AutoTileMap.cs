@@ -97,6 +97,11 @@ public sealed class AutoTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch && this.TileSetReference is { PackagedAsset: { } tileSet, Asset: { } spriteSheet }) {
             foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTile);
@@ -107,7 +112,7 @@ public sealed class AutoTileMap : RenderableTileMap {
                         spriteIndex,
                         boundingArea.Minimum,
                         this._spriteScale,
-                        this.Color);
+                        colorOverride);
                 }
             }
         }

@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Draws a circle.
@@ -55,6 +56,11 @@ public sealed class CircleDrawer : BaseDrawer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.Radius > 0f && this.PrimitiveDrawer != null && this.SpriteBatch is { } spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawCircle(
@@ -63,7 +69,7 @@ public sealed class CircleDrawer : BaseDrawer {
                 this.Radius,
                 this.WorldPosition,
                 this.Complexity,
-                this.Color,
+                colorOverride,
                 lineThickness);
         }
     }

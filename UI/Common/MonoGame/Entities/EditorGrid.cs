@@ -78,6 +78,11 @@ public sealed class EditorGrid : BaseDrawer {
         }
     }
 
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.Render(frameTime, viewBoundingArea);
+    }
+
     private void Camera_BoundingAreaChanged(object sender, EventArgs e) {
         this.BoundingAreaChanged.SafeInvoke(this);
     }

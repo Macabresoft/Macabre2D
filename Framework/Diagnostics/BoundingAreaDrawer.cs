@@ -23,7 +23,12 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this.Color == Color.Transparent) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this.PrimitiveDrawer == null || this.LineThickness <= 0f) {
             return;
         }
 
@@ -36,7 +41,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
             this.PrimitiveDrawer.DrawPolygon(
                 spriteBatch,
                 this.Project.PixelsPerUnit,
-                this.Color,
+                colorOverride,
                 lineThickness,
                 true,
                 points);

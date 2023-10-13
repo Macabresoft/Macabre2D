@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Tests.Framework;
 using System;
 using System.Threading;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
 
 internal class TestRenderableEntity : RenderableEntity {
     private BoundingArea _boundingArea = BoundingArea.MaximumSize;
@@ -22,5 +23,9 @@ internal class TestRenderableEntity : RenderableEntity {
         if (this.SleepAmountInMilliseconds > 0) {
             Thread.Sleep(this.SleepAmountInMilliseconds);
         }
+    }
+
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.Render(frameTime, viewBoundingArea);
     }
 }

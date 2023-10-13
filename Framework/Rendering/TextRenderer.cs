@@ -80,13 +80,18 @@ public class TextRenderer : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+    
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
             spriteBatch.Draw(
                 this.Project.PixelsPerUnit,
                 font,
                 this.Text,
                 this.ShouldSnapToPixels(this.Project) ? this._pixelPosition.Value : this.WorldPosition,
-                this.Color,
+                colorOverride,
                 this.RenderOptions.Orientation);
         }
     }

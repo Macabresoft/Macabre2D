@@ -63,13 +63,18 @@ public abstract class BaseSpriteEntity : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             spriteSheet.Draw(
                 spriteBatch,
                 this.Project.PixelsPerUnit,
                 this.SpriteIndex.Value,
                 this.GetRenderTransform(),
-                this.Color,
+                colorOverride,
                 this.RenderOptions.Orientation);
         }
     }

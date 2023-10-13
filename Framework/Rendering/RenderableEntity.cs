@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for an entity which can be rendered.
@@ -31,6 +32,14 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="viewBoundingArea">The view bounding area.</param>
     void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
+
+    /// <summary>
+    /// Renders this instance with a specific color.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="viewBoundingArea">The view bounding area.</param>
+    /// <param name="colorOverride">The color override.</param>
+    void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
 }
 
 /// <summary>
@@ -76,6 +85,9 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
+
+    /// <inheritdoc />
+    public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {

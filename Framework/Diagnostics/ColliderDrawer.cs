@@ -21,6 +21,7 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
     /// <inheritdoc />
     public int UpdateOrder => 0;
 
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.Reset();
@@ -28,6 +29,11 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.PrimitiveDrawer != null && this._body != null && this.SpriteBatch is { } spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var colliders = this._body.GetColliders();

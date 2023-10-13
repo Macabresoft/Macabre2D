@@ -120,6 +120,11 @@ public class SelectionDisplay : BaseDrawer {
         }
     }
 
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.Render(frameTime, viewBoundingArea);
+    }
+
     private void DrawBoundingArea(
         SpriteBatch spriteBatch,
         PrimitiveDrawer drawer,

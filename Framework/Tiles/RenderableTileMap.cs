@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A base renderable tile map.
@@ -37,6 +38,9 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
+
+    /// <inheritdoc />
+    public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {

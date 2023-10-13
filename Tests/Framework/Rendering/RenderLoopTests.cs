@@ -154,5 +154,9 @@ public class RenderLoopTests {
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             this.RenderCount++;
         }
+
+        public void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+            this.Render(frameTime, viewBoundingArea);
+        }
     }
 }

@@ -56,6 +56,11 @@ public sealed class BinaryTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch && this.SpriteReference.Asset is { } spriteSheet && this._activeTiles.Any()) {
             var tileBoundingAreas = this._activeTiles
                 .Select(this.GetTileBoundingArea)
@@ -72,7 +77,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
                     this.SpriteReference.SpriteIndex,
                     boundingArea.Minimum,
                     this._tileScale,
-                    this.Color);
+                    colorOverride);
             }
         }
     }

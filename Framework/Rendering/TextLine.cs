@@ -98,7 +98,12 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.RenderWithFont(this.FontReference);
+        this.RenderWithFont(this.FontReference, this.Color);
+    }
+    
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.RenderWithFont(this.FontReference, colorOverride);
     }
 
     /// <summary>
@@ -122,7 +127,8 @@ public class TextLine : RenderableEntity {
     /// Renders the text with the specified font.
     /// </summary>
     /// <param name="fontReference">The font reference.</param>
-    protected void RenderWithFont(SpriteSheetFontReference fontReference) {
+    /// <param name="color">The color.</param>
+    protected void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
         if (!this.BoundingArea.IsEmpty && fontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             var position = this.BoundingArea.Minimum;
             var kerning = this.GetKerning();
@@ -133,7 +139,7 @@ public class TextLine : RenderableEntity {
                     this.Project.PixelsPerUnit,
                     character.SpriteIndex,
                     position,
-                    this.Color,
+                    color,
                     this.RenderOptions.Orientation);
 
                 position = new Vector2(position.X + font.GetCharacterWidth(character, kerning, this.Project), position.Y);

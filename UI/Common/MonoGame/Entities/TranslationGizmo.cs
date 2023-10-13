@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using Avalonia.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
@@ -44,7 +43,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
             this._neutralAxisTriangleSprite = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, new Point(GizmoPointSize));
         }
     }
-    
+
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is { } spriteBatch) {
@@ -108,6 +107,11 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                 scale,
                 this.EditorService.YAxisColor);
         }
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.Render(frameTime, viewBoundingArea);
     }
 
     /// <inheritdoc />

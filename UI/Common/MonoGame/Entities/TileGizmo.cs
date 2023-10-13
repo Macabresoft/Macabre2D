@@ -106,6 +106,11 @@ public class TileGizmo : BaseDrawer, IGizmo {
     }
 
     /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        this.Render(frameTime, viewBoundingArea);
+    }
+
+    /// <inheritdoc />
     public bool Update(FrameTime frameTime, InputState inputState) {
         if (this._camera != null && this._entityService.Selected is ITileableEntity tileable) {
             switch (this._currentButton) {

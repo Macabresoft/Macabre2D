@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A sprite animator that loops a single animation.
@@ -48,7 +49,7 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
             this._queueableAnimation.MillisecondsPassed = millisecondsPassed;
         }
     }
-
+    
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);

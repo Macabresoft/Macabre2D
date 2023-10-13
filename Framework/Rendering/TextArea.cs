@@ -124,6 +124,11 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.Render(frameTime, viewBoundingArea, this.Color);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!this.BoundingArea.IsEmpty && this.FontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
             foreach (var (character, position) in this._spriteCharacters) {
                 spriteSheet.Draw(
@@ -131,7 +136,7 @@ public class TextArea : RenderableEntity, IRenderableEntity {
                     this.Project.PixelsPerUnit,
                     character.SpriteIndex,
                     position,
-                    this.Color,
+                    colorOverride,
                     this.RenderOptions.Orientation);
             }
         }
@@ -195,7 +200,7 @@ public class TextArea : RenderableEntity, IRenderableEntity {
                         if (character == ' ') {
                             break;
                         }
-                        
+
                         if (position.Y < this.BoundingArea.Minimum.Y) {
                             return;
                         }
