@@ -5,21 +5,22 @@
                            xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                            x:TypeArguments="framework:ColorOverride, monoGame:Color"
                            x:Class="Macabresoft.Macabre2D.UI.Common.ColorOverrideEditor">
-    <Grid ColumnDefinitions="Auto, Auto, *"
+    <Grid RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:ColorOverrideEditor]}">
         <Design.DataContext>
             <local:ColorOverrideEditor />
         </Design.DataContext>
-
-        <TextBlock Grid.Column="0"
+        <TextBlock Grid.Row="0"
                    Classes="Label"
+                   MaxWidth="1000"
                    Text="{Binding Title}" />
 
-        <CheckBox Grid.Column="1"
+        <CheckBox Grid.Row="1"
+                  Content="Is Enabled"
                   IsChecked="{Binding IsOverrideEnabled}" />
 
-        <local:ColorEditor Grid.Column="2"
-                            IsEnabled="{Binding Value.IsEnabled}"
-                            Value="{Binding ValueOverride}" />
+        <local:ColorEditor Grid.Row="2"
+                           IsEnabled="{Binding Value.IsEnabled}"
+                           Value="{Binding ValueOverride}" />
     </Grid>
 </local:ValueOverrideEditor>

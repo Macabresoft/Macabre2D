@@ -100,6 +100,12 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
+    /// <summary>
+    /// Gets the color override.
+    /// </summary>
+    [DataMember]
+    public ColorOverride ColorOverride { get; } = new();
+
     /// <inheritdoc />
     [DataMember(Name = "Offset Options")]
     public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
@@ -348,8 +354,15 @@ public class Camera : Entity, ICamera {
                 this.ShaderReference.Asset?.Content,
                 viewMatrix);
 
-            foreach (var entity in entities) {
-                entity.Render(frameTime, viewBoundingArea);
+            if (this.ColorOverride.IsEnabled) {
+                foreach (var entity in entities) {
+                    entity.Render(frameTime, viewBoundingArea, this.ColorOverride.Value);
+                }
+            }
+            else {
+                foreach (var entity in entities) {
+                    entity.Render(frameTime, viewBoundingArea);
+                }
             }
 
             spriteBatch?.End();
