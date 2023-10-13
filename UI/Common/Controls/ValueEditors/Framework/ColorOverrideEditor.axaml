@@ -2,13 +2,13 @@
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                            xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           xmlns:commonFramework="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
-                           x:TypeArguments="framework:LayersOverride, commonFramework:Layers"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.LayersOverrideEditor">
+                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
+                           x:TypeArguments="framework:ColorOverride, monoGame:Color"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.ColorOverrideEditor">
     <Grid ColumnDefinitions="Auto, Auto, *"
-          DataContext="{Binding $parent[local:LayersOverrideEditor]}">
+          DataContext="{Binding $parent[local:ColorOverrideEditor]}">
         <Design.DataContext>
-            <local:LayersOverrideEditor />
+            <local:ColorOverrideEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
@@ -18,9 +18,8 @@
         <CheckBox Grid.Column="1"
                   IsChecked="{Binding IsOverrideEnabled}" />
 
-        <local:LayersEditor Grid.Column="2"
+        <local:ColorEditor Grid.Column="2"
                             IsEnabled="{Binding Value.IsEnabled}"
                             Value="{Binding ValueOverride}" />
-
     </Grid>
 </local:ValueOverrideEditor>

@@ -118,6 +118,10 @@
         <Compile Update="Controls\ValueEditors\Framework\InputBindingsEditor.axaml.cs">
           <DependentUpon>InputSettingsEditor.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\ColorOverrideEditor.axaml.cs">
+          <DependentUpon>ColorOverrideEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
