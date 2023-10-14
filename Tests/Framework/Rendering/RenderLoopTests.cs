@@ -121,10 +121,10 @@ public class RenderLoopTests {
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => (Layers)2;
-        public Layers LayersToRender => (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public float ViewWidth => 4f;
+        public Layers LayersToRender { get; set; } = (Layers)1;
         public float ViewHeight { get; set; } = 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
