@@ -109,12 +109,10 @@
                         ToolTip.Tip="Zooms the editor camera in">
                     <avaloniaEx:Icon Content="{StaticResource ZoomInIcon}" />
                 </Button>
-                
 
                 <avaloniaEx:FlagsComboBox EnumType="{x:Type commonFramework:Layers}"
                                           Width="128"
                                           SelectedValue="{Binding EditorService.LayersToRender}"/>
-
         
                 <Button Command="{Binding SelectAllLayersCommand}"
                         ToolTip.Tip="Select all layers">
