@@ -227,7 +227,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride);
     }
 
     /// <summary>
@@ -330,6 +330,7 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
+    /// <param name="colorOverride">The color override.</param>
     protected virtual void Render(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
@@ -337,7 +338,8 @@ public class Camera : Entity, ICamera {
         BoundingArea viewBoundingArea,
         Matrix viewMatrix,
         Layers layersToRender,
-        Layers layersToExclude) {
+        Layers layersToExclude,
+        ColorOverride colorOverride) {
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
@@ -354,9 +356,9 @@ public class Camera : Entity, ICamera {
                 this.ShaderReference.Asset?.Content,
                 viewMatrix);
 
-            if (this.ColorOverride.IsEnabled) {
+            if (colorOverride.IsEnabled) {
                 foreach (var entity in entities) {
-                    entity.Render(frameTime, viewBoundingArea, this.ColorOverride.Value);
+                    entity.Render(frameTime, viewBoundingArea, colorOverride.Value);
                 }
             }
             else {
