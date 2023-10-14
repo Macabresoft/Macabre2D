@@ -1,11 +1,9 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using System.Linq;
 using System.Windows.Input;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
@@ -46,21 +44,14 @@ public partial class FlagsEnumEditor : ValueEditorControl<object> {
     public ICommand ToggleValueCommand { get; }
 
     private void Clear() {
-        this.Value = Enum.Parse(this.EnumType, 0.ToString());
-    }
-
-    private void SelectAll() {
-        var enums = Enum.GetValues(this.EnumType).Cast<object>().Select(Convert.ToInt32);
-        var all = enums.Aggregate(0, (current, value) => current | value);
-        var original = Convert.ToInt32(this.Value);
-        if (all != original) {
-            this.Value = Enum.Parse(this.EnumType, all.ToString());
+        if (EnumHelper.TryGetZero(this.EnumType, out var result) && result != this.Value) {
+            this.Value = result;
         }
     }
 
-    private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-        if (sender is ComboBox comboBox) {
-            comboBox.SelectedItem = null;
+    private void SelectAll() {
+        if (EnumHelper.TryGetAll(this.EnumType, out var result) && result != this.Value) {
+            this.Value = result;
         }
     }
 

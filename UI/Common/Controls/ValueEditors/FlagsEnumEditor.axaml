@@ -14,11 +14,11 @@
         <TextBlock Grid.Column="0"
                    Classes="Label"
                    Text="{Binding Title}" />
-        
+
         <avaloniaEx:FlagsComboBox Grid.Column="1"
                                   EnumType="{Binding EnumType}"
-                                  SelectedValue="{Binding Value}"/>
-        
+                                  SelectedValue="{Binding Value}" />
+
         <Button Grid.Column="2"
                 Command="{Binding SelectAllCommand}"
                 ToolTip.Tip="Select all enum values">

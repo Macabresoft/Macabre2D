@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Avalonia.Input;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using ReactiveUI;
 
@@ -34,6 +35,26 @@ public interface IEditorService : INotifyPropertyChanged {
     public event EventHandler ZoomOutRequested;
 
     /// <summary>
+    /// Gets a command to request the camera to be centered on the scene.
+    /// </summary>
+    ICommand RequestCenterCameraCommand { get; }
+
+    /// <summary>
+    /// Gets a command to request focus of the currently selected entity.
+    /// </summary>
+    ICommand RequestFocusCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom in the camera.
+    /// </summary>
+    ICommand RequestZoomInCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom out the camera.
+    /// </summary>
+    ICommand RequestZoomOutCommand { get; }
+
+    /// <summary>
     /// Gets or sets the color of selected colliders.
     /// </summary>
     Color ColliderColor { get; set; }
@@ -55,24 +76,9 @@ public interface IEditorService : INotifyPropertyChanged {
     byte GridDivisions { get; set; }
 
     /// <summary>
-    /// Gets a command to request the camera to be centered on the scene.
+    /// Gets or sets the layers to be rendered.
     /// </summary>
-    ICommand RequestCenterCameraCommand { get; }
-
-    /// <summary>
-    /// Gets a command to request focus of the currently selected entity.
-    /// </summary>
-    ICommand RequestFocusCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom in the camera.
-    /// </summary>
-    ICommand RequestZoomInCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom out the camera.
-    /// </summary>
-    ICommand RequestZoomOutCommand { get; }
+    Layers LayersToRender { get; set; }
 
     /// <summary>
     /// Gets or sets the selected gizmo.
@@ -90,14 +96,14 @@ public interface IEditorService : INotifyPropertyChanged {
     Color SelectionColor { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to show the editor grid.
-    /// </summary>
-    bool ShowGrid { get; set; }
-    
-    /// <summary>
     /// Gets or sets a value indicating whether to show active tiles.
     /// </summary>
     bool ShowActiveTiles { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show the editor grid.
+    /// </summary>
+    bool ShowGrid { get; set; }
 
     /// <summary>
     /// Gets or sets the color of the x axis.
@@ -116,10 +122,10 @@ public interface IEditorService : INotifyPropertyChanged {
 public class EditorService : ReactiveObject, IEditorService {
     private readonly IEntityService _entityService;
     private readonly IEditorSettingsService _settingsService;
-
     private Color _colliderColor = DefinedColors.MacabresoftBone;
     private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
     private byte _gridDivisions = 5;
+    private Layers _layersToRender;
     private Color _selectionColor = DefinedColors.MacabresoftYellow;
     private bool _showActiveTiles = true;
     private bool _showGrid = true;
@@ -149,6 +155,7 @@ public class EditorService : ReactiveObject, IEditorService {
         IEditorSettingsService settingsService) : base() {
         this._entityService = entityService;
         this._settingsService = settingsService;
+        this._layersToRender = this._settingsService.Settings.LayersToRender;
 
         this.RequestCenterCameraCommand = ReactiveCommand.Create(this.RequestCenterCamera);
         this.RequestFocusCommand = ReactiveCommand.Create(
@@ -158,6 +165,18 @@ public class EditorService : ReactiveObject, IEditorService {
         this.RequestZoomInCommand = ReactiveCommand.Create(this.RequestZoomIn);
         this.RequestZoomOutCommand = ReactiveCommand.Create(this.RequestZoomOut);
     }
+
+    /// <inheritdoc />
+    public ICommand RequestCenterCameraCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestFocusCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomInCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomOutCommand { get; }
 
     /// <inheritdoc />
     public Color ColliderColor {
@@ -184,16 +203,13 @@ public class EditorService : ReactiveObject, IEditorService {
     }
 
     /// <inheritdoc />
-    public ICommand RequestCenterCameraCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestFocusCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomInCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomOutCommand { get; }
+    public Layers LayersToRender {
+        get => this._layersToRender;
+        set {
+            this.RaiseAndSetIfChanged(ref this._layersToRender, value);
+            this._settingsService.Settings.LayersToRender = this._layersToRender;
+        }
+    }
 
     /// <inheritdoc />
     public GizmoKind SelectedGizmo {
@@ -220,15 +236,15 @@ public class EditorService : ReactiveObject, IEditorService {
     }
 
     /// <inheritdoc />
-    public bool ShowGrid {
-        get => this._showGrid;
-        set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
-    }
-
-    /// <inheritdoc />
     public bool ShowActiveTiles {
         get => this._showActiveTiles;
         set => this.RaiseAndSetIfChanged(ref this._showActiveTiles, value);
+    }
+
+    /// <inheritdoc />
+    public bool ShowGrid {
+        get => this._showGrid;
+        set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
     }
 
     /// <inheritdoc />

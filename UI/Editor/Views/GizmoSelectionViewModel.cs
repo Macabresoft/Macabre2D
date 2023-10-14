@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
@@ -32,7 +33,14 @@ public class GizmoSelectionViewModel : BaseViewModel {
 
         this._entityService.PropertyChanged += this.EntityService_PropertyChanged;
         this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind>(this.SetSelectedGizmo);
+        this.ClearLayersCommand = ReactiveCommand.Create(this.ClearLayers);
+        this.SelectAllLayersCommand = ReactiveCommand.Create(this.SelectAllLayers);
     }
+
+    /// <summary>
+    /// Gets a command to clear all layers from rendering.
+    /// </summary>
+    public ICommand ClearLayersCommand { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -45,9 +53,20 @@ public class GizmoSelectionViewModel : BaseViewModel {
     public bool IsTileable => this._entityService.Selected is ITileableEntity;
 
     /// <summary>
+    /// Gets a command to select all layers to render.
+    /// </summary>
+    public ICommand SelectAllLayersCommand { get; }
+
+    /// <summary>
     /// Gets a command to set the selected gizmo.
     /// </summary>
     public ICommand SetSelectedGizmoCommand { get; }
+
+    private void ClearLayers() {
+        if (EnumHelper.TryGetZero(typeof(Layers), out var result) && result is Layers layers) {
+            this.EditorService.LayersToRender = layers;
+        }
+    }
 
     private void EntityService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(IEntityService.Selected)) {
@@ -61,6 +80,12 @@ public class GizmoSelectionViewModel : BaseViewModel {
                     this.EditorService.SelectedGizmo = GizmoKind.Translation;
                 }
             }
+        }
+    }
+
+    private void SelectAllLayers() {
+        if (EnumHelper.TryGetAll(typeof(Layers), out var result) && result is Layers layers) {
+            this.EditorService.LayersToRender = layers;
         }
     }
 

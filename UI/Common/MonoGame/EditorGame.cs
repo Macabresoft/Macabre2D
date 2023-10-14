@@ -64,7 +64,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null) {
-            if (this.CurrentScene.Children.OfType<IScene>().Any() && Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+            if (this.CurrentScene.Children.OfType<IScene>().Any() && Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this.CurrentScene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             }
 
@@ -79,11 +79,12 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
             try {
                 base.Initialize();
 
-                if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                if (!Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                     this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
                 }
 
                 this.ResetGizmo();
+                this.Camera.LayersToRender = this._editorService.LayersToRender;
                 this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
                 this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
                 this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
@@ -109,6 +110,9 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
         if (e.PropertyName == nameof(IEditorService.SelectedGizmo)) {
             this.ResetGizmo();
         }
+        else if (e.PropertyName == nameof(IEditorService.LayersToRender)) {
+            this.Camera.LayersToRender = this._editorService.LayersToRender;
+        }
     }
 
     private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -124,7 +128,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (this.IsInitialized &&
             e.PropertyName == nameof(ISceneService.CurrentScene) &&
-            !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+            !Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
             this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
         }
     }

@@ -33,7 +33,7 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// Gets the layers to render.
     /// </summary>
     /// <value>The layers to render.</value>
-    Layers LayersToRender { get; }
+    Layers LayersToRender { get; set;  }
 
     /// <summary>
     /// Gets the offset options.

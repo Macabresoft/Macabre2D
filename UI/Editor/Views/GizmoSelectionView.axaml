@@ -3,6 +3,7 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:commonFramework="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.GizmoSelectionView">
     <UserControl.Resources>
         <common:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
@@ -107,6 +108,22 @@
                         Classes="Icon"
                         ToolTip.Tip="Zooms the editor camera in">
                     <avaloniaEx:Icon Content="{StaticResource ZoomInIcon}" />
+                </Button>
+                
+
+                <avaloniaEx:FlagsComboBox EnumType="{x:Type commonFramework:Layers}"
+                                          Width="128"
+                                          SelectedValue="{Binding EditorService.LayersToRender}"/>
+
+        
+                <Button Command="{Binding SelectAllLayersCommand}"
+                        ToolTip.Tip="Select all layers">
+                    <avaloniaEx:Icon Content="{StaticResource SelectAllIcon}" />
+                </Button>
+
+                <Button Command="{Binding ClearLayersCommand}"
+                        ToolTip.Tip="Clear all layers from the selection">
+                    <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
                 </Button>
             </StackPanel>
         </Border>

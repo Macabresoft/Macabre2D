@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -14,6 +15,15 @@ public class EditorSettings {
     /// It's the editor settings file name.
     /// </summary>
     public const string FileName = "settings.m2deditor";
+
+    /// <summary>
+    /// Instantiates a new instance of the <see cref="EditorSettings" /> class.
+    /// </summary>
+    public EditorSettings() {
+        if (EnumHelper.TryGetAll(typeof(Layers), out var result) && result is Layers layers) {
+            this.LayersToRender = layers;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the animation preview frame rate.
@@ -56,6 +66,12 @@ public class EditorSettings {
     /// </summary>
     [DataMember]
     public EditorTabs LastTabSelected { get; set; } = EditorTabs.Scene;
+
+    /// <summary>
+    /// Gets or sets the layers to render.
+    /// </summary>
+    [DataMember]
+    public Layers LayersToRender { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether or not content should be rebuilt on next load.
