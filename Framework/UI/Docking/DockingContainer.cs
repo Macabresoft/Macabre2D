@@ -49,7 +49,7 @@ public class DockingContainer : DockablePanel, IDockingContainer {
 
         base.Initialize(scene, parent);
 
-        this.RearrangeAll();
+        this.PerformReset();
 
         if (this.Parent is IBoundable boundable) {
             boundable.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
