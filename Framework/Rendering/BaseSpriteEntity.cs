@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 [Category(CommonCategories.Rendering)]
 public abstract class BaseSpriteEntity : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private readonly ResettableLazy<Vector2> _offsetTransform;
     private readonly ResettableLazy<Vector2> _pixelTransform;
 
     /// <inheritdoc />
@@ -23,6 +24,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// </summary>
     protected BaseSpriteEntity() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+        this._offsetTransform = new ResettableLazy<Vector2>(this.CreateOffsetTransform);
         this._pixelTransform = new ResettableLazy<Vector2>(this.CreatePixelPosition);
     }
 
@@ -84,7 +86,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// </summary>
     /// <returns></returns>
     protected Vector2 GetRenderTransform() {
-        return this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this.WorldPosition;
+        return this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this._offsetTransform.Value;
     }
 
     /// <inheritdoc />
@@ -107,17 +109,19 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// </summary>
     protected void Reset() {
         this.RenderOptions.InvalidateSize();
-        this._boundingArea.Reset();
-        this._pixelTransform.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
+        this.ResetTransforms();
     }
 
     private BoundingArea CreateBoundingArea() {
         return this.RenderOptions.CreateBoundingArea(this);
     }
 
+    private Vector2 CreateOffsetTransform() {
+        return this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
+    }
+
     private Vector2 CreatePixelPosition() {
-        return this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel).ToPixelSnappedValue(this.Project);
+        return this._offsetTransform.Value.ToPixelSnappedValue(this.Project);
     }
 
     private Vector2 CreateSize() {
@@ -131,8 +135,14 @@ public abstract class BaseSpriteEntity : RenderableEntity {
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
-            this._pixelTransform.Reset();
-            this._boundingArea.Reset();
+            this.ResetTransforms();
         }
+    }
+
+    private void ResetTransforms() {
+        this._boundingArea.Reset();
+        this._offsetTransform.Reset();
+        this._pixelTransform.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }
