@@ -58,6 +58,7 @@ public class DockingContainer : DockablePanel, IDockingContainer {
 
     /// <inheritdoc />
     public void RequestRearrange(IDockable dockable) {
+        dockable.LocalPosition = Vector2.Zero;
         Vector2 amountToMove;
         switch (dockable.Location) {
             case DockLocation.Center:

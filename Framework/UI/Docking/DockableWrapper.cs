@@ -74,6 +74,14 @@ public class DockableWrapper : BaseDockable, IDockable {
         }
     }
 
+    /// <summary>
+    /// Resets the bounding area of this entity.
+    /// </summary>
+    protected void Reset() {
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
     private void Child_BoundingAreaChanged(object? sender, EventArgs e) {
         if (!this._isTransforming) {
             this.Reset();
@@ -88,10 +96,5 @@ public class DockableWrapper : BaseDockable, IDockable {
         }
 
         return boundingArea;
-    }
-
-    private void Reset() {
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }
