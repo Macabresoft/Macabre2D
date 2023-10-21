@@ -14,19 +14,19 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
-    /// Occurs when the scene is deactivated and made to no longer be the current scene on <see cref="IGame" />.
-    /// </summary>
-    event EventHandler Deactivated;
-
-    /// <summary>
-    /// Occurs when the scene is reactivated and made the current scene on <see cref="IGame" />.
+    /// Occurs when the scene is activated and made the current scene on <see cref="IGame" />.
     /// </summary>
     /// <remarks>
     /// This is necessary, because we do not want initialization to happen when a scene is popped,
     /// exposing another scene as the current scene; however, some entities still need to know that
     /// they are back in focus.
     /// </remarks>
-    event EventHandler Reactivated;
+    event EventHandler Activated;
+
+    /// <summary>
+    /// Occurs when the scene is deactivated and made to no longer be the current scene on <see cref="IGame" />.
+    /// </summary>
+    event EventHandler Deactivated;
 
     /// <summary>
     /// Gets the asset manager.
@@ -147,14 +147,14 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     void Invoke(Action action);
 
     /// <summary>
+    /// Raises the <see cref="Activated" /> event.
+    /// </summary>
+    void RaiseActivated();
+
+    /// <summary>
     /// Raises the <see cref="Deactivated" /> event.
     /// </summary>
     void RaiseDeactivated();
-
-    /// <summary>
-    /// Raises the <see cref="Reactivated" /> event.
-    /// </summary>
-    void RaiseReactivated();
 
     /// <summary>
     /// Registers the entity with relevant services.
@@ -254,13 +254,13 @@ public sealed class Scene : GridContainer, IScene {
     private bool _isInitialized;
 
     /// <inheritdoc />
+    public event EventHandler? Activated;
+
+    /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public event EventHandler? Deactivated;
-
-    /// <inheritdoc />
-    public event EventHandler? Reactivated;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Scene" /> class.
@@ -416,15 +416,15 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void RaiseDeactivated() {
-        this.IsActive = false;
-        this.Deactivated?.SafeInvoke(this);
+    public void RaiseActivated() {
+        this.IsActive = true;
+        this.Activated?.SafeInvoke(this);
     }
 
     /// <inheritdoc />
-    public void RaiseReactivated() {
-        this.IsActive = true;
-        this.Reactivated?.SafeInvoke(this);
+    public void RaiseDeactivated() {
+        this.IsActive = false;
+        this.Deactivated?.SafeInvoke(this);
     }
 
     /// <inheritdoc />

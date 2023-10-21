@@ -27,7 +27,7 @@ public class EmptyObject : IScene {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc />
-    public event EventHandler? Reactivated;
+    public event EventHandler? Activated;
 
     /// <inheritdoc />
     public event EventHandler? TransformChanged;
@@ -177,6 +177,10 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
+    public void Initialize(IGame game, IAssetManager assetManager, bool forceReinitialize) {
+    }
+
+    /// <inheritdoc />
     public void InsertChild(int index, IEntity entity) {
         throw new NotSupportedException("Initialization has not occured.");
     }
@@ -208,7 +212,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void RaiseReactivated() {
+    public void RaiseActivated() {
     }
 
     /// <inheritdoc />
@@ -252,14 +256,14 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
-        entity = null;
+    public bool TryGetAncestor<T>(out T? entity) {
+        entity = default;
         return false;
     }
 
     /// <inheritdoc />
-    public bool TryGetAncestor<T>(out T? entity) {
-        entity = default;
+    public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
+        entity = null;
         return false;
     }
 

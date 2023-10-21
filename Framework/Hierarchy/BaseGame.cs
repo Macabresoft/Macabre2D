@@ -164,6 +164,7 @@ public class BaseGame : Game, IGame {
         }
 
         this._sceneStack.Push(scene);
+        scene.RaiseActivated();
     }
 
     /// <inheritdoc />
@@ -181,7 +182,7 @@ public class BaseGame : Game, IGame {
     public bool TryPopScene(out IScene scene) {
         if (this._sceneStack.Count > 1) {
             scene = this._sceneStack.Pop();
-            this.CurrentScene.RaiseReactivated();
+            this.CurrentScene.RaiseActivated();
             return true;
         }
 
@@ -341,9 +342,9 @@ public class BaseGame : Game, IGame {
 
         public IScene CurrentScene => Scene.Empty;
 
-        public GraphicsDevice? GraphicsDevice => null;
-
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
+
+        public GraphicsDevice? GraphicsDevice => null;
 
         public InputBindings InputBindings => this.UserSettings.Input;
 
