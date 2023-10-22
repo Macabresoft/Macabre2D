@@ -146,7 +146,7 @@ public class RenderLoopTests {
     private class TestRenderable : Entity, IRenderableEntity {
         public event EventHandler BoundingAreaChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
-        public bool IsVisible => true;
+        public bool IsVisible { get; set; } = true;
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public bool RenderOutOfBounds => true;
         public int RenderCount { get; private set; }

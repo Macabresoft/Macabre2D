@@ -10,15 +10,13 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     /// <summary>
-    /// Gets a value indicating whether this instance is visible.
+    /// Gets or sets a value indicating whether this instance is visible.
     /// </summary>
-    /// <value><c>true</c> if this instance is visible; otherwise, <c>false</c>.</value>
-    bool IsVisible { get; }
+    bool IsVisible { get; set; }
 
     /// <summary>
     /// Gets the render order.
     /// </summary>
-    /// <value>The render order.</value>
     int RenderOrder => 0;
 
     /// <summary>

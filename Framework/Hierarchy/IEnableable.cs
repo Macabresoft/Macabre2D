@@ -5,8 +5,7 @@ namespace Macabresoft.Macabre2D.Framework;
 /// </summary>
 public interface IEnableable {
     /// <summary>
-    /// Gets a value indicating whether this instance is enabled.
+    /// Gets or sets a value indicating whether this instance is enabled.
     /// </summary>
-    /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
     bool IsEnabled { get; set; }
 }
