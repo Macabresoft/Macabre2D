@@ -306,7 +306,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     [DataMember]
-    public Color BackgroundColor { get; set; } = DefinedColors.MacabresoftBlack;
+    public Color BackgroundColor { get; set; } = Color.Black;
 
     /// <inheritdoc />
     [DataMember]

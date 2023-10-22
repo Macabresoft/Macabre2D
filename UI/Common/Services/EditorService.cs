@@ -122,16 +122,16 @@ public interface IEditorService : INotifyPropertyChanged {
 public class EditorService : ReactiveObject, IEditorService {
     private readonly IEntityService _entityService;
     private readonly IEditorSettingsService _settingsService;
-    private Color _colliderColor = DefinedColors.MacabresoftBone;
-    private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
+    private Color _colliderColor = Color.White;
+    private Color _dropShadowColor = Color.Black * 0.4f;
     private byte _gridDivisions = 5;
     private Layers _layersToRender;
-    private Color _selectionColor = DefinedColors.MacabresoftYellow;
+    private Color _selectionColor = new(200, 171, 55);
     private bool _showActiveTiles = true;
     private bool _showGrid = true;
     private StandardCursorType _standardCursorType = StandardCursorType.None;
-    private Color _xAxisColor = DefinedColors.ZvukostiGreen;
-    private Color _yAxisColor = DefinedColors.MacabresoftRed;
+    private Color _xAxisColor = new(113, 237, 100);
+    private Color _yAxisColor = new(130, 38, 38);
 
     /// <inheritdoc />
     public event EventHandler CenterCameraRequested;

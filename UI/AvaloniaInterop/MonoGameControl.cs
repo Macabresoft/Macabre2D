@@ -14,6 +14,7 @@ using Avalonia.VisualTree;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
 
 /// <summary>
 /// A control that renders a MonoGame instance inside of Avalonia.
@@ -24,7 +25,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     /// </summary>
     public static readonly StyledProperty<IBrush> FallbackBackgroundProperty = AvaloniaProperty.Register<MonoGameControl, IBrush>(
         nameof(FallbackBackground),
-        DefinedColors.MacabresoftPurple.ToAvaloniaBrush());
+        Color.HotPink.ToAvaloniaBrush());
 
     /// <summary>
     /// Avalonia property for <see cref="Game" />.

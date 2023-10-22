@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
 using ReactiveUI;
 
 /// <summary>
@@ -124,7 +125,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         }
 
         var scene = new Scene {
-            BackgroundColor = DefinedColors.MacabresoftPurple,
+            BackgroundColor = Color.Black,
             Name = DefaultSceneName
         };
 

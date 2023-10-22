@@ -1,9 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
+using Macabresoft.Macabre2D.Project.Gameplay;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -35,7 +37,7 @@ public class EditorSettings {
     /// Gets or sets the background color.
     /// </summary>
     [DataMember]
-    public Color BackgroundColor { get; set; } = DefinedColors.MacabresoftPurple;
+    public Color BackgroundColor { get; set; } = PredefinedColors.Colors.Any() ? PredefinedColors.Colors.First() : Color.CornflowerBlue;
 
     /// <summary>
     /// Gets or sets the position of the editor camera.
