@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Markup.Xaml;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Gameplay;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 public partial class ColorPalette : UserControl {
