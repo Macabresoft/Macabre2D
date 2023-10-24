@@ -2,6 +2,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                          xmlns:projectCommon="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                           x:TypeArguments="monoGame:Color"
                           x:Class="Macabresoft.Macabre2D.UI.Common.ColorEditor"
@@ -21,13 +22,43 @@
                    Classes="Label"
                    Text="{Binding Title}" />
 
-        <Border Grid.Column="0"
-                Grid.Row="1"
-                Grid.RowSpan="3"
-                Width="64"
-                Height="64"
-                Classes="Preview"
-                Background="{Binding Value, Converter={StaticResource ColorConverter}}" />
+        <SplitButton Grid.Column="0"
+                     Grid.Row="1"
+                     Grid.RowSpan="2"
+                     VerticalAlignment="Top"
+                     Padding="0">
+            <SplitButton.Content>
+                <Border Width="64"
+                        Height="64"
+                        Classes="Preview"
+                        Margin="0"
+                        Background="{Binding Value, Converter={StaticResource ColorConverter}}"
+                        ToolTip.Tip="{Binding Value, Converter={x:Static local:ColorDescriptionConverter.Instance}}"/>
+            </SplitButton.Content>
+            <SplitButton.Flyout>
+                <Flyout Placement="Bottom">
+                    <ListBox ItemsSource="{x:Static projectCommon:PredefinedColors.Colors}" 
+                             SelectedItem="{Binding Value}" 
+                             MaxWidth="128"
+                             MaxHeight="128" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="16"
+                                        Height="16"
+                                        Classes="Preview"
+                                        Background="{Binding Converter={StaticResource ColorConverter}}"
+                                        ToolTip.Tip="{Binding Converter={x:Static local:ColorDescriptionConverter.Instance}}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </Flyout>
+            </SplitButton.Flyout>
+        </SplitButton>
 
         <TextBlock Grid.Column="1"
                    Grid.Row="0"

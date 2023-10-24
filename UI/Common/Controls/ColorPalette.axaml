@@ -23,7 +23,9 @@
                     <Border Width="16"
                             Height="16"
                             Margin="0"
-                            Background="{Binding Converter={StaticResource ColorConverter}}" />
+                            Classes="Preview"
+                            Background="{Binding Converter={StaticResource ColorConverter}}"
+                            ToolTip.Tip="{Binding Converter={x:Static local:ColorDescriptionConverter.Instance}}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
 
