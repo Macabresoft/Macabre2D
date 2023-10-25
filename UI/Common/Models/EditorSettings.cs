@@ -3,9 +3,9 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using Avalonia.Controls;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
-using Macabresoft.Macabre2D.Project.Gameplay;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -80,4 +80,10 @@ public class EditorSettings {
     /// </summary>
     [DataMember]
     public bool ShouldRebuildContent { get; set; }
+
+    /// <summary>
+    /// Gets or sets the window state.
+    /// </summary>
+    [DataMember]
+    public WindowState WindowState { get; set; } = WindowState.Maximized;
 }

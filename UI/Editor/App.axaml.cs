@@ -34,7 +34,8 @@ public class App : Application {
             var mainWindow = new MainWindow();
 
             Resolver.Container.RegisterInstance(mainWindow);
-            Resolver.Resolve<IEditorSettingsService>().Initialize();
+            var editorSettingsService = Resolver.Resolve<IEditorSettingsService>();
+            editorSettingsService.Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
             
             if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
@@ -45,6 +46,7 @@ public class App : Application {
             desktop.MainWindow = mainWindow;
             mainWindow.Show();
             splashScreen.Close();
+            mainWindow.WindowState = editorSettingsService.Settings.WindowState;
         }
 
         base.OnFrameworkInitializationCompleted();

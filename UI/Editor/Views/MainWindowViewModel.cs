@@ -86,15 +86,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// </summary>
     public IEditorGame Game { get; }
 
-
-    /// <summary>
-    /// Gets a value indicating whether or not this is busy.
-    /// </summary>
-    public bool IsBusy {
-        get => this._isBusy;
-        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
-    }
-
     /// <summary>
     /// Gets the open scene command.
     /// </summary>
@@ -130,8 +121,17 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// </summary>
     public ICommand ViewSourceCommand { get; }
 
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is busy.
+    /// </summary>
+    public bool IsBusy {
+        get => this._isBusy;
+        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
+    }
+
     private async Task Exit(IWindow window) {
-        if (window != null && await this.TryClose() != YesNoCancelResult.Cancel) {
+        if (window != null && await this.TryClose(window) != YesNoCancelResult.Cancel) {
             window.Close();
         }
     }
@@ -176,11 +176,11 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private void ToggleTab() {
         this.SelectTab(this.EditorService.SelectedTab == EditorTabs.Scene ? EditorTabs.Project : EditorTabs.Scene);
     }
-
-
-    private async Task<YesNoCancelResult> TryClose() {
+    
+    private async Task<YesNoCancelResult> TryClose(IWindow window) {
         var result = await this._saveService.RequestSave();
         if (result != YesNoCancelResult.Cancel) {
+            this._settingsService.Settings.WindowState = window.WindowState;
             this._settingsService.Save();
         }
 
