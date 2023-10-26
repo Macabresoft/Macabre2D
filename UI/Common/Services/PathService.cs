@@ -46,6 +46,11 @@ public interface IPathService {
     string PlatformsDirectoryPath { get; }
 
     /// <summary>
+    /// Gets the path to the project directory.
+    /// </summary>
+    string ProjectDirectoryPath { get; }
+
+    /// <summary>
     /// Gets the path to the project file.
     /// </summary>
     string ProjectFilePath { get; }
@@ -127,6 +132,7 @@ public class PathService : IPathService {
         this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
         this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
+        this.ProjectDirectoryPath = new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ProjectDirectoryName)).FullName;
     }
 
     private PathService(string editorBinDirectoryPath) : this(
@@ -154,6 +160,9 @@ public class PathService : IPathService {
 
     /// <inheritdoc />
     public string PlatformsDirectoryPath { get; }
+
+    /// <inheritdoc />
+    public string ProjectDirectoryPath { get; }
 
     /// <inheritdoc />
     public string ProjectFilePath { get; }

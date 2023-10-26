@@ -67,6 +67,6 @@ public sealed class EditorSettingsService : IEditorSettingsService {
     }
 
     private string GetSettingsFilePath() {
-        return Path.Combine(this._pathService.EditorBinDirectoryPath, EditorSettings.FileName);
+        return Path.Combine(this._pathService.ProjectDirectoryPath, EditorSettings.FileName);
     }
 }
