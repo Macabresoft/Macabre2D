@@ -5,6 +5,7 @@
 /// </summary>
 public enum AudioCategory {
     Default,
+    Overall,
     Effect,
     Menu,
     Music,

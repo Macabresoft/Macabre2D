@@ -119,6 +119,23 @@ public class AudioSettings {
     }
 
     /// <summary>
+    /// Gets the volume of an <see cref="AudioCategory" />.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <returns>The volume.</returns>
+    public float GetCategoryVolume(AudioCategory category) {
+        return category switch {
+            AudioCategory.Overall => this.OverallVolume,
+            AudioCategory.Effect => this.EffectVolume,
+            AudioCategory.Menu => this.MenuVolume,
+            AudioCategory.Music => this.MusicVolume,
+            AudioCategory.Notification => this.NotificationVolume,
+            AudioCategory.Voice => this.VoiceVolume,
+            _ => 1f
+        };
+    }
+
+    /// <summary>
     /// Gets the volume given an <see cref="AudioCategory" /> and instance volume.
     /// </summary>
     /// <param name="category">The category</param>
@@ -128,16 +145,7 @@ public class AudioSettings {
         var volume = 0f;
 
         if (this.OverallVolume > 0f) {
-            var multiplier = category switch {
-                AudioCategory.Effect => this.EffectVolume,
-                AudioCategory.Menu => this.MenuVolume,
-                AudioCategory.Music => this.MusicVolume,
-                AudioCategory.Notification => this.NotificationVolume,
-                AudioCategory.Voice => this.VoiceVolume,
-                _ => 1f
-            };
-
-            volume = instanceVolume * multiplier * this.OverallVolume;
+            volume = instanceVolume * this.GetCategoryVolume(category) * this.OverallVolume;
         }
 
         return volume;
