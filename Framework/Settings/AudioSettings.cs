@@ -139,7 +139,7 @@ public class AudioSettings {
     /// Gets the volume given an <see cref="AudioCategory" /> and instance volume.
     /// </summary>
     /// <param name="category">The category</param>
-    /// <param name="instanceVolume"></param>
+    /// <param name="instanceVolume">The volume of the individual entity.</param>
     /// <returns>The volume.</returns>
     public float GetVolume(AudioCategory category, float instanceVolume) {
         var volume = 0f;
@@ -149,5 +149,43 @@ public class AudioSettings {
         }
 
         return volume;
+    }
+
+    /// <summary>
+    /// Changes the volume given an <see cref="AudioCategory" /> and the amount to change..
+    /// </summary>
+    /// <param name="category">The category</param>
+    /// <param name="amount">The amount to alter the volume.</param>
+    public void ChangeCategoryVolume(AudioCategory category, float amount) {
+        var newVolume = this.GetCategoryVolume(category) + amount;
+        this.SetCategoryVolume(category, newVolume);
+    }
+
+    /// <summary>
+    /// Sets the volume for a category. Used when editing sound settings.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <param name="volume">The new volume.</param>
+    public void SetCategoryVolume(AudioCategory category, float volume) {
+        switch (category) {
+            case AudioCategory.Overall:
+                this.OverallVolume = volume;
+                break;
+            case AudioCategory.Effect:
+                this.EffectVolume = volume;
+                break;
+            case AudioCategory.Menu:
+                this.MenuVolume = volume;
+                break;
+            case AudioCategory.Music:
+                this.MusicVolume = volume;
+                break;
+            case AudioCategory.Notification:
+                this.NotificationVolume = volume;
+                break;
+            case AudioCategory.Voice:
+                this.VoiceVolume = volume;
+                break;
+        }
     }
 }
