@@ -18,65 +18,17 @@
             <Setter Property="IsSnapToTickEnabled" Value="True" />
         </Style>
     </UserControl.Styles>
-    <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
-          ColumnDefinitions="*, *"
-          DataContext="{Binding $parent[local:AudioSettingsEditor]}">
+    <Panel DataContext="{Binding $parent[local:AudioSettingsEditor]}">
         <Design.DataContext>
             <local:AudioSettingsEditor />
         </Design.DataContext>
 
-        <local:FloatEditor Grid.Row="0"
-                           Grid.Column="0"
-                           Value="{Binding OverallVolume}"
-                           Title="Overall Volume" />
-
-        <local:VolumeSlider Grid.Row="0"
-                            Grid.Column="1"
-                            Value="{Binding OverallVolume}" />
-
-        <local:FloatEditor Grid.Row="1"
-                           Grid.Column="0"
-                           Value="{Binding EffectVolume}"
-                           Title="Effect Volume" />
-
-        <local:VolumeSlider Grid.Row="1"
-                            Grid.Column="1"
-                            Value="{Binding EffectVolume}" />
-
-        <local:FloatEditor Grid.Row="2"
-                           Grid.Column="0"
-                           Value="{Binding MenuVolume}"
-                           Title="Menu Volume" />
-
-        <local:VolumeSlider Grid.Row="2"
-                            Grid.Column="1"
-                            Value="{Binding MenuVolume}" />
-
-        <local:FloatEditor Grid.Row="3"
-                           Grid.Column="0"
-                           Value="{Binding MusicVolume}"
-                           Title="Music Volume" />
-
-        <local:VolumeSlider Grid.Row="3"
-                            Grid.Column="1"
-                            Value="{Binding MusicVolume}" />
-
-        <local:FloatEditor Grid.Row="4"
-                           Grid.Column="0"
-                           Value="{Binding NotificationVolume}"
-                           Title="Notification Volume" />
-
-        <local:VolumeSlider Grid.Row="4"
-                            Grid.Column="1"
-                            Value="{Binding NotificationVolume}" />
-
-        <local:FloatEditor Grid.Row="5"
-                           Grid.Column="0"
-                           Value="{Binding VoiceVolume}"
-                           Title="Voice Volume" />
-
-        <local:VolumeSlider Grid.Row="5"
-                            Grid.Column="1"
-                            Value="{Binding VoiceVolume}" />
-    </Grid>
+        <ItemsControl ItemsSource="{Binding Categories}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:VolumeCategoryEditor Category="{Binding}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Panel>
 </local:ValueEditorControl>

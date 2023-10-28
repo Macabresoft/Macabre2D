@@ -156,13 +156,13 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     }
 
     private void Settings_VolumeChanged(object? sender, VolumeCategory e) {
-        if (this.State == SoundState.Playing && (e == VolumeCategory.Default || e == this.Category)) {
+        if (this.State == SoundState.Playing && (e == VolumeCategory.Overall || e == this.Category)) {
             this._instance.Volume = this.GetVolume();
         }
     }
 
     private sealed class EmptyAudioClipInstance : IAudioClipInstance {
-        public VolumeCategory Category => VolumeCategory.Default;
+        public VolumeCategory Category => VolumeCategory.Overall;
         public SoundState State => SoundState.Stopped;
         public float Pan { get; set; }
         public float Pitch { get; set; }
