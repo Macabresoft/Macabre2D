@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
@@ -12,7 +13,7 @@ public interface IAudioClipInstance : IDisposable {
     /// <summary>
     /// Gets the audio category.
     /// </summary>
-    AudioCategory Category { get; }
+    VolumeCategory Category { get; }
 
     /// <summary>
     /// Gets the state.
@@ -72,7 +73,7 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     /// <summary>
     /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
     /// </summary>
-    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, AudioCategory category) {
+    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, VolumeCategory category) {
         this._instance = instance;
         this._settings = settings;
         this._volume = this._instance.Volume;
@@ -82,7 +83,7 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     }
 
     /// <inheritdoc />
-    public AudioCategory Category { get; }
+    public VolumeCategory Category { get; }
 
     /// <summary>
     /// Gets an empty instance of <see cref="IAudioClipInstance" />.
@@ -154,14 +155,14 @@ public sealed class AudioClipInstance : IAudioClipInstance {
         return this._settings.GetVolume(this.Category, this._volume);
     }
 
-    private void Settings_VolumeChanged(object? sender, AudioCategory e) {
-        if (this.State == SoundState.Playing && (e == AudioCategory.Default || e == this.Category)) {
+    private void Settings_VolumeChanged(object? sender, VolumeCategory e) {
+        if (this.State == SoundState.Playing && (e == VolumeCategory.Default || e == this.Category)) {
             this._instance.Volume = this.GetVolume();
         }
     }
 
     private sealed class EmptyAudioClipInstance : IAudioClipInstance {
-        public AudioCategory Category => AudioCategory.Default;
+        public VolumeCategory Category => VolumeCategory.Default;
         public SoundState State => SoundState.Stopped;
         public float Pan { get; set; }
         public float Pitch { get; set; }

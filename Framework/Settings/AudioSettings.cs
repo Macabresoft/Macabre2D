@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// Settings for audio.
@@ -21,7 +22,7 @@ public class AudioSettings {
     /// <summary>
     /// Raised when the volume is changed.
     /// </summary>
-    public event EventHandler<AudioCategory>? VolumeChanged;
+    public event EventHandler<VolumeCategory>? VolumeChanged;
 
     /// <summary>
     /// Gets or sets the volume for effects.
@@ -31,7 +32,7 @@ public class AudioSettings {
         get => this._effectVolume;
         set {
             this._effectVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Effect);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Effect);
         }
     }
 
@@ -43,7 +44,7 @@ public class AudioSettings {
         get => this._menuVolume;
         set {
             this._menuVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Menu);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Menu);
         }
     }
 
@@ -55,7 +56,7 @@ public class AudioSettings {
         get => this._musicVolume;
         set {
             this._musicVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Music);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Music);
         }
     }
 
@@ -67,7 +68,7 @@ public class AudioSettings {
         get => this._notificationVolume;
         set {
             this._notificationVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Notification);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Notification);
         }
     }
 
@@ -79,7 +80,7 @@ public class AudioSettings {
         get => this._overallVolume;
         set {
             this._overallVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Default);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Default);
         }
     }
 
@@ -91,8 +92,18 @@ public class AudioSettings {
         get => this._voiceVolume;
         set {
             this._voiceVolume = Math.Clamp(value, 0f, 1f);
-            this.VolumeChanged.SafeInvoke(this, AudioCategory.Voice);
+            this.VolumeChanged.SafeInvoke(this, VolumeCategory.Voice);
         }
+    }
+
+    /// <summary>
+    /// Changes the volume given an <see cref="VolumeCategory" /> and the amount to change..
+    /// </summary>
+    /// <param name="category">The category</param>
+    /// <param name="amount">The amount to alter the volume.</param>
+    public void ChangeCategoryVolume(VolumeCategory category, float amount) {
+        var newVolume = this.GetCategoryVolume(category) + amount;
+        this.SetCategoryVolume(category, newVolume);
     }
 
     /// <summary>
@@ -119,29 +130,29 @@ public class AudioSettings {
     }
 
     /// <summary>
-    /// Gets the volume of an <see cref="AudioCategory" />.
+    /// Gets the volume of an <see cref="VolumeCategory" />.
     /// </summary>
     /// <param name="category">The category.</param>
     /// <returns>The volume.</returns>
-    public float GetCategoryVolume(AudioCategory category) {
+    public float GetCategoryVolume(VolumeCategory category) {
         return category switch {
-            AudioCategory.Overall => this.OverallVolume,
-            AudioCategory.Effect => this.EffectVolume,
-            AudioCategory.Menu => this.MenuVolume,
-            AudioCategory.Music => this.MusicVolume,
-            AudioCategory.Notification => this.NotificationVolume,
-            AudioCategory.Voice => this.VoiceVolume,
+            VolumeCategory.Overall => this.OverallVolume,
+            VolumeCategory.Effect => this.EffectVolume,
+            VolumeCategory.Menu => this.MenuVolume,
+            VolumeCategory.Music => this.MusicVolume,
+            VolumeCategory.Notification => this.NotificationVolume,
+            VolumeCategory.Voice => this.VoiceVolume,
             _ => 1f
         };
     }
 
     /// <summary>
-    /// Gets the volume given an <see cref="AudioCategory" /> and instance volume.
+    /// Gets the volume given an <see cref="VolumeCategory" /> and instance volume.
     /// </summary>
     /// <param name="category">The category</param>
     /// <param name="instanceVolume">The volume of the individual entity.</param>
     /// <returns>The volume.</returns>
-    public float GetVolume(AudioCategory category, float instanceVolume) {
+    public float GetVolume(VolumeCategory category, float instanceVolume) {
         var volume = 0f;
 
         if (this.OverallVolume > 0f) {
@@ -152,38 +163,28 @@ public class AudioSettings {
     }
 
     /// <summary>
-    /// Changes the volume given an <see cref="AudioCategory" /> and the amount to change..
-    /// </summary>
-    /// <param name="category">The category</param>
-    /// <param name="amount">The amount to alter the volume.</param>
-    public void ChangeCategoryVolume(AudioCategory category, float amount) {
-        var newVolume = this.GetCategoryVolume(category) + amount;
-        this.SetCategoryVolume(category, newVolume);
-    }
-
-    /// <summary>
     /// Sets the volume for a category. Used when editing sound settings.
     /// </summary>
     /// <param name="category">The category.</param>
     /// <param name="volume">The new volume.</param>
-    public void SetCategoryVolume(AudioCategory category, float volume) {
+    public void SetCategoryVolume(VolumeCategory category, float volume) {
         switch (category) {
-            case AudioCategory.Overall:
+            case VolumeCategory.Overall:
                 this.OverallVolume = volume;
                 break;
-            case AudioCategory.Effect:
+            case VolumeCategory.Effect:
                 this.EffectVolume = volume;
                 break;
-            case AudioCategory.Menu:
+            case VolumeCategory.Menu:
                 this.MenuVolume = volume;
                 break;
-            case AudioCategory.Music:
+            case VolumeCategory.Music:
                 this.MusicVolume = volume;
                 break;
-            case AudioCategory.Notification:
+            case VolumeCategory.Notification:
                 this.NotificationVolume = volume;
                 break;
-            case AudioCategory.Voice:
+            case VolumeCategory.Voice:
                 this.VoiceVolume = volume;
                 break;
         }

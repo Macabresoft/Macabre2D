@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
@@ -17,7 +18,7 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// </summary>
     public static readonly string[] ValidFileExtensions = { ".wav", ".mp3", ".wma" };
 
-    private AudioCategory _category;
+    private VolumeCategory _category;
 
     private float _defaultPan;
     private float _defaultPitch;
@@ -31,7 +32,7 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// Gets or sets the category.
     /// </summary>
     [DataMember(Order = 1)]
-    public AudioCategory Category {
+    public VolumeCategory Category {
         get => this._category;
         set => this.Set(ref this._category, value);
     }
