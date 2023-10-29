@@ -57,6 +57,8 @@ public abstract class BaseSpriteEntity : RenderableEntity {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
+        this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
+
         base.Initialize(scene, parent);
 
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
