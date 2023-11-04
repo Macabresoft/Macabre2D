@@ -275,6 +275,28 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ReinitializeCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Re-initializes this entity" />
+                                    
+                                    <Separator />
+                                    
+                                    <MenuItem Header="Enable All"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.EnableCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Sets IsVisible to 'True' for this entity and all of its descendants" />
+                                    
+                                    <MenuItem Header="Disable All"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.DisableCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Sets IsEnabled to 'False' for this entity and all of its descendants" />
+                                    
+                                    <MenuItem Header="Reveal All"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RevealCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Sets IsVisible to 'True' for this entity and all of its descendants" />
+
+                                    <MenuItem Header="Hide All"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.HideCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Sets IsVisible to 'False' for this entity and all of its descendants" />
                                     <Separator />
 
                                     <MenuItem Header="Add">

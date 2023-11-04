@@ -78,6 +78,10 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
+        this.EnableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, true));
+        this.DisableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, false));
+        this.RevealCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsVisible(x, true));
+        this.HideCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsVisible(x, false));
 
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
@@ -116,14 +120,29 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public ICommand CreatePrefabCommand { get; }
 
     /// <summary>
+    /// Gets a command to disable an entity and its descendants.
+    /// </summary>
+    public ICommand DisableCommand { get; }
+
+    /// <summary>
     /// Gets the editor service.
     /// </summary>
     public IEditorService EditorService { get; }
 
     /// <summary>
+    /// Gets a command to enable an entity and its descendants.
+    /// </summary>
+    public ICommand EnableCommand { get; }
+
+    /// <summary>
     /// Gets the selection service.
     /// </summary>
     public IEntityService EntityService { get; }
+
+    /// <summary>
+    /// Gets a command to hide an entity and its descendants.
+    /// </summary>
+    public ICommand HideCommand { get; }
 
     /// <summary>
     /// Gets or sets a value indicating whether an entity or loop is selected.
@@ -154,6 +173,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets a command for renaming an entity or loop.
     /// </summary>
     public ICommand RenameCommand { get; }
+
+    /// <summary>
+    /// Gets a command to reveal an entity and its descendants.
+    /// </summary>
+    public ICommand RevealCommand { get; }
 
     /// <summary>
     /// Gets the scene service.
@@ -494,6 +518,24 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.SceneService.Selected)) {
             this.RaisePropertyChanged(nameof(this.IsEntityOrLoopSelected));
+        }
+    }
+
+    private void SetIsEnabled(IEntity entity, bool isEnabled) {
+        entity.IsEnabled = isEnabled;
+
+        foreach (var child in entity.GetDescendants<IEnableable>()) {
+            child.IsEnabled = isEnabled;
+        }
+    }
+
+    private void SetIsVisible(IEntity entity, bool isVisible) {
+        if (entity is IRenderableEntity renderable) {
+            renderable.IsVisible = isVisible;
+        }
+
+        foreach (var child in entity.GetDescendants<IRenderableEntity>()) {
+            child.IsVisible = isVisible;
         }
     }
 }
