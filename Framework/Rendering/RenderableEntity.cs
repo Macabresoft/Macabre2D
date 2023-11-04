@@ -20,9 +20,9 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
-    /// Gets a value indicating whether or not this should be rendered when out of bounds.
+    /// Gets or sets a value indicating whether or not this should be rendered when out of bounds.
     /// </summary>
-    bool RenderOutOfBounds { get; }
+    bool RenderOutOfBounds { get; set; }
 
     /// <summary>
     /// Renders this instance.

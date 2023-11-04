@@ -146,10 +146,15 @@ public class RenderLoopTests {
     private class TestRenderable : Entity, IRenderableEntity {
         public event EventHandler BoundingAreaChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
-        public bool IsVisible { get; set; } = true;
         public PixelSnap PixelSnap => PixelSnap.Inherit;
-        public bool RenderOutOfBounds => true;
+        public bool IsVisible { get; set; } = true;
+
         public int RenderCount { get; private set; }
+
+        public bool RenderOutOfBounds {
+            get => true;
+            set { }
+        }
 
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             this.RenderCount++;
