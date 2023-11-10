@@ -24,7 +24,7 @@ public class TextLine : RenderableEntity {
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLine" /> class.
     /// </summary>
-    public TextLine() {
+    public TextLine() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
