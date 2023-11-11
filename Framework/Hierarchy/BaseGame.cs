@@ -20,6 +20,8 @@ public class BaseGame : Game, IGame {
 
     private readonly Stack<IScene> _sceneStack = new();
 
+    private bool _canToggleFullscreen = true;
+
     private double _gameSpeed = 1d;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
@@ -316,6 +318,16 @@ public class BaseGame : Game, IGame {
             if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
                 this.Exit();
             }
+
+            if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.Enter)) {
+                if (this._canToggleFullscreen) {
+                    this.ToggleFullscreen();
+                    this._canToggleFullscreen = false;
+                }
+            }
+            else {
+                this._canToggleFullscreen = true;
+            }
         }
 
         if (this._viewportSize.X != this.GraphicsDevice.Viewport.Width || this._viewportSize.Y != this.GraphicsDevice.Viewport.Height) {
@@ -333,6 +345,11 @@ public class BaseGame : Game, IGame {
     /// </summary>
     protected virtual void UpdateInputState() {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
+    }
+
+    private void ToggleFullscreen() {
+        this.DisplaySettings.DisplayMode = this.DisplaySettings.DisplayMode == DisplayModes.Windowed ? DisplayModes.Borderless : DisplayModes.Windowed;
+        this.SaveAndApplyUserSettings();
     }
 
     private sealed class EmptyGame : IGame {
