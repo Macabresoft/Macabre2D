@@ -35,14 +35,14 @@ public interface IGame {
     IScene CurrentScene { get; }
 
     /// <summary>
-    /// Gets the graphics device.
-    /// </summary>
-    GraphicsDevice? GraphicsDevice { get; }
-
-    /// <summary>
     /// Gets the graphics settings.
     /// </summary>
     DisplaySettings DisplaySettings { get; }
+
+    /// <summary>
+    /// Gets the graphics device.
+    /// </summary>
+    GraphicsDevice? GraphicsDevice { get; }
 
     /// <summary>
     /// Gets the input bindings.
@@ -84,6 +84,12 @@ public interface IGame {
     /// Gets or sets the game speed.
     /// </summary>
     double GameSpeed { get; set; }
+
+    /// <summary>
+    /// Applies the display settings.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The provided display mode is unsupported.</exception>
+    void ApplyDisplaySettings();
 
     /// <summary>
     /// Exits the game.

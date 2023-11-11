@@ -133,6 +133,39 @@ public class BaseGame : Game, IGame {
     /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
     protected bool IsInitialized { get; private set; }
 
+    /// <inheitdoc />
+    public void ApplyDisplaySettings() {
+        if (this.DisplaySettings.DisplayMode == DisplayModes.Borderless) {
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            this.Window.IsBorderless = true;
+            this.GraphicsDeviceManager.IsFullScreen = false;
+        }
+        else {
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.DisplaySettings.Resolution.X;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.DisplaySettings.Resolution.Y;
+
+            switch (this.DisplaySettings.DisplayMode) {
+                case DisplayModes.Fullscreen:
+                    this.Window.IsBorderless = false;
+                    this.GraphicsDeviceManager.IsFullScreen = true;
+                    break;
+                case DisplayModes.Windowed:
+                    this.Window.IsBorderless = false;
+                    this.GraphicsDeviceManager.IsFullScreen = false;
+                    break;
+                case DisplayModes.Borderless:
+                    this.Window.IsBorderless = true;
+                    this.GraphicsDeviceManager.IsFullScreen = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        this.GraphicsDeviceManager.ApplyChanges();
+    }
+
     /// <inheritdoc />
     public void LoadScene(string sceneName) {
         var assetManager = this.CreateAssetManager();
@@ -300,38 +333,6 @@ public class BaseGame : Game, IGame {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
     }
 
-    private void ApplyDisplaySettings() {
-        if (this.DisplaySettings.DisplayMode == DisplayModes.Borderless) {
-            this.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            this.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            this.Window.IsBorderless = true;
-            this.GraphicsDeviceManager.IsFullScreen = false;
-        }
-        else {
-            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.DisplaySettings.Resolution.X;
-            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.DisplaySettings.Resolution.Y;
-
-            switch (this.DisplaySettings.DisplayMode) {
-                case DisplayModes.Fullscreen:
-                    this.Window.IsBorderless = false;
-                    this.GraphicsDeviceManager.IsFullScreen = true;
-                    break;
-                case DisplayModes.Windowed:
-                    this.Window.IsBorderless = false;
-                    this.GraphicsDeviceManager.IsFullScreen = false;
-                    break;
-                case DisplayModes.Borderless:
-                    this.Window.IsBorderless = true;
-                    this.GraphicsDeviceManager.IsFullScreen = true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        this.GraphicsDeviceManager.ApplyChanges();
-    }
-
     private sealed class EmptyGame : IGame {
         public event EventHandler<double>? GameSpeedChanged;
 
@@ -367,6 +368,9 @@ public class BaseGame : Game, IGame {
 
                 this.GameSpeedChanged.SafeInvoke(this, 1f);
             }
+        }
+
+        public void ApplyDisplaySettings() {
         }
 
         public void Exit() {
