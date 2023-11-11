@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -30,12 +31,6 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     Layers LayersToExcludeFromRender { get; }
 
     /// <summary>
-    /// Gets the layers to render.
-    /// </summary>
-    /// <value>The layers to render.</value>
-    Layers LayersToRender { get; set;  }
-
-    /// <summary>
     /// Gets the offset options.
     /// </summary>
     /// <value>The offset options.</value>
@@ -51,6 +46,12 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// Gets the view width.
     /// </summary>
     float ViewWidth { get; }
+
+    /// <summary>
+    /// Gets the layers to render.
+    /// </summary>
+    /// <value>The layers to render.</value>
+    Layers LayersToRender { get; set; }
 
     /// <summary>
     /// Gets or sets the view height of the camera in world units (not screen pixels).
@@ -214,6 +215,9 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
+        this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
+        this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
+
         base.Initialize(scene, parent);
 
         this.OffsetOptions.Initialize(this.CreateSize);
@@ -308,9 +312,9 @@ public class Camera : Entity, ICamera {
     /// This will also be called during initialization.
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
+        this.CalculateActualViewHeight();
         this._boundingArea.Reset();
         this._viewWidth.Reset();
-        this.CalculateActualViewHeight();
         this.BoundingAreaChanged.SafeInvoke(this);
     }
 
@@ -340,6 +344,9 @@ public class Camera : Entity, ICamera {
         Layers layersToRender,
         Layers layersToExclude,
         ColorOverride colorOverride) {
+        
+        Debug.WriteLine(this.ActualViewHeight);
+        
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
@@ -439,9 +446,7 @@ public class Camera : Entity, ICamera {
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OffsetOptions.InvalidateSize();
-        this.CalculateActualViewHeight();
         this.OnScreenAreaChanged();
-        this._viewWidth.Reset();
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

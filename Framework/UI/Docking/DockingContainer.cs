@@ -137,8 +137,7 @@ public class DockingContainer : DockablePanel, IDockingContainer {
 
     private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {
         if (this.InheritParentBoundingArea) {
-            this.InvokeBoundingAreaChanged();
-            this.RearrangeAll();
+            this.PerformReset();
         }
     }
 

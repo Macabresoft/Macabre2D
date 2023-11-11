@@ -164,6 +164,8 @@ public class BaseGame : Game, IGame {
         }
 
         this.GraphicsDeviceManager.ApplyChanges();
+        this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+        this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
     }
 
     /// <inheritdoc />
