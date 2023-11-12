@@ -137,31 +137,25 @@ public class BaseGame : Game, IGame {
 
     /// <inheitdoc />
     public void ApplyDisplaySettings() {
-        if (this.DisplaySettings.DisplayMode == DisplayModes.Borderless) {
+        if (this.DisplaySettings.DisplayMode == DisplayMode.Borderless) {
             this.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             this.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             this.Window.IsBorderless = true;
             this.GraphicsDeviceManager.IsFullScreen = false;
         }
         else {
-            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.DisplaySettings.Resolution.X;
-            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.DisplaySettings.Resolution.Y;
+            var verticalPixels = (int)Math.Ceiling(this.Project.CommonViewHeight * this.Project.PixelsPerUnit);
+            var resolution = this.DisplaySettings.GetResolution(verticalPixels);
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = resolution.X;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Y;
 
-            switch (this.DisplaySettings.DisplayMode) {
-                case DisplayModes.Fullscreen:
-                    this.Window.IsBorderless = false;
-                    this.GraphicsDeviceManager.IsFullScreen = true;
-                    break;
-                case DisplayModes.Windowed:
-                    this.Window.IsBorderless = false;
-                    this.GraphicsDeviceManager.IsFullScreen = false;
-                    break;
-                case DisplayModes.Borderless:
-                    this.Window.IsBorderless = true;
-                    this.GraphicsDeviceManager.IsFullScreen = true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+            if (this.DisplaySettings.DisplayMode == DisplayMode.Windowed) {
+                this.Window.IsBorderless = false;
+                this.GraphicsDeviceManager.IsFullScreen = false;
+            }
+            else {
+                this.Window.IsBorderless = false;
+                this.GraphicsDeviceManager.IsFullScreen = true;
             }
         }
 
@@ -348,7 +342,7 @@ public class BaseGame : Game, IGame {
     }
 
     private void ToggleFullscreen() {
-        this.DisplaySettings.DisplayMode = this.DisplaySettings.DisplayMode == DisplayModes.Windowed ? DisplayModes.Borderless : DisplayModes.Windowed;
+        this.DisplaySettings.DisplayMode = this.DisplaySettings.DisplayMode == DisplayMode.Windowed ? DisplayMode.Borderless : DisplayMode.Windowed;
         this.SaveAndApplyUserSettings();
     }
 
