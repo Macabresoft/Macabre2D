@@ -90,6 +90,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public InputDisplay InputDisplayStyle { get; private set; }
+
+    /// <inheritdoc />
     public InputState InputState { get; protected set; }
 
     /// <summary>
@@ -132,7 +135,6 @@ public class BaseGame : Game, IGame {
     /// <summary>
     /// Gets a value indicating whether this instance is initialized.
     /// </summary>
-    /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
     protected bool IsInitialized { get; private set; }
 
     /// <inheitdoc />
@@ -263,7 +265,15 @@ public class BaseGame : Game, IGame {
             }
         }
 
+        if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
+            var gamePadState = GamePad.GetState(PlayerIndex.One);
+            this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.MGamePad : InputDisplay.Keyboard;
+        }
+        else {
+            this.InputDisplayStyle = this.InputBindings.DisplayStyle;
+        }
 
+        this.InputDisplayStyle = this.InputBindings.DisplayStyle == InputDisplay.Auto ? InputDisplay.MGamePad : this.InputBindings.DisplayStyle;
         this.IsInitialized = true;
     }
 
@@ -339,6 +349,15 @@ public class BaseGame : Game, IGame {
     /// </summary>
     protected virtual void UpdateInputState() {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
+
+        if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
+            if (this.InputState.CurrentGamePadState.IsConnected && this.InputState.CurrentGamePadState.Buttons.GetHashCode() != 0) {
+                this.InputDisplayStyle = InputDisplay.MGamePad;
+            }
+            else if (this.InputState.CurrentKeyboardState.GetPressedKeyCount() > 0) {
+                this.InputDisplayStyle = InputDisplay.Keyboard;
+            }
+        }
     }
 
     private void ToggleFullscreen() {
@@ -348,9 +367,7 @@ public class BaseGame : Game, IGame {
 
     private sealed class EmptyGame : IGame {
         public event EventHandler<double>? GameSpeedChanged;
-
         public event EventHandler<Point>? ViewportSizeChanged;
-
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
 
@@ -361,6 +378,7 @@ public class BaseGame : Game, IGame {
         public GraphicsDevice? GraphicsDevice => null;
 
         public InputBindings InputBindings => this.UserSettings.Input;
+        public InputDisplay InputDisplayStyle => InputDisplay.MGamePad;
 
         public IGameProject Project { get; } = new GameProject();
 

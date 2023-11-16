@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -344,9 +343,6 @@ public class Camera : Entity, ICamera {
         Layers layersToRender,
         Layers layersToExclude,
         ColorOverride colorOverride) {
-        
-        Debug.WriteLine(this.ActualViewHeight);
-        
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)

@@ -39,6 +39,12 @@ public class InputBindings {
     }
 
     /// <summary>
+    /// Gets or sets the way to display input prompts.
+    /// </summary>
+    [DataMember]
+    public InputDisplay DisplayStyle { get; set; } = InputDisplay.Auto;
+
+    /// <summary>
     /// Gets or sets a value indicating whether or not the mouse is enabled.
     /// </summary>
     [DataMember]

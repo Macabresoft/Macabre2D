@@ -50,6 +50,11 @@ public interface IGame {
     InputBindings InputBindings { get; }
 
     /// <summary>
+    /// Gets the way input should be displayed.
+    /// </summary>
+    InputDisplay InputDisplayStyle { get; }
+
+    /// <summary>
     /// Gets the state of input.
     /// </summary>
     InputState InputState => new();
