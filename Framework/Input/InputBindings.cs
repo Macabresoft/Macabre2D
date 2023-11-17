@@ -12,11 +12,6 @@ using Newtonsoft.Json;
 /// </summary>
 [DataContract]
 public class InputBindings {
-    /// <summary>
-    /// The settings file name.
-    /// </summary>
-    public const string SettingsFileName = "InputBindings.m2d";
-
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Buttons> _gamePadBindings = new();
 
