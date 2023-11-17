@@ -13,6 +13,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IGameProject : INotifyPropertyChanged {
     /// <summary>
+    /// Gets any additional configuration specific to a project.
+    /// </summary>
+    ProjectConfiguration AdditionalConfiguration { get; }
+
+    /// <summary>
     /// Gets all layers available in this project as a single enum.
     /// </summary>
     Layers AllLayers { get; }
@@ -85,11 +90,6 @@ public interface IGameProject : INotifyPropertyChanged {
 [Category(CommonCategories.Miscellaneous)]
 public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <summary>
-    /// Gets an empty game project.
-    /// </summary>
-    public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
-    
-    /// <summary>
     /// The default project name.
     /// </summary>
     public const string DefaultProjectName = "Project";
@@ -103,6 +103,11 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// The project file name.
     /// </summary>
     public const string ProjectFileName = DefaultProjectName + ProjectFileExtension;
+
+    /// <summary>
+    /// Gets an empty game project.
+    /// </summary>
+    public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
 
     private float _commonViewHeight = 10f;
     private ushort _pixelsPerUnit = 32;
@@ -125,14 +130,16 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     }
 
     /// <inheritdoc />
+    [DataMember]
+    public ProjectConfiguration AdditionalConfiguration { get; } = new();
+
+    /// <inheritdoc />
     public Layers AllLayers { get; }
 
-    /// <summary>
-    /// Gets the default user settings.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
-    
+
     /// <inheritdoc />
     [DataMember]
     public float CommonViewHeight {
