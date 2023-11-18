@@ -24,7 +24,7 @@ public class BaseGame : Game, IGame {
 
     private double _gameSpeed = 1d;
 
-    private InputDisplay _inputDisplayStyle;
+    private InputDisplay _inputDisplayStyle = InputDisplay.Auto;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
     private Point _viewportSize;
@@ -264,7 +264,6 @@ public class BaseGame : Game, IGame {
         base.Initialize();
 
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         if (IsDesignMode) {
             this.UserSettings = new UserSettings(this.Project);
@@ -276,17 +275,17 @@ public class BaseGame : Game, IGame {
             else {
                 this.UserSettings = new UserSettings(this.Project);
             }
+            
+            if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
+                var gamePadState = GamePad.GetState(PlayerIndex.One);
+                this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.MGamePad : InputDisplay.Keyboard;
+            }
+            else {
+                this.InputDisplayStyle = this.InputBindings.DisplayStyle;
+            }
         }
-
-        if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
-            var gamePadState = GamePad.GetState(PlayerIndex.One);
-            this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.MGamePad : InputDisplay.Keyboard;
-        }
-        else {
-            this.InputDisplayStyle = this.InputBindings.DisplayStyle;
-        }
-
-        this.InputDisplayStyle = this.InputBindings.DisplayStyle == InputDisplay.Auto ? InputDisplay.MGamePad : this.InputBindings.DisplayStyle;
+        
+        this.CurrentScene.Initialize(this, this.CreateAssetManager());
         this.IsInitialized = true;
     }
 
