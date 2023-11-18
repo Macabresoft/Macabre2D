@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
@@ -60,11 +59,7 @@ public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<Spri
 
         this.Sprite = null;
         this.MaxIndex = 0;
-
-        if (this.Bitmap != null && this.Value is { Asset: { } spriteSheet } reference) {
-            this.MaxIndex = spriteSheet.MaxIndex;
-            this.Sprite = new SpriteDisplayModel(this.Bitmap, reference.SpriteIndex, reference.Asset);
-        }
+        this.ResetSpriteDisplay();
     }
 
     protected override async Task Select() {
@@ -77,6 +72,7 @@ public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<Spri
                 {
                     this.Value.SpriteIndex = spriteIndex;
                     this.Value.LoadAsset(spriteSheet);
+                    this.ResetPath();
                 },
                 () =>
                 {
@@ -87,6 +83,8 @@ public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<Spri
                     else {
                         this.Value.Clear();
                     }
+
+                    this.ResetPath();
                 });
         }
     }
@@ -96,8 +94,23 @@ public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<Spri
             var oldValue = (byte)e.OldValue.Value;
             var newValue = (byte)e.NewValue.Value;
             if (oldValue != newValue && this.Value.SpriteIndex != newValue) {
-                this.UndoService.Do(() => { this.Value.SpriteIndex = newValue; }, () => { this.Value.SpriteIndex = oldValue; });
+                this.UndoService.Do(() =>
+                {
+                    this.Value.SpriteIndex = newValue;
+                    this.ResetSpriteDisplay();
+                }, () =>
+                {
+                    this.Value.SpriteIndex = oldValue;
+                    this.ResetSpriteDisplay();
+                });
             }
+        }
+    }
+
+    private void ResetSpriteDisplay() {
+        if (this.Bitmap != null && this.Value is { Asset: { } spriteSheet } reference) {
+            this.MaxIndex = spriteSheet.MaxIndex;
+            this.Sprite = new SpriteDisplayModel(this.Bitmap, reference.SpriteIndex, reference.Asset);
         }
     }
 }
