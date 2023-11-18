@@ -85,7 +85,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         var result = new List<IValueControl>();
         var editableObjectType = owner.GetType();
         var members = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute))
-            .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<EditorExcludeAttribute>() == null);
+            .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<BrowsableAttribute>() is not { Browsable: false } );
 
         var membersWithAttributes = members
             .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))

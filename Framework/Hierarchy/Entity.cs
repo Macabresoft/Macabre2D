@@ -191,7 +191,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     [DataMember]
-    [EditorExclude]
+    [Browsable(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <inheritdoc />

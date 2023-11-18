@@ -79,7 +79,7 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
 
     /// <inheritdoc />
     [DataMember]
-    [EditorExclude]
+    [Browsable(false)]
     public Guid ContentId { get; private set; }
 
     /// <inheritdoc />

@@ -72,6 +72,6 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
 
     /// <inheritdoc />
     [DataMember]
-    [EditorExclude]
+    [Browsable(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 }
