@@ -15,6 +15,11 @@ public interface IGame {
     event EventHandler<double> GameSpeedChanged;
 
     /// <summary>
+    /// Occurs when the input display has changed.
+    /// </summary>
+    event EventHandler<InputDisplay> InputDisplayChanged;
+
+    /// <summary>
     /// Occurs when the viewport changes.
     /// </summary>
     event EventHandler<Point> ViewportSizeChanged;

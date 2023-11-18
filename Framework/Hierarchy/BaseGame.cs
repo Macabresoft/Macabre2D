@@ -23,12 +23,17 @@ public class BaseGame : Game, IGame {
     private bool _canToggleFullscreen = true;
 
     private double _gameSpeed = 1d;
+
+    private InputDisplay _inputDisplayStyle;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
     private Point _viewportSize;
 
     /// <inheritdoc />
     public event EventHandler<double>? GameSpeedChanged;
+
+    /// <inheritdoc />
+    public event EventHandler<InputDisplay>? InputDisplayChanged;
 
     /// <inheritdoc />
     public event EventHandler<Point>? ViewportSizeChanged;
@@ -90,7 +95,15 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public InputDisplay InputDisplayStyle { get; private set; }
+    public InputDisplay InputDisplayStyle {
+        get => this._inputDisplayStyle;
+        private set {
+            if (value != this._inputDisplayStyle) {
+                this._inputDisplayStyle = value;
+                this.InputDisplayChanged.SafeInvoke(this, this._inputDisplayStyle);
+            }
+        }
+    }
 
     /// <inheritdoc />
     public InputState InputState { get; protected set; }
@@ -358,6 +371,9 @@ public class BaseGame : Game, IGame {
                 this.InputDisplayStyle = InputDisplay.Keyboard;
             }
         }
+        else {
+            this.InputDisplayStyle = this.InputBindings.DisplayStyle;
+        }
     }
 
     private void ToggleFullscreen() {
@@ -367,6 +383,7 @@ public class BaseGame : Game, IGame {
 
     private sealed class EmptyGame : IGame {
         public event EventHandler<double>? GameSpeedChanged;
+        public event EventHandler<InputDisplay>? InputDisplayChanged;
         public event EventHandler<Point>? ViewportSizeChanged;
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
@@ -417,9 +434,6 @@ public class BaseGame : Game, IGame {
         }
 
         public void SaveAndApplyUserSettings() {
-        }
-
-        public void SaveInputBindings() {
         }
 
         public void SaveUserSettings() {
