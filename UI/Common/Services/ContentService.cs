@@ -180,7 +180,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             prefab.AddChild(prefabChild);
 
             var result = await this._dialogService.OpenAssetSelectionDialog(typeof(PrefabAsset), true);
-            var parent = result as IContentDirectory ?? result.Parent;
+            var parent = result as IContentDirectory ?? result?.Parent;
 
             if (parent != null) {
                 var fileName = result is IContentDirectory ? $"{this.CreateSafeName(prefab.Name, parent)}{PrefabAsset.FileExtension}" : result.Name;
