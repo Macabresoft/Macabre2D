@@ -46,9 +46,9 @@ public class OffsetOptions : PropertyChangedNotifier {
     /// Gets or sets the offset amount. This size is in pixels.
     /// </summary>
     /// <remarks>
-    /// The reason this is in pixels is because if <see cref="GameSettings.PixelsPerUnit" />
+    /// The reason this is in pixels is because if <see cref="GameProject.PixelsPerUnit" />
     /// changes, a pixel value for offset will still be valid. Otherwise this would need to
-    /// reset every time <see cref="GameSettings.PixelsPerUnit" /> changes, which is not
+    /// reset every time <see cref="GameProject.PixelsPerUnit" /> changes, which is not
     /// something the engine really handles. We allow this pixel value to be a <see cref="float" />
     /// because it provides further granularity when converting it to engine units.
     /// </remarks>
@@ -133,15 +133,17 @@ public class OffsetOptions : PropertyChangedNotifier {
     public void Initialize(Func<Vector2> sizeFactory) {
         this._size = new ResettableLazy<Vector2>(sizeFactory);
         this.ResetOffset();
+        this._isInitialized = true;
     }
 
     /// <summary>
     /// Invalidates the size.
     /// </summary>
     public void InvalidateSize() {
-        this._size.Reset();
-        this.ResetOffset();
-        this._isInitialized = true;
+        if (this._isInitialized) {
+            this._size.Reset();
+            this.ResetOffset(); 
+        }
     }
 
     /// <summary>
