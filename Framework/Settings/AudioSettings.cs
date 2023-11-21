@@ -75,7 +75,7 @@ public class AudioSettings {
 
         var overallVolume = this.GetCategoryVolume(VolumeCategory.Overall);
         if (overallVolume > 0f) {
-            volume = instanceVolume * this.GetCategoryVolume(category) * overallVolume;
+            volume = Math.Clamp(instanceVolume * this.GetCategoryVolume(category) * overallVolume, 0f, 1f);
         }
 
         return volume;
