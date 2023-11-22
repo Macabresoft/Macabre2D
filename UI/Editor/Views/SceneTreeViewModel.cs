@@ -522,20 +522,40 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void SetIsEnabled(IEntity entity, bool isEnabled) {
-        entity.IsEnabled = isEnabled;
+        var entityToIsEnabled = new List<(IEnableable Entity, bool IsEnabled)> { (entity, entity.IsEnabled) };
+        entityToIsEnabled.AddRange(entity.GetDescendants<IEnableable>().Select(child => (child, child.IsEnabled)));
 
-        foreach (var child in entity.GetDescendants<IEnableable>()) {
-            child.IsEnabled = isEnabled;
-        }
+        this._undoService.Do(() =>
+        {
+            foreach (var entry in entityToIsEnabled) {
+                entry.Entity.IsEnabled = isEnabled;
+            }
+        }, () =>
+        {
+            foreach (var entry in entityToIsEnabled) {
+                entry.Entity.IsEnabled = entry.IsEnabled;
+            }
+        });
     }
 
     private void SetIsVisible(IEntity entity, bool isVisible) {
+        var entityToIsVisible = new List<(IRenderableEntity Entity, bool IsVisible)>();
         if (entity is IRenderableEntity renderable) {
-            renderable.IsVisible = isVisible;
+            entityToIsVisible.Add((renderable, renderable.IsVisible));
         }
 
-        foreach (var child in entity.GetDescendants<IRenderableEntity>()) {
-            child.IsVisible = isVisible;
-        }
+        entityToIsVisible.AddRange(entity.GetDescendants<IRenderableEntity>().Select(child => (child, child.IsVisible)));
+
+        this._undoService.Do(() =>
+        {
+            foreach (var entry in entityToIsVisible) {
+                entry.Entity.IsVisible = isVisible;
+            }
+        }, () =>
+        {
+            foreach (var entry in entityToIsVisible) {
+                entry.Entity.IsVisible = entry.IsVisible;
+            }
+        });
     }
 }
