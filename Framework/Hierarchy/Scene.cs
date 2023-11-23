@@ -370,11 +370,12 @@ public sealed class Scene : GridContainer, IScene {
                 this.IsActive = true;
                 this.Assets = assetManager;
                 this._game = game;
-                this.Initialize(this, this);
-
+                
                 foreach (var loop in this.Loops) {
                     loop.Initialize(this);
                 }
+                
+                this.Initialize(this, this);
             }
             finally {
                 this._isInitialized = true;
