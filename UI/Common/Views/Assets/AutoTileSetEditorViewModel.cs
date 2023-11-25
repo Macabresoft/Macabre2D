@@ -83,7 +83,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     public SpriteDisplayModel SelectedSprite {
         get => this._selectedSprite;
         set {
-            if (this._selectedTile is AutoTileIndexModel selectedTile) {
+            if (this._selectedTile is { } selectedTile) {
                 var previousSprite = this._selectedSprite;
                 this._undoService.Do(() =>
                 {
@@ -146,7 +146,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     private bool CanPerformAutoLayout { get; }
 
     private void ClearSprite() {
-        if (this.SelectedTile is { SpriteIndex: { } }) {
+        if (this.SelectedTile is { SpriteIndex: not null }) {
             this.SelectedSprite = null;
         }
     }
