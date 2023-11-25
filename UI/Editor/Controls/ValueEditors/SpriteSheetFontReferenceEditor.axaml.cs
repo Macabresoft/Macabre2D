@@ -5,8 +5,8 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public partial class SpriteSheetFontEditor : BaseSpriteSheetAssetReferenceEditor<SpriteSheetFontReference, SpriteSheetFont> {
-    public SpriteSheetFontEditor() : this(
+public partial class SpriteSheetFontReferenceEditor : BaseSpriteSheetAssetReferenceEditor<SpriteSheetFontReference, SpriteSheetFont> {
+    public SpriteSheetFontReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ICommonDialogService>(),
@@ -16,7 +16,7 @@ public partial class SpriteSheetFontEditor : BaseSpriteSheetAssetReferenceEditor
     }
 
     [InjectionConstructor]
-    public SpriteSheetFontEditor(
+    public SpriteSheetFontReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ICommonDialogService dialogService,

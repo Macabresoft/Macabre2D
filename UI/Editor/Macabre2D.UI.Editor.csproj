@@ -80,7 +80,7 @@
             <DependentUpon>SceneReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteSheetFontEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\SpriteSheetFontReferenceEditor.axaml.cs">
             <DependentUpon>SpriteSheetFontEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>

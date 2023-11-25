@@ -4,12 +4,12 @@
                                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                                            x:TypeArguments="framework:SpriteSheetFontReference, framework:SpriteSheetFont"
-                                           x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetFontEditor">
+                                           x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetFontReferenceEditor">
     <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
-          DataContext="{Binding $parent[local:SpriteSheetFontEditor]}">
+          DataContext="{Binding $parent[local:SpriteSheetFontReferenceEditor]}">
         <Design.DataContext>
-            <local:SpriteSheetFontEditor />
+            <local:SpriteSheetFontReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
