@@ -13,7 +13,7 @@ using Avalonia.Data.Converters;
 public class SpriteIndexToBitmapConverter : IMultiValueConverter {
     /// <inheritdoc />
     public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
-        if (values.OfType<SpriteDisplayCollection>().FirstOrDefault() is SpriteDisplayCollection collection &&
+        if (values.OfType<SpriteDisplayCollection>().FirstOrDefault() is { } collection &&
             values.OfType<byte?>().FirstOrDefault() is { } index) {
             return collection.Sprites.FirstOrDefault(x => x.Index == index)?.Bitmap;
         }

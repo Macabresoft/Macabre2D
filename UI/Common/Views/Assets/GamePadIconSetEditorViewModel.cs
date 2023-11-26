@@ -1,10 +1,11 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Views.Assets;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
+using DynamicData;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -21,13 +22,13 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
     /// </summary>
     public GamePadIconSetEditorViewModel() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
     /// </summary>
     /// <param name="undoService">The parent undo service.</param>
     /// <param name="iconSet">The icon set being edited.</param>
@@ -46,7 +47,8 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
         this.SelectTileCommand = ReactiveCommand.Create<GamePadIconIndexModel>(this.SelectIcon);
         this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
-        var buttons = Enum.GetValues<Buttons>();
+        var buttons = Enum.GetValues<Buttons>().ToList();
+        buttons.Remove(Buttons.None);
         var icons = buttons.Select(button => new GamePadIconIndexModel(iconSet, button)).ToList();
         this.Icons = icons;
         this.SelectedIcon = this.Icons.First();

@@ -24,13 +24,13 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetFontEditorViewModel" /> class.
     /// </summary>
     public SpriteSheetFontEditorViewModel() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetFontEditorViewModel" /> class.
     /// </summary>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="undoService">The parent undo service.</param>

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// Defines the way to display input prompts.
@@ -6,7 +6,7 @@
 public enum InputDisplay {
     Auto,
     Keyboard,
-    MGamePad,
-    NGamePad,
-    SGamePad
+    GamePadX,
+    GamePadN,
+    GamePadS
 }

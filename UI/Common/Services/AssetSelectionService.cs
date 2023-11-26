@@ -70,12 +70,6 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
-    public Control AssetEditor {
-        get => this._assetEditor;
-        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
-    }
-
-    /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> Editors {
         get {
             return this._selected switch {
@@ -84,6 +78,12 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 _ => null
             };
         }
+    }
+
+    /// <inheritdoc />
+    public Control AssetEditor {
+        get => this._assetEditor;
+        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }
 
     /// <inheritdoc />
@@ -119,7 +119,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+        if (sender is IValueEditor { Owner: not null } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
             var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
             var newValue = e.UpdatedValue;
 
@@ -150,6 +150,10 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     SpriteSheetFont font => this._container.Resolve<SpriteSheetFontEditorView>(
                         new ParameterOverride(typeof(SpriteSheetFont), font),
+                        new ParameterOverride(typeof(ContentFile), contentFile)),
+                    GamePadIconSet gamePadIconSet => this._container.Resolve<GamePadIconSetEditorView>(
+                        new ParameterOverride(typeof(GamePadIconSet), gamePadIconSet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     _ => null
                 };

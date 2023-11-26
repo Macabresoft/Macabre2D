@@ -18,6 +18,7 @@ public class SpriteSheetContentFile : ContentFile<SpriteSheet> {
         this._children.Add(this.TypedAsset.AutoTileSets);
         this._children.Add(this.TypedAsset.SpriteAnimations);
         this._children.Add(this.TypedAsset.Fonts);
+        this._children.Add(this.TypedAsset.GamePadIconSets);
     }
 
     /// <summary>

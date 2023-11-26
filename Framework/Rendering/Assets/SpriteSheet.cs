@@ -37,7 +37,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
 
     [DataMember]
     [Category("Game Pad Icon Sets")]
-    private GamePadIconSetsCollection _gamePadIconSets = new();
+    private GamePadIconSetCollection _gamePadIconSets = new();
 
     private byte _rows = 1;
 
@@ -74,7 +74,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <summary>
     /// Gets the game pad icon sets.
     /// </summary>
-    public GamePadIconSetsCollection GamePadIconSets => this._gamePadIconSets;
+    public GamePadIconSetCollection GamePadIconSets => this._gamePadIconSets;
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;

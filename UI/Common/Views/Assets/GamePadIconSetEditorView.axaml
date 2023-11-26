@@ -1,8 +1,89 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Macabresoft.Macabre2D.UI.Common.Views.Assets.GamePadIconSetEditorView">
-    <!-- TODO: make it kinda like the font or tile set editor -->
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             x:Class="Macabresoft.Macabre2D.UI.Common.GamePadIconSetEditorView"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Top">
+    <Design.DataContext>
+        <local:GamePadIconSetEditorViewModel />
+    </Design.DataContext>
+    <UserControl.Resources>
+        <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, *"
+          ColumnDefinitions="*, Auto, *"
+          Margin="{StaticResource StandardMarginAll}">
+
+        <StackPanel Grid.Row="0"
+                    Grid.Column="0"
+                    Orientation="Horizontal">
+            <Button Classes="Icon"
+                    Margin="{StaticResource StandardMarginAll}"
+                    Command="{Binding ClearSpriteCommand}"
+                    ToolTip.Tip="Clear the selected tile's sprite assignment">
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+        </StackPanel>
+
+        <local:ThumbnailSizeToggle Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   SelectedSize="{Binding SelectedThumbnailSize}" />
+
+        <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 MinWidth="512"
+                 ItemsSource="{Binding Icons}"
+                 SelectedItem="{Binding SelectedIcon}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="64"
+                            Height="64"
+                            Classes="Preview"
+                          ToolTip.Tip="{Binding Key}">
+                        <Grid>
+                            <Image Stretch="Fill"
+                                   HorizontalAlignment="Right"
+                                   ToolTip.Tip="{Binding Key}">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
+                                        <Binding Path="SpriteIndex" />
+                                        <Binding Path="$parent[local:GamePadIconSetEditorView].DataContext.SpriteCollection" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                            
+                            <TextBlock HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       TextWrapping="Wrap"
+                                       Text="{Binding Key}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip.Tip="{Binding Key}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      Classes="CardSplitter" />
+
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="2"
+                      VerticalAlignment="Top"
+                      VerticalContentAlignment="Top"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible">
+            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                  SelectedSprite="{Binding SelectedSprite}"
+                                                  ThumbnailSize="{Binding SelectedThumbnailSize}" />
+        </ScrollViewer>
+    </Grid>
 </UserControl>

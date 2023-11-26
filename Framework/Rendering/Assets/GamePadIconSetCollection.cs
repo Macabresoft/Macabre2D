@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 [Category("Game Pad Icon Sets")]
-public class GamePadIconSetsCollection : NameableCollection<GamePadIconSet> {
+public class GamePadIconSetCollection : NameableCollection<GamePadIconSet> {
     /// <inheritdoc />
     public override string Name => "Game Pad Icon Sets";
 }

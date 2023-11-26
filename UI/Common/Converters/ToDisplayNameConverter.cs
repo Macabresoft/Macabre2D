@@ -15,13 +15,7 @@ public class ToDisplayNameConverter : IValueConverter {
     /// <summary>
     /// A static instance of this converter.
     /// </summary>
-    public static readonly ToDisplayNameConverter Instance = new(Resolver.Resolve<IProjectService>());
-
-    private readonly IProjectService _projectService;
-
-    private ToDisplayNameConverter(IProjectService projectService) {
-        this._projectService = projectService;
-    }
+    public static readonly ToDisplayNameConverter Instance = new();
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

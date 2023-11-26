@@ -211,6 +211,16 @@ public class ProjectTreeViewModel : BaseViewModel {
             () => { fonts.Remove(font); });
     }
 
+    private void AddGamePadIconSet(GamePadIconSetCollection iconSets) {
+        var iconSet = new GamePadIconSet {
+            Name = GamePadIconSet.DefaultName
+        };
+
+        this._undoService.Do(
+            () => { iconSets.Add(iconSet); },
+            () => { iconSets.Remove(iconSet); });
+    }
+
     private void AddNode(object parent) {
         switch (parent) {
             case IContentDirectory directory:
@@ -225,6 +235,9 @@ public class ProjectTreeViewModel : BaseViewModel {
             case SpriteSheetFontCollection fonts:
                 this.AddFont(fonts);
                 break;
+            case GamePadIconSetCollection gamePadIconSets:
+                this.AddGamePadIconSet(gamePadIconSets);
+                break;
             case AutoTileSet { SpriteSheet: { AutoTileSets: { } tileSets } }:
                 this.AddTileSet(tileSets);
                 break;
@@ -233,6 +246,9 @@ public class ProjectTreeViewModel : BaseViewModel {
                 break;
             case SpriteSheetFont { SpriteSheet: { Fonts: { } fonts } }:
                 this.AddFont(fonts);
+                break;
+            case GamePadIconSet { SpriteSheet: { GamePadIconSets: { } gamePadIconSets } }:
+                this.AddGamePadIconSet(gamePadIconSets);
                 break;
         }
     }
@@ -254,7 +270,7 @@ public class ProjectTreeViewModel : BaseViewModel {
     }
 
     private static bool CanAddNode(object parent) {
-        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or SpriteSheetMember;
+        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or SpriteSheetMember;
     }
 
     private bool CanClone(object selected) {
@@ -280,6 +296,10 @@ public class ProjectTreeViewModel : BaseViewModel {
                     maxIndex = spriteSheet.Fonts.Count - 1;
                     index = spriteSheet.Fonts.IndexOf(font);
                     break;
+                case GamePadIconSet gamePadIconSet:
+                    maxIndex = spriteSheet.GamePadIconSets.Count - 1;
+                    index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
+                    break;
             }
 
             result = index != 0 && index < maxIndex;
@@ -296,6 +316,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                 SpriteAnimation animation => spriteSheet.SpriteAnimations.IndexOf(animation),
                 AutoTileSet tileSet => spriteSheet.AutoTileSets.IndexOf(tileSet),
                 SpriteSheetFont font => spriteSheet.Fonts.IndexOf(font),
+                GamePadIconSet iconSet => spriteSheet.GamePadIconSets.IndexOf(iconSet),
                 _ => 0
             };
 
@@ -409,6 +430,22 @@ public class ProjectTreeViewModel : BaseViewModel {
                     });
                 }
             }
+            else if (selected is GamePadIconSet gamePadIconSet) {
+                var index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
+                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
+                        spriteSheet.GamePadIconSets.Insert(index + 1, gamePadIconSet);
+                        this.AssetSelectionService.Selected = gamePadIconSet;
+                    }, () =>
+                    {
+                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
+                        spriteSheet.GamePadIconSets.Insert(index, gamePadIconSet);
+                        this.AssetSelectionService.Selected = gamePadIconSet;
+                    });
+                }
+            }
         }
     }
 
@@ -462,6 +499,22 @@ public class ProjectTreeViewModel : BaseViewModel {
                     });
                 }
             }
+            else if (selected is GamePadIconSet gamePadIconSet) {
+                var index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
+                if (index > 0) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
+                        spriteSheet.GamePadIconSets.Insert(index - 1, gamePadIconSet);
+                        this.AssetSelectionService.Selected = gamePadIconSet;
+                    }, () =>
+                    {
+                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
+                        spriteSheet.GamePadIconSets.Insert(index, gamePadIconSet);
+                        this.AssetSelectionService.Selected = gamePadIconSet;
+                    });
+                }
+            }
         }
     }
 
@@ -491,7 +544,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                 this._fileSystem.DeleteDirectory(directory.GetFullPath());
                 directory.Parent?.RemoveChild(directory);
                 break;
-            case ContentFile { Metadata: { } } file when file.Metadata.ContentId == openSceneMetadataId:
+            case ContentFile { Metadata: not null } file when file.Metadata.ContentId == openSceneMetadataId:
                 this._dialogService.ShowWarningDialog("Cannot Delete", "The currently opened scene cannot be deleted.");
                 break;
             case IContentNode contentNode:
@@ -514,6 +567,11 @@ public class ProjectTreeViewModel : BaseViewModel {
                         var fontIndex = fonts.IndexOf(font);
                         this._undoService.Do(() => fonts.Remove(font),
                             () => fonts.InsertOrAdd(fontIndex, font));
+                        break;
+                    case GamePadIconSet gamePadIconSet when spriteSheet.GamePadIconSets is { } gamePadIconSets:
+                        var gamePadIconSetIndex = gamePadIconSets.IndexOf(gamePadIconSet);
+                        this._undoService.Do(() => gamePadIconSets.Remove(gamePadIconSet),
+                            () => gamePadIconSets.InsertOrAdd(gamePadIconSetIndex, gamePadIconSet));
                         break;
                 }
 

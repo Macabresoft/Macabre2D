@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Views.Assets;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia.Controls;
 using Unity;

@@ -278,7 +278,7 @@ public class BaseGame : Game, IGame {
             
             if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
-                this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.MGamePad : InputDisplay.Keyboard;
+                this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.GamePadX : InputDisplay.Keyboard;
             }
             else {
                 this.InputDisplayStyle = this.InputBindings.DisplayStyle;
@@ -364,7 +364,7 @@ public class BaseGame : Game, IGame {
 
         if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
             if (this.InputState.CurrentGamePadState.IsConnected && this.InputState.CurrentGamePadState.Buttons.GetHashCode() != 0) {
-                this.InputDisplayStyle = InputDisplay.MGamePad;
+                this.InputDisplayStyle = InputDisplay.GamePadX;
             }
             else if (this.InputState.CurrentKeyboardState.GetPressedKeyCount() > 0) {
                 this.InputDisplayStyle = InputDisplay.Keyboard;
@@ -394,7 +394,7 @@ public class BaseGame : Game, IGame {
         public GraphicsDevice? GraphicsDevice => null;
 
         public InputBindings InputBindings => this.UserSettings.Input;
-        public InputDisplay InputDisplayStyle => InputDisplay.MGamePad;
+        public InputDisplay InputDisplayStyle => InputDisplay.GamePadX;
 
         public IGameProject Project { get; } = new GameProject();
 
