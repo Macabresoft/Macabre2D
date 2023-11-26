@@ -195,11 +195,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 var originalMappings = GetCharacterMappings(this._font);
                 var newMappings = GetCharacterMappings(font);
 
-                this._undoService.Do(() => {
-                    this.SetSprites(font.CharacterLayout, font.Kerning, newMappings);
-                }, () => {
-                    this.SetSprites(originalLayout, originalKerning, originalMappings);
-                });
+                this._undoService.Do(() => { this.SetSprites(font.CharacterLayout, font.Kerning, newMappings); }, () => { this.SetSprites(originalLayout, originalKerning, originalMappings); });
             }
         }
     }
@@ -231,14 +227,14 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
             }, () =>
             {
                 foreach (var character in this._font.CharacterLayout) {
-                    this._font.UnsetSprite(character);
+                    this._font.ClearSprite(character);
                 }
 
                 this._font.CharacterLayout = previousLayout;
 
                 foreach (var character in previousCharacters) {
                     if (character.SpriteIndex.HasValue) {
-                        this._font.SetSprite(character.SpriteIndex.Value, character.Character, character.Kerning);
+                        this._font.SetSprite(character.SpriteIndex.Value, character.Key, character.Kerning);
                     }
                 }
 
@@ -260,7 +256,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         this.RaisePropertyChanged(nameof(this.SelectedKerning));
         this.RaisePropertyChanged(nameof(this.Kerning));
         this.RaisePropertyChanged(nameof(this.PerformAutoLayout));
-        
+
         this._characters.Reset(this.CreateCharacterModels());
     }
 }

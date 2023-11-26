@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// A set of icons corresponding to game pad <see cref="Buttons" />.
 /// </summary>
-public class GamePadIconSet : SpriteSheetMember {
+public class GamePadIconSet : SpriteSheetKeyedMember<Buttons> {
     /// <summary>
     /// The default name.
     /// </summary>
@@ -18,11 +18,19 @@ public class GamePadIconSet : SpriteSheetMember {
     private readonly Dictionary<Buttons, byte> _buttonToIndex = new();
 
     /// <summary>
+    /// Removes the sprite index assigned to a button.
+    /// </summary>
+    /// <param name="buttons">The button.</param>
+    public override void ClearSprite(Buttons buttons) {
+        this._buttonToIndex.Remove(buttons);
+    }
+
+    /// <summary>
     /// Sets the sprite for a button.
     /// </summary>
     /// <param name="spriteIndex">The sprite index.</param>
     /// <param name="button">The button.</param>
-    public void SetSprite(byte spriteIndex, Buttons button) {
+    public override void SetSprite(byte spriteIndex, Buttons button) {
         this._buttonToIndex[button] = spriteIndex;
     }
 
@@ -35,13 +43,5 @@ public class GamePadIconSet : SpriteSheetMember {
     public bool TryGetSpriteIndex(Buttons button, [NotNullWhen(true)] out byte? index) {
         index = this._buttonToIndex.TryGetValue(button, out var foundIndex) ? foundIndex : null;
         return index != null;
-    }
-
-    /// <summary>
-    /// Removes the sprite index assigned to a button.
-    /// </summary>
-    /// <param name="buttons">The button.</param>
-    public void UnsetSprite(Buttons buttons) {
-        this._buttonToIndex.Remove(buttons);
     }
 }

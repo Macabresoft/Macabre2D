@@ -78,6 +78,26 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     public ICommand ClearSpriteCommand { get; }
 
     /// <summary>
+    /// Gets the select tile command.
+    /// </summary>
+    public ICommand SelectTileCommand { get; }
+
+    /// <summary>
+    /// Gets the sprite collection.
+    /// </summary>
+    public SpriteDisplayCollection SpriteCollection { get; }
+
+    /// <summary>
+    /// Gets the tiles.
+    /// </summary>
+    public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
+
+    /// <summary>
+    /// Gets the size of a tile in pixels.
+    /// </summary>
+    public Size TileSize { get; }
+
+    /// <summary>
     /// Gets or sets the selected sprite.
     /// </summary>
     public SpriteDisplayModel SelectedSprite {
@@ -121,26 +141,6 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     }
 
     /// <summary>
-    /// Gets the select tile command.
-    /// </summary>
-    public ICommand SelectTileCommand { get; }
-
-    /// <summary>
-    /// Gets the sprite collection.
-    /// </summary>
-    public SpriteDisplayCollection SpriteCollection { get; }
-
-    /// <summary>
-    /// Gets the tiles.
-    /// </summary>
-    public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
-
-    /// <summary>
-    /// Gets the size of a tile in pixels.
-    /// </summary>
-    public Size TileSize { get; }
-
-    /// <summary>
     /// Gets a value indicating whether or not auto layout can be performed for this tile set.
     /// </summary>
     private bool CanPerformAutoLayout { get; }
@@ -178,7 +178,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
             this._undoService.Do(() =>
             {
                 foreach (var tile in tiles) {
-                    tile.SpriteIndex = TileIndexToAutoSpriteIndex[tile.TileIndex];
+                    tile.SpriteIndex = TileIndexToAutoSpriteIndex[tile.Key];
                 }
             }, () =>
             {

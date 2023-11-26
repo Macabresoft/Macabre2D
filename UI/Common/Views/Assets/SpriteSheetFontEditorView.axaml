@@ -70,7 +70,7 @@
                             
                             <TextBlock HorizontalAlignment="Left"
                                        VerticalAlignment="Top"
-                                       Text="{Binding Character}"
+                                       Text="{Binding Key}"
                                        Margin="{StaticResource StandardMarginAll}"/>
                         </Grid>
                     </Border>
