@@ -200,6 +200,9 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         else if (typeof(TAsset) == typeof(SpriteSheetFont)) {
             result = (IReadOnlyCollection<TAsset>)this._fonts;
         }
+        else if (typeof(TAsset) == typeof(GamePadIconSet)) {
+            result = (IReadOnlyCollection<TAsset>)this._gamePadIconSets;
+        }
         else {
             result = new List<TAsset>();
         }

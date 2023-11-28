@@ -15,7 +15,6 @@ public class SpriteRenderer : BaseSpriteEntity {
     /// Initializes a new instance of the <see cref="SpriteRenderer" /> class.
     /// </summary>
     public SpriteRenderer() : base() {
-        this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
     }
 
     /// <inheritdoc />
