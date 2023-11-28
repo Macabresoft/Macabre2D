@@ -377,6 +377,19 @@ public class ProjectTreeViewModel : BaseViewModel {
                     });
                 }
             }
+            else if (selected is GamePadIconSet gamePadIconSet) {
+                if (gamePadIconSet.TryClone(out var clone)) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.GamePadIconSets.Add(clone);
+                        this.AssetSelectionService.Selected = clone;
+                    }, () =>
+                    {
+                        spriteSheet.GamePadIconSets.Remove(clone);
+                        this.AssetSelectionService.Selected = gamePadIconSet;
+                    });
+                }
+            }
         }
     }
 
