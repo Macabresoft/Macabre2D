@@ -75,9 +75,9 @@
                 </MenuItem>
 
                 <MenuItem Header="_Scene Editor"
-                              Command="{Binding SelectTabCommand}"
-                              CommandParameter="{x:Static common:EditorTabs.Scene}"
-                              IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}">
+                          Command="{Binding SelectTabCommand}"
+                          CommandParameter="{x:Static common:EditorTabs.Scene}"
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}">
                     <MenuItem.Icon>
                         <avaloniaEx:Icon Content="{StaticResource SceneIcon}" />
                     </MenuItem.Icon>
@@ -87,19 +87,39 @@
 
                 <MenuItem Header="Keyboard"
                           Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.Keyboard}" />
+                          CommandParameter="{x:Static framework:InputDisplay.Keyboard}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
+                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.Keyboard}}" />
+                    </MenuItem.Icon>
+                </MenuItem>
 
                 <MenuItem Header="Game Pad X"
                           Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadX}" />
+                          CommandParameter="{x:Static framework:InputDisplay.GamePadX}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
+                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadX}}" />
+                    </MenuItem.Icon>
+                </MenuItem>
 
                 <MenuItem Header="Game Pad N"
                           Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadN}" />
+                          CommandParameter="{x:Static framework:InputDisplay.GamePadN}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
+                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadN}}" />
+                    </MenuItem.Icon>
+                </MenuItem>
 
                 <MenuItem Header="Game Pad S"
                           Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadS}" />
+                          CommandParameter="{x:Static framework:InputDisplay.GamePadS}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
+                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadS}}" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="_Help">
