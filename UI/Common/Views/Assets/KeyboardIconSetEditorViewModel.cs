@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
-using DynamicData;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -13,43 +12,43 @@ using ReactiveUI;
 using Unity;
 
 /// <summary>
-/// A view model for editing game pad icon sets.
+/// A view model for editing keyboard icon sets.
 /// </summary>
-public class GamePadIconSetEditorViewModel : BaseViewModel {
+public class KeyboardIconSetEditorViewModel : BaseViewModel {
     private readonly IUndoService _undoService;
-    private GamePadIconIndexModel _selectedIcon;
+    private KeyboardIconIndexModel _selectedIcon;
     private SpriteDisplayModel _selectedSprite;
     private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="KeyboardIconSetEditorViewModel" /> class.
     /// </summary>
-    public GamePadIconSetEditorViewModel() {
+    public KeyboardIconSetEditorViewModel() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="KeyboardIconSetEditorViewModel" /> class.
     /// </summary>
     /// <param name="undoService">The parent undo service.</param>
     /// <param name="iconSet">The icon set being edited.</param>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The content file.</param>
     [InjectionConstructor]
-    public GamePadIconSetEditorViewModel(
+    public KeyboardIconSetEditorViewModel(
         IUndoService undoService,
-        GamePadIconSet iconSet,
+        KeyboardIconSet iconSet,
         SpriteSheet spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
-        this.SelectIconCommand = ReactiveCommand.Create<GamePadIconIndexModel>(this.SelectIcon);
+        this.SelectIconCommand = ReactiveCommand.Create<KeyboardIconIndexModel>(this.SelectIcon);
         this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
-        var buttons = Enum.GetValues<Buttons>().ToList();
-        buttons.Remove(Buttons.None);
-        var icons = buttons.Select(button => new GamePadIconIndexModel(iconSet, button)).ToList();
+        var keys = Enum.GetValues<Keys>().ToList();
+        keys.Remove(Keys.None);
+        var icons = keys.Select(key => new KeyboardIconIndexModel(iconSet, key)).ToList();
         this.Icons = icons;
         this.SelectedIcon = this.Icons.First();
     }
@@ -62,7 +61,7 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     /// <summary>
     /// Gets the icons.
     /// </summary>
-    public IReadOnlyCollection<GamePadIconIndexModel> Icons { get; }
+    public IReadOnlyCollection<KeyboardIconIndexModel> Icons { get; }
 
     /// <summary>
     /// Gets the select icon command.
@@ -75,9 +74,9 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     public SpriteDisplayCollection SpriteCollection { get; }
 
     /// <summary>
-    /// Gets or sets the selected tile.
+    /// Gets or sets the selected icon.
     /// </summary>
-    public GamePadIconIndexModel SelectedIcon {
+    public KeyboardIconIndexModel SelectedIcon {
         get => this._selectedIcon;
         private set {
             if (this._selectedIcon != value) {
@@ -123,7 +122,7 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
         }
     }
 
-    private void SelectIcon(GamePadIconIndexModel icon) {
+    private void SelectIcon(KeyboardIconIndexModel icon) {
         if (icon != null) {
             this.SelectedIcon = icon;
             // HACK: this makes things work well in the UI, just trust me.

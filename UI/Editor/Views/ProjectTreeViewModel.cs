@@ -221,6 +221,16 @@ public class ProjectTreeViewModel : BaseViewModel {
             () => { iconSets.Remove(iconSet); });
     }
 
+    private void AddKeyboardIconSet(KeyboardIconSetCollection iconSets) {
+        var iconSet = new KeyboardIconSet {
+            Name = KeyboardIconSet.DefaultName
+        };
+
+        this._undoService.Do(
+            () => { iconSets.Add(iconSet); },
+            () => { iconSets.Remove(iconSet); });
+    }
+
     private void AddNode(object parent) {
         switch (parent) {
             case IContentDirectory directory:
@@ -238,6 +248,9 @@ public class ProjectTreeViewModel : BaseViewModel {
             case GamePadIconSetCollection gamePadIconSets:
                 this.AddGamePadIconSet(gamePadIconSets);
                 break;
+            case KeyboardIconSetCollection keyboardIconSets:
+                this.AddKeyboardIconSet(keyboardIconSets);
+                break;
             case AutoTileSet { SpriteSheet: { AutoTileSets: { } tileSets } }:
                 this.AddTileSet(tileSets);
                 break;
@@ -249,6 +262,9 @@ public class ProjectTreeViewModel : BaseViewModel {
                 break;
             case GamePadIconSet { SpriteSheet: { GamePadIconSets: { } gamePadIconSets } }:
                 this.AddGamePadIconSet(gamePadIconSets);
+                break;
+            case KeyboardIconSet { SpriteSheet: { KeyboardIconSets: { } keyboardIconSets } }:
+                this.AddKeyboardIconSet(keyboardIconSets);
                 break;
         }
     }
@@ -270,7 +286,7 @@ public class ProjectTreeViewModel : BaseViewModel {
     }
 
     private static bool CanAddNode(object parent) {
-        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or SpriteSheetMember;
+        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or KeyboardIconSetCollection or SpriteSheetMember;
     }
 
     private bool CanClone(object selected) {
@@ -300,6 +316,10 @@ public class ProjectTreeViewModel : BaseViewModel {
                     maxIndex = spriteSheet.GamePadIconSets.Count - 1;
                     index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
                     break;
+                case KeyboardIconSet keyboardIconSet:
+                    maxIndex = spriteSheet.KeyboardIconSets.Count - 1;
+                    index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
+                    break;
             }
 
             result = index != 0 && index < maxIndex;
@@ -316,7 +336,8 @@ public class ProjectTreeViewModel : BaseViewModel {
                 SpriteAnimation animation => spriteSheet.SpriteAnimations.IndexOf(animation),
                 AutoTileSet tileSet => spriteSheet.AutoTileSets.IndexOf(tileSet),
                 SpriteSheetFont font => spriteSheet.Fonts.IndexOf(font),
-                GamePadIconSet iconSet => spriteSheet.GamePadIconSets.IndexOf(iconSet),
+                GamePadIconSet gamePadIconSet => spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet),
+                KeyboardIconSet keyboardIconSet => spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet),
                 _ => 0
             };
 
@@ -390,6 +411,19 @@ public class ProjectTreeViewModel : BaseViewModel {
                     });
                 }
             }
+            else if (selected is KeyboardIconSet keyboardIconSet) {
+                if (keyboardIconSet.TryClone(out var clone)) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.KeyboardIconSets.Add(clone);
+                        this.AssetSelectionService.Selected = clone;
+                    }, () =>
+                    {
+                        spriteSheet.KeyboardIconSets.Remove(clone);
+                        this.AssetSelectionService.Selected = keyboardIconSet;
+                    });
+                }
+            }
         }
     }
 
@@ -456,6 +490,22 @@ public class ProjectTreeViewModel : BaseViewModel {
                         spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
                         spriteSheet.GamePadIconSets.Insert(index, gamePadIconSet);
                         this.AssetSelectionService.Selected = gamePadIconSet;
+                    });
+                }
+            }
+            else if (selected is KeyboardIconSet keyboardIconSet) {
+                var index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
+                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
+                        spriteSheet.KeyboardIconSets.Insert(index + 1, keyboardIconSet);
+                        this.AssetSelectionService.Selected = keyboardIconSet;
+                    }, () =>
+                    {
+                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
+                        spriteSheet.KeyboardIconSets.Insert(index, keyboardIconSet);
+                        this.AssetSelectionService.Selected = keyboardIconSet;
                     });
                 }
             }
@@ -528,6 +578,22 @@ public class ProjectTreeViewModel : BaseViewModel {
                     });
                 }
             }
+            else if (selected is KeyboardIconSet keyboardIconSet) {
+                var index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
+                if (index > 0) {
+                    this._undoService.Do(() =>
+                    {
+                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
+                        spriteSheet.KeyboardIconSets.Insert(index - 1, keyboardIconSet);
+                        this.AssetSelectionService.Selected = keyboardIconSet;
+                    }, () =>
+                    {
+                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
+                        spriteSheet.KeyboardIconSets.Insert(index, keyboardIconSet);
+                        this.AssetSelectionService.Selected = keyboardIconSet;
+                    });
+                }
+            }
         }
     }
 
@@ -585,6 +651,11 @@ public class ProjectTreeViewModel : BaseViewModel {
                         var gamePadIconSetIndex = gamePadIconSets.IndexOf(gamePadIconSet);
                         this._undoService.Do(() => gamePadIconSets.Remove(gamePadIconSet),
                             () => gamePadIconSets.InsertOrAdd(gamePadIconSetIndex, gamePadIconSet));
+                        break;
+                    case KeyboardIconSet keyboardIconSet when spriteSheet.KeyboardIconSets is { } keyboardIconSets:
+                        var keyboardIconSetIndex = keyboardIconSets.IndexOf(keyboardIconSet);
+                        this._undoService.Do(() => keyboardIconSets.Remove(keyboardIconSet),
+                            () => keyboardIconSets.InsertOrAdd(keyboardIconSetIndex, keyboardIconSet));
                         break;
                 }
 

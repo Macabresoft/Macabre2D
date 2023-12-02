@@ -4,7 +4,7 @@
 /// A base class for <see cref="SpriteSheetMember" /> classes that operate as a dynamic dictionary with keys being related to sprite indexes.
 /// </summary>
 /// <typeparam name="TKey">The key this member uses to retrieve the appropriate sprite index.</typeparam>
-public abstract class SpriteSheetKeyedMember<TKey> : SpriteSheetMember {
+public abstract class SpriteSheetKeyedMember<TKey> : SpriteSheetMember where TKey : struct {
     /// <summary>
     /// Clears the sprite index for the given key.
     /// </summary>

@@ -126,6 +126,10 @@
           <DependentUpon>VolumeCategoryEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Assets\KeyboardIconSetEditorView.axaml.cs">
+          <DependentUpon>KeyboardIconSetEditorView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

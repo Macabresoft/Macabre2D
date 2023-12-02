@@ -19,6 +19,7 @@ public class SpriteSheetContentFile : ContentFile<SpriteSheet> {
         this._children.Add(this.TypedAsset.SpriteAnimations);
         this._children.Add(this.TypedAsset.Fonts);
         this._children.Add(this.TypedAsset.GamePadIconSets);
+        this._children.Add(this.TypedAsset.KeyboardIconSets);
     }
 
     /// <summary>

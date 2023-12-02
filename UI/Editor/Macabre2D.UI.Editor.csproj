@@ -96,6 +96,10 @@
           <DependentUpon>GamePadIconSetReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\KeyboardIconSetReferenceEditor.axaml.cs">
+          <DependentUpon>KeyboardIconSetReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

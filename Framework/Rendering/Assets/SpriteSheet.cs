@@ -39,6 +39,10 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     [Category("Game Pad Icon Sets")]
     private GamePadIconSetCollection _gamePadIconSets = new();
 
+    [DataMember]
+    [Category("Keyboard Icon Sets")]
+    private KeyboardIconSetCollection _keyboardIconSets = new();
+
     private byte _rows = 1;
 
     [DataMember]
@@ -59,6 +63,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         this._fonts.PropertyChanged += this.RaisePropertyChanged;
         this._gamePadIconSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._gamePadIconSets.PropertyChanged += this.RaisePropertyChanged;
+        this._keyboardIconSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
+        this._keyboardIconSets.PropertyChanged += this.RaisePropertyChanged;
     }
 
     /// <summary>
@@ -75,6 +81,11 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// Gets the game pad icon sets.
     /// </summary>
     public GamePadIconSetCollection GamePadIconSets => this._gamePadIconSets;
+    
+    /// <summary>
+    /// Gets the game pad icon sets.
+    /// </summary>
+    public KeyboardIconSetCollection KeyboardIconSets => this._keyboardIconSets;
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
@@ -313,6 +324,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         packages.AddRange(this._spriteAnimations);
         packages.AddRange(this._fonts);
         packages.AddRange(this._gamePadIconSets);
+        packages.AddRange(this._keyboardIconSets);
         return packages;
     }
 

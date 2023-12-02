@@ -155,6 +155,10 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                         new ParameterOverride(typeof(GamePadIconSet), gamePadIconSet),
                         new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
+                    KeyboardIconSet keyboardIconSet => this._container.Resolve<KeyboardIconSetEditorView>(
+                        new ParameterOverride(typeof(KeyboardIconSet), keyboardIconSet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                        new ParameterOverride(typeof(ContentFile), contentFile)),
                     _ => null
                 };
             }

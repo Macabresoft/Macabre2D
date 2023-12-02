@@ -6,7 +6,7 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// Base class for individual sprites in a <see cref="SpriteSheetMember" />
 /// </summary>
-public abstract class BaseSpriteSheetIndexModel<TMember, TKey> : PropertyChangedNotifier where TMember : SpriteSheetKeyedMember<TKey> {
+public abstract class BaseSpriteSheetIndexModel<TMember, TKey> : PropertyChangedNotifier where TMember : SpriteSheetKeyedMember<TKey> where TKey : struct{
     private bool _isInitialized;
     private byte? _spriteIndex;
 

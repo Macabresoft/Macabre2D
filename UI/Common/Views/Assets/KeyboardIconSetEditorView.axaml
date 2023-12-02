@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             x:Class="Macabresoft.Macabre2D.UI.Common.GamePadIconSetEditorView"
+             x:Class="Macabresoft.Macabre2D.UI.Common.KeyboardIconSetEditorView"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Top">
     <Design.DataContext>
-        <local:GamePadIconSetEditorViewModel />
+        <local:KeyboardIconSetEditorViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
@@ -41,7 +41,7 @@
                     <Border Width="64"
                             Height="64"
                             Classes="Preview"
-                          ToolTip.Tip="{Binding Key}">
+                            ToolTip.Tip="{Binding Key}">
                         <Grid>
                             <Image Stretch="Fill"
                                    HorizontalAlignment="Right"
@@ -49,17 +49,17 @@
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
-                                        <Binding Path="$parent[local:GamePadIconSetEditorView].DataContext.SpriteCollection" />
+                                        <Binding Path="$parent[local:KeyboardIconSetEditorView].DataContext.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            
+
                             <TextBlock HorizontalAlignment="Left"
                                        VerticalAlignment="Top"
                                        TextWrapping="Wrap"
                                        Text="{Binding Key}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       ToolTip.Tip="{Binding Key}"/>
+                                       ToolTip.Tip="{Binding Key}" />
                         </Grid>
                     </Border>
                 </DataTemplate>
