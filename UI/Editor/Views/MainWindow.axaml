@@ -68,12 +68,20 @@
                 <MenuItem Header="_Project Editor"
                           Command="{Binding SelectTabCommand}"
                           CommandParameter="{x:Static common:EditorTabs.Project}"
-                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource ProjectIcon}" />
+                    </MenuItem.Icon>
+                </MenuItem>
 
                 <MenuItem Header="_Scene Editor"
-                          Command="{Binding SelectTabCommand}"
-                          CommandParameter="{x:Static common:EditorTabs.Scene}"
-                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+                              Command="{Binding SelectTabCommand}"
+                              CommandParameter="{x:Static common:EditorTabs.Scene}"
+                              IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}">
+                    <MenuItem.Icon>
+                        <avaloniaEx:Icon Content="{StaticResource SceneIcon}" />
+                    </MenuItem.Icon>
+                </MenuItem>
 
                 <Separator />
 
