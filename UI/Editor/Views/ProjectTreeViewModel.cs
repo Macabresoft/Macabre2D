@@ -322,7 +322,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                     break;
             }
 
-            result = index != 0 && index < maxIndex;
+            result = index < maxIndex;
         }
 
         return result;
@@ -431,7 +431,7 @@ public class ProjectTreeViewModel : BaseViewModel {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
             if (selected is SpriteAnimation animation) {
                 var index = spriteSheet.SpriteAnimations.IndexOf(animation);
-                if (index > 0 && index < spriteSheet.SpriteAnimations.Count - 1) {
+                if (index < spriteSheet.SpriteAnimations.Count - 1) {
                     this._undoService.Do(() =>
                     {
                         spriteSheet.SpriteAnimations.Remove(animation);
@@ -447,7 +447,7 @@ public class ProjectTreeViewModel : BaseViewModel {
             }
             else if (selected is AutoTileSet tileSet) {
                 var index = spriteSheet.AutoTileSets.IndexOf(tileSet);
-                if (index > 0 && index < spriteSheet.AutoTileSets.Count - 1) {
+                if (index < spriteSheet.AutoTileSets.Count - 1) {
                     this._undoService.Do(() =>
                     {
                         spriteSheet.AutoTileSets.Remove(tileSet);
@@ -463,7 +463,7 @@ public class ProjectTreeViewModel : BaseViewModel {
             }
             else if (selected is SpriteSheetFont font) {
                 var index = spriteSheet.Fonts.IndexOf(font);
-                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                if (index < spriteSheet.Fonts.Count - 1) {
                     this._undoService.Do(() =>
                     {
                         spriteSheet.Fonts.Remove(font);
@@ -479,7 +479,7 @@ public class ProjectTreeViewModel : BaseViewModel {
             }
             else if (selected is GamePadIconSet gamePadIconSet) {
                 var index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
-                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                if (index < spriteSheet.Fonts.Count - 1) {
                     this._undoService.Do(() =>
                     {
                         spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
@@ -495,7 +495,7 @@ public class ProjectTreeViewModel : BaseViewModel {
             }
             else if (selected is KeyboardIconSet keyboardIconSet) {
                 var index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
-                if (index > 0 && index < spriteSheet.Fonts.Count - 1) {
+                if (index < spriteSheet.Fonts.Count - 1) {
                     this._undoService.Do(() =>
                     {
                         spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
