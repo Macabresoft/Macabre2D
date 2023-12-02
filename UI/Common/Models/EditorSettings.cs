@@ -52,6 +52,12 @@ public class EditorSettings {
     public float CameraViewHeight { get; set; } = 10f;
 
     /// <summary>
+    /// Gets or sets the input display.
+    /// </summary>
+    [DataMember]
+    public InputDisplay InputDisplay { get; set; } = InputDisplay.GamePadX;
+
+    /// <summary>
     /// Gets or sets the last gizmo opened.
     /// </summary>
     [DataMember]

@@ -66,6 +66,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
         this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
         this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab, tabCommandCanExecute);
+        this.SelectInputDisplayCommand = ReactiveCommand.Create<InputDisplay>(this.SelectInputDisplay);
         this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab, tabCommandCanExecute);
         this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
         this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
@@ -102,6 +103,11 @@ public class MainWindowViewModel : UndoBaseViewModel {
     public ICommand SaveCommand { get; }
 
     /// <summary>
+    /// Gets a command to set the input display.
+    /// </summary>
+    public ICommand SelectInputDisplayCommand { get; }
+
+    /// <summary>
     /// Gets the command to select a tab.
     /// </summary>
     public ICommand SelectTabCommand { get; }
@@ -120,7 +126,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Gets the command to view the source code.
     /// </summary>
     public ICommand ViewSourceCommand { get; }
-
 
     /// <summary>
     /// Gets a value indicating whether or not this is busy.
@@ -169,6 +174,10 @@ public class MainWindowViewModel : UndoBaseViewModel {
         }
     }
 
+    private void SelectInputDisplay(InputDisplay inputDisplay) {
+        this.EditorService.InputDisplay = inputDisplay;
+    }
+
     private void SelectTab(EditorTabs tab) {
         this.EditorService.SelectedTab = tab;
     }
@@ -176,7 +185,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private void ToggleTab() {
         this.SelectTab(this.EditorService.SelectedTab == EditorTabs.Scene ? EditorTabs.Project : EditorTabs.Scene);
     }
-    
+
     private async Task<YesNoCancelResult> TryClose(IWindow window) {
         var result = await this._saveService.RequestSave();
         if (result != YesNoCancelResult.Cancel) {

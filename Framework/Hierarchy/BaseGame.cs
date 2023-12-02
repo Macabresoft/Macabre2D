@@ -97,7 +97,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public InputDisplay InputDisplayStyle {
         get => this._inputDisplayStyle;
-        private set {
+        protected set {
             if (value != this._inputDisplayStyle) {
                 this._inputDisplayStyle = value;
                 this.InputDisplayChanged.SafeInvoke(this, this._inputDisplayStyle);
@@ -275,7 +275,7 @@ public class BaseGame : Game, IGame {
             else {
                 this.UserSettings = new UserSettings(this.Project);
             }
-            
+
             if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
                 this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.GamePadX : InputDisplay.Keyboard;
@@ -284,7 +284,7 @@ public class BaseGame : Game, IGame {
                 this.InputDisplayStyle = this.InputBindings.DisplayStyle;
             }
         }
-        
+
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
         this.IsInitialized = true;
     }
@@ -362,16 +362,18 @@ public class BaseGame : Game, IGame {
     protected virtual void UpdateInputState() {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
-        if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
-            if (this.InputState.CurrentGamePadState.IsConnected && this.InputState.CurrentGamePadState.Buttons.GetHashCode() != 0) {
-                this.InputDisplayStyle = InputDisplay.GamePadX;
+        if (!IsDesignMode) {
+            if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
+                if (this.InputState.CurrentGamePadState.IsConnected && this.InputState.CurrentGamePadState.Buttons.GetHashCode() != 0) {
+                    this.InputDisplayStyle = InputDisplay.GamePadX;
+                }
+                else if (this.InputState.CurrentKeyboardState.GetPressedKeyCount() > 0) {
+                    this.InputDisplayStyle = InputDisplay.Keyboard;
+                }
             }
-            else if (this.InputState.CurrentKeyboardState.GetPressedKeyCount() > 0) {
-                this.InputDisplayStyle = InputDisplay.Keyboard;
+            else {
+                this.InputDisplayStyle = this.InputBindings.DisplayStyle;
             }
-        }
-        else {
-            this.InputDisplayStyle = this.InputBindings.DisplayStyle;
         }
     }
 

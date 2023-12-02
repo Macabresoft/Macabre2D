@@ -61,6 +61,14 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <inheritdoc />
     public IGizmo SelectedGizmo { get; private set; }
 
+    /// <summary>
+    /// Sets the input display style.
+    /// </summary>
+    /// <param name="inputDisplay">The input display to use.</param>
+    public void SetInputDisplayStyle(InputDisplay inputDisplay) {
+        this.InputDisplayStyle = inputDisplay;
+    }
+
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null) {
@@ -104,6 +112,12 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
         this.TryCreateSpriteBatch();
         this.Assets.Initialize(this.Content, new Serializer());
+    }
+
+    /// <inheritdoc />
+    protected override void Update(GameTime gameTime) {
+        base.Update(gameTime);
+        this.InputDisplayStyle = this._editorService.InputDisplay;
     }
 
     private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
