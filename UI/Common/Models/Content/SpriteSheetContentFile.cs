@@ -15,11 +15,7 @@ public class SpriteSheetContentFile : ContentFile<SpriteSheet> {
     /// <param name="parent">The parent.</param>
     /// <param name="metadata">The metadata.</param>
     public SpriteSheetContentFile(IContentDirectory parent, ContentMetadata metadata) : base(parent, metadata) {
-        this._children.Add(this.TypedAsset.AutoTileSets);
-        this._children.Add(this.TypedAsset.SpriteAnimations);
-        this._children.Add(this.TypedAsset.Fonts);
-        this._children.Add(this.TypedAsset.GamePadIconSets);
-        this._children.Add(this.TypedAsset.KeyboardIconSets);
+        this._children.AddRange(this.TypedAsset.GetMemberCollections());
     }
 
     /// <summary>

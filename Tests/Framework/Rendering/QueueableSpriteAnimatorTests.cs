@@ -216,7 +216,7 @@ public static class QueueableSpriteAnimatorTests {
             Rows = 2
         };
 
-        if (animation.SpriteSheet.SpriteAnimations is SpriteAnimationCollection collection) {
+        if (animation.SpriteSheet.GetMemberCollection<SpriteAnimation>() is { } collection) {
             collection.Add(animation);
         }
 

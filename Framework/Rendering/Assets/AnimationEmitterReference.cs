@@ -49,9 +49,9 @@ public class AnimationEmitterReference : SpriteSheetReference {
         this._availableAnimations.Clear();
         this._runningAnimations.Clear();
 
-        if (this.Asset is { } spriteSheet) {
+        if (this.Asset is { } spriteSheet && spriteSheet.GetMemberCollection<SpriteAnimation>() is { } animations) {
             while (this._availableAnimations.Count < this.MaxActiveAnimations) {
-                foreach (var animation in spriteSheet.SpriteAnimations) {
+                foreach (var animation in animations) {
                     this._availableAnimations.Add(new PositionalSpriteAnimation(animation));
                 }
             }

@@ -67,38 +67,13 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         this._keyboardIconSets.PropertyChanged += this.RaisePropertyChanged;
     }
 
-    /// <summary>
-    /// Gets the auto tile sets.
-    /// </summary>
-    public AutoTileSetCollection AutoTileSets => this._autoTileSets;
-
-    /// <summary>
-    /// Gets the fonts.
-    /// </summary>
-    public SpriteSheetFontCollection Fonts => this._fonts;
-
-    /// <summary>
-    /// Gets the game pad icon sets.
-    /// </summary>
-    public GamePadIconSetCollection GamePadIconSets => this._gamePadIconSets;
-
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
-
-    /// <summary>
-    /// Gets the game pad icon sets.
-    /// </summary>
-    public KeyboardIconSetCollection KeyboardIconSets => this._keyboardIconSets;
 
     /// <summary>
     /// Gets the max index.
     /// </summary>
     public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
-
-    /// <summary>
-    /// Gets the sprite animations.
-    /// </summary>
-    public SpriteAnimationCollection SpriteAnimations => this._spriteAnimations;
 
     /// <summary>
     /// Gets or sets the number of columns in this sprite sheet.
@@ -276,6 +251,20 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <returns>The collection.</returns>
     public SpriteSheetMemberCollection<TMember>? GetMemberCollection<TMember>() where TMember : SpriteSheetMember, new() {
         return this.GetMemberCollection(typeof(TMember)) as SpriteSheetMemberCollection<TMember>;
+    }
+
+    /// <summary>
+    /// Gets all the member collections contained in this <see cref="SpriteSheet" />.
+    /// </summary>
+    /// <returns>The member collections.</returns>
+    public IReadOnlyCollection<INameableCollection> GetMemberCollections() {
+        return new List<INameableCollection> {
+            this._autoTileSets,
+            this._spriteAnimations,
+            this._fonts,
+            this._gamePadIconSets,
+            this._keyboardIconSets
+        };
     }
 
     /// <summary>
