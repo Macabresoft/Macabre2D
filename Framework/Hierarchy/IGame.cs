@@ -20,6 +20,11 @@ public interface IGame {
     event EventHandler<InputDisplay> InputDisplayChanged;
 
     /// <summary>
+    /// Occurs when the settings are saved.
+    /// </summary>
+    event EventHandler SettingsSaved;
+
+    /// <summary>
     /// Occurs when the viewport changes.
     /// </summary>
     event EventHandler<Point> ViewportSizeChanged;

@@ -36,6 +36,9 @@ public class BaseGame : Game, IGame {
     public event EventHandler<InputDisplay>? InputDisplayChanged;
 
     /// <inheritdoc />
+    public event EventHandler? SettingsSaved;
+
+    /// <inheritdoc />
     public event EventHandler<Point>? ViewportSizeChanged;
 
     /// <summary>
@@ -222,6 +225,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public void SaveUserSettings() {
         this.SaveDataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
+        this.SettingsSaved.SafeInvoke(this);
     }
 
     /// <inheritdoc />
@@ -385,6 +389,7 @@ public class BaseGame : Game, IGame {
     private sealed class EmptyGame : IGame {
         public event EventHandler<double>? GameSpeedChanged;
         public event EventHandler<InputDisplay>? InputDisplayChanged;
+        public event EventHandler? SettingsSaved;
         public event EventHandler<Point>? ViewportSizeChanged;
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
