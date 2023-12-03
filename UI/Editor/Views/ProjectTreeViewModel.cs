@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
+using DynamicData;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
@@ -89,13 +89,13 @@ public class ProjectTreeViewModel : BaseViewModel {
 
         this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => this.CanMoveDown(x.Value)));
+            x => CanMoveDown(x.Value)));
         this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => this.CanMoveUp(x.Value)));
+            x => CanMoveUp(x.Value)));
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => this.CanClone(x.Value)));
+            x => CanClone(x.Value)));
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class ProjectTreeViewModel : BaseViewModel {
     /// <summary>
     /// Gets a value indicating whether or not a <see cref="SpriteSheetMember" /> is selected.
     /// </summary>
-    public bool IsSpriteSheetMemberSelected => this.CanClone(this.AssetSelectionService.Selected);
+    public bool IsSpriteSheetMemberSelected => CanClone(this.AssetSelectionService.Selected);
 
     /// <summary>
     /// Gets a command to move a child down.
@@ -189,46 +189,11 @@ public class ProjectTreeViewModel : BaseViewModel {
         }
     }
 
-    private void AddAnimation(SpriteAnimationCollection animations) {
-        var animation = new SpriteAnimation {
-            Name = SpriteAnimation.DefaultName
-        };
-
-        animation.AddStep();
-
+    private void AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
+        var newMember = collection.CreateNewMember();
         this._undoService.Do(
-            () => { animations.Add(animation); },
-            () => { animations.Remove(animation); });
-    }
-
-    private void AddFont(SpriteSheetFontCollection fonts) {
-        var font = new SpriteSheetFont {
-            Name = SpriteSheetFont.DefaultName
-        };
-
-        this._undoService.Do(
-            () => { fonts.Add(font); },
-            () => { fonts.Remove(font); });
-    }
-
-    private void AddGamePadIconSet(GamePadIconSetCollection iconSets) {
-        var iconSet = new GamePadIconSet {
-            Name = GamePadIconSet.DefaultName
-        };
-
-        this._undoService.Do(
-            () => { iconSets.Add(iconSet); },
-            () => { iconSets.Remove(iconSet); });
-    }
-
-    private void AddKeyboardIconSet(KeyboardIconSetCollection iconSets) {
-        var iconSet = new KeyboardIconSet {
-            Name = KeyboardIconSet.DefaultName
-        };
-
-        this._undoService.Do(
-            () => { iconSets.Add(iconSet); },
-            () => { iconSets.Remove(iconSet); });
+            () => { collection.AddMember(newMember); },
+            () => { collection.RemoveMember(newMember); });
     }
 
     private void AddNode(object parent) {
@@ -236,47 +201,16 @@ public class ProjectTreeViewModel : BaseViewModel {
             case IContentDirectory directory:
                 this.ContentService.AddDirectory(directory);
                 break;
-            case AutoTileSetCollection tileSets:
-                this.AddTileSet(tileSets);
+            case ISpriteSheetMemberCollection memberCollection:
+                this.AddNewSpriteSheetMember(memberCollection);
                 break;
-            case SpriteAnimationCollection animations:
-                this.AddAnimation(animations);
-                break;
-            case SpriteSheetFontCollection fonts:
-                this.AddFont(fonts);
-                break;
-            case GamePadIconSetCollection gamePadIconSets:
-                this.AddGamePadIconSet(gamePadIconSets);
-                break;
-            case KeyboardIconSetCollection keyboardIconSets:
-                this.AddKeyboardIconSet(keyboardIconSets);
-                break;
-            case AutoTileSet { SpriteSheet: { AutoTileSets: { } tileSets } }:
-                this.AddTileSet(tileSets);
-                break;
-            case SpriteAnimation { SpriteSheet: { SpriteAnimations: { } animations } }:
-                this.AddAnimation(animations);
-                break;
-            case SpriteSheetFont { SpriteSheet: { Fonts: { } fonts } }:
-                this.AddFont(fonts);
-                break;
-            case GamePadIconSet { SpriteSheet: { GamePadIconSets: { } gamePadIconSets } }:
-                this.AddGamePadIconSet(gamePadIconSets);
-                break;
-            case KeyboardIconSet { SpriteSheet: { KeyboardIconSets: { } keyboardIconSets } }:
-                this.AddKeyboardIconSet(keyboardIconSets);
+            case SpriteSheetMember { SpriteSheet: { } spriteSheet } member:
+                if (spriteSheet.GetMemberCollection(member.GetType()) is { } anotherMemberCollection) {
+                    this.AddNewSpriteSheetMember(anotherMemberCollection);
+                }
+
                 break;
         }
-    }
-
-    private void AddTileSet(AutoTileSetCollection tileSets) {
-        var tileSet = new AutoTileSet {
-            Name = AutoTileSet.DefaultName
-        };
-
-        this._undoService.Do(
-            () => { tileSets.Add(tileSet); },
-            () => { tileSets.Remove(tileSet); });
     }
 
     private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -289,58 +223,27 @@ public class ProjectTreeViewModel : BaseViewModel {
         return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or KeyboardIconSetCollection or SpriteSheetMember;
     }
 
-    private bool CanClone(object selected) {
+    private static bool CanClone(object selected) {
         return selected is SpriteSheetMember;
     }
 
-    private bool CanMoveDown(object selected) {
+    private static bool CanMoveDown(object selected) {
         var result = false;
 
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
-            var index = 0;
-            var maxIndex = 0;
-            switch (selected) {
-                case SpriteAnimation animation:
-                    maxIndex = spriteSheet.SpriteAnimations.Count - 1;
-                    index = spriteSheet.SpriteAnimations.IndexOf(animation);
-                    break;
-                case AutoTileSet tileSet:
-                    maxIndex = spriteSheet.AutoTileSets.Count - 1;
-                    index = spriteSheet.AutoTileSets.IndexOf(tileSet);
-                    break;
-                case SpriteSheetFont font:
-                    maxIndex = spriteSheet.Fonts.Count - 1;
-                    index = spriteSheet.Fonts.IndexOf(font);
-                    break;
-                case GamePadIconSet gamePadIconSet:
-                    maxIndex = spriteSheet.GamePadIconSets.Count - 1;
-                    index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
-                    break;
-                case KeyboardIconSet keyboardIconSet:
-                    maxIndex = spriteSheet.KeyboardIconSets.Count - 1;
-                    index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
-                    break;
-            }
-
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            var index = collection.IndexOf(member);
+            var maxIndex = collection.Count - 1;
             result = index < maxIndex;
         }
 
         return result;
     }
 
-    private bool CanMoveUp(object selected) {
+    private static bool CanMoveUp(object selected) {
         var result = false;
 
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
-            var index = selected switch {
-                SpriteAnimation animation => spriteSheet.SpriteAnimations.IndexOf(animation),
-                AutoTileSet tileSet => spriteSheet.AutoTileSets.IndexOf(tileSet),
-                SpriteSheetFont font => spriteSheet.Fonts.IndexOf(font),
-                GamePadIconSet gamePadIconSet => spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet),
-                KeyboardIconSet keyboardIconSet => spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet),
-                _ => 0
-            };
-
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            var index = collection.IndexOf(member);
             result = index > 0;
         }
 
@@ -358,241 +261,53 @@ public class ProjectTreeViewModel : BaseViewModel {
     }
 
     private void Clone(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
-            if (selected is SpriteAnimation animation) {
-                if (animation.TryClone(out var clone)) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.SpriteAnimations.Add(clone);
-                        this.AssetSelectionService.Selected = clone;
-                    }, () =>
-                    {
-                        spriteSheet.SpriteAnimations.Remove(clone);
-                        this.AssetSelectionService.Selected = animation;
-                    });
-                }
-            }
-            else if (selected is AutoTileSet tileSet) {
-                if (tileSet.TryClone(out var clone)) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.AutoTileSets.Add(clone);
-                        this.AssetSelectionService.Selected = clone;
-                    }, () =>
-                    {
-                        spriteSheet.AutoTileSets.Remove(clone);
-                        this.AssetSelectionService.Selected = tileSet;
-                    });
-                }
-            }
-            else if (selected is SpriteSheetFont font) {
-                if (font.TryClone(out var clone)) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.Fonts.Add(clone);
-                        this.AssetSelectionService.Selected = clone;
-                    }, () =>
-                    {
-                        spriteSheet.Fonts.Remove(clone);
-                        this.AssetSelectionService.Selected = font;
-                    });
-                }
-            }
-            else if (selected is GamePadIconSet gamePadIconSet) {
-                if (gamePadIconSet.TryClone(out var clone)) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.GamePadIconSets.Add(clone);
-                        this.AssetSelectionService.Selected = clone;
-                    }, () =>
-                    {
-                        spriteSheet.GamePadIconSets.Remove(clone);
-                        this.AssetSelectionService.Selected = gamePadIconSet;
-                    });
-                }
-            }
-            else if (selected is KeyboardIconSet keyboardIconSet) {
-                if (keyboardIconSet.TryClone(out var clone)) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.KeyboardIconSets.Add(clone);
-                        this.AssetSelectionService.Selected = clone;
-                    }, () =>
-                    {
-                        spriteSheet.KeyboardIconSets.Remove(clone);
-                        this.AssetSelectionService.Selected = keyboardIconSet;
-                    });
-                }
-            }
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection && member.TryClone(out var clone)) {
+            this._undoService.Do(() =>
+            {
+                collection.AddMember(clone);
+                this.AssetSelectionService.Selected = clone;
+            }, () =>
+            {
+                collection.RemoveMember(clone);
+                this.AssetSelectionService.Selected = member;
+            });
         }
     }
 
     private void MoveDown(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
-            if (selected is SpriteAnimation animation) {
-                var index = spriteSheet.SpriteAnimations.IndexOf(animation);
-                if (index < spriteSheet.SpriteAnimations.Count - 1) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.SpriteAnimations.Remove(animation);
-                        spriteSheet.SpriteAnimations.Insert(index + 1, animation);
-                        this.AssetSelectionService.Selected = animation;
-                    }, () =>
-                    {
-                        spriteSheet.SpriteAnimations.Remove(animation);
-                        spriteSheet.SpriteAnimations.Insert(index, animation);
-                        this.AssetSelectionService.Selected = animation;
-                    });
-                }
-            }
-            else if (selected is AutoTileSet tileSet) {
-                var index = spriteSheet.AutoTileSets.IndexOf(tileSet);
-                if (index < spriteSheet.AutoTileSets.Count - 1) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.AutoTileSets.Remove(tileSet);
-                        spriteSheet.AutoTileSets.Insert(index + 1, tileSet);
-                        this.AssetSelectionService.Selected = tileSet;
-                    }, () =>
-                    {
-                        spriteSheet.AutoTileSets.Remove(tileSet);
-                        spriteSheet.AutoTileSets.Insert(index, tileSet);
-                        this.AssetSelectionService.Selected = tileSet;
-                    });
-                }
-            }
-            else if (selected is SpriteSheetFont font) {
-                var index = spriteSheet.Fonts.IndexOf(font);
-                if (index < spriteSheet.Fonts.Count - 1) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.Fonts.Remove(font);
-                        spriteSheet.Fonts.Insert(index + 1, font);
-                        this.AssetSelectionService.Selected = font;
-                    }, () =>
-                    {
-                        spriteSheet.Fonts.Remove(font);
-                        spriteSheet.Fonts.Insert(index, font);
-                        this.AssetSelectionService.Selected = font;
-                    });
-                }
-            }
-            else if (selected is GamePadIconSet gamePadIconSet) {
-                var index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
-                if (index < spriteSheet.Fonts.Count - 1) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
-                        spriteSheet.GamePadIconSets.Insert(index + 1, gamePadIconSet);
-                        this.AssetSelectionService.Selected = gamePadIconSet;
-                    }, () =>
-                    {
-                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
-                        spriteSheet.GamePadIconSets.Insert(index, gamePadIconSet);
-                        this.AssetSelectionService.Selected = gamePadIconSet;
-                    });
-                }
-            }
-            else if (selected is KeyboardIconSet keyboardIconSet) {
-                var index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
-                if (index < spriteSheet.Fonts.Count - 1) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
-                        spriteSheet.KeyboardIconSets.Insert(index + 1, keyboardIconSet);
-                        this.AssetSelectionService.Selected = keyboardIconSet;
-                    }, () =>
-                    {
-                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
-                        spriteSheet.KeyboardIconSets.Insert(index, keyboardIconSet);
-                        this.AssetSelectionService.Selected = keyboardIconSet;
-                    });
-                }
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            var index = collection.IndexOf(member);
+            if (index < collection.Count - 1 && index >= 0) {
+                this._undoService.Do(() =>
+                {
+                    collection.RemoveMember(member);
+                    collection.InsertMember(index + 1, member);
+                    this.AssetSelectionService.Selected = member;
+                }, () =>
+                {
+                    collection.RemoveMember(member);
+                    collection.InsertMember(index, member);
+                    this.AssetSelectionService.Selected = member;
+                });
             }
         }
     }
 
     private void MoveUp(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet }) {
-            if (selected is SpriteAnimation animation) {
-                var index = spriteSheet.SpriteAnimations.IndexOf(animation);
-                if (index > 0) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.SpriteAnimations.Remove(animation);
-                        spriteSheet.SpriteAnimations.Insert(index - 1, animation);
-                        this.AssetSelectionService.Selected = animation;
-                    }, () =>
-                    {
-                        spriteSheet.SpriteAnimations.Remove(animation);
-                        spriteSheet.SpriteAnimations.Insert(index, animation);
-                        this.AssetSelectionService.Selected = animation;
-                    });
-                }
-            }
-            else if (selected is AutoTileSet tileSet) {
-                var index = spriteSheet.AutoTileSets.IndexOf(tileSet);
-                if (index > 0) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.AutoTileSets.Remove(tileSet);
-                        spriteSheet.AutoTileSets.Insert(index - 1, tileSet);
-                        this.AssetSelectionService.Selected = tileSet;
-                    }, () =>
-                    {
-                        spriteSheet.AutoTileSets.Remove(tileSet);
-                        spriteSheet.AutoTileSets.Insert(index, tileSet);
-                        this.AssetSelectionService.Selected = tileSet;
-                    });
-                }
-            }
-            else if (selected is SpriteSheetFont font) {
-                var index = spriteSheet.Fonts.IndexOf(font);
-                if (index > 0) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.Fonts.Remove(font);
-                        spriteSheet.Fonts.Insert(index - 1, font);
-                        this.AssetSelectionService.Selected = font;
-                    }, () =>
-                    {
-                        spriteSheet.Fonts.Remove(font);
-                        spriteSheet.Fonts.Insert(index, font);
-                        this.AssetSelectionService.Selected = font;
-                    });
-                }
-            }
-            else if (selected is GamePadIconSet gamePadIconSet) {
-                var index = spriteSheet.GamePadIconSets.IndexOf(gamePadIconSet);
-                if (index > 0) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
-                        spriteSheet.GamePadIconSets.Insert(index - 1, gamePadIconSet);
-                        this.AssetSelectionService.Selected = gamePadIconSet;
-                    }, () =>
-                    {
-                        spriteSheet.GamePadIconSets.Remove(gamePadIconSet);
-                        spriteSheet.GamePadIconSets.Insert(index, gamePadIconSet);
-                        this.AssetSelectionService.Selected = gamePadIconSet;
-                    });
-                }
-            }
-            else if (selected is KeyboardIconSet keyboardIconSet) {
-                var index = spriteSheet.KeyboardIconSets.IndexOf(keyboardIconSet);
-                if (index > 0) {
-                    this._undoService.Do(() =>
-                    {
-                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
-                        spriteSheet.KeyboardIconSets.Insert(index - 1, keyboardIconSet);
-                        this.AssetSelectionService.Selected = keyboardIconSet;
-                    }, () =>
-                    {
-                        spriteSheet.KeyboardIconSets.Remove(keyboardIconSet);
-                        spriteSheet.KeyboardIconSets.Insert(index, keyboardIconSet);
-                        this.AssetSelectionService.Selected = keyboardIconSet;
-                    });
-                }
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            var index = collection.IndexOf(member);
+            if (index > 0) {
+                this._undoService.Do(() =>
+                {
+                    collection.RemoveMember(member);
+                    collection.InsertMember(index - 1, member);
+                    this.AssetSelectionService.Selected = member;
+                }, () =>
+                {
+                    collection.RemoveMember(member);
+                    collection.InsertMember(index, member);
+                    this.AssetSelectionService.Selected = member;
+                });
             }
         }
     }
@@ -630,33 +345,11 @@ public class ProjectTreeViewModel : BaseViewModel {
                 this._fileSystem.DeleteFile(contentNode.GetFullPath());
                 contentNode.Parent?.RemoveChild(contentNode);
                 break;
-            case SpriteSheetMember { SpriteSheet: { } spriteSheet } spriteSheetAsset:
-                switch (spriteSheetAsset) {
-                    case AutoTileSet tileSet when spriteSheet.AutoTileSets is { } tileSets:
-                        var tileSetIndex = tileSets.IndexOf(tileSet);
-                        this._undoService.Do(() => tileSets.Remove(tileSet),
-                            () => tileSets.InsertOrAdd(tileSetIndex, tileSet));
-                        break;
-                    case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is { } spriteAnimations:
-                        var spriteAnimationIndex = spriteAnimations.IndexOf(spriteAnimation);
-                        this._undoService.Do(() => spriteAnimations.Remove(spriteAnimation),
-                            () => spriteAnimations.InsertOrAdd(spriteAnimationIndex, spriteAnimation));
-                        break;
-                    case SpriteSheetFont font when spriteSheet.Fonts is { } fonts:
-                        var fontIndex = fonts.IndexOf(font);
-                        this._undoService.Do(() => fonts.Remove(font),
-                            () => fonts.InsertOrAdd(fontIndex, font));
-                        break;
-                    case GamePadIconSet gamePadIconSet when spriteSheet.GamePadIconSets is { } gamePadIconSets:
-                        var gamePadIconSetIndex = gamePadIconSets.IndexOf(gamePadIconSet);
-                        this._undoService.Do(() => gamePadIconSets.Remove(gamePadIconSet),
-                            () => gamePadIconSets.InsertOrAdd(gamePadIconSetIndex, gamePadIconSet));
-                        break;
-                    case KeyboardIconSet keyboardIconSet when spriteSheet.KeyboardIconSets is { } keyboardIconSets:
-                        var keyboardIconSetIndex = keyboardIconSets.IndexOf(keyboardIconSet);
-                        this._undoService.Do(() => keyboardIconSets.Remove(keyboardIconSet),
-                            () => keyboardIconSets.InsertOrAdd(keyboardIconSetIndex, keyboardIconSet));
-                        break;
+            case SpriteSheetMember { SpriteSheet: { } spriteSheet } member:
+                if (spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+                    var index = collection.IndexOf(member);
+                    this._undoService.Do(() => collection.RemoveMember(member),
+                        () => collection.InsertMember(index, member));
                 }
 
                 break;

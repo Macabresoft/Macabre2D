@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 [Category("Keyboard Icon Sets")]
-public class KeyboardIconSetCollection : NameableCollection<KeyboardIconSet> {
+public class KeyboardIconSetCollection : SpriteSheetMemberCollection<KeyboardIconSet> {
     /// <inheritdoc />
     public override string Name => "Keyboard Icon Sets";
 }

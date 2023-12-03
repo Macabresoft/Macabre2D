@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 [Category("Auto Tile Sets")]
-public class AutoTileSetCollection : NameableCollection<AutoTileSet> {
+public class AutoTileSetCollection : SpriteSheetMemberCollection<AutoTileSet> {
     /// <inheritdoc />
     public override string Name => "Auto Tile Sets";
 }

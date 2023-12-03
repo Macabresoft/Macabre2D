@@ -27,6 +27,8 @@ public sealed class SpriteAnimation : SpriteSheetMember {
         if (BaseGame.IsDesignMode) {
             this._steps.CollectionChanged += this.Steps_CollectionChanged;
         }
+
+        this.Name = DefaultName;
     }
 
     /// <summary>

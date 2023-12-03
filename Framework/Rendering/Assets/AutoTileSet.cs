@@ -18,6 +18,13 @@ public sealed class AutoTileSet : SpriteSheetKeyedMember<byte> {
     private readonly Dictionary<byte, byte> _tileIndexToSpriteIndex = new();
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
+    /// </summary>
+    public AutoTileSet() : base() {
+        this.Name = DefaultName;
+    }
+
+    /// <summary>
     /// Gets the size.
     /// </summary>
     /// <value>The size.</value>

@@ -8,7 +8,7 @@ using Macabresoft.Core;
 /// A base asset for assets which are packaged in a <see cref="SpriteSheet" />.
 /// </summary>
 [DataContract]
-public class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable, INameable {
+public abstract class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable, INameable {
     /// <inheritdoc />
     [DataMember]
     public Guid Id { get; set; } = Guid.NewGuid();

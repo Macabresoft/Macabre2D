@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 [Category("Fonts")]
-public class SpriteSheetFontCollection : NameableCollection<SpriteSheetFont> {
+public class SpriteSheetFontCollection : SpriteSheetMemberCollection<SpriteSheetFont> {
     /// <inheritdoc />
     public override string Name => "Fonts";
 }

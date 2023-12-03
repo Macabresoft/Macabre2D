@@ -10,4 +10,11 @@ public sealed class KeyboardIconSet : BaseIconSet<Keys> {
     /// The default name.
     /// </summary>
     public const string DefaultName = "Keyboard Icons";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="KeyboardIconSet" /> class.
+    /// </summary>
+    public KeyboardIconSet() : base() {
+        this.Name = DefaultName;
+    }
 }

@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 [Category("Animations")]
-public class SpriteAnimationCollection : NameableCollection<SpriteAnimation> {
+public class SpriteAnimationCollection : SpriteSheetMemberCollection<SpriteAnimation> {
     /// <inheritdoc />
     public override string Name => "Sprite Animations";
 }

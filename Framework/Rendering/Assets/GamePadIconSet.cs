@@ -10,4 +10,11 @@ public sealed class GamePadIconSet : BaseIconSet<Buttons> {
     /// The default name.
     /// </summary>
     public const string DefaultName = "Game Pad Icons";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GamePadIconSet" /> class.
+    /// </summary>
+    public GamePadIconSet() : base() {
+        this.Name = DefaultName;
+    }
 }

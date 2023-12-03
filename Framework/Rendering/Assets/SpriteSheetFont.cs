@@ -29,6 +29,13 @@ public class SpriteSheetFont : SpriteSheetKeyedMember<char> {
     private int _kerning;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="SpriteSheetFont" /> class.
+    /// </summary>
+    public SpriteSheetFont() : base() {
+        this.Name = DefaultName;
+    }
+
+    /// <summary>
     /// Gets the font characters and their settings.
     /// </summary>
     public IReadOnlyCollection<SpriteSheetFontCharacter> FontCharacters => this._characterIndexToCharacter.Values;

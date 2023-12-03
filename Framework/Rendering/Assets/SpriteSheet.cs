@@ -81,14 +81,14 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// Gets the game pad icon sets.
     /// </summary>
     public GamePadIconSetCollection GamePadIconSets => this._gamePadIconSets;
-    
+
+    /// <inheritdoc />
+    public override bool IncludeFileExtensionInContentPath => false;
+
     /// <summary>
     /// Gets the game pad icon sets.
     /// </summary>
     public KeyboardIconSetCollection KeyboardIconSets => this._keyboardIconSets;
-
-    /// <inheritdoc />
-    public override bool IncludeFileExtensionInContentPath => false;
 
     /// <summary>
     /// Gets the max index.
@@ -238,6 +238,44 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         contentStringBuilder.AppendLine($@"/build:{contentPath}{fileExtension}");
         contentStringBuilder.AppendLine($"#end {contentPath}");
         return contentStringBuilder.ToString();
+    }
+
+    /// <summary>
+    /// Gets the member collection associated with the provided member type.
+    /// </summary>
+    /// <param name="memberType">The member type.</param>
+    /// <returns>The collection.</returns>
+    public ISpriteSheetMemberCollection? GetMemberCollection(Type memberType) {
+        if (memberType == typeof(SpriteAnimation)) {
+            return this._spriteAnimations;
+        }
+
+        if (memberType == typeof(AutoTileSet)) {
+            return this._autoTileSets;
+        }
+
+        if (memberType == typeof(SpriteSheetFont)) {
+            return this._fonts;
+        }
+
+        if (memberType == typeof(GamePadIconSet)) {
+            return this._gamePadIconSets;
+        }
+
+        if (memberType == typeof(KeyboardIconSet)) {
+            return this._keyboardIconSets;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the member collection associated with the provided member type.
+    /// </summary>
+    /// <typeparam name="TMember">The member type.</typeparam>
+    /// <returns>The collection.</returns>
+    public SpriteSheetMemberCollection<TMember>? GetMemberCollection<TMember>() where TMember : SpriteSheetMember, new() {
+        return this.GetMemberCollection(typeof(TMember)) as SpriteSheetMemberCollection<TMember>;
     }
 
     /// <summary>
