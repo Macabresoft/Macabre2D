@@ -36,9 +36,9 @@ public static class SerializerTests {
     }
 
     private static void CompareGameSettings(IGameProject originalProject, IGameProject deserializedProject) {
-        Assert.NotNull(deserializedProject);
-        Assert.AreEqual(originalProject.ErrorSpritesColor, deserializedProject.ErrorSpritesColor);
-        Assert.AreEqual(originalProject.FallbackBackgroundColor, deserializedProject.FallbackBackgroundColor);
-        Assert.AreEqual(originalProject.PixelsPerUnit, deserializedProject.PixelsPerUnit);
+        Assert.That(deserializedProject, Is.Not.Null);
+        Assert.That(originalProject.ErrorSpritesColor, Is.EqualTo(deserializedProject.ErrorSpritesColor));
+        Assert.That(originalProject.FallbackBackgroundColor, Is.EqualTo(deserializedProject.FallbackBackgroundColor));
+        Assert.That(originalProject.PixelsPerUnit, Is.EqualTo(deserializedProject.PixelsPerUnit));
     }
 }

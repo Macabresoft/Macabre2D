@@ -16,7 +16,7 @@ public static class VectorExtensionsTests {
         var originalVector = new Vector2(x1, y1);
         var expectedVector = new Vector2(x2, y2);
         var newVector = originalVector.RotateDegrees(angle);
-        Assert.AreEqual(expectedVector.X, newVector.X, 0.01d);
-        Assert.AreEqual(expectedVector.Y, newVector.Y, 0.01d);
+        Assert.That(expectedVector.X, Is.EqualTo(newVector.X).Within(0.01d));
+        Assert.That(expectedVector.Y, Is.EqualTo(newVector.Y).Within(0.01d));
     }
 }

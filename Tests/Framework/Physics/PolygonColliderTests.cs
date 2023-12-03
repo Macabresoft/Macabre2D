@@ -36,7 +36,7 @@ public static class PolygonColliderTests {
         circleBody.SetWorldPosition(new Vector2(x2, y2));
         circleBody.Collider = new CircleCollider(r2);
 
-        Assert.AreEqual(shouldContain, quadBody.Collider.Contains(circleBody.Collider));
+        Assert.That(shouldContain, Is.EqualTo(quadBody.Collider.Contains(circleBody.Collider)));
     }
 
     [Test]
@@ -60,7 +60,7 @@ public static class PolygonColliderTests {
         quadBody.SetWorldPosition(new Vector2(x1, y1));
         quadBody.Collider = new RectangleCollider(new Vector2(-0.5f * w, -0.5f * h), new Vector2(0.5f * w, 0.5f * h));
 
-        Assert.AreEqual(shouldContain, quadBody.Collider.Contains(new Vector2(x2, y2)));
+        Assert.That(shouldContain, Is.EqualTo(quadBody.Collider.Contains(new Vector2(x2, y2))));
     }
 
     [Test]
@@ -93,7 +93,7 @@ public static class PolygonColliderTests {
         quadBody2.SetWorldPosition(new Vector2(x2, y2));
         quadBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
-        Assert.AreEqual(shouldContain, quadBody1.Collider.Contains(quadBody2.Collider));
+        Assert.That(shouldContain, Is.EqualTo(quadBody1.Collider.Contains(quadBody2.Collider)));
     }
 
     [Test]
@@ -126,27 +126,27 @@ public static class PolygonColliderTests {
         quadBody2.SetWorldPosition(new Vector2(x2, y2));
         quadBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
-        Assert.AreEqual(collisionOccured, quadBody1.Collider.CollidesWith(quadBody2.Collider, out var collision1));
-        Assert.AreEqual(collisionOccured, quadBody2.Collider.CollidesWith(quadBody1.Collider, out var collision2));
+        Assert.That(collisionOccured, Is.EqualTo(quadBody1.Collider.CollidesWith(quadBody2.Collider, out var collision1)));
+        Assert.That(collisionOccured, Is.EqualTo(quadBody2.Collider.CollidesWith(quadBody1.Collider, out var collision2)));
 
         if (collisionOccured) {
-            Assert.AreEqual(collision1.MinimumTranslationVector.Length(), collision2.MinimumTranslationVector.Length(), 0.0001f);
-            Assert.AreEqual(collision1.FirstCollider, collision2.SecondCollider);
-            Assert.AreEqual(collision1.SecondCollider, collision2.FirstCollider);
-            Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
-            Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
+            Assert.That(collision1.MinimumTranslationVector.Length(), Is.EqualTo(collision2.MinimumTranslationVector.Length()).Within(0.0001f));
+            Assert.That(collision1.FirstCollider, Is.EqualTo(collision2.SecondCollider));
+            Assert.That(collision1.SecondCollider, Is.EqualTo(collision2.FirstCollider));
+            Assert.That(collision1.FirstContainsSecond, Is.EqualTo(collision2.SecondContainsFirst));
+            Assert.That(collision1.SecondContainsFirst, Is.EqualTo(collision2.FirstContainsSecond));
 
             var originalPosition = quadBody1.WorldPosition;
             quadBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
-            Assert.False(quadBody1.Collider.CollidesWith(quadBody2.Collider, out collision1));
+            Assert.That(quadBody1.Collider.CollidesWith(quadBody2.Collider, out collision1), Is.False);
             quadBody1.SetWorldPosition(originalPosition);
 
             quadBody2.SetWorldPosition(quadBody2.WorldPosition + collision2.MinimumTranslationVector);
-            Assert.False(quadBody2.Collider.CollidesWith(quadBody1.Collider, out collision2));
+            Assert.That(quadBody2.Collider.CollidesWith(quadBody1.Collider, out collision2), Is.False);
         }
         else {
-            Assert.Null(collision1);
-            Assert.Null(collision2);
+            Assert.That(collision1, Is.Null);
+            Assert.That(collision2, Is.Null);
         }
     }
 
@@ -180,15 +180,15 @@ public static class PolygonColliderTests {
         quadBody.Collider = new RectangleCollider(new Vector2(-0.5f * qw, -0.5f * qh), new Vector2(0.5f * qw, 0.5f * qh));
 
         var ray = new LineSegment(new Vector2(rx, ry), new Vector2(directionX, directionY), distance);
-        Assert.AreEqual(shouldHit, quadBody.Collider.IsHitBy(ray, out var hit));
+        Assert.That(shouldHit, Is.EqualTo(quadBody.Collider.IsHitBy(ray, out var hit)));
 
         if (shouldHit) {
             var normal = new Vector2(nx, ny);
             var intersection = new Vector2(ix, iy);
 
-            Assert.AreEqual(normal, hit.Normal);
-            Assert.AreEqual(intersection, hit.ContactPoint);
-            Assert.AreEqual(quadBody.Collider, hit.Collider);
+            Assert.That(normal, Is.EqualTo(hit.Normal));
+            Assert.That(intersection, Is.EqualTo(hit.ContactPoint));
+            Assert.That(quadBody.Collider, Is.EqualTo(hit.Collider));
         }
     }
 }
