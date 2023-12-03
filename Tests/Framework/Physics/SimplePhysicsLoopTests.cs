@@ -34,6 +34,9 @@ public static class SimplePhysicsLoopTests {
         circleBody.Layers = (Layers)1;
         scene.Initialize(game, Substitute.For<IAssetManager>());
 
+        // Need to do this update to insure colliders are inserter.
+        physicsSystem.Update(new FrameTime(new GameTime(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)), 1), new InputState());
+
         var raycastLayer = layersCompatible ? circleBody.Layers : (Layers)2;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
         Assert.AreEqual(raycastHit, result);
