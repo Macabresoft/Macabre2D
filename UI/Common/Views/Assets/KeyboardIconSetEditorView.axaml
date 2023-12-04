@@ -26,10 +26,17 @@
             </Button>
         </StackPanel>
 
-        <local:ThumbnailSizeToggle Grid.Row="0"
-                                   Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   SelectedSize="{Binding SelectedThumbnailSize}" />
+        <Grid Grid.Row="0"
+              Grid.Column="2"
+              ColumnDefinitions="*, Auto">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding SelectedIcon.Key}"
+                       VerticalAlignment="Center"
+                       ToolTip.Tip="{Binding SelectedIcon.Key}" />
+            
+            <local:ThumbnailSizeToggle Grid.Column="1"
+                                       SelectedSize="{Binding SelectedThumbnailSize}" />
+        </Grid>
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
