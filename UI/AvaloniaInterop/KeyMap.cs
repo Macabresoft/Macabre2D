@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// A map between <see cref="Key" /> and <see cref="Keys" />.
 /// </summary>
-internal static class KeyMap {
-    private static readonly IReadOnlyDictionary<Key, Keys> _map = new Dictionary<Key, Keys> {
+public static class KeyMap {
+    private static readonly IReadOnlyDictionary<Key, Keys> Map = new Dictionary<Key, Keys> {
         { Key.A, Keys.A },
         { Key.Add, Keys.Add },
         { Key.B, Keys.B },
@@ -110,6 +110,6 @@ internal static class KeyMap {
     /// <param name="monoGameKey">The mono game key.</param>
     /// <returns>A value indicating whether or not a conversion was found.</returns>
     public static bool TryConvertKey(this Key avaloniaKey, out Keys monoGameKey) {
-        return _map.TryGetValue(avaloniaKey, out monoGameKey);
+        return Map.TryGetValue(avaloniaKey, out monoGameKey);
     }
 }

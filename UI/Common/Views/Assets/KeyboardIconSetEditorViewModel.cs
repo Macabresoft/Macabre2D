@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
@@ -15,6 +16,7 @@ using Unity;
 /// A view model for editing keyboard icon sets.
 /// </summary>
 public class KeyboardIconSetEditorViewModel : BaseViewModel {
+    private readonly ICommonDialogService _dialogService;
     private readonly IUndoService _undoService;
     private KeyboardIconIndexModel _selectedIcon;
     private SpriteDisplayModel _selectedSprite;
@@ -35,15 +37,18 @@ public class KeyboardIconSetEditorViewModel : BaseViewModel {
     /// <param name="file">The content file.</param>
     [InjectionConstructor]
     public KeyboardIconSetEditorViewModel(
+        ICommonDialogService dialogService,
         IUndoService undoService,
         KeyboardIconSet iconSet,
         SpriteSheet spriteSheet,
         ContentFile file) : base() {
+        this._dialogService = dialogService;
         this._undoService = undoService;
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
         this.SelectIconCommand = ReactiveCommand.Create<KeyboardIconIndexModel>(this.SelectIcon);
+        this.SelectIconViaKeyboardCommand = ReactiveCommand.CreateFromTask(this.SelectIconViaKeyboard);
         this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
         var keys = Enum.GetValues<Keys>().ToList();
@@ -67,6 +72,11 @@ public class KeyboardIconSetEditorViewModel : BaseViewModel {
     /// Gets the select icon command.
     /// </summary>
     public ICommand SelectIconCommand { get; }
+
+    /// <summary>
+    /// Gets a command to select an icon via pressing a key on the keyboard.
+    /// </summary>
+    public ICommand SelectIconViaKeyboardCommand { get; }
 
     /// <summary>
     /// Gets the sprite collection.
@@ -127,6 +137,13 @@ public class KeyboardIconSetEditorViewModel : BaseViewModel {
             this.SelectedIcon = icon;
             // HACK: this makes things work well in the UI, just trust me.
             Dispatcher.UIThread.Post(() => this.RaisePropertyChanged(nameof(this.SelectedIcon)), DispatcherPriority.ApplicationIdle);
+        }
+    }
+
+    private async Task SelectIconViaKeyboard() {
+        var key = await this._dialogService.ShowKeySelectDialog();
+        if (key != null && this.Icons.FirstOrDefault(x => x.Key == key) is { } icon) {
+            this.SelectedIcon = icon;
         }
     }
 }

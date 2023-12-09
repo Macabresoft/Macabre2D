@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework.Input;
 using Unity;
 using Unity.Resolution;
 
@@ -78,6 +79,12 @@ public interface ICommonDialogService : IBaseDialogService {
     /// <param name="title">The title of the window.</param>
     /// <returns>The path of the selected file.</returns>
     Task<string> ShowSingleFileSelectionDialog(string title);
+
+    /// <summary>
+    /// Shows a dialog to select a key.
+    /// </summary>
+    /// <returns>Selects a key.</returns>
+    Task<Keys?> ShowKeySelectDialog();
 }
 
 /// <summary>
@@ -195,5 +202,12 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         }
 
         return null;
+    }
+
+    /// <inheritdoc />
+    public async Task<Keys?> ShowKeySelectDialog() {
+        var window = Resolver.Resolve<KeySelectDialog>();
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+        return result ? window.SelectedKey : null;
     }
 }

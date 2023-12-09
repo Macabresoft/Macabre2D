@@ -19,10 +19,15 @@
                     Grid.Column="0"
                     Orientation="Horizontal">
             <Button Classes="Icon"
-                    Margin="{StaticResource StandardMarginAll}"
                     Command="{Binding ClearSpriteCommand}"
                     ToolTip.Tip="Clear the selected icon's sprite assignment">
                 <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+            
+            <Button Classes="Icon"
+                    Command="{Binding SelectIconViaKeyboardCommand}"
+                    ToolTip.Tip="Select a key via pressing it on a keyboard">
+                <avaloniaEx:Icon Content="{StaticResource Keyboard123Icon}" />
             </Button>
         </StackPanel>
 

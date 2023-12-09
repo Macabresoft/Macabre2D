@@ -130,6 +130,10 @@
           <DependentUpon>KeyboardIconSetEditorView.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Dialogs\KeySelectDialog.axaml.cs">
+          <DependentUpon>KeySelectDialog.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
