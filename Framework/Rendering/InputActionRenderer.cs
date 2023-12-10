@@ -13,7 +13,8 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
-    private Buttons _button = Buttons.A;
+    private Buttons _button = Buttons.None;
+    private Keys _key = Keys.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
 
@@ -34,6 +35,12 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// </summary>
     [DataMember]
     public GamePadIconSetReference GamePadXReference { get; } = new();
+
+    /// <summary>
+    /// Gets the icon set reference for keyboards.
+    /// </summary>
+    [DataMember]
+    public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this._spriteIndex;
@@ -60,34 +67,26 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.Game.InputDisplayChanged -= this.Game_InputDisplayChanged;
         this.Game.SettingsSaved -= this.Game_SettingsSaved;
 
-        this.GamePadNReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
+        this.GamePadNReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
+        this.GamePadSReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
+        this.GamePadXReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
 
         base.Initialize(scene, parent);
 
         this.GamePadNReference.Initialize(this.Scene.Assets);
         this.GamePadSReference.Initialize(this.Scene.Assets);
         this.GamePadXReference.Initialize(this.Scene.Assets);
+        this.KeyboardReference.Initialize(this.Scene.Assets);
 
-        this.GamePadNReference.PropertyChanged += this.GamePadReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged += this.GamePadReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged += this.GamePadReference_PropertyChanged;
+        this.GamePadNReference.PropertyChanged += this.IconSetReference_PropertyChanged;
+        this.GamePadSReference.PropertyChanged += this.IconSetReference_PropertyChanged;
+        this.GamePadXReference.PropertyChanged += this.IconSetReference_PropertyChanged;
+        this.KeyboardReference.PropertyChanged += this.IconSetReference_PropertyChanged;
 
         this.Game.InputDisplayChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
+        this.ResetBindings();
         this.ResetSprite();
-    }
-
-    /// <summary>
-    /// Tries to get the bindings for the current <see cref="Action" />.
-    /// </summary>
-    /// <param name="buttons">The buttons.</param>
-    /// <param name="key">The key.</param>
-    /// <param name="mouseButton">The mouse button</param>
-    /// <returns>A value indicating whether or not the bindings were found.</returns>
-    protected virtual bool TryGetBindings(out Buttons buttons, out Keys key, out MouseButton mouseButton) {
-        return this.Game.InputBindings.TryGetBindings(this._action, out buttons, out key, out mouseButton);
     }
 
     private void Game_InputDisplayChanged(object? sender, InputDisplay e) {
@@ -98,19 +97,26 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.ResetBindings();
     }
 
-    private void GamePadReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(GamePadIconSetReference.ContentId)) {
+    private static Buttons GetFirst(Buttons buttons) {
+        if (buttons == Buttons.None) {
+            return buttons;
+        }
+
+        var allButtons = Enum.GetValues<Buttons>().ToList();
+        allButtons.Remove(Buttons.None);
+        return allButtons.FirstOrDefault(x => buttons.HasFlag(x));
+    }
+
+    private void IconSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(this.GamePadXReference.ContentId)) {
             this.ResetSprite();
         }
     }
 
-    private static Buttons GetFirst(Buttons buttons) {
-        return buttons == Buttons.None ? buttons : Enum.GetValues<Buttons>().FirstOrDefault(x => buttons.HasFlag(x));
-    }
-
     private void ResetBindings() {
-        if (this.TryGetBindings(out var buttons, out var key, out var mouseButton)) {
-            this._button = GetFirst(buttons);
+        if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out _)) {
+            this._button = GetFirst(button);
+            this._key = key;
         }
 
         if (this.IsInitialized) {
@@ -119,22 +125,27 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
-        var iconSet = this.Game.InputDisplayStyle switch {
-            InputDisplay.GamePadX => this.GamePadXReference.PackagedAsset,
-            InputDisplay.GamePadN => this.GamePadNReference.PackagedAsset,
-            InputDisplay.GamePadS => this.GamePadSReference.PackagedAsset,
-            InputDisplay.Auto => null,
-            InputDisplay.Keyboard => null,
-            _ => null
-        };
+        this._spriteIndex = null;
+        this._spriteSheet = null;
 
-        if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
-            this._spriteIndex = index;
-            this._spriteSheet = iconSet.SpriteSheet;
+        if (this.Game.InputDisplayStyle == InputDisplay.Keyboard) {
+            if (this.KeyboardReference.PackagedAsset is { } iconSet && iconSet.TryGetSpriteIndex(this._key, out var index)) {
+                this._spriteIndex = index;
+                this._spriteSheet = iconSet.SpriteSheet;
+            }
         }
         else {
-            this._spriteIndex = null;
-            this._spriteSheet = null;
+            var iconSet = this.Game.InputDisplayStyle switch {
+                InputDisplay.GamePadX => this.GamePadXReference.PackagedAsset,
+                InputDisplay.GamePadN => this.GamePadNReference.PackagedAsset,
+                InputDisplay.GamePadS => this.GamePadSReference.PackagedAsset,
+                _ => null
+            };
+
+            if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
+                this._spriteIndex = index;
+                this._spriteSheet = iconSet.SpriteSheet;
+            }
         }
 
         this.Reset();

@@ -177,17 +177,21 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <returns>A collection of <see cref="SpriteSheetMember" />.</returns>
     public IReadOnlyCollection<TAsset> GetAssets<TAsset>() where TAsset : SpriteSheetMember {
         IReadOnlyCollection<TAsset> result;
-        if (typeof(TAsset) == typeof(SpriteAnimation)) {
+        var type = typeof(TAsset);
+        if (type == typeof(SpriteAnimation)) {
             result = (IReadOnlyCollection<TAsset>)this._spriteAnimations;
         }
-        else if (typeof(TAsset) == typeof(AutoTileSet)) {
+        else if (type == typeof(AutoTileSet)) {
             result = (IReadOnlyCollection<TAsset>)this._autoTileSets;
         }
-        else if (typeof(TAsset) == typeof(SpriteSheetFont)) {
+        else if (type == typeof(SpriteSheetFont)) {
             result = (IReadOnlyCollection<TAsset>)this._fonts;
         }
-        else if (typeof(TAsset) == typeof(GamePadIconSet)) {
+        else if (type == typeof(GamePadIconSet)) {
             result = (IReadOnlyCollection<TAsset>)this._gamePadIconSets;
+        }
+        else if (type == typeof(KeyboardIconSet)) {
+            result = (IReadOnlyCollection<TAsset>)this._keyboardIconSets;
         }
         else {
             result = new List<TAsset>();
