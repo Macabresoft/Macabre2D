@@ -9,6 +9,7 @@
         <RootNamespace>Macabresoft.Macabre2D.Platforms.DesktopGL</RootNamespace>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <OutputPath>..\..\bin\$(Configuration)\DesktopGL</OutputPath>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <None Remove="Icon.ico"/>

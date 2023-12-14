@@ -5,6 +5,7 @@
         <RepositoryUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</RepositoryUrl>
         <PackageIcon>icon.png</PackageIcon>
         <Nullable>enable</Nullable>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>
