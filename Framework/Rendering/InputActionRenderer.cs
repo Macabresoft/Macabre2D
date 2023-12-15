@@ -43,7 +43,9 @@ public class InputActionRenderer : BaseSpriteEntity {
     public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <inheritdoc />
-    public override byte? SpriteIndex => this._spriteIndex;
+    public override byte? SpriteIndex {
+        get => this._spriteIndex;
+    }
 
     /// <summary>
     /// Gets the input action to display.
@@ -60,7 +62,9 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheet? SpriteSheet => this._spriteSheet;
+    protected override SpriteSheet? SpriteSheet {
+        get => this._spriteSheet;
+    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -86,7 +90,6 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.Game.InputDisplayChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
         this.ResetBindings();
-        this.ResetSprite();
     }
 
     private void Game_InputDisplayChanged(object? sender, InputDisplay e) {
@@ -114,12 +117,12 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void ResetBindings() {
-        if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out _)) {
-            this._button = GetFirst(button);
-            this._key = key;
-        }
-
         if (this.IsInitialized) {
+            if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out _)) {
+                this._button = GetFirst(button);
+                this._key = key;
+            }
+
             this.ResetSprite();
         }
     }
