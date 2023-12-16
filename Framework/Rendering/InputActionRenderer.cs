@@ -89,7 +89,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         this.Game.InputDisplayChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
-        this.ResetBindings();
+        this.Scene.Invoke(this.ResetBindings);
     }
 
     private void Game_InputDisplayChanged(object? sender, InputDisplay e) {
@@ -108,6 +108,19 @@ public class InputActionRenderer : BaseSpriteEntity {
         var allButtons = Enum.GetValues<Buttons>().ToList();
         allButtons.Remove(Buttons.None);
         return allButtons.FirstOrDefault(x => buttons.HasFlag(x));
+    }
+
+    private GamePadIconSet? GetGamePadIconSet() {
+        return this.Game.InputDisplayStyle switch {
+            InputDisplay.GamePadX => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
+            InputDisplay.GamePadN => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,
+            InputDisplay.GamePadS => this.GamePadSReference.PackagedAsset ?? this.Project.GamePadSReference.PackagedAsset,
+            _ => null
+        };
+    }
+
+    private KeyboardIconSet? GetKeyboardIconSet() {
+        return this.KeyboardReference.PackagedAsset ?? this.Project.KeyboardReference.PackagedAsset;
     }
 
     private void IconSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -132,18 +145,14 @@ public class InputActionRenderer : BaseSpriteEntity {
         this._spriteSheet = null;
 
         if (this.Game.InputDisplayStyle == InputDisplay.Keyboard) {
-            if (this.KeyboardReference.PackagedAsset is { } iconSet && iconSet.TryGetSpriteIndex(this._key, out var index)) {
+            var iconSet = this.GetKeyboardIconSet();
+            if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
                 this._spriteIndex = index;
                 this._spriteSheet = iconSet.SpriteSheet;
             }
         }
         else {
-            var iconSet = this.Game.InputDisplayStyle switch {
-                InputDisplay.GamePadX => this.GamePadXReference.PackagedAsset,
-                InputDisplay.GamePadN => this.GamePadNReference.PackagedAsset,
-                InputDisplay.GamePadS => this.GamePadSReference.PackagedAsset,
-                _ => null
-            };
+            var iconSet = this.GetGamePadIconSet();
 
             if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
                 this._spriteIndex = index;

@@ -33,6 +33,29 @@ public interface IGameProject : INotifyPropertyChanged {
     UserSettings DefaultUserSettings { get; }
 
     /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
+    /// </summary>
+    GamePadIconSetReference GamePadNReference { get; }
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
+    /// </summary>
+    [DataMember]
+    GamePadIconSetReference GamePadSReference { get; }
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
+    /// </summary>
+    [DataMember]
+    GamePadIconSetReference GamePadXReference { get; }
+
+    /// <summary>
+    /// Gets the icon set reference for keyboards.
+    /// </summary>
+    [DataMember]
+    KeyboardIconSetReference KeyboardReference { get; }
+
+    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -81,6 +104,12 @@ public interface IGameProject : INotifyPropertyChanged {
     /// <param name="pixelViewHeight">Height of the pixel view.</param>
     /// <returns>A pixel agnostic ratio.</returns>
     float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
+
+    /// <summary>
+    /// Initializes this instance.
+    /// </summary>
+    /// <param name="assets">The asset manager.</param>
+    void Initialize(IAssetManager assets);
 }
 
 /// <summary>
@@ -140,6 +169,34 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
 
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
+    /// </summary>
+    [Category("Input Display")]
+    [DataMember]
+    public GamePadIconSetReference GamePadNReference { get; } = new();
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
+    /// </summary>
+    [Category("Input Display")]
+    [DataMember]
+    public GamePadIconSetReference GamePadSReference { get; } = new();
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
+    /// </summary>
+    [Category("Input Display")]
+    [DataMember]
+    public GamePadIconSetReference GamePadXReference { get; } = new();
+
+    /// <summary>
+    /// Gets the icon set reference for keyboards.
+    /// </summary>
+    [Category("Input Display")]
+    [DataMember]
+    public KeyboardIconSetReference KeyboardReference { get; } = new();
+
     /// <inheritdoc />
     [DataMember]
     public float CommonViewHeight {
@@ -193,5 +250,13 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
         return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
+    }
+
+    /// <inheritdoc />
+    public void Initialize(IAssetManager assets) {
+        this.GamePadNReference.Initialize(assets);
+        this.GamePadSReference.Initialize(assets);
+        this.GamePadXReference.Initialize(assets);
+        this.KeyboardReference.Initialize(assets);
     }
 }

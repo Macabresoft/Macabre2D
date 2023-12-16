@@ -371,6 +371,8 @@ public sealed class Scene : GridContainer, IScene {
                 this.Assets = assetManager;
                 this._game = game;
                 
+                this.Project.Initialize(this.Assets);
+                
                 foreach (var loop in this.Loops) {
                     loop.Initialize(this);
                 }
