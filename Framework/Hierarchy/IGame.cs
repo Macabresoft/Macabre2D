@@ -67,7 +67,9 @@ public interface IGame {
     /// <summary>
     /// Gets the state of input.
     /// </summary>
-    InputState InputState => new();
+    InputState InputState {
+        get => new();
+    }
 
     /// <summary>
     /// Gets the project.

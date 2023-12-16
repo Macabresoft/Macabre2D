@@ -27,6 +27,11 @@ public interface IProjectService : INotifyPropertyChanged {
     GameProject LoadProject();
 
     /// <summary>
+    /// Reloads the project.
+    /// </summary>
+    void ReloadProject();
+
+    /// <summary>
     /// Saves the currently opened project.
     /// </summary>
     void SaveProject();
@@ -93,18 +98,23 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         }
         else {
             this._contentService.RefreshContent(this._settingsService.Settings.ShouldRebuildContent);
-            this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
-            var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
-            if (!this._sceneService.TryLoadScene(sceneId, out _)) {
-                var scenes = this._contentService.RootContentDirectory.GetAllContentFiles().Where(x => x.Asset is SceneAsset).ToList();
-                if (!scenes.Any()) {
-                    this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
-                    this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
-                }
-            }
+            this.ReloadProject();
         }
 
         return this.CurrentProject;
+    }
+
+    /// <inheritdoc />
+    public void ReloadProject() {
+        this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
+        var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
+        if (!this._sceneService.TryLoadScene(sceneId, out _)) {
+            var scenes = this._contentService.RootContentDirectory.GetAllContentFiles().Where(x => x.Asset is SceneAsset).ToList();
+            if (scenes.Count == 0) {
+                this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+                this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
+            }
+        }
     }
 
     /// <inheritdoc />

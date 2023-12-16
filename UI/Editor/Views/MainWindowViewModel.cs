@@ -16,6 +16,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly IProjectService _projectService;
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
@@ -36,6 +37,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="game">The game.</param>
+    /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="settingsService">The editor settings service.</param>
@@ -47,6 +49,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         ICommonDialogService dialogService,
         IEditorService editorService,
         IEditorGame game,
+        IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
         IEditorSettingsService settingsService,
@@ -56,6 +59,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this._dialogService = dialogService;
         this.EditorService = editorService;
         this.Game = game;
+        this._projectService = projectService;
         this._saveService = saveService;
         this._sceneService = sceneService;
         this._settingsService = settingsService;
@@ -160,13 +164,13 @@ public class MainWindowViewModel : UndoBaseViewModel {
                 this.IsBusy = true;
 
                 var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
-                this._assetSelectionService.Selected = null;
-
-                await Task.Run(() => this._contentService.RefreshContent(true));
-
                 if (sceneContentId != null) {
-                    this._sceneService.TryLoadScene(sceneContentId.Value, out _);
+                    this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
                 }
+
+                this._assetSelectionService.Selected = null;
+                await Task.Run(() => this._contentService.RefreshContent(true));
+                this._projectService.ReloadProject();
             }
             finally {
                 this.IsBusy = false;

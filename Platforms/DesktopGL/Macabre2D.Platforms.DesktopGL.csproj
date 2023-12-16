@@ -33,7 +33,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj"/>
-        <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj" />
+        <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj"/>
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
         <Message Text="Restoring dotnet tools" Importance="High"/>
