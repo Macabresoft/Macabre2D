@@ -20,7 +20,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
-    private bool _isBusy;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -33,6 +32,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
     /// </summary>
     /// <param name="assetSelectionService">The asset selection service.</param>
+    /// <param name="busyService">The busy service.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
@@ -45,6 +45,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     [InjectionConstructor]
     public MainWindowViewModel(
         IAssetSelectionService assetSelectionService,
+        IBusyService busyService,
         IContentService contentService,
         ICommonDialogService dialogService,
         IEditorService editorService,
@@ -55,6 +56,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         IEditorSettingsService settingsService,
         IUndoService undoService) : base(undoService) {
         this._assetSelectionService = assetSelectionService;
+        this.BusyService = busyService;
         this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
@@ -75,6 +77,11 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
         this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
     }
+
+    /// <summary>
+    /// Gets the busy service.
+    /// </summary>
+    public IBusyService BusyService { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -131,14 +138,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// </summary>
     public ICommand ViewSourceCommand { get; }
 
-    /// <summary>
-    /// Gets a value indicating whether or not this is busy.
-    /// </summary>
-    public bool IsBusy {
-        get => this._isBusy;
-        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
-    }
-
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose(window) != YesNoCancelResult.Cancel) {
             window.Close();
@@ -158,22 +157,19 @@ public class MainWindowViewModel : UndoBaseViewModel {
     }
 
     private async Task RebuildContent() {
-        var result = await this._saveService.RequestSave();
-        if (result != YesNoCancelResult.Cancel) {
-            try {
-                this.IsBusy = true;
+        if (this.BusyService.TryClaimBusy(out var busyClaim)) {
+            using (busyClaim) {
+                var result = await this._saveService.RequestSave();
+                if (result != YesNoCancelResult.Cancel) {
+                    var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
+                    if (sceneContentId != null) {
+                        this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
+                    }
 
-                var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
-                if (sceneContentId != null) {
-                    this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
+                    this._assetSelectionService.Selected = null;
+                    await Task.Run(() => this._contentService.RefreshContent(true));
+                    this._projectService.ReloadProject();
                 }
-
-                this._assetSelectionService.Selected = null;
-                await Task.Run(() => this._contentService.RefreshContent(true));
-                this._projectService.ReloadProject();
-            }
-            finally {
-                this.IsBusy = false;
             }
         }
     }
