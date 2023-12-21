@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a container that holds <see cref="IDockable" /> entities.
 /// </summary>
-public interface IDockingContainer {
+public interface IDockingContainer : IBoundable {
     /// <summary>
     /// Requests this container to rearrange the <see cref="IDockable" /> provided.
     /// </summary>
