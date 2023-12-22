@@ -56,19 +56,27 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public AudioSettings AudioSettings => this.UserSettings.Audio;
+    public AudioSettings AudioSettings {
+        get => this.UserSettings.Audio;
+    }
 
     /// <inheritdoc />
-    public DisplaySettings DisplaySettings => this.UserSettings.Display;
+    public DisplaySettings DisplaySettings {
+        get => this.UserSettings.Display;
+    }
 
     /// <inheritdoc />
-    public InputBindings InputBindings => this.UserSettings.Input;
+    public InputBindings InputBindings {
+        get => this.UserSettings.Input;
+    }
 
     /// <inheritdoc />
     public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
 
     /// <inheritdoc />
-    public Point ViewportSize => this._viewportSize;
+    public Point ViewportSize {
+        get => this._viewportSize;
+    }
 
     /// <inheritdoc />
     public IScene CurrentScene {
@@ -368,10 +376,10 @@ public class BaseGame : Game, IGame {
 
         if (!IsDesignMode) {
             if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
-                if (this.InputState.CurrentGamePadState.IsConnected && this.InputState.CurrentGamePadState.Buttons.GetHashCode() != 0) {
+                if (this.InputState.IsGamePadActive()) {
                     this.InputDisplayStyle = InputDisplay.GamePadX;
                 }
-                else if (this.InputState.CurrentKeyboardState.GetPressedKeyCount() > 0) {
+                else if (this.InputState.IsKeyboardActive()) {
                     this.InputDisplayStyle = InputDisplay.Keyboard;
                 }
             }
@@ -391,27 +399,48 @@ public class BaseGame : Game, IGame {
         public event EventHandler<InputDisplay>? InputDisplayChanged;
         public event EventHandler? SettingsSaved;
         public event EventHandler<Point>? ViewportSizeChanged;
-        public AudioSettings AudioSettings => this.UserSettings.Audio;
-        public ContentManager? Content => null;
 
-        public IScene CurrentScene => Scene.Empty;
+        public AudioSettings AudioSettings {
+            get => this.UserSettings.Audio;
+        }
 
-        public DisplaySettings DisplaySettings => this.UserSettings.Display;
+        public ContentManager? Content {
+            get => null;
+        }
 
-        public GraphicsDevice? GraphicsDevice => null;
+        public IScene CurrentScene {
+            get => Scene.Empty;
+        }
 
-        public InputBindings InputBindings => this.UserSettings.Input;
-        public InputDisplay InputDisplayStyle => InputDisplay.GamePadX;
+        public DisplaySettings DisplaySettings {
+            get => this.UserSettings.Display;
+        }
+
+        public GraphicsDevice? GraphicsDevice {
+            get => null;
+        }
+
+        public InputBindings InputBindings {
+            get => this.UserSettings.Input;
+        }
+
+        public InputDisplay InputDisplayStyle {
+            get => InputDisplay.GamePadX;
+        }
 
         public IGameProject Project { get; } = new GameProject();
 
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
-        public SpriteBatch? SpriteBatch => null;
+        public SpriteBatch? SpriteBatch {
+            get => null;
+        }
 
         public UserSettings UserSettings { get; } = new();
 
-        public Point ViewportSize => default;
+        public Point ViewportSize {
+            get => default;
+        }
 
         public double GameSpeed {
             get => 1f;

@@ -54,6 +54,36 @@ public struct InputState {
     }
 
     /// <summary>
+    /// Checks whether any game pad buttons are being pressed.
+    /// </summary>
+    /// <returns>A value indicating whether or not any game pad buttons are being pressed.</returns>
+    public bool IsGamePadActive() {
+        // The D-Pad and Thumbsticks aren't a part of Buttons.GetHashCode() so they need a special check.
+        return this.CurrentGamePadState.IsConnected &&
+               (this.CurrentGamePadState.Buttons.GetHashCode() != 0 ||
+                this.IsGamePadButtonHeld(Buttons.DPadLeft) ||
+                this.IsGamePadButtonHeld(Buttons.DPadUp) ||
+                this.IsGamePadButtonHeld(Buttons.DPadRight) ||
+                this.IsGamePadButtonHeld(Buttons.DPadDown) ||
+                this.IsGamePadButtonHeld(Buttons.LeftThumbstickLeft) ||
+                this.IsGamePadButtonHeld(Buttons.LeftThumbstickUp) ||
+                this.IsGamePadButtonHeld(Buttons.LeftThumbstickRight) ||
+                this.IsGamePadButtonHeld(Buttons.LeftThumbstickDown) ||
+                this.IsGamePadButtonHeld(Buttons.RightThumbstickLeft) ||
+                this.IsGamePadButtonHeld(Buttons.RightThumbstickUp) ||
+                this.IsGamePadButtonHeld(Buttons.RightThumbstickRight) ||
+                this.IsGamePadButtonHeld(Buttons.RightThumbstickDown));
+    }
+
+    /// <summary>
+    /// Checks whether any keyboard keys are being pressed.
+    /// </summary>
+    /// <returns>A value indicating whether or not any keyboard keys are being pressed.</returns>
+    public bool IsKeyboardActive() {
+        return this.CurrentKeyboardState.GetPressedKeyCount() > 0;
+    }
+
+    /// <summary>
     /// Gets the button's current state.
     /// </summary>
     /// <param name="button">The game pad button.</param>
