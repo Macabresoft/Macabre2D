@@ -26,6 +26,13 @@ public interface IAssetManager : IDisposable {
     IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : class, IAsset;
 
     /// <summary>
+    /// Gets all assets of the specified type with their associated metadata. This can be an expensive operation.
+    /// </summary>
+    /// <typeparam name="TAsset">The asset type.</typeparam>
+    /// <returns>All assets of the specified type with their associated metadata.</returns>
+    IEnumerable<(TAsset asset, ContentMetadata metadata)> GetAssetsOfTypeWithMetadata<TAsset>() where TAsset : class, IAsset;
+
+    /// <summary>
     /// Initializes this instance.
     /// </summary>
     /// <param name="contentManager">The content manager.</param>
@@ -119,15 +126,20 @@ public sealed class AssetManager : IAssetManager {
 
     /// <inheritdoc />
     public IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : class, IAsset {
+        return this.GetAssetsOfTypeWithMetadata<TAsset>().Select(x => x.asset);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<(TAsset asset, ContentMetadata metadata)> GetAssetsOfTypeWithMetadata<TAsset>() where TAsset : class, IAsset {
         if (this._contentManager != null) {
             var directory = Path.Combine(this._contentManager.RootDirectory, ContentMetadata.MetadataDirectoryName);
             var files = Directory.GetFiles(directory).Select(Path.GetFileNameWithoutExtension).OfType<string>();
-            var assets = new List<TAsset>();
+            var assets = new List<(TAsset, ContentMetadata)>();
             foreach (var file in files) {
                 try {
                     var contentId = new Guid(file);
                     if (this.TryGetMetadata(contentId, out var metadata) && metadata.Asset is TAsset foundAsset) {
-                        assets.Add(foundAsset);
+                        assets.Add((foundAsset, metadata));
                     }
                 }
                 catch {
@@ -138,7 +150,7 @@ public sealed class AssetManager : IAssetManager {
             return assets;
         }
 
-        return Enumerable.Empty<TAsset>();
+        return Enumerable.Empty<(TAsset, ContentMetadata)>();
     }
 
     /// <inheritdoc />
@@ -265,6 +277,10 @@ public sealed class AssetManager : IAssetManager {
 
         public IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : class, IAsset {
             return Enumerable.Empty<TAsset>();
+        }
+
+        public IEnumerable<(TAsset asset, ContentMetadata metadata)> GetAssetsOfTypeWithMetadata<TAsset>() where TAsset : class, IAsset {
+            return Enumerable.Empty<(TAsset, ContentMetadata)>();
         }
 
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
