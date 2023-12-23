@@ -58,21 +58,8 @@ public struct InputState {
     /// </summary>
     /// <returns>A value indicating whether or not any game pad buttons are being pressed.</returns>
     public bool IsGamePadActive() {
-        // The D-Pad and Thumbsticks aren't a part of Buttons.GetHashCode() so they need a special check.
         return this.CurrentGamePadState.IsConnected &&
-               (this.CurrentGamePadState.Buttons.GetHashCode() != 0 ||
-                this.IsGamePadButtonHeld(Buttons.DPadLeft) ||
-                this.IsGamePadButtonHeld(Buttons.DPadUp) ||
-                this.IsGamePadButtonHeld(Buttons.DPadRight) ||
-                this.IsGamePadButtonHeld(Buttons.DPadDown) ||
-                this.IsGamePadButtonHeld(Buttons.LeftThumbstickLeft) ||
-                this.IsGamePadButtonHeld(Buttons.LeftThumbstickUp) ||
-                this.IsGamePadButtonHeld(Buttons.LeftThumbstickRight) ||
-                this.IsGamePadButtonHeld(Buttons.LeftThumbstickDown) ||
-                this.IsGamePadButtonHeld(Buttons.RightThumbstickLeft) ||
-                this.IsGamePadButtonHeld(Buttons.RightThumbstickUp) ||
-                this.IsGamePadButtonHeld(Buttons.RightThumbstickRight) ||
-                this.IsGamePadButtonHeld(Buttons.RightThumbstickDown));
+               this.TryGetFirstActiveButton(out _);
     }
 
     /// <summary>
@@ -81,6 +68,44 @@ public struct InputState {
     /// <returns>A value indicating whether or not any keyboard keys are being pressed.</returns>
     public bool IsKeyboardActive() {
         return this.CurrentKeyboardState.GetPressedKeyCount() > 0;
+    }
+
+    /// <summary>
+    /// Tries to get the first active button.
+    /// </summary>
+    /// <param name="button">The found button.</param>
+    /// <returns>A value indicating whether or not a button was found.</returns>
+    public bool TryGetFirstActiveButton(out Buttons button) {
+        button = Buttons.None;
+        var availableButtons = Enum.GetValues<Buttons>();
+
+        foreach (var availableButton in availableButtons) {
+            if (availableButton != Buttons.None && this.IsGamePadButtonNewlyPressed(availableButton)) {
+                button = availableButton;
+                break;
+            }
+        }
+
+        return button != Buttons.None;
+    }
+
+    /// <summary>
+    /// Tries to get the first active key.
+    /// </summary>
+    /// <param name="key">The found key.</param>
+    /// <returns>A value indicating whether or not a key was found.</returns>
+    public bool TryGetFirstActiveKey(out Keys key) {
+        key = Keys.None;
+        var availableKeys = Enum.GetValues<Keys>();
+
+        foreach (var availableKey in availableKeys) {
+            if (availableKey != Keys.None && this.IsKeyNewlyPressed(availableKey)) {
+                key = availableKey;
+                break;
+            }
+        }
+
+        return key != Keys.None;
     }
 
     /// <summary>
