@@ -15,9 +15,9 @@ public interface IGame {
     event EventHandler<double> GameSpeedChanged;
 
     /// <summary>
-    /// Occurs when the input display has changed.
+    /// Occurs when the input device has changed.
     /// </summary>
-    event EventHandler<InputDisplay> InputDisplayChanged;
+    event EventHandler<InputDevice> InputDeviceChanged;
 
     /// <summary>
     /// Occurs when the settings are saved.
@@ -60,9 +60,9 @@ public interface IGame {
     InputBindings InputBindings { get; }
 
     /// <summary>
-    /// Gets the way input should be displayed.
+    /// Gets the desired input device.
     /// </summary>
-    InputDisplay InputDisplayStyle { get; }
+    InputDevice DesiredInputDevice { get; }
 
     /// <summary>
     /// Gets the state of input.

@@ -76,9 +76,9 @@ public interface IEditorService : INotifyPropertyChanged {
     byte GridDivisions { get; set; }
 
     /// <summary>
-    /// Gets or sets the input display.
+    /// Gets or sets the input device.
     /// </summary>
-    InputDisplay InputDisplay { get; set; }
+    InputDevice InputDeviceDisplay { get; set; }
 
     /// <summary>
     /// Gets or sets the layers to be rendered.
@@ -208,10 +208,10 @@ public class EditorService : ReactiveObject, IEditorService {
     }
 
     /// <inheritdoc />
-    public InputDisplay InputDisplay {
-        get => this._settingsService.Settings.InputDisplay;
+    public InputDevice InputDeviceDisplay {
+        get => this._settingsService.Settings.InputDeviceDisplay;
         set {
-            this._settingsService.Settings.InputDisplay = value;
+            this._settingsService.Settings.InputDeviceDisplay = value;
             this.RaisePropertyChanged();
         }
     }

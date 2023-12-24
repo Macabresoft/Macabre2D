@@ -68,11 +68,11 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     public IGizmo SelectedGizmo { get; private set; }
 
     /// <summary>
-    /// Sets the input display style.
+    /// Sets the input device to display.
     /// </summary>
-    /// <param name="inputDisplay">The input display to use.</param>
-    public void SetInputDisplayStyle(InputDisplay inputDisplay) {
-        this.InputDisplayStyle = inputDisplay;
+    /// <param name="inputDevice">The input device to display.</param>
+    public void SetInputDeviceDisplay(InputDevice inputDevice) {
+        this.DesiredInputDevice = inputDevice;
     }
 
     /// <inheritdoc />
@@ -124,7 +124,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     protected override void Update(GameTime gameTime) {
         if (!this._busyService.IsBusy) {
             base.Update(gameTime);
-            this.InputDisplayStyle = this._editorService.InputDisplay;
+            this.DesiredInputDevice = this._editorService.InputDeviceDisplay;
         }
     }
 

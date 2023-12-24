@@ -68,7 +68,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
-        this.Game.InputDisplayChanged -= this.Game_InputDisplayChanged;
+        this.Game.InputDeviceChanged -= this.Game_InputDisplayChanged;
         this.Game.SettingsSaved -= this.Game_SettingsSaved;
 
         this.GamePadNReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
@@ -87,12 +87,12 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.GamePadXReference.PropertyChanged += this.IconSetReference_PropertyChanged;
         this.KeyboardReference.PropertyChanged += this.IconSetReference_PropertyChanged;
 
-        this.Game.InputDisplayChanged += this.Game_InputDisplayChanged;
+        this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
         this.Scene.Invoke(this.ResetBindings);
     }
 
-    private void Game_InputDisplayChanged(object? sender, InputDisplay e) {
+    private void Game_InputDisplayChanged(object? sender, InputDevice e) {
         this.ResetSprite();
     }
 
@@ -111,10 +111,10 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private GamePadIconSet? GetGamePadIconSet() {
-        return this.Game.InputDisplayStyle switch {
-            InputDisplay.GamePadX => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
-            InputDisplay.GamePadN => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,
-            InputDisplay.GamePadS => this.GamePadSReference.PackagedAsset ?? this.Project.GamePadSReference.PackagedAsset,
+        return this.Game.InputBindings.DesiredGamePad switch {
+            GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
+            GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,
+            GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.GamePadSReference.PackagedAsset,
             _ => null
         };
     }
@@ -144,7 +144,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         this._spriteIndex = null;
         this._spriteSheet = null;
 
-        if (this.Game.InputDisplayStyle == InputDisplay.Keyboard) {
+        if (this.Game.DesiredInputDevice == InputDevice.KeyboardMouse) {
             var iconSet = this.GetKeyboardIconSet();
             if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
                 this._spriteIndex = index;

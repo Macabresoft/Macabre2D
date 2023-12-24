@@ -22,9 +22,9 @@ public class BaseGame : Game, IGame {
 
     private bool _canToggleFullscreen = true;
 
-    private double _gameSpeed = 1d;
+    private InputDevice _desiredInputDevice = InputDevice.Auto;
 
-    private InputDisplay _inputDisplayStyle = InputDisplay.Auto;
+    private double _gameSpeed = 1d;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
     private Point _viewportSize;
@@ -33,7 +33,7 @@ public class BaseGame : Game, IGame {
     public event EventHandler<double>? GameSpeedChanged;
 
     /// <inheritdoc />
-    public event EventHandler<InputDisplay>? InputDisplayChanged;
+    public event EventHandler<InputDevice>? InputDeviceChanged;
 
     /// <inheritdoc />
     public event EventHandler? SettingsSaved;
@@ -94,6 +94,17 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public InputDevice DesiredInputDevice {
+        get => this._desiredInputDevice;
+        protected set {
+            if (value != this._desiredInputDevice) {
+                this._desiredInputDevice = value;
+                this.InputDeviceChanged.SafeInvoke(this, this._desiredInputDevice);
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public double GameSpeed {
         get => this._gameSpeed;
 
@@ -101,17 +112,6 @@ public class BaseGame : Game, IGame {
             if (value >= 0f && Math.Abs(this._gameSpeed - value) > 0.001f) {
                 this._gameSpeed = value;
                 this.GameSpeedChanged.SafeInvoke(this, this._gameSpeed);
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public InputDisplay InputDisplayStyle {
-        get => this._inputDisplayStyle;
-        protected set {
-            if (value != this._inputDisplayStyle) {
-                this._inputDisplayStyle = value;
-                this.InputDisplayChanged.SafeInvoke(this, this._inputDisplayStyle);
             }
         }
     }
@@ -193,7 +193,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public void LoadScene(string sceneName) {
         var assetManager = this.CreateAssetManager();
-        if (assetManager.TryLoadContent<Scene>(sceneName, out var scene) && scene != null) {
+        if (assetManager.TryLoadContent<Scene>(sceneName, out var scene)) {
             this.LoadScene(scene);
         }
         else {
@@ -288,12 +288,12 @@ public class BaseGame : Game, IGame {
                 this.UserSettings = new UserSettings(this.Project);
             }
 
-            if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
+            if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
-                this.InputDisplayStyle = gamePadState.IsConnected ? InputDisplay.GamePadX : InputDisplay.Keyboard;
+                this.DesiredInputDevice = gamePadState.IsConnected ? InputDevice.GamePad : InputDevice.KeyboardMouse;
             }
             else {
-                this.InputDisplayStyle = this.InputBindings.DisplayStyle;
+                this.DesiredInputDevice = this.InputBindings.DesiredInputDevice;
             }
         }
 
@@ -305,11 +305,11 @@ public class BaseGame : Game, IGame {
     protected override void LoadContent() {
         base.LoadContent();
         var assetManager = this.CreateAssetManager();
-        if (assetManager.TryLoadContent<GameProject>(GameProject.ProjectFileName, out var project) && project != null) {
+        if (assetManager.TryLoadContent<GameProject>(GameProject.ProjectFileName, out var project)) {
             this.Project = project;
         }
 
-        if (assetManager.TryLoadContent<Scene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+        if (assetManager.TryLoadContent<Scene>(this.Project.StartupSceneContentId, out var scene)) {
             this.LoadScene(scene);
         }
 
@@ -375,16 +375,16 @@ public class BaseGame : Game, IGame {
         this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
         if (!IsDesignMode) {
-            if (this.InputBindings.DisplayStyle == InputDisplay.Auto) {
-                if (this.InputState.IsGamePadActive()) {
-                    this.InputDisplayStyle = InputDisplay.GamePadX;
+            if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
+                if (this.DesiredInputDevice != InputDevice.GamePad && this.InputState.IsGamePadActive()) {
+                    this.DesiredInputDevice = InputDevice.GamePad;
                 }
-                else if (this.InputState.IsKeyboardActive()) {
-                    this.InputDisplayStyle = InputDisplay.Keyboard;
+                else if (this.DesiredInputDevice != InputDevice.KeyboardMouse && this.InputState.IsKeyboardActive()) {
+                    this.DesiredInputDevice = InputDevice.KeyboardMouse;
                 }
             }
             else {
-                this.InputDisplayStyle = this.InputBindings.DisplayStyle;
+                this.DesiredInputDevice = this.InputBindings.DesiredInputDevice;
             }
         }
     }
@@ -396,7 +396,7 @@ public class BaseGame : Game, IGame {
 
     private sealed class EmptyGame : IGame {
         public event EventHandler<double>? GameSpeedChanged;
-        public event EventHandler<InputDisplay>? InputDisplayChanged;
+        public event EventHandler<InputDevice>? InputDeviceChanged;
         public event EventHandler? SettingsSaved;
         public event EventHandler<Point>? ViewportSizeChanged;
 
@@ -412,6 +412,10 @@ public class BaseGame : Game, IGame {
             get => Scene.Empty;
         }
 
+        public InputDevice DesiredInputDevice {
+            get => InputDevice.GamePad;
+        }
+
         public DisplaySettings DisplaySettings {
             get => this.UserSettings.Display;
         }
@@ -422,10 +426,6 @@ public class BaseGame : Game, IGame {
 
         public InputBindings InputBindings {
             get => this.UserSettings.Input;
-        }
-
-        public InputDisplay InputDisplayStyle {
-            get => InputDisplay.GamePadX;
         }
 
         public IGameProject Project { get; } = new GameProject();

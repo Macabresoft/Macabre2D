@@ -85,39 +85,21 @@
 
                 <Separator />
 
-                <MenuItem Header="Keyboard"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.Keyboard}">
+                <MenuItem Header="Keyboard / Mouse"
+                          Command="{Binding SelectInputDeviceCommand}"
+                          CommandParameter="{x:Static framework:InputDevice.KeyboardMouse}">
                     <MenuItem.Icon>
                         <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.Keyboard}}" />
+                                         IsVisible="{Binding EditorService.InputDeviceDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDevice.KeyboardMouse}}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Game Pad X"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadX}">
+                <MenuItem Header="Game Pad"
+                          Command="{Binding SelectInputDeviceCommand}"
+                          CommandParameter="{x:Static framework:InputDevice.GamePad}">
                     <MenuItem.Icon>
                         <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadX}}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Game Pad N"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadN}">
-                    <MenuItem.Icon>
-                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadN}}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Game Pad S"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadS}">
-                    <MenuItem.Icon>
-                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadS}}" />
+                                         IsVisible="{Binding EditorService.InputDeviceDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDevice.GamePad}}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>

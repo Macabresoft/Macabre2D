@@ -72,7 +72,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
         this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
         this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab, tabCommandCanExecute);
-        this.SelectInputDisplayCommand = ReactiveCommand.Create<InputDisplay>(this.SelectInputDisplay);
+        this.SelectInputDeviceCommand = ReactiveCommand.Create<InputDevice>(this.SelectInputDevice);
         this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab, tabCommandCanExecute);
         this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
         this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
@@ -116,7 +116,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <summary>
     /// Gets a command to set the input display.
     /// </summary>
-    public ICommand SelectInputDisplayCommand { get; }
+    public ICommand SelectInputDeviceCommand { get; }
 
     /// <summary>
     /// Gets the command to select a tab.
@@ -174,8 +174,8 @@ public class MainWindowViewModel : UndoBaseViewModel {
         }
     }
 
-    private void SelectInputDisplay(InputDisplay inputDisplay) {
-        this.EditorService.InputDisplay = inputDisplay;
+    private void SelectInputDevice(InputDevice inputDevice) {
+        this.EditorService.InputDeviceDisplay = inputDevice;
     }
 
     private void SelectTab(EditorTabs tab) {

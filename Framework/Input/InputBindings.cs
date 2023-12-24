@@ -34,10 +34,16 @@ public class InputBindings {
     }
 
     /// <summary>
-    /// Gets or sets the way to display input prompts.
+    /// Gets or sets the desired game pad.
     /// </summary>
     [DataMember]
-    public InputDisplay DisplayStyle { get; set; } = InputDisplay.Auto;
+    public GamePadDisplay DesiredGamePad { get; set; } = GamePadDisplay.X;
+
+    /// <summary>
+    /// Gets or sets the desired input device.
+    /// </summary>
+    [DataMember]
+    public InputDevice DesiredInputDevice { get; set; } = InputDevice.Auto;
 
     /// <summary>
     /// Gets or sets a value indicating whether or not the mouse is enabled.
