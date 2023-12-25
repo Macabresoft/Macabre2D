@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 /// Renders a game pad button.
 /// </summary>
 public class GamePadButtonRenderer : BaseSpriteEntity {
-    private readonly GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
+    private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private Buttons _button = Buttons.A;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
@@ -90,6 +90,8 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
+        this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
+        
         var iconSet = this.Game.InputBindings.DesiredGamePad switch {
             GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
             GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,

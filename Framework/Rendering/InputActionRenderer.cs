@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
@@ -14,6 +15,7 @@ using Microsoft.Xna.Framework.Input;
 public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
     private Buttons _button = Buttons.None;
+    private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private Keys _key = Keys.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
@@ -92,6 +94,14 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.Scene.Invoke(this.ResetBindings);
     }
 
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this.Game.DesiredInputDevice != InputDevice.KeyboardMouse && this._gamePadDisplay != this.Game.InputBindings.DesiredGamePad) {
+            this.ResetSprite();
+        }
+
+        base.Render(frameTime, viewBoundingArea, colorOverride);
+    }
+
     private void Game_InputDisplayChanged(object? sender, InputDevice e) {
         this.ResetSprite();
     }
@@ -141,6 +151,8 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
+        this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
+
         this._spriteIndex = null;
         this._spriteSheet = null;
 
