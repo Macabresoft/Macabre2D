@@ -16,10 +16,10 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly IProjectService _projectService;
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
-    private bool _isBusy;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -32,10 +32,12 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
     /// </summary>
     /// <param name="assetSelectionService">The asset selection service.</param>
+    /// <param name="busyService">The busy service.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="game">The game.</param>
+    /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="settingsService">The editor settings service.</param>
@@ -43,19 +45,23 @@ public class MainWindowViewModel : UndoBaseViewModel {
     [InjectionConstructor]
     public MainWindowViewModel(
         IAssetSelectionService assetSelectionService,
+        IBusyService busyService,
         IContentService contentService,
         ICommonDialogService dialogService,
         IEditorService editorService,
         IEditorGame game,
+        IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
         IEditorSettingsService settingsService,
         IUndoService undoService) : base(undoService) {
         this._assetSelectionService = assetSelectionService;
+        this.BusyService = busyService;
         this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
         this.Game = game;
+        this._projectService = projectService;
         this._saveService = saveService;
         this._sceneService = sceneService;
         this._settingsService = settingsService;
@@ -66,11 +72,16 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
         this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
         this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab, tabCommandCanExecute);
-        this.SelectInputDisplayCommand = ReactiveCommand.Create<InputDisplay>(this.SelectInputDisplay);
+        this.SelectInputDeviceCommand = ReactiveCommand.Create<InputDevice>(this.SelectInputDevice);
         this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab, tabCommandCanExecute);
         this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
         this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
     }
+
+    /// <summary>
+    /// Gets the busy service.
+    /// </summary>
+    public IBusyService BusyService { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -105,7 +116,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <summary>
     /// Gets a command to set the input display.
     /// </summary>
-    public ICommand SelectInputDisplayCommand { get; }
+    public ICommand SelectInputDeviceCommand { get; }
 
     /// <summary>
     /// Gets the command to select a tab.
@@ -127,14 +138,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// </summary>
     public ICommand ViewSourceCommand { get; }
 
-    /// <summary>
-    /// Gets a value indicating whether or not this is busy.
-    /// </summary>
-    public bool IsBusy {
-        get => this._isBusy;
-        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
-    }
-
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose(window) != YesNoCancelResult.Cancel) {
             window.Close();
@@ -154,28 +157,25 @@ public class MainWindowViewModel : UndoBaseViewModel {
     }
 
     private async Task RebuildContent() {
-        var result = await this._saveService.RequestSave();
-        if (result != YesNoCancelResult.Cancel) {
-            try {
-                this.IsBusy = true;
+        if (this.BusyService.TryClaimBusy(out var busyClaim)) {
+            using (busyClaim) {
+                var result = await this._saveService.RequestSave();
+                if (result != YesNoCancelResult.Cancel) {
+                    var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
+                    if (sceneContentId != null) {
+                        this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
+                    }
 
-                var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
-                this._assetSelectionService.Selected = null;
-
-                await Task.Run(() => this._contentService.RefreshContent(true));
-
-                if (sceneContentId != null) {
-                    this._sceneService.TryLoadScene(sceneContentId.Value, out _);
+                    this._assetSelectionService.Selected = null;
+                    await Task.Run(() => this._contentService.RefreshContent(true));
+                    this._projectService.ReloadProject();
                 }
-            }
-            finally {
-                this.IsBusy = false;
             }
         }
     }
 
-    private void SelectInputDisplay(InputDisplay inputDisplay) {
-        this.EditorService.InputDisplay = inputDisplay;
+    private void SelectInputDevice(InputDevice inputDevice) {
+        this.EditorService.InputDeviceDisplay = inputDevice;
     }
 
     private void SelectTab(EditorTabs tab) {

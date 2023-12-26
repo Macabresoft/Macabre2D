@@ -19,17 +19,29 @@
                     Grid.Column="0"
                     Orientation="Horizontal">
             <Button Classes="Icon"
-                    Margin="{StaticResource StandardMarginAll}"
                     Command="{Binding ClearSpriteCommand}"
                     ToolTip.Tip="Clear the selected icon's sprite assignment">
                 <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
             </Button>
+            
+            <Button Classes="Icon"
+                    Command="{Binding SelectIconViaKeyboardCommand}"
+                    ToolTip.Tip="Select a key via pressing it on a keyboard">
+                <avaloniaEx:Icon Content="{StaticResource Keyboard123Icon}" />
+            </Button>
         </StackPanel>
 
-        <local:ThumbnailSizeToggle Grid.Row="0"
-                                   Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   SelectedSize="{Binding SelectedThumbnailSize}" />
+        <Grid Grid.Row="0"
+              Grid.Column="2"
+              ColumnDefinitions="*, Auto">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding SelectedIcon.Key}"
+                       VerticalAlignment="Center"
+                       ToolTip.Tip="{Binding SelectedIcon.Key}" />
+            
+            <local:ThumbnailSizeToggle Grid.Column="1"
+                                       SelectedSize="{Binding SelectedThumbnailSize}" />
+        </Grid>
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"

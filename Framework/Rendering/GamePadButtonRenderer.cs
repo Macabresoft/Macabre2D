@@ -2,12 +2,14 @@
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// Renders a game pad button according to <see cref="IGame.InputDisplayStyle" />.
+/// Renders a game pad button.
 /// </summary>
 public class GamePadButtonRenderer : BaseSpriteEntity {
+    private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private Buttons _button = Buttons.A;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
@@ -31,7 +33,9 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     public GamePadIconSetReference GamePadXReference { get; } = new();
 
     /// <inheritdoc />
-    public override byte? SpriteIndex => this._spriteIndex;
+    public override byte? SpriteIndex {
+        get => this._spriteIndex;
+    }
 
     /// <summary>
     /// Gets and sets the button. Please don't use multiple values, it won't work.
@@ -48,12 +52,12 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheet? SpriteSheet => this._spriteSheet;
+    protected override SpriteSheet? SpriteSheet {
+        get => this._spriteSheet;
+    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
-        this.Game.InputDisplayChanged -= this.Game_InputDisplayChanged;
-
         this.GamePadNReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
         this.GamePadSReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
         this.GamePadXReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
@@ -68,12 +72,15 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
         this.GamePadSReference.PropertyChanged += this.GamePadReference_PropertyChanged;
         this.GamePadXReference.PropertyChanged += this.GamePadReference_PropertyChanged;
 
-        this.Game.InputDisplayChanged += this.Game_InputDisplayChanged;
         this.ResetSprite();
     }
 
-    private void Game_InputDisplayChanged(object? sender, InputDisplay e) {
-        this.ResetSprite();
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this._gamePadDisplay != this.Game.InputBindings.DesiredGamePad) {
+            this.ResetSprite();
+        }
+
+        base.Render(frameTime, viewBoundingArea, colorOverride);
     }
 
     private void GamePadReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -83,12 +90,12 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
-        var iconSet = this.Game.InputDisplayStyle switch {
-            InputDisplay.GamePadX => this.GamePadXReference?.PackagedAsset,
-            InputDisplay.GamePadN => this.GamePadNReference?.PackagedAsset,
-            InputDisplay.GamePadS => this.GamePadSReference?.PackagedAsset,
-            InputDisplay.Auto => null,
-            InputDisplay.Keyboard => null,
+        this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
+        
+        var iconSet = this.Game.InputBindings.DesiredGamePad switch {
+            GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
+            GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,
+            GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.GamePadSReference.PackagedAsset,
             _ => null
         };
 

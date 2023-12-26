@@ -11,7 +11,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
@@ -21,7 +20,7 @@ using Color = Microsoft.Xna.Framework.Color;
 /// </summary>
 public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChangedEventArgs<IAvaloniaGame>> {
     /// <summary>
-    /// Avalonia property for <see cref="Game" />.
+    /// Avalonia property for the fallback background property.
     /// </summary>
     public static readonly StyledProperty<IBrush> FallbackBackgroundProperty = AvaloniaProperty.Register<MonoGameControl, IBrush>(
         nameof(FallbackBackground),
@@ -31,6 +30,13 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     /// Avalonia property for <see cref="Game" />.
     /// </summary>
     public static readonly StyledProperty<IAvaloniaGame> GameProperty = AvaloniaProperty.Register<MonoGameControl, IAvaloniaGame>(nameof(Game));
+
+    /// <summary>
+    /// Avalonia property for a property indicating whether or not this should render.
+    /// </summary>
+    public static readonly StyledProperty<bool> ShouldRenderProperty = AvaloniaProperty.Register<MonoGameControl, bool>(
+        nameof(ShouldRender),
+        true);
 
     private readonly GameTime _gameTime = new();
 
@@ -72,6 +78,14 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     public IAvaloniaGame Game {
         get => this.GetValue(GameProperty);
         set => this.SetValue(GameProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not this can render.
+    /// </summary>
+    public bool ShouldRender {
+        get => this.GetValue(ShouldRenderProperty);
+        set => this.SetValue(ShouldRenderProperty, value);
     }
 
     /// <inheritdoc />
@@ -147,7 +161,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
         game = this.Game;
         device = this.Game?.GraphicsDevice;
 
-        return game != null && device != null &&
+        return this.ShouldRender && game != null && device != null &&
                this.Bounds is { Width: > 0, Height: > 0 } &&
                this.HandleDeviceReset(device);
     }

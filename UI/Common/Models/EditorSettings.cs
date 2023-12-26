@@ -55,7 +55,7 @@ public class EditorSettings {
     /// Gets or sets the input display.
     /// </summary>
     [DataMember]
-    public InputDisplay InputDisplay { get; set; } = InputDisplay.GamePadX;
+    public InputDevice InputDeviceDisplay { get; set; } = InputDevice.GamePad;
 
     /// <summary>
     /// Gets or sets the last gizmo opened.

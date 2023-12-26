@@ -54,6 +54,61 @@ public struct InputState {
     }
 
     /// <summary>
+    /// Checks whether any game pad buttons are being pressed.
+    /// </summary>
+    /// <returns>A value indicating whether or not any game pad buttons are being pressed.</returns>
+    public bool IsGamePadActive() {
+        return this.CurrentGamePadState.IsConnected &&
+               this.TryGetFirstActiveButton(out _);
+    }
+
+    /// <summary>
+    /// Checks whether any keyboard keys are being pressed.
+    /// </summary>
+    /// <returns>A value indicating whether or not any keyboard keys are being pressed.</returns>
+    public bool IsKeyboardActive() {
+        return this.CurrentKeyboardState.GetPressedKeyCount() > 0;
+    }
+
+    /// <summary>
+    /// Tries to get the first active button.
+    /// </summary>
+    /// <param name="button">The found button.</param>
+    /// <returns>A value indicating whether or not a button was found.</returns>
+    public bool TryGetFirstActiveButton(out Buttons button) {
+        button = Buttons.None;
+        var availableButtons = Enum.GetValues<Buttons>();
+
+        foreach (var availableButton in availableButtons) {
+            if (availableButton != Buttons.None && this.IsGamePadButtonNewlyPressed(availableButton)) {
+                button = availableButton;
+                break;
+            }
+        }
+
+        return button != Buttons.None;
+    }
+
+    /// <summary>
+    /// Tries to get the first active key.
+    /// </summary>
+    /// <param name="key">The found key.</param>
+    /// <returns>A value indicating whether or not a key was found.</returns>
+    public bool TryGetFirstActiveKey(out Keys key) {
+        key = Keys.None;
+        var availableKeys = Enum.GetValues<Keys>();
+
+        foreach (var availableKey in availableKeys) {
+            if (availableKey != Keys.None && this.IsKeyNewlyPressed(availableKey)) {
+                key = availableKey;
+                break;
+            }
+        }
+
+        return key != Keys.None;
+    }
+
+    /// <summary>
     /// Gets the button's current state.
     /// </summary>
     /// <param name="button">The game pad button.</param>

@@ -174,7 +174,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public async Task CreatePrefab(IEntity entity) {
         if (entity?.TryClone(out var prefabChild) == true) {
             var prefab = new Entity {
-                Name = !string.IsNullOrEmpty(prefabChild.Name) ? $"{prefabChild.Name} Prefab" : "Prefab"
+                Name = !string.IsNullOrEmpty(prefabChild.Name) ? $"{prefabChild.Name}" : "Prefab"
             };
 
             prefab.AddChild(prefabChild);

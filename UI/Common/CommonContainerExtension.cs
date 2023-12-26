@@ -25,6 +25,7 @@ public sealed class CommonContainerExtension : UnityContainerExtension {
         this.Container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
             .RegisterType<IAssetSelectionService, AssetSelectionService>(new SingletonLifetimeManager())
             .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
+            .RegisterType<IBusyService, BusyService>(new SingletonLifetimeManager())
             .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
             .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
             .RegisterType<IEditorSettingsService, EditorSettingsService>(new SingletonLifetimeManager())

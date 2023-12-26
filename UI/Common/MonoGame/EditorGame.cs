@@ -30,6 +30,7 @@ public interface IEditorGame : IAvaloniaGame {
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class EditorGame : AvaloniaGame, IEditorGame {
+    private readonly IBusyService _busyService;
     private readonly IEditorService _editorService;
     private readonly IProjectService _projectService;
     private readonly ISceneService _sceneService;
@@ -39,16 +40,19 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// Initializes a new instance of the <see cref="EditorGame" /> class.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
+    /// <param name="busyService">The busy service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="pathService">The path service.</param>
     /// <param name="projectService">The project service.</param>
     /// <param name="sceneService">The scene service.</param>
     public EditorGame(
         IAssetManager assetManager,
+        IBusyService busyService,
         IEditorService editorService,
         IPathService pathService,
         IProjectService projectService,
         ISceneService sceneService) : base(assetManager) {
+        this._busyService = busyService;
         this._editorService = editorService;
         this._projectService = projectService;
         this._sceneService = sceneService;
@@ -56,22 +60,24 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     /// <inheritdoc />
-    public ICamera Camera => this.CurrentScene.TryGetChild<ICamera>(out var camera) ? camera : null;
+    public ICamera Camera {
+        get => this.CurrentScene.TryGetChild<ICamera>(out var camera) ? camera : null;
+    }
 
     /// <inheritdoc />
     public IGizmo SelectedGizmo { get; private set; }
 
     /// <summary>
-    /// Sets the input display style.
+    /// Sets the input device to display.
     /// </summary>
-    /// <param name="inputDisplay">The input display to use.</param>
-    public void SetInputDisplayStyle(InputDisplay inputDisplay) {
-        this.InputDisplayStyle = inputDisplay;
+    /// <param name="inputDevice">The input device to display.</param>
+    public void SetInputDeviceDisplay(InputDevice inputDevice) {
+        this.DesiredInputDevice = inputDevice;
     }
 
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
-        if (this.GraphicsDevice != null) {
+        if (!this._busyService.IsBusy && this.GraphicsDevice != null) {
             if (this.CurrentScene.Children.OfType<IScene>().Any() && Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this.CurrentScene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             }
@@ -116,8 +122,10 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
     /// <inheritdoc />
     protected override void Update(GameTime gameTime) {
-        base.Update(gameTime);
-        this.InputDisplayStyle = this._editorService.InputDisplay;
+        if (!this._busyService.IsBusy) {
+            base.Update(gameTime);
+            this.DesiredInputDevice = this._editorService.InputDeviceDisplay;
+        }
     }
 
     private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {

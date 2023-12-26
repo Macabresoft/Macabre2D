@@ -31,7 +31,7 @@
     </avaloniaEx:BaseDialog.KeyBindings>
     <avaloniaEx:BaseDialog.Menu>
         <Menu Grid.Column="2"
-              IsEnabled="{Binding !IsBusy}"
+              IsEnabled="{Binding !BusyService.IsBusy}"
               HorizontalAlignment="Left"
               VerticalAlignment="Center">
             <MenuItem Header="_File">
@@ -85,39 +85,21 @@
 
                 <Separator />
 
-                <MenuItem Header="Keyboard"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.Keyboard}">
+                <MenuItem Header="Keyboard / Mouse"
+                          Command="{Binding SelectInputDeviceCommand}"
+                          CommandParameter="{x:Static framework:InputDevice.KeyboardMouse}">
                     <MenuItem.Icon>
                         <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.Keyboard}}" />
+                                         IsVisible="{Binding EditorService.InputDeviceDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDevice.KeyboardMouse}}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Game Pad X"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadX}">
+                <MenuItem Header="Game Pad"
+                          Command="{Binding SelectInputDeviceCommand}"
+                          CommandParameter="{x:Static framework:InputDevice.GamePad}">
                     <MenuItem.Icon>
                         <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadX}}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Game Pad N"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadN}">
-                    <MenuItem.Icon>
-                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadN}}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Game Pad S"
-                          Command="{Binding SelectInputDisplayCommand}"
-                          CommandParameter="{x:Static framework:InputDisplay.GamePadS}">
-                    <MenuItem.Icon>
-                        <avaloniaEx:Icon Content="{StaticResource CheckMarkIcon}"
-                                         IsVisible="{Binding EditorService.InputDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDisplay.GamePadS}}" />
+                                         IsVisible="{Binding EditorService.InputDeviceDisplay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static framework:InputDevice.GamePad}}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -135,7 +117,7 @@
         <Button Grid.Column="1"
                 Classes="Icon"
                 Command="{Binding ToggleTabCommand}"
-                IsEnabled="{Binding !IsBusy}">
+                IsEnabled="{Binding !BusyService.IsBusy}">
             <Panel>
                 <avaloniaEx:Icon Content="{StaticResource SceneIcon}"
                                  Foreground="{StaticResource YellowBrush}"
@@ -149,13 +131,14 @@
     <Grid>
         <monoGameInterop:MonoGameControl Game="{Binding Game}"
                                          Cursor="{Binding EditorService.CursorType, Converter={x:Static avaloniaEx:CursorTypeToCursorConverter.Instance}}"
-                                         IsVisible="{Binding !IsBusy}" />
+                                         ShouldRender="{Binding !BusyService.IsBusy}"
+                                         IsVisible="{Binding !BusyService.IsBusy}" />
 
-        <local:SceneEditorView IsEnabled="{Binding !IsBusy}"
+        <local:SceneEditorView IsEnabled="{Binding !BusyService.IsBusy}"
                                IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
-        <local:ProjectEditorView IsEnabled="{Binding !IsBusy}"
+        <local:ProjectEditorView IsEnabled="{Binding !BusyService.IsBusy}"
                                  IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
 
-        <avaloniaEx:BusyIndicator IsVisible="{Binding IsBusy}" />
+        <avaloniaEx:BusyIndicator IsVisible="{Binding BusyService.IsBusy}" />
     </Grid>
 </avaloniaEx:BaseDialog>
