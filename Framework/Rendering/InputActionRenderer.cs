@@ -16,6 +16,8 @@ public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
     private Buttons _button = Buttons.None;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
+
+    private InputDevice _inputDeviceToRender = InputDevice.Auto;
     private Keys _key = Keys.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
@@ -59,6 +61,23 @@ public class InputActionRenderer : BaseSpriteEntity {
             if (value != this._action) {
                 this._action = value;
                 this.ResetBindings();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the input device to render.
+    /// </summary>
+    [DataMember]
+    public InputDevice InputDeviceToRender {
+        get => this._inputDeviceToRender;
+        set {
+            if (value != this._inputDeviceToRender) {
+                this._inputDeviceToRender = value;
+
+                if (this.IsInitialized) {
+                    this.ResetSprite();
+                }
             }
         }
     }
@@ -156,7 +175,8 @@ public class InputActionRenderer : BaseSpriteEntity {
         this._spriteIndex = null;
         this._spriteSheet = null;
 
-        if (this.Game.DesiredInputDevice == InputDevice.KeyboardMouse) {
+        var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
+        if (inputDevice == InputDevice.KeyboardMouse) {
             var iconSet = this.GetKeyboardIconSet();
             if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
                 this._spriteIndex = index;
