@@ -15,7 +15,10 @@ public class TextLine : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
+    private SpriteSheetFont? _font;
+    private SpriteSheetFontReference? _fontReference;
     private int _kerning;
+    private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
 
     /// <inheritdoc />
@@ -29,7 +32,9 @@ public class TextLine : RenderableEntity {
     }
 
     /// <inheritdoc />
-    public override BoundingArea BoundingArea => this._boundingArea.Value;
+    public override BoundingArea BoundingArea {
+        get => this._boundingArea.Value;
+    }
 
     /// <summary>
     /// Gets the font asset reference.
@@ -98,12 +103,14 @@ public class TextLine : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.RenderWithFont(this.FontReference, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.Color);
     }
-    
+
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        this.RenderWithFont(this.FontReference, colorOverride);
+        if (this._fontReference != null) {
+            this.RenderWithFont(this._fontReference, colorOverride);
+        }
     }
 
     /// <summary>
@@ -160,7 +167,7 @@ public class TextLine : RenderableEntity {
         return !string.IsNullOrEmpty(this.Text) &&
                this._characterHeight > 0f &&
                this._spriteCharacters.Any() &&
-               this.FontReference.Asset != null;
+               this._font != null;
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -168,11 +175,11 @@ public class TextLine : RenderableEntity {
     }
 
     private Vector2 CreateSize() {
-        if (this.FontReference is { PackagedAsset: { } font, Asset: { } spriteSheet }) {
+        if (this._font != null && this._spriteSheet != null) {
             var kerning = this.GetKerning();
-            var unitWidth = this._spriteCharacters.Sum(character => font.GetCharacterWidth(character, kerning, this.Project));
-            this._characterHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            return new Vector2(unitWidth * this.Project.PixelsPerUnit, spriteSheet.SpriteSize.Y);
+            var unitWidth = this._spriteCharacters.Sum(character => this._font.GetCharacterWidth(character, kerning, this.Project));
+            this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            return new Vector2(unitWidth * this.Project.PixelsPerUnit, this._spriteSheet.SpriteSize.Y);
         }
 
         return Vector2.Zero;
@@ -202,9 +209,20 @@ public class TextLine : RenderableEntity {
     private void ResetIndexes() {
         this._spriteCharacters.Clear();
 
-        if (this.FontReference.PackagedAsset is { } font) {
+        if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
+            this._fontReference = this.FontReference;
+            this._font = this.FontReference.PackagedAsset;
+            this._spriteSheet = this.FontReference.Asset;
+        }
+        else if (this.Project.Fallbacks.Font is { PackagedAsset: not null, Asset: not null }) {
+            this._fontReference = this.Project.Fallbacks.Font;
+            this._font = this.Project.Fallbacks.Font.PackagedAsset;
+            this._spriteSheet = this.Project.Fallbacks.Font.Asset;
+        }
+
+        if (this._font != null) {
             foreach (var character in this.Text) {
-                if (font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
+                if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
                     this._spriteCharacters.Add(spriteCharacter);
                 }
             }

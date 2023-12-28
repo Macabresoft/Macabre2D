@@ -10,6 +10,13 @@ using Microsoft.Xna.Framework;
 [DataContract]
 [Category(CommonCategories.Fallback)]
 public class ProjectFallbacks {
+
+    /// <summary>
+    /// Gets the default font to be used by <see cref="TextLine" /> and similar
+    /// </summary>
+    [DataMember]
+    public SpriteSheetFontReference Font { get; } = new();
+
     /// <summary>
     /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
     /// </summary>

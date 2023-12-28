@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
-using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for a single project in the engine.
@@ -16,11 +15,6 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets any additional configuration specific to a project.
     /// </summary>
     ProjectConfiguration AdditionalConfiguration { get; }
-    
-    /// <summary>
-    /// Gets the fallback values for colors, fonts, icon sets, and more.
-    /// </summary>
-    ProjectFallbacks Fallbacks { get; } 
 
     /// <summary>
     /// Gets all layers available in this project as a single enum.
@@ -36,7 +30,12 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the default user settings.
     /// </summary>
     UserSettings DefaultUserSettings { get; }
-    
+
+    /// <summary>
+    /// Gets the fallback values for colors, fonts, icon sets, and more.
+    /// </summary>
+    ProjectFallbacks Fallbacks { get; }
+
     /// <summary>
     /// Gets the name for this project.
     /// </summary>
@@ -62,7 +61,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// produce the same value, but quicker.
     /// </remarks>
     float UnitsPerPixel { get; }
-    
+
     /// <summary>
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
@@ -143,15 +142,15 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
+    [Category(CommonCategories.Fallback)]
+    public ProjectFallbacks Fallbacks { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember]
     public float CommonViewHeight {
         get => this._commonViewHeight;
         set => this._commonViewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
     }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Fallback)]
-    public ProjectFallbacks Fallbacks { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -197,5 +196,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         this.Fallbacks.GamePadSReference.Initialize(assets);
         this.Fallbacks.GamePadXReference.Initialize(assets);
         this.Fallbacks.KeyboardReference.Initialize(assets);
+        this.Fallbacks.Font.Initialize(assets);
     }
 }

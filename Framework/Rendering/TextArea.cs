@@ -17,7 +17,9 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     private int _kerning;
     private string _text = string.Empty;
     private float _width;
-
+    private SpriteSheetFont? _font;
+    private SpriteSheet? _spriteSheet;
+    
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
@@ -80,7 +82,6 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
 
-
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
@@ -129,9 +130,9 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (!this.BoundingArea.IsEmpty && this.FontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
+        if (!this.BoundingArea.IsEmpty && this._spriteSheet != null && this.SpriteBatch is { } spriteBatch) {
             foreach (var (character, position) in this._spriteCharacters) {
-                spriteSheet.Draw(
+                this._spriteSheet.Draw(
                     spriteBatch,
                     this.Project.PixelsPerUnit,
                     character.SpriteIndex,
@@ -183,17 +184,26 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     private void ResetLines() {
         this._spriteCharacters.Clear();
+        
+        if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
+            this._font = this.FontReference.PackagedAsset;
+            this._spriteSheet = this.FontReference.Asset;
+        }
+        else if (this.Project.Fallbacks.Font is { PackagedAsset: not null, Asset: not null }) {
+            this._font = this.Project.Fallbacks.Font.PackagedAsset;
+            this._spriteSheet = this.Project.Fallbacks.Font.Asset;
+        }
 
-        if (this.FontReference.PackagedAsset is { SpriteSheet: { } spriteSheet } font) {
-            var characterHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+        if (this._font != null && this._spriteSheet != null) {
+            var characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             var position = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - characterHeight);
             foreach (var character in this.Text) {
                 if (position.Y < this.BoundingArea.Minimum.Y) {
                     return;
                 }
 
-                if (font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
-                    var characterWidth = font.GetCharacterWidth(spriteCharacter, this.Kerning, this.Project);
+                if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
+                    var characterWidth = this._font.GetCharacterWidth(spriteCharacter, this.Kerning, this.Project);
                     if (position.X + characterWidth > this.BoundingArea.Maximum.X) {
                         position = new Vector2(this.BoundingArea.Minimum.X, position.Y - characterHeight);
 
