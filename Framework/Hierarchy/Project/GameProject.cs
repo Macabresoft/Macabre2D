@@ -16,6 +16,11 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets any additional configuration specific to a project.
     /// </summary>
     ProjectConfiguration AdditionalConfiguration { get; }
+    
+    /// <summary>
+    /// Gets the fallback values for colors, fonts, icon sets, and more.
+    /// </summary>
+    ProjectFallbacks Fallbacks { get; } 
 
     /// <summary>
     /// Gets all layers available in this project as a single enum.
@@ -31,30 +36,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the default user settings.
     /// </summary>
     UserSettings DefaultUserSettings { get; }
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
-    /// </summary>
-    GamePadIconSetReference GamePadNReference { get; }
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
-    /// </summary>
-    [DataMember]
-    GamePadIconSetReference GamePadSReference { get; }
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
-    /// </summary>
-    [DataMember]
-    GamePadIconSetReference GamePadXReference { get; }
-
-    /// <summary>
-    /// Gets the icon set reference for keyboards.
-    /// </summary>
-    [DataMember]
-    KeyboardIconSetReference KeyboardReference { get; }
-
+    
     /// <summary>
     /// Gets the name for this project.
     /// </summary>
@@ -80,17 +62,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// produce the same value, but quicker.
     /// </remarks>
     float UnitsPerPixel { get; }
-
-    /// <summary>
-    /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
-    /// </summary>
-    Color ErrorSpritesColor { get; set; }
-
-    /// <summary>
-    /// Gets or sets the color of the game background when there is no scene opened.
-    /// </summary>
-    Color FallbackBackgroundColor { get; set; }
-
+    
     /// <summary>
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
@@ -169,34 +141,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
 
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
-    /// </summary>
-    [Category("Input Display")]
-    [DataMember]
-    public GamePadIconSetReference GamePadNReference { get; } = new();
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
-    /// </summary>
-    [Category("Input Display")]
-    [DataMember]
-    public GamePadIconSetReference GamePadSReference { get; } = new();
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
-    /// </summary>
-    [Category("Input Display")]
-    [DataMember]
-    public GamePadIconSetReference GamePadXReference { get; } = new();
-
-    /// <summary>
-    /// Gets the icon set reference for keyboards.
-    /// </summary>
-    [Category("Input Display")]
-    [DataMember]
-    public KeyboardIconSetReference KeyboardReference { get; } = new();
-
     /// <inheritdoc />
     [DataMember]
     public float CommonViewHeight {
@@ -207,12 +151,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Fallback)]
-    public Color ErrorSpritesColor { get; set; } = Color.HotPink;
-
-    /// <inheritdoc />
-    [DataMember(Name = nameof(FallbackBackgroundColor))]
-    [Category(CommonCategories.Fallback)]
-    public Color FallbackBackgroundColor { get; set; } = Color.Black;
+    public ProjectFallbacks Fallbacks { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -254,9 +193,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     public void Initialize(IAssetManager assets) {
-        this.GamePadNReference.Initialize(assets);
-        this.GamePadSReference.Initialize(assets);
-        this.GamePadXReference.Initialize(assets);
-        this.KeyboardReference.Initialize(assets);
+        this.Fallbacks.GamePadNReference.Initialize(assets);
+        this.Fallbacks.GamePadSReference.Initialize(assets);
+        this.Fallbacks.GamePadXReference.Initialize(assets);
+        this.Fallbacks.KeyboardReference.Initialize(assets);
     }
 }

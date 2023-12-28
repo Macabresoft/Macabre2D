@@ -11,10 +11,11 @@ public static class SerializerTests {
     [Category("Unit Tests")]
     public static void Serializer_GameSettingsSerializeTest() {
         var project = new GameProject {
-            ErrorSpritesColor = Color.Red,
-            FallbackBackgroundColor = Color.Coral,
             PixelsPerUnit = 200
         };
+
+        project.Fallbacks.ErrorSpritesColor = Color.Red;
+        project.Fallbacks.BackgroundColor = Color.Coral;
 
         var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "ProjectForTest.m2dgs");
         GameProject deserializedProject = null;
@@ -37,8 +38,8 @@ public static class SerializerTests {
 
     private static void CompareGameSettings(IGameProject originalProject, IGameProject deserializedProject) {
         Assert.NotNull(deserializedProject);
-        Assert.AreEqual(originalProject.ErrorSpritesColor, deserializedProject.ErrorSpritesColor);
-        Assert.AreEqual(originalProject.FallbackBackgroundColor, deserializedProject.FallbackBackgroundColor);
+        Assert.AreEqual(originalProject.Fallbacks.ErrorSpritesColor, deserializedProject.Fallbacks.ErrorSpritesColor);
+        Assert.AreEqual(originalProject.Fallbacks.BackgroundColor, deserializedProject.Fallbacks.BackgroundColor);
         Assert.AreEqual(originalProject.PixelsPerUnit, deserializedProject.PixelsPerUnit);
     }
 }

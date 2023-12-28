@@ -141,15 +141,15 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private GamePadIconSet? GetGamePadIconSet() {
         return this.Game.InputBindings.DesiredGamePad switch {
-            GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.GamePadXReference.PackagedAsset,
-            GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.GamePadNReference.PackagedAsset,
-            GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.GamePadSReference.PackagedAsset,
+            GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.Fallbacks.GamePadXReference.PackagedAsset,
+            GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.Fallbacks.GamePadNReference.PackagedAsset,
+            GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.Fallbacks.GamePadSReference.PackagedAsset,
             _ => null
         };
     }
 
     private KeyboardIconSet? GetKeyboardIconSet() {
-        return this.KeyboardReference.PackagedAsset ?? this.Project.KeyboardReference.PackagedAsset;
+        return this.KeyboardReference.PackagedAsset ?? this.Project.Fallbacks.KeyboardReference.PackagedAsset;
     }
 
     private void IconSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
