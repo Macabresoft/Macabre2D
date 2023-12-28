@@ -100,7 +100,19 @@ public static class KeyMap {
         { Key.X, Keys.X },
         { Key.Y, Keys.Y },
         { Key.Z, Keys.Z },
-        { Key.Zoom, Keys.Zoom }
+        { Key.Zoom, Keys.Zoom },
+        { Key.OemOpenBrackets, Keys.OemOpenBrackets },
+        { Key.OemCloseBrackets, Keys.OemCloseBrackets },
+        { Key.OemPipe, Keys.OemPipe },
+        { Key.OemSemicolon, Keys.OemSemicolon },
+        { Key.OemQuotes, Keys.OemQuotes },
+        { Key.OemComma, Keys.OemComma },
+        { Key.OemPeriod, Keys.OemPeriod },
+        { Key.OemBackslash, Keys.OemBackslash },
+        { Key.OemMinus, Keys.OemMinus },
+        { Key.OemPlus, Keys.OemPlus },
+        { Key.OemQuestion, Keys.OemQuestion },
+        { Key.OemTilde, Keys.OemTilde }
     };
 
     /// <summary>
