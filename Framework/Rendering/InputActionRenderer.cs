@@ -110,7 +110,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
-        this.Scene.Invoke(this.ResetBindings);
+        this.ResetBindings();
     }
 
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
