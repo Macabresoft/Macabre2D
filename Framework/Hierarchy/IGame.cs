@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using Macabresoft.Macabre2D.Common;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -75,13 +76,17 @@ public interface IGame {
     /// <summary>
     /// Gets the project.
     /// </summary>
-    /// <value>The project.</value>
     IGameProject Project { get; }
 
     /// <summary>
-    /// Gets the save data manager.
+    /// Gets the data manager.
     /// </summary>
     IDataManager DataManager { get; }
+    
+    /// <summary>
+    /// Gets the save manager.
+    /// </summary>
+    SaveManager SaveManager { get; }
 
     /// <summary>
     /// Gets the sprite batch.

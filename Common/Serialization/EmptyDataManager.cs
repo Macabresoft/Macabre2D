@@ -1,16 +1,13 @@
-namespace Macabresoft.Macabre2D.Framework;
-
-using Macabresoft.Macabre2D.Common;
+﻿namespace Macabresoft.Macabre2D.Common;
 
 /// <summary>
 /// An empty save data manager that does nothing with the file system.
 /// </summary>
-internal class EmptyDataManager : IDataManager {
+public class EmptyDataManager : IDataManager {
     /// <summary>
-    /// Gets the empty.
+    /// Gets an instance of <see cref="EmptyDataManager"/>.
     /// </summary>
-    /// <value>The empty.</value>
-    public static IDataManager Empty { get; } = new EmptyDataManager();
+    public static IDataManager Instance { get; } = new EmptyDataManager();
     
     /// <inheritdoc />
     public void Delete(string fileName, string projectName) {
