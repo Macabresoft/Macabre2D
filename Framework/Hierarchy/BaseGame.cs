@@ -63,6 +63,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public IDataManager DataManager { get; } = new WindowsDataManager();
+
+    /// <inheritdoc />
     public DisplaySettings DisplaySettings {
         get => this.UserSettings.Display;
     }
@@ -71,9 +74,6 @@ public class BaseGame : Game, IGame {
     public InputBindings InputBindings {
         get => this.UserSettings.Input;
     }
-
-    /// <inheritdoc />
-    public IDataManager DataManager { get; } = new WindowsDataManager();
 
     /// <inheritdoc />
     public SaveManager SaveManager { get; } = new();
@@ -281,7 +281,7 @@ public class BaseGame : Game, IGame {
         base.Initialize();
 
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        
+
         if (IsDesignMode) {
             this.UserSettings = new UserSettings(this.Project);
         }
@@ -418,6 +418,8 @@ public class BaseGame : Game, IGame {
             get => Scene.Empty;
         }
 
+        public IDataManager DataManager { get; } = EmptyDataManager.Instance;
+
         public InputDevice DesiredInputDevice {
             get => InputDevice.GamePad;
         }
@@ -435,8 +437,6 @@ public class BaseGame : Game, IGame {
         }
 
         public IGameProject Project { get; } = new GameProject();
-
-        public IDataManager DataManager { get; } = EmptyDataManager.Instance;
 
         public SaveManager SaveManager { get; } = new();
 
