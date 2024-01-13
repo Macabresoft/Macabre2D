@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 

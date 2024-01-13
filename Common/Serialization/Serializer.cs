@@ -1,7 +1,5 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
-using System;
-using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -146,5 +144,3 @@ public sealed class Serializer : ISerializer {
         return stringBuilder.ToString();
     }
 }
-
-#nullable enable

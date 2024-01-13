@@ -5,15 +5,16 @@ using System.Runtime.Serialization;
 using System.Threading;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using NUnit.Framework;
 
 [TestFixture]
-public static class WindowsSaveDataManagerTests {
+public static class WindowsDataManagerTests {
     [Test]
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_DeleteTest() {
-        var saveDataManager = new WindowsSaveDataManager();
+        var saveDataManager = new WindowsDataManager();
         saveDataManager.Save(SaveDataFileName, ProjectName, new TestSaveData());
 
         var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
@@ -32,7 +33,7 @@ public static class WindowsSaveDataManagerTests {
     [Test]
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
-        var saveDataManager = new WindowsSaveDataManager();
+        var saveDataManager = new WindowsDataManager();
         saveDataManager.Delete(SaveDataFileName, ProjectName);
 
         var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
@@ -46,7 +47,7 @@ public static class WindowsSaveDataManagerTests {
     [Test]
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_OverwriteSaveTest() {
-        var saveDataManager = new WindowsSaveDataManager();
+        var saveDataManager = new WindowsDataManager();
 
         var saveData1 = new TestSaveData();
         saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
@@ -77,7 +78,7 @@ public static class WindowsSaveDataManagerTests {
     [Test]
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
-        var saveDataManager = new WindowsSaveDataManager();
+        var saveDataManager = new WindowsDataManager();
 
         var saveData1 = new TestSaveData();
         saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);

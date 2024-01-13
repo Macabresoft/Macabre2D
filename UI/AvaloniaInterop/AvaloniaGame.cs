@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;

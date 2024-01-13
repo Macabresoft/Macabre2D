@@ -1,6 +1,5 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
-using System;
 using System.Runtime.Serialization;
 
 /// <summary>

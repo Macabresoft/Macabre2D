@@ -1,7 +1,5 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
-using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,7 +13,6 @@ public class JsonColorConverter : JsonConverter {
     public override bool CanConvert(Type objectType) {
         return objectType == typeof(Color);
     }
-
 #nullable disable
 
     /// <inheritdoc />
@@ -44,5 +41,4 @@ public class JsonColorConverter : JsonConverter {
         writer.WriteEndObject();
     }
 
-#nullable enable
 }

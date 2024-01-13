@@ -62,6 +62,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Common\Macabre2D.Common.csproj" />
         <ProjectReference Include="..\Project\Common\Macabre2D.Project.Common.csproj"/>
     </ItemGroup>
 </Project>

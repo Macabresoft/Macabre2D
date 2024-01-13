@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using ReactiveUI;

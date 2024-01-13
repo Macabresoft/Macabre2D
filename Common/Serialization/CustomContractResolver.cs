@@ -1,9 +1,6 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Serialization;
 
 /// <summary>
@@ -13,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 public sealed class CustomContractResolver : DefaultContractResolver {
     /// <inheritdoc />
     protected override JsonContract CreateContract(Type objectType) {
-        if (objectType.GetInterfaces().Any(i => i == typeof(IDictionary) || (i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>)))) {
+        if (objectType.GetInterfaces().Any(i => i == typeof(IDictionary) || i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>))) {
             return this.CreateArrayContract(objectType);
         }
 

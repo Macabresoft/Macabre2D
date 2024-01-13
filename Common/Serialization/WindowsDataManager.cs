@@ -1,13 +1,11 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
-using System;
-using System.IO;
 using Macabresoft.Core;
 
 /// <summary>
-/// Manages the loading and saving of save data.
+/// Manages the loading and saving of data in Windows.
 /// </summary>
-public sealed class WindowsSaveDataManager : ISaveDataManager {
+public sealed class WindowsDataManager : IDataManager {
     /// <inheritdoc />
     public void Delete(string fileName, string projectName) {
         var filePath = this.GetFilePath(fileName, projectName);

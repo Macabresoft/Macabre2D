@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using NUnit.Framework;
 

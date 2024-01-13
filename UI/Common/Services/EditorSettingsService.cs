@@ -2,6 +2,7 @@
 
 using System.IO;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>

@@ -1,9 +1,9 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Common;
 
 /// <summary>
-/// Interface for a save data manager.
+/// Interface for a data manager.
 /// </summary>
-public interface ISaveDataManager {
+public interface IDataManager {
     /// <summary>
     /// Deletes the specified save data.
     /// </summary>
@@ -35,15 +35,4 @@ public interface ISaveDataManager {
     /// <param name="data">The loaded data.</param>
     /// <returns>A value indicating whether or not the data was found.</returns>
     bool TryLoad<T>(string fileName, string projectName, out T? data) where T : class, IVersionedData;
-}
-
-/// <summary>
-/// Static class that provides utility for <see cref="ISaveDataManager" />.
-/// </summary>
-public static class SaveDataManager {
-    /// <summary>
-    /// Gets the empty.
-    /// </summary>
-    /// <value>The empty.</value>
-    public static ISaveDataManager Empty { get; } = new EmptySaveDataManager();
 }

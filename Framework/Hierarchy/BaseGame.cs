@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -71,7 +72,7 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
+    public IDataManager DataManager { get; } = new WindowsDataManager();
 
     /// <inheritdoc />
     public Point ViewportSize {
@@ -232,7 +233,7 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public void SaveUserSettings() {
-        this.SaveDataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
+        this.DataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
         this.SettingsSaved.SafeInvoke(this);
     }
 
@@ -281,7 +282,7 @@ public class BaseGame : Game, IGame {
             this.UserSettings = new UserSettings(this.Project);
         }
         else {
-            if (this.SaveDataManager.TryLoad<UserSettings>(UserSettings.FileName, this.Project.Name, out var userSettings) && userSettings != null) {
+            if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, this.Project.Name, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
             }
             else {
@@ -430,7 +431,7 @@ public class BaseGame : Game, IGame {
 
         public IGameProject Project { get; } = new GameProject();
 
-        public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
+        public IDataManager DataManager { get; } = EmptyDataManager.Empty;
 
         public SpriteBatch? SpriteBatch {
             get => null;
