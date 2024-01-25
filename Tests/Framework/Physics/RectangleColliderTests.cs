@@ -35,27 +35,27 @@ public static class RectangleColliderTests {
         rectangleBody.SetWorldPosition(new Vector2(x2, y2));
         rectangleBody.Collider = new RectangleCollider(new Vector2(-0.5f * w, -0.5f * h), new Vector2(0.5f * w, 0.5f * h));
 
-        Assert.AreEqual(collisionOccured, circleBody.Collider.CollidesWith(rectangleBody.Collider, out var collision1));
-        Assert.AreEqual(collisionOccured, rectangleBody.Collider.CollidesWith(circleBody.Collider, out var collision2));
+        Assert.That(collisionOccured, Is.EqualTo(circleBody.Collider.CollidesWith(rectangleBody.Collider, out var collision1)));
+        Assert.That(collisionOccured, Is.EqualTo(rectangleBody.Collider.CollidesWith(circleBody.Collider, out var collision2)));
 
         if (collisionOccured) {
-            Assert.AreEqual(collision1.MinimumTranslationVector.Length(), collision2.MinimumTranslationVector.Length(), 0.0001f);
-            Assert.AreEqual(collision1.FirstCollider, collision2.SecondCollider);
-            Assert.AreEqual(collision1.SecondCollider, collision2.FirstCollider);
-            Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
-            Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
+            Assert.That(collision1.MinimumTranslationVector.Length(), Is.EqualTo(collision2.MinimumTranslationVector.Length()).Within(0.0001f));
+            Assert.That(collision1.FirstCollider, Is.EqualTo(collision2.SecondCollider));
+            Assert.That(collision1.SecondCollider, Is.EqualTo(collision2.FirstCollider));
+            Assert.That(collision1.FirstContainsSecond, Is.EqualTo(collision2.SecondContainsFirst));
+            Assert.That(collision1.SecondContainsFirst, Is.EqualTo(collision2.FirstContainsSecond));
 
             var originalPosition = circleBody.WorldPosition;
             circleBody.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
-            Assert.False(circleBody.Collider.CollidesWith(rectangleBody.Collider, out collision1));
+            Assert.That(circleBody.Collider.CollidesWith(rectangleBody.Collider, out collision1), Is.False);
             circleBody.SetWorldPosition(originalPosition);
 
             rectangleBody.SetWorldPosition(rectangleBody.WorldPosition + collision2.MinimumTranslationVector);
-            Assert.False(rectangleBody.Collider.CollidesWith(circleBody.Collider, out collision2));
+            Assert.That(rectangleBody.Collider.CollidesWith(circleBody.Collider, out collision2), Is.False);
         }
         else {
-            Assert.Null(collision1);
-            Assert.Null(collision2);
+            Assert.That(collision1, Is.Null);
+            Assert.That(collision2, Is.Null);
         }
     }
 
@@ -89,27 +89,27 @@ public static class RectangleColliderTests {
         rectangleBody2.SetWorldPosition(new Vector2(x2, y2));
         rectangleBody2.Collider = new RectangleCollider(new Vector2(-0.5f * w2, -0.5f * h2), new Vector2(0.5f * w2, 0.5f * h2));
 
-        Assert.AreEqual(collisionOccured, rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out var collision1));
-        Assert.AreEqual(collisionOccured, rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out var collision2));
+        Assert.That(collisionOccured, Is.EqualTo(rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out var collision1)));
+        Assert.That(collisionOccured, Is.EqualTo(rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out var collision2)));
 
         if (collisionOccured) {
-            Assert.AreEqual(collision1.MinimumTranslationVector.Length(), collision2.MinimumTranslationVector.Length(), 0.0001f);
-            Assert.AreEqual(collision1.FirstCollider, collision2.SecondCollider);
-            Assert.AreEqual(collision1.SecondCollider, collision2.FirstCollider);
-            Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
-            Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
+            Assert.That(collision1.MinimumTranslationVector.Length(), Is.EqualTo(collision2.MinimumTranslationVector.Length()).Within(0.0001f));
+            Assert.That(collision1.FirstCollider, Is.EqualTo(collision2.SecondCollider));
+            Assert.That(collision1.SecondCollider, Is.EqualTo(collision2.FirstCollider));
+            Assert.That(collision1.FirstContainsSecond, Is.EqualTo(collision2.SecondContainsFirst));
+            Assert.That(collision1.SecondContainsFirst, Is.EqualTo(collision2.FirstContainsSecond));
 
             var originalPosition = rectangleBody1.WorldPosition;
             rectangleBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
-            Assert.False(rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out collision1));
+            Assert.That(rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out collision1), Is.False);
             rectangleBody1.SetWorldPosition(originalPosition);
 
             rectangleBody2.SetWorldPosition(rectangleBody2.WorldPosition + collision2.MinimumTranslationVector);
-            Assert.False(rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out collision2));
+            Assert.That(rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out collision2), Is.False);
         }
         else {
-            Assert.Null(collision1);
-            Assert.Null(collision2);
+            Assert.That(collision1, Is.Null);
+            Assert.That(collision2, Is.Null);
         }
     }
 }

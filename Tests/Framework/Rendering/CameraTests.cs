@@ -29,9 +29,9 @@ public sealed class CameraTests {
         camera.Initialize(scene, new Entity());
 
         camera.ZoomTo(new Vector2(zoomX, zoomY), zoomAmount);
-        Assert.AreEqual(expectedViewHeight, camera.ViewHeight);
-        Assert.AreEqual(expectedX, camera.LocalPosition.X, 0.001f);
-        Assert.AreEqual(expectedY, camera.LocalPosition.Y, 0.001f);
+        Assert.That(expectedViewHeight, Is.EqualTo(camera.ViewHeight).Within(0.001f));
+        Assert.That(expectedX, Is.EqualTo(camera.LocalPosition.X).Within(0.001f));
+        Assert.That(expectedY, Is.EqualTo(camera.LocalPosition.Y).Within(0.001f));
     }
 
     [Test]

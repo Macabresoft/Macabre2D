@@ -39,7 +39,7 @@ public static class SimplePhysicsLoopTests {
 
         var raycastLayer = layersCompatible ? circleBody.Layers : (Layers)2;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
-        Assert.AreEqual(raycastHit, result);
+        Assert.That(raycastHit, Is.EqualTo(result));
     }
 
     [Test]
@@ -70,13 +70,13 @@ public static class SimplePhysicsLoopTests {
         physicsSystem.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 1)), 1), new InputState());
 
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
-        Assert.AreEqual(raycastHit, result);
+        Assert.That(raycastHit, Is.EqualTo(result));
         result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
-        Assert.AreEqual(raycastHit, result);
+        Assert.That(raycastHit, Is.EqualTo(result));
 
         physicsSystem.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 2), new TimeSpan(0, 0, 1)), 1), new InputState());
 
         result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
-        Assert.AreEqual(raycastHit, result);
+        Assert.That(raycastHit, Is.EqualTo(result));
     }
 }

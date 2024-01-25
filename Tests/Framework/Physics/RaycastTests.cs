@@ -21,6 +21,6 @@ public static class RaycastTests {
         body.LocalPosition = new Vector2(0f, -0.5f);
         body.Collider = new RectangleCollider(new Vector2(-9f, -0.5f), new Vector2(9f, 0.5f));
         var result = body.Collider.IsHitBy(ray, out var hit);
-        Assert.IsTrue(result);
+        Assert.That(result, Is.True);
     }
 }
