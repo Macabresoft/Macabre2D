@@ -111,7 +111,8 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
             this._stopwatch.Restart();
             this.RunFrame();
 
-            using (var bitmapLock = this._bitmap.Lock()) {
+            try {
+                using var bitmapLock = this._bitmap.Lock();
                 var size = bitmapLock.RowBytes * bitmapLock.Size.Height;
                 if (this._bufferData.Length != size) {
                     this._bufferData = new byte[size];
@@ -119,6 +120,12 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
 
                 device.GetBackBufferData(this._bufferData);
                 Marshal.Copy(this._bufferData, 0, bitmapLock.Address, this._bufferData.Length);
+            }
+            catch {
+                // If we've got an exception in this block, there's a good chance resetting the graphics
+                // device will fix the issue. It usually means the size of the device doesn't match the
+                // bitmap size.
+                this.ResetDevice(device, this.Bounds.Size);
             }
 
             if (!this.TryDrawBitmap(context) && game.CurrentScene is { } scene) {
