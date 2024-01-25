@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Tests.Framework;
 
 using System.IO;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -38,8 +39,6 @@ public static class SerializerTests {
 
     private static void CompareGameSettings(IGameProject originalProject, IGameProject deserializedProject) {
         Assert.That(deserializedProject, Is.Not.Null);
-        Assert.That(originalProject.ErrorSpritesColor, Is.EqualTo(deserializedProject.ErrorSpritesColor));
-        Assert.That(originalProject.FallbackBackgroundColor, Is.EqualTo(deserializedProject.FallbackBackgroundColor));
         Assert.That(originalProject.PixelsPerUnit, Is.EqualTo(deserializedProject.PixelsPerUnit));
     }
 }
