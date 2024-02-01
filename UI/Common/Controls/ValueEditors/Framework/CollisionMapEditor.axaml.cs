@@ -7,7 +7,6 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
@@ -64,15 +63,16 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
         var column = columnValues.Count + 1;
 
         foreach (var columnValue in columnValues) {
-            var textControl = new TextBlock {
+            var textBlock = new TextBlock {
                 Text = ToDisplayNameConverter.Instance.Convert(columnValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
                 [ToolTip.TipProperty] = columnValue
             };
 
-            textControl.Classes.Add("SmallLabel");
+            TrimNone(textBlock);
+            textBlock.Classes.Add("SmallLabel");
 
             var container = new Decorator {
-                Child = textControl
+                Child = textBlock
             };
 
             var layoutTransform = new LayoutTransformControl {
@@ -90,15 +90,16 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
         foreach (var rowValue in rowValues) {
             column = columnValues.Count + 1;
 
-            var textControl = new TextBlock {
+            var textBlock = new TextBlock {
                 Text = ToDisplayNameConverter.Instance.Convert(rowValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
                 [ToolTip.TipProperty] = rowValue,
                 [Grid.RowProperty] = row,
                 [Grid.ColumnProperty] = 0
             };
 
-            textControl.Classes.Add("SmallLabel");
-            grid.Children.Add(textControl);
+            TrimNone(textBlock);
+            textBlock.Classes.Add("SmallLabel");
+            grid.Children.Add(textBlock);
 
             foreach (var columnValue in columnValues) {
                 var checkBox = new CheckBox {
@@ -132,5 +133,11 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
 
     private void ToggleCheckedWithUndo(Layers firstLayer, Layers secondLayer) {
         this._undoService.Do(() => { this.ToggleChecked(firstLayer, secondLayer); }, () => { this.ToggleChecked(firstLayer, secondLayer); });
+    }
+
+    private static void TrimNone(TextBlock textBlock) {
+        if (textBlock.Text?.StartsWith("None, ") == true) {
+            textBlock.Text = textBlock.Text.Remove(0, "None, ".Length);
+        }
     }
 }
