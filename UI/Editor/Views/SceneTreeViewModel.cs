@@ -542,7 +542,9 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private void PerformFilter() {
         if (!string.IsNullOrEmpty(this._filterText) && this._nodesAvailableToFilter.Count != 0) {
-            this._filteredNodes.Reset(this._nodesAvailableToFilter.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)));
+            this._filteredNodes.Reset(this._nodesAvailableToFilter.Where(x =>
+                !string.IsNullOrEmpty(x.Name) && x.Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase) ||
+                x.GetType().Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)));
         }
         else {
             this._filteredNodes.Clear();
