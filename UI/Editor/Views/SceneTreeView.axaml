@@ -356,13 +356,19 @@
                      SelectionMode="Single">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="{StaticResource StandardMarginAll}">
-                            <TextBlock FontWeight="Bold"
-                                       Text="{Binding Name, Mode=OneTime}" />
-                            <TextBlock FontStyle="Italic"
-                                       Text="{Binding Converter={x:Static common:ToTypeNameConverter.Instance}, StringFormat={}({0})}" />
-                        </StackPanel>
+                        <Border Background="Transparent"
+                                MinHeight="{StaticResource TextControlThemeMinHeight}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                DoubleTapped="FilteredNode_OnDoubleTapped">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="{StaticResource StandardMarginAll}">
+                                <TextBlock FontWeight="Bold"
+                                           Text="{Binding Name, Mode=OneTime}" />
+                                <TextBlock FontStyle="Italic"
+                                           Text="{Binding Converter={x:Static common:ToTypeNameConverter.Instance}, StringFormat={}({0})}" />
+                            </StackPanel>
+                        </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

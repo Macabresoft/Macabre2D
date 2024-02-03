@@ -115,6 +115,10 @@ public partial class SceneTreeView : UserControl {
         this.ResetDropTarget(null, null);
     }
 
+    private void FilteredNode_OnDoubleTapped(object sender, TappedEventArgs e) {
+        this.ViewModel.ClearFilterCommand.Execute(null);
+    }
+
     private bool IsInsert(DragEventArgs e) {
         var result = false;
 
