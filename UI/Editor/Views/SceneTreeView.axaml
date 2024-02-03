@@ -21,7 +21,7 @@
         <Design.DataContext>
             <local:SceneTreeViewModel />
         </Design.DataContext>
-        <Grid RowDefinitions="Auto, *, 0"
+        <Grid RowDefinitions="Auto, Auto, *"
               ColumnDefinitions="Auto, *, Auto">
             <StackPanel Grid.Column="0"
                         Grid.Row="0"
@@ -71,7 +71,7 @@
                         ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
-                
+
                 <Button Command="{Binding CloneCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         HotKey="Ctrl + Shift + C"
@@ -100,7 +100,8 @@
 
             <StackPanel Grid.Column="2"
                         Grid.Row="0"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        IsVisible="{Binding !IsFiltered}">
                 <Button Classes="Icon"
                         Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
                         CommandParameter="{Binding #_treeView}"
@@ -115,9 +116,27 @@
                 </Button>
             </StackPanel>
 
+            <Grid Grid.Column="0"
+                  Grid.ColumnSpan="3"
+                  Grid.Row="1"
+                  ColumnDefinitions="*, Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding FilterText}"
+                         Watermark="Filter..." />
+
+                <Button Grid.Column="1"
+                        VerticalAlignment="Top"
+                        Classes="Icon"
+                        Command="{Binding ClearFilterCommand}"
+                        ToolTip.Tip="Clear the filter">
+                    <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+                </Button>
+            </Grid>
+
             <TreeView Grid.Column="0"
                       Grid.ColumnSpan="3"
-                      Grid.Row="1"
+                      Grid.Row="2"
+                      IsVisible="{Binding !IsFiltered}"
                       Name="_treeView"
                       ItemsSource="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"
@@ -214,7 +233,7 @@
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this loop" />
-                                    
+
                                     <MenuItem Header="Clone"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneCommand}"
                                               CommandParameter="{Binding}"
@@ -222,7 +241,7 @@
                                               ToolTip.Tip="Clone this loop" />
 
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
@@ -270,24 +289,24 @@
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
-                                    
+
                                     <MenuItem Header="Re-initialize"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ReinitializeCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Re-initializes this entity" />
-                                    
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Enable All"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.EnableCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Sets IsVisible to 'True' for this entity and all of its descendants" />
-                                    
+
                                     <MenuItem Header="Disable All"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.DisableCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Sets IsEnabled to 'False' for this entity and all of its descendants" />
-                                    
+
                                     <MenuItem Header="Reveal All"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RevealCommand}"
                                               CommandParameter="{Binding}"
@@ -326,6 +345,27 @@
                     </TreeDataTemplate>
                 </TreeView.DataTemplates>
             </TreeView>
+
+            <ListBox Grid.Column="0"
+                     Grid.ColumnSpan="3"
+                     Grid.Row="2"
+                     IsVisible="{Binding IsFiltered}"
+                     Margin="{StaticResource StandardMarginAll}"
+                     ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
+                     SelectedItem="{Binding FilteredSelection}"
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="{StaticResource StandardMarginAll}">
+                            <TextBlock FontWeight="Bold"
+                                       Text="{Binding Name, Mode=OneTime}" />
+                            <TextBlock FontStyle="Italic"
+                                       Text="{Binding Converter={x:Static common:ToTypeNameConverter.Instance}, StringFormat={}({0})}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Border>
 </UserControl>

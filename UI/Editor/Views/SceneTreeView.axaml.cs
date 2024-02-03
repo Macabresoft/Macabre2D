@@ -56,10 +56,9 @@ public partial class SceneTreeView : UserControl {
         set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
     }
 
-    private bool CanInsert(Control target) {
-        return target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
-               target.DataContext != this.DraggedObject;
-    }
+    private bool CanInsert(Control target) =>
+        target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
+        target.DataContext != this.DraggedObject;
 
     private void Drag(object sender, DragEventArgs e) {
         if (e.Source is Control { DataContext: not null } control) {
@@ -208,8 +207,8 @@ public partial class SceneTreeView : UserControl {
                 var draggedObject = values[0];
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
-                       ((draggedObject is IEntity && dropTarget is IEntity or EntityCollection) ||
-                        (draggedObject is ILoop && dropTarget is ILoop or LoopCollection));
+                       (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
+                        draggedObject is ILoop && dropTarget is ILoop or LoopCollection);
             }
 
             return false;
