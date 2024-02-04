@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
@@ -21,9 +23,14 @@ public class ProjectTreeViewModel : BaseViewModel {
     private readonly ICommonDialogService _dialogService;
     private readonly IEditorService _editorService;
     private readonly IFileSystemService _fileSystem;
+    private readonly ObservableCollectionExtended<IContentNode> _filteredNodes = new();
+    private readonly List<IContentNode> _nodesAvailableToFilter = new();
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IUndoService _undoService;
+
+    private IContentNode _filteredSelection;
+    private string _filterText;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
@@ -66,36 +73,38 @@ public class ProjectTreeViewModel : BaseViewModel {
 
         this.AddCommand = ReactiveCommand.Create<object>(
             this.AddNode,
-            this.AssetSelectionService.WhenAny(x => x.Selected, x => CanAddNode(x.Value)));
+            this.AssetSelectionService.WhenAny(x => x.Selected, x => !this.IsFiltered && CanAddNode(x.Value)));
 
-        var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory);
+        var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddDirectory(x as IContentDirectory), whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddScene(x as IContentDirectory), whenIsContentDirectory);
         this.ImportCommand = ReactiveCommand.CreateFromTask<object>(x => this.ContentService.ImportContent(x as IContentDirectory), whenIsContentDirectory);
 
         this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
             this.OpenSelectedContent,
-            this.ContentService.WhenAny(x => x.Selected, y => CanOpenContent(y.Value)));
+            this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && CanOpenContent(y.Value)));
 
         this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode>(
             this.OpenContentLocation,
-            this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
+            this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null));
 
         this.RemoveContentCommand = ReactiveCommand.Create<object>(
             this.RemoveContent,
-            this.AssetSelectionService.WhenAny(x => x.Selected, y => this.CanRemoveContent(y.Value)));
+            this.AssetSelectionService.WhenAny(x => x.Selected, y => !this.IsFiltered && this.CanRemoveContent(y.Value)));
 
         this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
 
         this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => CanMoveDown(x.Value)));
+            x => !this.IsFiltered && CanMoveDown(x.Value)));
         this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => CanMoveUp(x.Value)));
+            x => !this.IsFiltered && CanMoveUp(x.Value)));
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => CanClone(x.Value)));
+            x => !this.IsFiltered && CanClone(x.Value)));
+
+        this.ClearFilterCommand = ReactiveCommand.Create(this.ClearFilter, this.WhenAny(x => x.IsFiltered, x => this.IsFiltered));
     }
 
     /// <summary>
@@ -119,6 +128,11 @@ public class ProjectTreeViewModel : BaseViewModel {
     public IAssetSelectionService AssetSelectionService { get; }
 
     /// <summary>
+    /// Gets a command to clear the filter.
+    /// </summary>
+    public ICommand ClearFilterCommand { get; }
+
+    /// <summary>
     /// Gets a command to clone an entity.
     /// </summary>
     public ICommand CloneCommand { get; }
@@ -129,9 +143,19 @@ public class ProjectTreeViewModel : BaseViewModel {
     public IContentService ContentService { get; }
 
     /// <summary>
+    /// Gets the filtered nodes.
+    /// </summary>
+    public IReadOnlyCollection<INameable> FilteredNodes => this._filteredNodes;
+
+    /// <summary>
     /// Gets the import command.
     /// </summary>
     public ICommand ImportCommand { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is filtered.
+    /// </summary>
+    public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
 
     /// <summary>
     /// Gets a value indicating whether or not a <see cref="SpriteSheetMember" /> is selected.
@@ -167,6 +191,41 @@ public class ProjectTreeViewModel : BaseViewModel {
     /// Gets a command for renaming content.
     /// </summary>
     public ICommand RenameContentCommand { get; }
+
+    /// <summary>
+    /// Gets or sets the filtered selection;
+    /// </summary>
+    public IContentNode FilteredSelection {
+        get => this._filteredSelection;
+        set {
+            if (this.IsFiltered) {
+                this.RaiseAndSetIfChanged(ref this._filteredSelection, value);
+                this.AssetSelectionService.Selected = value;
+            }
+            else {
+                this._filteredSelection = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the filter text.
+    /// </summary>
+    public string FilterText {
+        get => this._filterText;
+        set {
+            if (this._filterText != value) {
+                if (string.IsNullOrEmpty(this._filterText)) {
+                    this.RefreshAvailableNodes();
+                }
+
+                this._filterText = value;
+                this.PerformFilter();
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(this.IsFiltered));
+            }
+        }
+    }
 
     /// <summary>
     /// Moves the source content node to be a child of the target directory.
@@ -219,13 +278,9 @@ public class ProjectTreeViewModel : BaseViewModel {
         }
     }
 
-    private static bool CanAddNode(object parent) {
-        return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or KeyboardIconSetCollection or SpriteSheetMember;
-    }
+    private static bool CanAddNode(object parent) => parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or KeyboardIconSetCollection or SpriteSheetMember;
 
-    private static bool CanClone(object selected) {
-        return selected is SpriteSheetMember;
-    }
+    private static bool CanClone(object selected) => selected is SpriteSheetMember;
 
     private static bool CanMoveDown(object selected) {
         var result = false;
@@ -250,14 +305,19 @@ public class ProjectTreeViewModel : BaseViewModel {
         return result;
     }
 
-    private static bool CanOpenContent(IContentNode node) {
-        return node is ContentFile { Asset: SceneAsset };
-    }
+    private static bool CanOpenContent(IContentNode node) => node is ContentFile { Asset: SceneAsset };
 
-    private bool CanRemoveContent(object node) {
-        return node is not RootContentDirectory &&
-               node is not INameableCollection &&
-               (this._sceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId));
+    private bool CanRemoveContent(object node) =>
+        node != null &&
+        node is not RootContentDirectory &&
+        node is not INameableCollection &&
+        (this._sceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId));
+
+    private void ClearFilter() {
+        var selected = this.FilteredSelection;
+        this.AssetSelectionService.Selected = null;
+        this.FilterText = null;
+        this.AssetSelectionService.Selected = selected;
     }
 
     private void Clone(object selected) {
@@ -322,6 +382,28 @@ public class ProjectTreeViewModel : BaseViewModel {
     private async Task OpenSelectedContent(IContentNode node) {
         if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel && this._sceneService.TryLoadScene(node.Id, out _)) {
             this._editorService.SelectedTab = EditorTabs.Scene;
+        }
+    }
+
+    private void PerformFilter() {
+        if (!string.IsNullOrEmpty(this._filterText) && this._nodesAvailableToFilter.Count != 0) {
+            this._filteredNodes.Reset(this._nodesAvailableToFilter.Where(x =>
+                !string.IsNullOrEmpty(x.Name) && x.Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase) ||
+                x.GetType().Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)));
+        }
+        else {
+            this._filteredNodes.Clear();
+        }
+    }
+
+    private void RefreshAvailableNodes() {
+        this._filteredSelection = null;
+        this.RaisePropertyChanged(nameof(this.FilteredSelection));
+        this.AssetSelectionService.Selected = null;
+        this._nodesAvailableToFilter.Clear();
+
+        if (this.ContentService.RootContentDirectory != null) {
+            this._nodesAvailableToFilter.AddRange(this.ContentService.RootContentDirectory.GetAllContentFiles());
         }
     }
 

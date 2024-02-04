@@ -82,12 +82,28 @@
         </ContextMenu>
     </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectTreeView].ViewModel}">
+        <Grid.Styles>
+            <Style Selector="avaloniaEx|EditableSelectableItem">
+                <Design.DataContext>
+                    <common:ContentFile />
+                </Design.DataContext>
+
+                <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
+                <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="IsEditable" Value="True" />
+                <Setter Property="IsFileName" Value="True" />
+                <Setter Property="TextCommittedCommand"
+                        Value="{Binding $parent[local:ProjectTreeView].ViewModel.RenameContentCommand}" />
+                <Setter Property="Text" Value="{Binding Name}" />
+            </Style>
+        </Grid.Styles>
         <Design.DataContext>
             <local:ProjectTreeViewModel />
         </Design.DataContext>
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Grid RowDefinitions="Auto, *"
+            <Grid RowDefinitions="Auto, Auto, *"
                   ColumnDefinitions="Auto, *, Auto">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
@@ -126,7 +142,7 @@
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
                         <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
-                    
+
                     <Button Command="{Binding CloneCommand}"
                             CommandParameter="{Binding AssetSelectionService.Selected}"
                             HotKey="Ctrl + Shift + C"
@@ -155,6 +171,7 @@
 
                 <StackPanel Grid.Column="2"
                             Grid.Row="0"
+                            IsVisible="{Binding !IsFiltered}"
                             Orientation="Horizontal">
                     <Button Classes="Icon"
                             Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
@@ -170,30 +187,33 @@
                     </Button>
                 </StackPanel>
 
+                <Grid Grid.Column="0"
+                      Grid.ColumnSpan="3"
+                      Grid.Row="1"
+                      ColumnDefinitions="*, Auto">
+                    <TextBox Grid.Column="0"
+                             Text="{Binding FilterText}"
+                             Watermark="Filter..." />
+
+                    <Button Grid.Column="1"
+                            VerticalAlignment="Top"
+                            Classes="Icon"
+                            Command="{Binding ClearFilterCommand}"
+                            ToolTip.Tip="Clear the filter">
+                        <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+                    </Button>
+                </Grid>
+
                 <TreeView Grid.Column="0"
                           Grid.ColumnSpan="3"
-                          Grid.Row="1"
+                          Grid.Row="2"
+                          IsVisible="{Binding !IsFiltered}"
                           Name="_treeView"
                           ItemsSource="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <TreeView.Styles>
-                        <Style Selector="avaloniaEx|EditableSelectableItem">
-                            <Design.DataContext>
-                                <common:ContentFile />
-                            </Design.DataContext>
-
-                            <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
-                            <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="IsEditable" Value="True" />
-                            <Setter Property="IsFileName" Value="True" />
-                            <Setter Property="TextCommittedCommand"
-                                    Value="{Binding $parent[local:ProjectTreeView].ViewModel.RenameContentCommand}" />
-                            <Setter Property="Text" Value="{Binding Name}" />
-                        </Style>
-
                         <Style Selector="avaloniaEx|EditableSelectableItem.File">
                             <Design.DataContext>
                                 <common:ContentFile />
@@ -270,6 +290,28 @@
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>
                 </TreeView>
+
+                <ListBox Grid.Column="0"
+                         Grid.ColumnSpan="3"
+                         Grid.Row="2"
+                         IsVisible="{Binding IsFiltered}"
+                         Margin="{StaticResource StandardMarginAll}"
+                         ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
+                         SelectedItem="{Binding FilteredSelection}"
+                         SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="Transparent"
+                                    MinHeight="{StaticResource TextControlThemeMinHeight}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    DoubleTapped="FilteredNode_OnDoubleTapped">
+                                <avaloniaEx:EditableSelectableItem Classes="File"
+                                                                   IsEditable="False" />
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </Border>
     </Grid>

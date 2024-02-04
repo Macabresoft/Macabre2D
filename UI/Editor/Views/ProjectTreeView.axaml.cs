@@ -39,6 +39,10 @@ public partial class ProjectTreeView : UserControl {
         this._dragTarget = Guid.Empty;
     }
 
+    private void FilteredNode_OnDoubleTapped(object sender, TappedEventArgs e) {
+        this.ViewModel.ClearFilterCommand.Execute(null);
+    }
+
     private async void Node_OnPointerMoved(object sender, PointerEventArgs e) {
         if (this._dragTarget != Guid.Empty && sender is Control { DataContext: IContentNode sourceNode } && sourceNode.Id == this._dragTarget) {
             this._dragTarget = sourceNode.Id;
