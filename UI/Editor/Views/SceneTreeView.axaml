@@ -122,6 +122,7 @@
                   ColumnDefinitions="*, Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding FilterText}"
+                         Height="14"
                          Watermark="Filter..." />
 
                 <Button Grid.Column="1"

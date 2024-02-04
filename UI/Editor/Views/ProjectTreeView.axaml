@@ -192,6 +192,7 @@
                       Grid.Row="1"
                       ColumnDefinitions="*, Auto">
                     <TextBox Grid.Column="0"
+                             Height="14"
                              Text="{Binding FilterText}"
                              Watermark="Filter..." />
 
