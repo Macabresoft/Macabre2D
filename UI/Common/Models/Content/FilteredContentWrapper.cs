@@ -3,11 +3,12 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// A wrapper for content being filtered for a custom tree view.
 /// </summary>
-public class FilteredContentWrapper {
+public class FilteredContentWrapper : INameable {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilteredContentWrapper" /> class.
     /// </summary>
@@ -62,8 +63,35 @@ public class FilteredContentWrapper {
     /// </summary>
     public IContentNode Node { get; }
 
+    /// <inheritdoc />
+    public string Name {
+        get => this.Node.Name;
+        set => this.Node.Name = value;
+    }
+
     /// <summary>
     /// Gets a value indicating whether or not this is a directory.
     /// </summary>
     private bool IsDirectory => this.Node is IContentDirectory;
+
+    /// <summary>
+    /// Gets all files under and including this node.
+    /// </summary>
+    /// <returns>All files.</returns>
+    public IEnumerable<FilteredContentWrapper> GetAllFiles() {
+        var files = new List<FilteredContentWrapper>();
+        this.AddAllFiles(files);
+        return files;
+    }
+
+    private void AddAllFiles(ICollection<FilteredContentWrapper> files) {
+        if (!this.IsDirectory) {
+            files.Add(this);
+        }
+        else {
+            foreach (var child in this.Children) {
+                child.AddAllFiles(files);
+            }
+        }
+    }
 }

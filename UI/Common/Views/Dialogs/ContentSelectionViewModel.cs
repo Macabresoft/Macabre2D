@@ -1,14 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using Macabresoft.AvaloniaEx;
+using System.Collections.Generic;
 using ReactiveUI;
 using Unity;
 
 /// <summary>
 /// A view model for the asset selection dialog.
 /// </summary>
-public class ContentSelectionViewModel : BaseDialogViewModel {
+public class ContentSelectionViewModel : FilterableViewModel<FilteredContentWrapper> {
     private readonly bool _allowDirectorySelection;
     private readonly Type _desiredAssetType;
     private FilteredContentWrapper _selectedContentNode;
@@ -48,8 +48,19 @@ public class ContentSelectionViewModel : BaseDialogViewModel {
         get => this._selectedContentNode;
         set {
             this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
-            this.IsOkEnabled = (this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset)) ||
-                               (this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory);
+            this.IsOkEnabled = this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset) ||
+                               this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
         }
+    }
+
+    /// <inheritdoc />
+    protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;
+
+    /// <inheritdoc />
+    protected override IEnumerable<FilteredContentWrapper> GetNodesAvailableToFilter() => this.RootContentDirectory.GetAllFiles();
+
+    /// <inheritdoc />
+    protected override void SetActualSelected(FilteredContentWrapper selected) {
+        this.SelectedContentNode = selected;
     }
 }

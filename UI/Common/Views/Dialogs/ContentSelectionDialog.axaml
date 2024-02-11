@@ -14,16 +14,57 @@
         <local:ContentSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
-          RowDefinitions="*, Auto">
+          RowDefinitions="Auto, *, Auto">
 
-        <local:FilteredContentTree Grid.Row="0"
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, Auto">
+            <TextBox Grid.Column="0"
+                     Height="14"
+                     Text="{Binding FilterText}"
+                     Watermark="Filter..." />
+
+            <Button Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Classes="Icon"
+                    Command="{Binding ClearFilterCommand}"
+                    ToolTip.Tip="Clear the filter">
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+        </Grid>
+
+        <local:FilteredContentTree Grid.Row="1"
+                                   IsVisible="{Binding !IsFiltered}"
                                    Root="{Binding RootContentDirectory, Mode=OneTime}"
                                    SelectedItem="{Binding SelectedContentNode}"
                                    Margin="{StaticResource StandardMarginAll}" />
 
+        <ListBox Grid.Row="1"
+                 IsVisible="{Binding IsFiltered}"
+                 Margin="{StaticResource StandardMarginAll}"
+                 ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
+                 SelectedItem="{Binding FilteredSelection}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent"
+                            MinHeight="{StaticResource TextControlThemeMinHeight}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            DoubleTapped="FilteredNode_OnDoubleTapped">
+                        <avaloniaEx:EditableSelectableItem Classes="File"
+                                                           IconForeground="{StaticResource WhiteBrush}"
+                                                           VerticalAlignment="Center"
+                                                           IsFileName="True"
+                                                           Text="{Binding Name}"
+                                                           IsEditable="False" />
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
