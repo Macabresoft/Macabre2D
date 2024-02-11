@@ -75,10 +75,13 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
 
+    /// <inheritdoc />
     protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;
 
+    /// <inheritdoc />
     protected override IEnumerable<FilteredContentWrapper> GetNodesAvailableToFilter() => this.RootContentDirectory.GetAllFiles();
 
+    /// <inheritdoc />
     protected override void SetActualSelected(FilteredContentWrapper selected) {
         this.SelectedContentNode = selected;
     }

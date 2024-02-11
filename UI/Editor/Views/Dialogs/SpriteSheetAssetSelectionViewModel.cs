@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
@@ -13,7 +12,7 @@ using Unity;
 /// <summary>
 /// A view model for the sprite sheet asset selection dialog.
 /// </summary>
-public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetMember {
+public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewModel<FilteredContentWrapper> where TAsset : SpriteSheetMember {
     private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
     private bool _isFinished;
     private TAsset _selectedAsset;
@@ -79,10 +78,21 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
 
-    /// inheritdoc />
+    /// <inheritdoc />
+    protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;
+
+    /// <inheritdoc />
+    protected override IEnumerable<FilteredContentWrapper> GetNodesAvailableToFilter() => this.RootContentDirectory.GetAllFiles();
+
+    /// <inheritdoc />
     protected override void OnOk() {
         this._isFinished = true;
         base.OnOk();
+    }
+
+    /// <inheritdoc />
+    protected override void SetActualSelected(FilteredContentWrapper selected) {
+        this.SelectedContentNode = selected;
     }
 
     private void ResetSpriteSheets() {

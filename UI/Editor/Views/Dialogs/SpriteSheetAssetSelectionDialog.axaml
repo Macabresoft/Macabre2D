@@ -12,23 +12,75 @@
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection"
                        VectorIcon="{StaticResource SpriteSheetIcon}">
+    <avaloniaEx:BaseDialog.Styles>
+        <Style Selector="avaloniaEx|EditableSelectableItem">
+            <Design.DataContext>
+                <common:ContentFile />
+            </Design.DataContext>
+            
+            <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </avaloniaEx:BaseDialog.Styles>
     <Window.Resources>
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </Window.Resources>
     <Design.DataContext>
         <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetMember" />
     </Design.DataContext>
-    <Grid RowDefinitions="*, Auto"
+    <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions="0.4*, 0.6*"
           Margin="{StaticResource StandardMarginAll}">
 
-        <common:FilteredContentTree Grid.Row="0"
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              ColumnDefinitions="*, Auto">
+            <TextBox Grid.Column="0"
+                     Height="14"
+                     Text="{Binding FilterText}"
+                     Watermark="Filter..." />
+
+            <Button Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Classes="Icon"
+                    Command="{Binding ClearFilterCommand}"
+                    ToolTip.Tip="Clear the filter">
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+        </Grid>
+
+        <common:FilteredContentTree Grid.Row="1"
                                     Grid.Column="0"
+                                    IsVisible="{Binding !IsFiltered}"
                                     Root="{Binding RootContentDirectory, Mode=OneTime}"
                                     SelectedItem="{Binding SelectedContentNode}"
                                     Margin="{StaticResource StandardMarginAll}" />
 
-        <Grid Grid.Row="0"
+        <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 IsVisible="{Binding IsFiltered}"
+                 Margin="{StaticResource StandardMarginAll}"
+                 ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
+                 SelectedItem="{Binding FilteredSelection}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent"
+                            MinHeight="{StaticResource TextControlThemeMinHeight}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            DoubleTapped="FilteredNode_OnDoubleTapped">
+                        <avaloniaEx:EditableSelectableItem Classes="File"
+                                                           Text="{Binding Name}"
+                                                           Icon="{Binding Node, Converter={x:Static common:AssetToIconConverter.Instance}}"
+                                                           IsFileName="True"
+                                                           IsEditable="False" />
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Row="1"
               Grid.Column="1"
               RowDefinitions="Auto, *">
             <common:ThumbnailSizeToggle Grid.Row="0"
@@ -76,7 +128,7 @@
             </ScrollViewer>
         </Grid>
 
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal"
