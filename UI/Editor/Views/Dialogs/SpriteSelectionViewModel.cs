@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System.Collections.Generic;
-using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
@@ -11,7 +10,7 @@ using Unity;
 /// <summary>
 /// A view model for the sprite selection dialog.
 /// </summary>
-public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
+public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredContentWrapper> {
     private readonly ObservableCollectionExtended<SpriteDisplayCollection> _spriteSheets = new();
     private FilteredContentWrapper _selectedContentNode;
     private SpriteDisplayModel _selectedSprite;
@@ -38,6 +37,11 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper RootContentDirectory { get; }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
 
     /// <summary>
     /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
@@ -71,10 +75,13 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
 
-    /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
+    protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;
+
+    protected override IEnumerable<FilteredContentWrapper> GetNodesAvailableToFilter() => this.RootContentDirectory.GetAllFiles();
+
+    protected override void SetActualSelected(FilteredContentWrapper selected) {
+        this.SelectedContentNode = selected;
+    }
 
     private void ResetSpriteSheets() {
         this._spriteSheets.Clear();
