@@ -11,7 +11,6 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
@@ -20,23 +19,17 @@ using Unity;
 /// <summary>
 /// A view model for the scene view.
 /// </summary>
-public sealed class SceneTreeViewModel : BaseViewModel {
-
+public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
-    private readonly ObservableCollectionExtended<INameable> _filteredNodes = new();
     private readonly ILoopService _loopService;
-    private readonly List<INameable> _nodesAvailableToFilter = new();
     private readonly IUndoService _undoService;
-
-    private INameable _filteredSelection;
-    private string _filterText;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
     /// </summary>
     /// <remarks>This constructor only exists for design time XAML.</remarks>
-    public SceneTreeViewModel() {
+    public SceneTreeViewModel() : base() {
     }
 
     /// <summary>
@@ -57,7 +50,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         IEntityService entityService,
         ISceneService sceneService,
         ILoopService loopService,
-        IUndoService undoService) {
+        IUndoService undoService) : base() {
         this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
@@ -70,7 +63,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
         this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x), this.WhenAny(
             x => x.IsFiltered,
-            x => this.CanAdd()));
+            _ => this.CanAdd()));
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanRemove(x.Value)));
@@ -84,9 +77,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanClone(x.Value)));
-        this.ClearFilterCommand = ReactiveCommand.Create(this.ClearFilter, this.WhenAny(
-            x => x.IsFiltered,
-            x => this.IsFiltered));
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
@@ -115,11 +105,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets a collection of <see cref="MenuItemModel" /> for adding loops.
     /// </summary>
     public IReadOnlyCollection<MenuItemModel> AddLoopModels { get; }
-
-    /// <summary>
-    /// Gets a command to clear the filter.
-    /// </summary>
-    public ICommand ClearFilterCommand { get; }
 
     /// <summary>
     /// Gets a command to clone an entity.
@@ -157,11 +142,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public IEntityService EntityService { get; }
 
     /// <summary>
-    /// Gets the filtered nodes.
-    /// </summary>
-    public IReadOnlyCollection<INameable> FilteredNodes => this._filteredNodes;
-
-    /// <summary>
     /// Gets a command to hide an entity and its descendants.
     /// </summary>
     public ICommand HideCommand { get; }
@@ -170,11 +150,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets or sets a value indicating whether an entity or loop is selected.
     /// </summary>
     public bool IsEntityOrLoopSelected => this.CanClone(this.SceneService.Selected);
-
-    /// <summary>
-    /// Gets a value indicating whether or not this is filtered.
-    /// </summary>
-    public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
 
     /// <summary>
     /// Gets a command to move a child down.
@@ -210,41 +185,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets the scene service.
     /// </summary>
     public ISceneService SceneService { get; }
-
-    /// <summary>
-    /// Gets or sets the filtered selection;
-    /// </summary>
-    public INameable FilteredSelection {
-        get => this._filteredSelection;
-        set {
-            if (this.IsFiltered) {
-                this.RaiseAndSetIfChanged(ref this._filteredSelection, value);
-                this.SceneService.Selected = value;
-            }
-            else {
-                this._filteredSelection = null;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the filter text.
-    /// </summary>
-    public string FilterText {
-        get => this._filterText;
-        set {
-            if (this._filterText != value) {
-                if (string.IsNullOrEmpty(this._filterText)) {
-                    this.RefreshAvailableNodes();
-                }
-
-                this._filterText = value;
-                this.PerformFilter();
-                this.RaisePropertyChanged();
-                this.RaisePropertyChanged(nameof(this.IsFiltered));
-            }
-        }
-    }
 
     /// <summary>
     /// Moves the source entity to be a child of the target entity.
@@ -324,6 +264,29 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this.SceneService.RaiseSelectedChanged();
             });
         }
+    }
+
+    /// <inheritdoc />
+    protected override INameable GetActualSelected() => this.SceneService.Selected as INameable;
+
+    /// <inheritdoc />
+    protected override IEnumerable<INameable> GetNodesAvailableToFilter() {
+        if (!Scene.IsNullOrEmpty(this.SceneService.CurrentScene)) {
+            var nodes = new List<INameable> {
+                this.SceneService.CurrentScene
+            };
+
+            nodes.AddRange(this.SceneService.CurrentScene.Loops);
+            nodes.AddRange(this.SceneService.CurrentScene.GetDescendants<IEntity>());
+            return nodes;
+        }
+
+        return Enumerable.Empty<INameable>();
+    }
+
+    /// <inheritdoc />
+    protected override void SetActualSelected(INameable selected) {
+        this.SceneService.Selected = selected;
     }
 
     private async Task AddChild(Type type) {
@@ -441,13 +404,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private bool CanRemove(object value) => !this.IsFiltered && value is not IScene;
 
-    private void ClearFilter() {
-        var selected = this.FilteredSelection;
-        this.SceneService.Selected = null;
-        this.FilterText = null;
-        this.SceneService.Selected = selected;
-    }
-
     private void Clone(object selected) {
         if (selected is IEntity entity) {
             if (entity != this.SceneService.CurrentScene && entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
@@ -537,29 +493,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this._undoService.Do(() => { this.MoveLoopByIndex(loop, index - 1); }, () => { this.MoveLoopByIndex(loop, index); });
                 break;
             }
-        }
-    }
-
-    private void PerformFilter() {
-        if (!string.IsNullOrEmpty(this._filterText) && this._nodesAvailableToFilter.Count != 0) {
-            this._filteredNodes.Reset(this._nodesAvailableToFilter.Where(x =>
-                !string.IsNullOrEmpty(x.Name) && x.Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase) ||
-                x.GetType().Name.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)));
-        }
-        else {
-            this._filteredNodes.Clear();
-        }
-    }
-
-    private void RefreshAvailableNodes() {
-        this._filteredSelection = null;
-        this.RaisePropertyChanged(nameof(this.FilteredSelection));
-        this._nodesAvailableToFilter.Clear();
-
-        if (!Scene.IsNullOrEmpty(this.SceneService.CurrentScene)) {
-            this._nodesAvailableToFilter.Add(this.SceneService.CurrentScene);
-            this._nodesAvailableToFilter.AddRange(this.SceneService.CurrentScene.Loops);
-            this._nodesAvailableToFilter.AddRange(this.SceneService.CurrentScene.GetDescendants<IEntity>());
         }
     }
 
