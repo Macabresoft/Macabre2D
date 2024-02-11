@@ -14,7 +14,6 @@
                     Gesture="Ctrl + Delete" />
     </UserControl.KeyBindings>
     <UserControl.Resources>
-        <common:AssetToIconConverter x:Key="AssetToIconConverter" />
         <ContextMenu x:Key="ContentNodeContextMenu">
             <Design.DataContext>
                 <common:ContentFile />
@@ -89,7 +88,7 @@
                 </Design.DataContext>
 
                 <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
-                <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
+                <Setter Property="Icon" Value="{Binding Converter={x:Static common:AssetToIconConverter.Instance}}" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="IsEditable" Value="True" />
                 <Setter Property="IsFileName" Value="True" />
