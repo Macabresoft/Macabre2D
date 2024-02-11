@@ -10,6 +10,16 @@
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection"
                        VectorIcon="{StaticResource DirectoryIcon}">
+    <avaloniaEx:BaseDialog.Styles>
+        <Style Selector="avaloniaEx|EditableSelectableItem">
+            <Design.DataContext>
+                <local:ContentFile />
+            </Design.DataContext>
+            
+            <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </avaloniaEx:BaseDialog.Styles>
     <Design.DataContext>
         <local:ContentSelectionViewModel />
     </Design.DataContext>
@@ -52,10 +62,9 @@
                             VerticalAlignment="Stretch"
                             DoubleTapped="FilteredNode_OnDoubleTapped">
                         <avaloniaEx:EditableSelectableItem Classes="File"
-                                                           IconForeground="{StaticResource WhiteBrush}"
-                                                           VerticalAlignment="Center"
-                                                           IsFileName="True"
                                                            Text="{Binding Name}"
+                                                           Icon="{Binding Node, Converter={x:Static local:AssetToIconConverter.Instance}}"
+                                                           IsFileName="True"
                                                            IsEditable="False" />
                     </Border>
                 </DataTemplate>

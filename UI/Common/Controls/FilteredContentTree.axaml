@@ -53,7 +53,7 @@
                                          Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
                                          IsVisible="{Binding !IsDirectory}"
                                          Margin="{StaticResource StandardMarginRight}"
-                                         Foreground="{StaticResource TextControlForeground}" />
+                                         Foreground="{StaticResource WhiteBrush}" />
 
                         <TextBlock Grid.Column="1"
                                    Text="{Binding Node.Name}"

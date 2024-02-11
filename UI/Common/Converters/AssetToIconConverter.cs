@@ -11,12 +11,23 @@ using Macabresoft.Macabre2D.Framework;
 /// Converts from an asset to an icon.
 /// </summary>
 public class AssetToIconConverter : IValueConverter {
+    /// <summary>
+    /// Gets the instance.
+    /// </summary>
+    public static IValueConverter Instance { get; } = new AssetToIconConverter();
+    
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
         var result = AvaloniaProperty.UnsetValue;
 
         if (Application.Current is { } application) {
-            _ = value switch {
+            var actualValue = value;
+
+            if (value is FilteredContentWrapper wrapper) {
+                actualValue = wrapper.Node;
+            }
+            
+            _ = actualValue switch {
                 ContentFile { Asset: { } asset } => asset switch {
                     AudioClipAsset => application.TryFindResource("AudioClipIcon", out result),
                     PrefabAsset => application.TryFindResource("EntityIcon", out result),
@@ -25,7 +36,7 @@ public class AssetToIconConverter : IValueConverter {
                     SpriteSheet => application.TryFindResource("SpriteSheetIcon", out result),
                     _ => application.TryFindResource("FileIcon", out result)
                 },
-                INameableCollection => value switch {
+                INameableCollection => actualValue switch {
                     AutoTileSetCollection => application.TryFindResource("AutoLayoutIcon", out result),
                     SpriteAnimationCollection => application.TryFindResource("AnimationIcon", out result),
                     SpriteSheetFontCollection => application.TryFindResource("FontIcon", out result),
