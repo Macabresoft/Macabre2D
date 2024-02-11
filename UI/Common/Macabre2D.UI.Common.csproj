@@ -171,7 +171,4 @@
         <UpToDateCheckInput Remove="Assets\PublicSans-Italic.otf"/>
         <UpToDateCheckInput Remove="Assets\PublicSans-Regular.otf"/>
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Views"/>
-    </ItemGroup>
 </Project>
