@@ -46,6 +46,11 @@ public class GameTimer {
     public float TimeRunning { get; private set; }
 
     /// <summary>
+    /// Gets the number of seconds remaining.
+    /// </summary>
+    public float TimeRemaining => this.TimeLimit - this.TimeRunning;
+
+    /// <summary>
     /// Completes this timer prematurely.
     /// </summary>
     public void Complete() {
