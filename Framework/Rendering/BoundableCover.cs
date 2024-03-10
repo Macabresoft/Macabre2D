@@ -57,11 +57,11 @@ public class BoundableCover : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this._texture != null && this.SpriteBatch is { } spriteBatch && this.Parent is ICamera camera) {
-            var scale = new Vector2(camera.ViewWidth, camera.ActualViewHeight) * this.Project.PixelsPerUnit;
+        if (this._texture != null && this.SpriteBatch is { } spriteBatch && this.Parent is IBoundable boundable) {
+            var scale = new Vector2(boundable.BoundingArea.Width, boundable.BoundingArea.Height) * this.Project.PixelsPerUnit;
             spriteBatch.Draw(
                 this._texture,
-                camera.BoundingArea.Minimum * this.Project.PixelsPerUnit,
+                boundable.BoundingArea.Minimum * this.Project.PixelsPerUnit,
                 null,
                 colorOverride,
                 0f,
