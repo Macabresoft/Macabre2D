@@ -30,6 +30,11 @@ public class GameTimer {
     }
 
     /// <summary>
+    /// Gets the number of seconds remaining.
+    /// </summary>
+    public float TimeRemaining => this.TimeLimit - this.TimeRunning;
+
+    /// <summary>
     /// Gets the state of this timer.
     /// </summary>
     public TimerState State { get; private set; } = TimerState.Disabled;
@@ -44,11 +49,6 @@ public class GameTimer {
     /// Gets the number of seconds this has been running.
     /// </summary>
     public float TimeRunning { get; private set; }
-
-    /// <summary>
-    /// Gets the number of seconds remaining.
-    /// </summary>
-    public float TimeRemaining => this.TimeLimit - this.TimeRunning;
 
     /// <summary>
     /// Completes this timer prematurely.
@@ -96,6 +96,21 @@ public class GameTimer {
     /// </param>
     public void Increment(FrameTime frameTime, float multiplier) {
         this.Increment((float)(frameTime.SecondsPassed * multiplier));
+    }
+
+    /// <summary>
+    /// Increments the timer.
+    /// </summary>
+    /// <param name="seconds">The seconds.</param>
+    public void Increment(float seconds) {
+        if (this.State == TimerState.Running) {
+            this.TimeRunning += seconds;
+
+            if (this.TimeRunning >= this.TimeLimit) {
+                this.TimeRunning = this.TimeLimit;
+                this.State = TimerState.Finished;
+            }
+        }
     }
 
     /// <summary>
@@ -163,17 +178,6 @@ public class GameTimer {
 
             if (this.TimeRunning <= 0f) {
                 this.TimeRunning = 0f;
-            }
-        }
-    }
-
-    private void Increment(float seconds) {
-        if (this.State == TimerState.Running) {
-            this.TimeRunning += seconds;
-
-            if (this.TimeRunning >= this.TimeLimit) {
-                this.TimeRunning = this.TimeLimit;
-                this.State = TimerState.Finished;
             }
         }
     }
