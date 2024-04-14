@@ -133,8 +133,8 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
             this.QueuedAnimation.MillisecondsPassed = millisecondsPassed;
         }
         else if (this.QueuedAnimation?.ShouldLoopIndefinitely == false) {
-            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
             this.QueuedAnimation = null;
+            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
         }
     }
 
