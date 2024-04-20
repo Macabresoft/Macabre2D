@@ -78,7 +78,7 @@ public class AssetReference<TAsset, TContent> : PropertyChangedNotifier, IAssetR
     }
 
     /// <inheritdoc />
-    public void Initialize(IAssetManager assetManager) {
+    public virtual void Initialize(IAssetManager assetManager) {
         this._assetManager = assetManager;
 
         if (this._assetManager.TryGetAsset(this, out var asset) && asset != null) {

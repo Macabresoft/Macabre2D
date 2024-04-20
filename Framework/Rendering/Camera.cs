@@ -230,7 +230,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride);
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.ShaderReference.PrepareAndGetShader());
     }
 
     /// <summary>
@@ -283,9 +283,7 @@ public class Camera : Entity, ICamera {
     /// Gets the view matrix.
     /// </summary>
     /// <returns>The view matrix.</returns>
-    protected Matrix GetViewMatrix() {
-        return this.GetViewMatrix(this.WorldPosition);
-    }
+    protected Matrix GetViewMatrix() => this.GetViewMatrix(this.WorldPosition);
 
     /// <summary>
     /// Gets the view matrix.
@@ -334,6 +332,7 @@ public class Camera : Entity, ICamera {
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
     /// <param name="colorOverride">The color override.</param>
+    /// <param name="shader">The shader.</param>
     protected virtual void Render(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
@@ -342,7 +341,8 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude,
-        ColorOverride colorOverride) {
+        ColorOverride colorOverride,
+        Effect? shader) {
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
@@ -356,7 +356,7 @@ public class Camera : Entity, ICamera {
                 this._samplerState,
                 null,
                 RasterizerState.CullNone,
-                this.ShaderReference.Asset?.Content,
+                shader,
                 viewMatrix);
 
             if (colorOverride.IsEnabled) {
@@ -430,9 +430,7 @@ public class Camera : Entity, ICamera {
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
-    private Vector2 CreateSize() {
-        return new Vector2(this.Game.ViewportSize.X, this.Game.ViewportSize.Y);
-    }
+    private Vector2 CreateSize() => new(this.Game.ViewportSize.X, this.Game.ViewportSize.Y);
 
     private float CreateViewWidth() {
         var (x, y) = this.OffsetOptions.Size;
