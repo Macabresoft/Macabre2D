@@ -180,7 +180,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                     editor.Category = classCategory.Category;
                 }
                 else {
-                    editor.Category = member.MemberInfo.DeclaringType.Name;
+                    editor.Category = owner.GetType().Name;
                 }
             }
 
