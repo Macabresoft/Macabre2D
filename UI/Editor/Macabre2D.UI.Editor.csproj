@@ -49,10 +49,6 @@
             <DependentUpon>SpriteSheetAssetSelectionDialog.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\ShaderReferenceEditor.axaml.cs">
-            <DependentUpon>ShaderEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\SpriteAnimationEditor.axaml.cs">
             <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
@@ -61,24 +57,12 @@
             <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\AudioClipReferenceEditor.axaml.cs">
-            <DependentUpon>AudioClipEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\AutoTileSetEditor.axaml.cs">
             <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\ProjectEditorView.axaml.cs">
             <DependentUpon>ProjectEditorView.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\PrefabReferenceEditor.axaml.cs">
-            <DependentUpon>PrefabReferenceEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\SceneReferenceEditor.axaml.cs">
-            <DependentUpon>SceneReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Controls\ValueEditors\SpriteSheetFontReferenceEditor.axaml.cs">

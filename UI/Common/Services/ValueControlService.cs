@@ -138,18 +138,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         else if (memberType == typeof(Guid) && (owner is AssetReference && member.MemberInfo.Name == nameof(AssetReference.ContentId) || memberType.GetCustomAttribute<AssetGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
-                result.Add(editor);
-            }
-        }
-        else if (memberType.IsAssignableTo(typeof(EntityReference))) {
-            var editor = this.CreateValueEditorFromType(typeof(EntityReferenceEditor), owner, value, memberType, member, propertyPath);
-            if (editor != null) {
-                result.Add(editor);
-            }
-        }
-        else if (memberType.IsAssignableTo(typeof(LoopReference))) {
-            var editor = this.CreateValueEditorFromType(typeof(LoopReferenceEditor), owner, value, memberType, member, propertyPath);
-            if (editor != null) {
+                editor.Title = "Asset";
                 result.Add(editor);
             }
         }
