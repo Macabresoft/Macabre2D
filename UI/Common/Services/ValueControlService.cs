@@ -85,7 +85,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         var result = new List<IValueControl>();
         var editableObjectType = owner.GetType();
         var members = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute))
-            .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<BrowsableAttribute>() is not { Browsable: false } );
+            .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<BrowsableAttribute>() is not { Browsable: false });
 
         var membersWithAttributes = members
             .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))
@@ -135,7 +135,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 }
             }
         }
-        else if (memberType == typeof(Guid) && memberType.GetCustomAttribute<AssetGuidAttribute>() != null) {
+        else if (memberType == typeof(Guid) && (owner is AssetReference && member.MemberInfo.Name == nameof(AssetReference.ContentId) || memberType.GetCustomAttribute<AssetGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 result.Add(editor);
@@ -190,13 +190,9 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         return null;
     }
 
-    private static string GetPropertyName(string propertyPath) {
-        return !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
-    }
+    private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
 
-    private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) {
-        return !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
-    }
+    private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
 
     private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
         info = null;

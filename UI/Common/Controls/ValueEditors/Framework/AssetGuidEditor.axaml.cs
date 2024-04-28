@@ -56,7 +56,10 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
             this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
 
-        if (dependencies?.Owner?.GetType() is { } ownerType) {
+        if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(AssetReference.ContentId) }) {
+            this._assetType = assetReference.AssetType;
+        } 
+        else if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
             if (members.FirstOrDefault() is { } info && info.GetCustomAttribute<AssetGuidAttribute>() is { } attribute) {
                 this._assetType = attribute.AssetType;
@@ -96,8 +99,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
 
         if (this._assetManager != null &&
             this.Value != Guid.Empty &&
-            this._assetManager.TryGetMetadata(this.Value, out var metadata) &&
-            metadata != null) {
+            this._assetManager.TryGetMetadata(this.Value, out var metadata)) {
             this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
     }
