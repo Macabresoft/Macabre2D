@@ -58,30 +58,25 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public AudioSettings AudioSettings {
-        get => this.UserSettings.Audio;
-    }
+    public AudioSettings AudioSettings => this.UserSettings.Audio;
 
     /// <inheritdoc />
     public IDataManager DataManager { get; } = new WindowsDataManager();
 
     /// <inheritdoc />
-    public DisplaySettings DisplaySettings {
-        get => this.UserSettings.Display;
-    }
+    public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
-    public InputBindings InputBindings {
-        get => this.UserSettings.Input;
-    }
+    public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
     public SaveManager SaveManager { get; } = new();
 
     /// <inheritdoc />
-    public Point ViewportSize {
-        get => this._viewportSize;
-    }
+    public Point ViewportSize => this._viewportSize;
+
+    /// <inheritdoc />
+    public IScene CurrentOverlay { get; private set; } = Scene.Empty;
 
     /// <inheritdoc />
     public IScene CurrentScene {
@@ -196,6 +191,12 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public void ApplyOverlay(IScene overlay) {
+        overlay.Initialize(this, this.CreateAssetManager());
+        this.CurrentOverlay = overlay;
+    }
+
+    /// <inheritdoc />
     public void LoadScene(string sceneName) {
         var assetManager = this.CreateAssetManager();
         if (assetManager.TryLoadContent<Scene>(sceneName, out var scene)) {
@@ -230,6 +231,11 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public void RemoveOverlay() {
+        this.CurrentOverlay = Scene.Empty;
+    }
+
+    /// <inheritdoc />
     public void SaveAndApplyUserSettings() {
         this.SaveUserSettings();
         this.ApplyDisplaySettings();
@@ -261,7 +267,6 @@ public class BaseGame : Game, IGame {
         var assetManager = new AssetManager();
         var contentManager = new ContentManager(this.Content.ServiceProvider, this.Content.RootDirectory);
         assetManager.Initialize(contentManager, Serializer.Instance);
-        this.RegisterNewSceneMetadata(assetManager);
         return assetManager;
     }
 
@@ -273,6 +278,8 @@ public class BaseGame : Game, IGame {
             foreach (var scene in this._sceneStack.Reverse()) {
                 scene.Render(this.FrameTime, this.InputState);
             }
+
+            this.CurrentOverlay.Render(this.FrameTime, this.InputState);
         }
     }
 
@@ -372,6 +379,7 @@ public class BaseGame : Game, IGame {
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
         this.CurrentScene.Update(this.FrameTime, this.InputState);
+        this.CurrentOverlay.Update(this.FrameTime, this.InputState);
     }
 
     /// <summary>
@@ -405,63 +413,33 @@ public class BaseGame : Game, IGame {
         public event EventHandler<InputDevice>? InputDeviceChanged;
         public event EventHandler? SettingsSaved;
         public event EventHandler<Point>? ViewportSizeChanged;
-
-        public AudioSettings AudioSettings {
-            get => this.UserSettings.Audio;
-        }
-
-        public ContentManager? Content {
-            get => null;
-        }
-
-        public IScene CurrentScene {
-            get => Scene.Empty;
-        }
-
-        public IDataManager DataManager { get; } = EmptyDataManager.Instance;
-
-        public InputDevice DesiredInputDevice {
-            get => InputDevice.GamePad;
-        }
-
-        public DisplaySettings DisplaySettings {
-            get => this.UserSettings.Display;
-        }
-
-        public GraphicsDevice? GraphicsDevice {
-            get => null;
-        }
-
-        public InputBindings InputBindings {
-            get => this.UserSettings.Input;
-        }
-
-        public IGameProject Project { get; } = new GameProject();
-
+        public AudioSettings AudioSettings => this.UserSettings.Audio;
+        public ContentManager? Content => null;
+        public IScene CurrentOverlay => Scene.Empty;
+        public IScene CurrentScene => Scene.Empty;
+        public IDataManager DataManager => EmptyDataManager.Instance;
+        public InputDevice DesiredInputDevice => InputDevice.GamePad;
+        public DisplaySettings DisplaySettings => this.UserSettings.Display;
+        public GraphicsDevice? GraphicsDevice => null;
+        public InputBindings InputBindings => this.UserSettings.Input;
+        public IGameProject Project => GameProject.Empty;
         public SaveManager SaveManager { get; } = new();
-
-        public SpriteBatch? SpriteBatch {
-            get => null;
-        }
-
+        public SpriteBatch? SpriteBatch => null;
         public UserSettings UserSettings { get; } = new();
-
-        public Point ViewportSize {
-            get => default;
-        }
+        public Point ViewportSize => default;
 
         public double GameSpeed {
             get => 1f;
             set {
-                if (value <= 0) {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
                 this.GameSpeedChanged.SafeInvoke(this, 1f);
             }
         }
 
         public void ApplyDisplaySettings() {
+        }
+
+        public void ApplyOverlay(IScene overlay) {
         }
 
         public void Exit() {
@@ -474,6 +452,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void PushScene(IScene scene) {
+        }
+
+        public void RemoveOverlay() {
         }
 
         public void SaveAndApplyUserSettings() {

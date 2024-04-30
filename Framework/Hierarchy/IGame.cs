@@ -42,9 +42,24 @@ public interface IGame {
     ContentManager? Content { get; }
 
     /// <summary>
+    /// Gets the overlay.
+    /// </summary>
+    IScene CurrentOverlay { get; }
+
+    /// <summary>
     /// Gets the scene.
     /// </summary>
     IScene CurrentScene { get; }
+
+    /// <summary>
+    /// Gets the data manager.
+    /// </summary>
+    IDataManager DataManager { get; }
+
+    /// <summary>
+    /// Gets the desired input device.
+    /// </summary>
+    InputDevice DesiredInputDevice { get; }
 
     /// <summary>
     /// Gets the graphics settings.
@@ -62,27 +77,15 @@ public interface IGame {
     InputBindings InputBindings { get; }
 
     /// <summary>
-    /// Gets the desired input device.
-    /// </summary>
-    InputDevice DesiredInputDevice { get; }
-
-    /// <summary>
     /// Gets the state of input.
     /// </summary>
-    InputState InputState {
-        get => new();
-    }
+    InputState InputState => new();
 
     /// <summary>
     /// Gets the project.
     /// </summary>
     IGameProject Project { get; }
 
-    /// <summary>
-    /// Gets the data manager.
-    /// </summary>
-    IDataManager DataManager { get; }
-    
     /// <summary>
     /// Gets the save manager.
     /// </summary>
@@ -115,6 +118,12 @@ public interface IGame {
     void ApplyDisplaySettings();
 
     /// <summary>
+    /// Applies an overlay to the current scene.
+    /// </summary>
+    /// <param name="overlay">The overlay.</param>
+    void ApplyOverlay(IScene overlay);
+
+    /// <summary>
     /// Exits the game.
     /// </summary>
     void Exit();
@@ -136,6 +145,11 @@ public interface IGame {
     /// </summary>
     /// <param name="scene">The scene to push.</param>
     void PushScene(IScene scene);
+
+    /// <summary>
+    /// Removes the current overlay if it exists.
+    /// </summary>
+    void RemoveOverlay();
 
     /// <summary>
     /// Saves the applies graphics settings.
