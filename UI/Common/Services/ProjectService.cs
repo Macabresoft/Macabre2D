@@ -92,7 +92,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
             this._contentService.RefreshContent(true);
 
             this.CurrentProject = new GameProject {
-                StartupSceneContentId = this.CreateInitialScene()
+                StartupSceneId = this.CreateInitialScene()
             };
 
             this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
@@ -108,11 +108,11 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     /// <inheritdoc />
     public void ReloadProject() {
         this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
-        var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
+        var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneId;
         if (!this._sceneService.TryLoadScene(sceneId, out _)) {
             var scenes = this._contentService.RootContentDirectory.GetAllContentFiles().Where(x => x.Asset is SceneAsset).ToList();
             if (scenes.Count == 0) {
-                this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+                this.CurrentProject.StartupSceneId = this.CreateInitialScene();
                 this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
             }
         }

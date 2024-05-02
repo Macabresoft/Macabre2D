@@ -44,7 +44,7 @@ public interface IGame {
     /// <summary>
     /// Gets the overlay.
     /// </summary>
-    IScene CurrentOverlay { get; }
+    IScene Overlay { get; }
 
     /// <summary>
     /// Gets the scene.
@@ -118,12 +118,6 @@ public interface IGame {
     void ApplyDisplaySettings();
 
     /// <summary>
-    /// Applies an overlay to the current scene.
-    /// </summary>
-    /// <param name="overlay">The overlay.</param>
-    void ApplyOverlay(IScene overlay);
-
-    /// <summary>
     /// Exits the game.
     /// </summary>
     void Exit();
@@ -145,11 +139,6 @@ public interface IGame {
     /// </summary>
     /// <param name="scene">The scene to push.</param>
     void PushScene(IScene scene);
-
-    /// <summary>
-    /// Removes the current overlay if it exists.
-    /// </summary>
-    void RemoveOverlay();
 
     /// <summary>
     /// Saves the applies graphics settings.

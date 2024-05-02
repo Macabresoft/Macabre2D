@@ -21,11 +21,10 @@ public class BaseGame : Game, IGame {
     public static readonly IGame Empty = new EmptyGame();
 
     private readonly Stack<IScene> _sceneStack = new();
-
+    
+    private IScene _persistentOverlay = Scene.Empty;
     private bool _canToggleFullscreen = true;
-
     private InputDevice _desiredInputDevice = InputDevice.Auto;
-
     private double _gameSpeed = 1d;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
@@ -70,13 +69,13 @@ public class BaseGame : Game, IGame {
     public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
+    public IScene Overlay { get; } = new Scene();
+
+    /// <inheritdoc />
     public SaveManager SaveManager { get; } = new();
 
     /// <inheritdoc />
     public Point ViewportSize => this._viewportSize;
-
-    /// <inheritdoc />
-    public IScene CurrentOverlay { get; private set; } = Scene.Empty;
 
     /// <inheritdoc />
     public IScene CurrentScene {
@@ -189,13 +188,7 @@ public class BaseGame : Game, IGame {
         this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
     }
-
-    /// <inheritdoc />
-    public void ApplyOverlay(IScene overlay) {
-        overlay.Initialize(this, this.CreateAssetManager());
-        this.CurrentOverlay = overlay;
-    }
-
+    
     /// <inheritdoc />
     public void LoadScene(string sceneName) {
         var assetManager = this.CreateAssetManager();
@@ -228,11 +221,6 @@ public class BaseGame : Game, IGame {
 
         this._sceneStack.Push(scene);
         scene.RaiseActivated();
-    }
-
-    /// <inheritdoc />
-    public void RemoveOverlay() {
-        this.CurrentOverlay = Scene.Empty;
     }
 
     /// <inheritdoc />
@@ -279,7 +267,11 @@ public class BaseGame : Game, IGame {
                 scene.Render(this.FrameTime, this.InputState);
             }
 
-            this.CurrentOverlay.Render(this.FrameTime, this.InputState);
+            this.Overlay.Render(this.FrameTime, this.InputState);
+
+            if (this.UserSettings.Display.ShowPersistentOverlay) {
+                this._persistentOverlay.Render(this.FrameTime, this.InputState);
+            }
         }
     }
 
@@ -311,6 +303,7 @@ public class BaseGame : Game, IGame {
 
         this.SaveManager.Initialize(this.DataManager);
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
+        this._persistentOverlay.Initialize(this, this.CreateAssetManager());
         this.IsInitialized = true;
     }
 
@@ -322,8 +315,12 @@ public class BaseGame : Game, IGame {
             this.Project = project;
         }
 
-        if (assetManager.TryLoadContent<Scene>(this.Project.StartupSceneContentId, out var scene)) {
+        if (assetManager.TryLoadContent<Scene>(this.Project.StartupSceneId, out var scene)) {
             this.LoadScene(scene);
+        }
+
+        if (assetManager.TryLoadContent<Scene>(this.Project.PersistentOverlaySceneId, out var overlay)) {
+            this._persistentOverlay = overlay;
         }
 
         this.TryCreateSpriteBatch();
@@ -379,7 +376,8 @@ public class BaseGame : Game, IGame {
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
         this.CurrentScene.Update(this.FrameTime, this.InputState);
-        this.CurrentOverlay.Update(this.FrameTime, this.InputState);
+        this.Overlay.Update(this.FrameTime, this.InputState);
+        this._persistentOverlay.Update(this.FrameTime, this.InputState);
     }
 
     /// <summary>
@@ -415,13 +413,13 @@ public class BaseGame : Game, IGame {
         public event EventHandler<Point>? ViewportSizeChanged;
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
-        public IScene CurrentOverlay => Scene.Empty;
         public IScene CurrentScene => Scene.Empty;
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
         public GraphicsDevice? GraphicsDevice => null;
         public InputBindings InputBindings => this.UserSettings.Input;
+        public IScene Overlay => Scene.Empty;
         public IGameProject Project => GameProject.Empty;
         public SaveManager SaveManager { get; } = new();
         public SpriteBatch? SpriteBatch => null;

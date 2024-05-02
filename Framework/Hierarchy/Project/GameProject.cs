@@ -42,14 +42,19 @@ public interface IGameProject : INotifyPropertyChanged {
     string Name { get; }
 
     /// <summary>
+    /// Gets the scene identifier of the scene to render as an overlay.
+    /// </summary>
+    Guid PersistentOverlaySceneId { get; }
+
+    /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
     /// </summary>
     bool SnapToPixels { get; }
 
     /// <summary>
-    /// Gets the content identifier of the scene loaded on startup.
+    /// Gets the identifier of the scene to load on startup.
     /// </summary>
-    Guid StartupSceneContentId { get; }
+    Guid StartupSceneId { get; }
 
     /// <summary>
     /// Gets the inverse of <see cref="PixelsPerUnit" />.
@@ -116,10 +121,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// Initializes a new instance of the <see cref="GameProject" /> class.
     /// </summary>
     /// <param name="name">The name.</param>
-    /// <param name="startupSceneContentId">The identifier for the scene which should run on startup.</param>
-    public GameProject(string name, Guid startupSceneContentId) {
+    /// <param name="startupSceneId">The identifier for the scene which should run on startup.</param>
+    public GameProject(string name, Guid startupSceneId) {
         this.Name = name;
-        this.StartupSceneContentId = startupSceneContentId;
+        this.StartupSceneId = startupSceneId;
         this.AllLayers = Enum.GetValues<Layers>().Aggregate((current, layer) => current | layer);
     }
 
@@ -157,6 +162,11 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public string Name { get; set; }
 
     /// <inheritdoc />
+    [DataMember(Name = "Persistent Overlay")]
+    [AssetGuid(typeof(SceneAsset))]
+    public Guid PersistentOverlaySceneId { get; set; }
+
+    /// <inheritdoc />
     [DataMember]
     public ushort PixelsPerUnit {
         get => this._pixelsPerUnit;
@@ -180,15 +190,13 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <inheritdoc />
     [DataMember(Name = "Startup Scene")]
     [AssetGuid(typeof(SceneAsset))]
-    public Guid StartupSceneContentId { get; set; }
+    public Guid StartupSceneId { get; set; }
 
     /// <inheritdoc />
     public float UnitsPerPixel { get; private set; } = 1f / 32f;
 
     /// <inheritdoc />
-    public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
-        return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
-    }
+    public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
 
     /// <inheritdoc />
     public void Initialize(IAssetManager assets) {
