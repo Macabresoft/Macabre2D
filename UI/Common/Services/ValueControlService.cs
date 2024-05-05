@@ -115,7 +115,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         string propertyPath) {
         var result = new List<IValueControl>();
 
-        if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
+        if (memberType.IsAssignableTo(typeof(Type)) && member.MemberInfo.GetCustomAttribute<TypeRestrictionAttribute>() is { } typeRestrictionAttribute) {
+            if (this.CreateTypeEditor(owner, value, typeRestrictionAttribute.Type, member, propertyPath) is var editor) {
+                result.Add(editor);
+            }
+        }
+        else if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 result.Add(editor);
@@ -150,6 +155,18 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         return result;
     }
 
+    private IValueEditor CreateTypeEditor(
+        object owner,
+        object value,
+        Type typeRestriction,
+        AttributeMemberInfo<DataMemberAttribute> member,
+        string propertyPath) {
+        var dependencies = new ValueControlDependencies(value, typeRestriction, GetPropertyName(propertyPath), GetTitle(member), owner);
+        var editor = this._container.Resolve<TypeEditor>(new DependencyOverride(typeof(ValueControlDependencies), dependencies));
+        this.SetCategoryForEditor(editor, owner, member);
+        return editor;
+    }
+
     private IValueEditor CreateValueEditorFromType(
         Type editorType,
         object owner,
@@ -159,20 +176,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         string propertyPath) {
         var dependencies = new ValueControlDependencies(value, memberType, GetPropertyName(propertyPath), GetTitle(member), owner);
         if (this._container.Resolve(editorType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueEditor editor) {
-            editor.Category = DefaultCategoryName;
-
-            if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
-                editor.Category = memberCategory.Category;
-            }
-            else if (member.MemberInfo.DeclaringType != null) {
-                if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
-                    editor.Category = classCategory.Category;
-                }
-                else {
-                    editor.Category = owner.GetType().Name;
-                }
-            }
-
+            this.SetCategoryForEditor(editor, owner, member);
             return editor;
         }
 
@@ -182,6 +186,22 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
 
     private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
+
+    private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member) {
+        editor.Category = DefaultCategoryName;
+
+        if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
+            editor.Category = memberCategory.Category;
+        }
+        else if (member.MemberInfo.DeclaringType != null) {
+            if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
+                editor.Category = classCategory.Category;
+            }
+            else {
+                editor.Category = owner.GetType().Name;
+            }
+        }
+    }
 
     private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
         info = null;

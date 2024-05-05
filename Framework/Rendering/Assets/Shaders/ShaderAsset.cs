@@ -1,5 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
+using System.Runtime.Serialization;
 using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
@@ -14,8 +16,24 @@ public sealed class ShaderAsset : Asset<Effect> {
     /// </summary>
     public const string FileExtension = ".fx";
 
+    private Type _configurationType = typeof(ShaderConfiguration);
+
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets or sets the configuration type for this shader, which determines shader parameters.
+    /// </summary>
+    [DataMember]
+    [TypeRestriction(typeof(IShaderConfiguration))]
+    public Type ConfigurationType {
+        get => this._configurationType;
+        set {
+            if (value != this._configurationType && value is { IsAbstract: false, IsInterface: false, IsClass: true } && value.GetConstructor(Type.EmptyTypes) != null) {
+                this.Set(ref this._configurationType, value);
+            }
+        }
+    }
 
     /// <inheritdoc />
     public override string GetContentBuildCommands(string contentPath, string fileExtension) {

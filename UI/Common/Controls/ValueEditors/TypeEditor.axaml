@@ -1,0 +1,30 @@
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:system="clr-namespace:System;assembly=mscorlib"
+                          x:TypeArguments="system:Type"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.TypeEditor">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:TypeEditor]}">
+        <Design.DataContext>
+            <local:TypeEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <ComboBox Grid.Column="1"
+                  ItemsSource="{Binding AvailableTypes}"
+                  SelectedItem="{Binding Value}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock HorizontalAlignment="Stretch"
+                               Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
+                               TextAlignment="Left"
+                               ToolTip.Tip="{Binding $self.Text}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+</local:ValueEditorControl>
