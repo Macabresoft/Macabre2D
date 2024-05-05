@@ -17,12 +17,6 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
     public IShaderConfiguration Configuration { get; private set; } = ShaderConfiguration.Empty;
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assetManager) {
-        base.Initialize(assetManager);
-        this.PrepareAndGetShader();
-    }
-
-    /// <inheritdoc />
     public override void LoadAsset(ShaderAsset asset) {
         base.LoadAsset(asset);
         this.ResetConfigurationType();
@@ -31,11 +25,13 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
     /// <summary>
     /// Prepares a shader and returns it.
     /// </summary>
+    /// <param name="game">The game.</param>
+    /// <param name="scene">The scene.</param>
     /// <returns>The shader.</returns>
-    public Effect? PrepareAndGetShader() {
+    public Effect? PrepareAndGetShader(IGame game, IScene scene) {
         var effect = this.Asset?.Content;
         if (effect != null) {
-            this.Configuration.FillParameters(effect);
+            this.Configuration.FillParameters(effect, game, scene);
         }
 
         return effect;

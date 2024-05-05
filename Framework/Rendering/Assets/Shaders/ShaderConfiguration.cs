@@ -10,8 +10,10 @@ public interface IShaderConfiguration {
     /// <summary>
     /// Fills the effect with parameters.
     /// </summary>
-    /// <param name="effect"></param>
-    void FillParameters(Effect effect);
+    /// <param name="effect">The effect.</param>
+    /// <param name="game">The game.</param>
+    /// <param name="scene">The scene.</param>
+    void FillParameters(Effect effect, IGame game, IScene scene);
 
     /// <summary>
     /// Resets this configuration to defaults.
@@ -31,7 +33,7 @@ public class ShaderConfiguration : IShaderConfiguration {
     public static IShaderConfiguration Empty { get; } = new ShaderConfiguration();
 
     /// <inheritdoc />
-    public virtual void FillParameters(Effect effect) {
+    public virtual void FillParameters(Effect effect, IGame game, IScene scene) {
     }
 
     /// <inheritdoc />

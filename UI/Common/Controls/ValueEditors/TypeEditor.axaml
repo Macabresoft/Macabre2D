@@ -22,7 +22,7 @@
                     <TextBlock HorizontalAlignment="Stretch"
                                Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
                                TextAlignment="Left"
-                               ToolTip.Tip="{Binding $self.Text}" />
+                               ToolTip.Tip="{Binding FullName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
