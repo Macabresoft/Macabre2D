@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -45,6 +46,11 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the scene identifier of the scene to render as an overlay.
     /// </summary>
     Guid PersistentOverlaySceneId { get; }
+
+    /// <summary>
+    /// Gets the screen shaders for this project.
+    /// </summary>
+    ICollection<ProjectShader> ScreenShaders { get; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
@@ -149,6 +155,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     [Category(CommonCategories.Fallback)]
     public ProjectFallbacks Fallbacks { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember]
+    public ICollection<ProjectShader> ScreenShaders { get; } = new List<ProjectShader>();
 
     /// <inheritdoc />
     [DataMember]

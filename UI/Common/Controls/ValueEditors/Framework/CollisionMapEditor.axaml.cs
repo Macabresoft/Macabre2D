@@ -45,7 +45,7 @@ public partial class CollisionMapEditor : ValueEditorControl<CollisionMap> {
         var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
         var grid = new Grid();
         viewBox.Child = grid;
-
+        
         var rowValues = Enum.GetValues<Layers>().Where(x => (x & allLayers) != Layers.None).ToList();
         rowValues.Remove(Layers.Default);
         rowValues.Remove(Layers.None);
