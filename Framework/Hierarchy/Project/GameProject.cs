@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -50,7 +49,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// <summary>
     /// Gets the screen shaders for this project.
     /// </summary>
-    ICollection<ProjectShader> ScreenShaders { get; }
+    ProjectShaders ScreenShaders { get; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
@@ -158,7 +157,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public ICollection<ProjectShader> ScreenShaders { get; } = new List<ProjectShader>();
+    public ProjectShaders ScreenShaders { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

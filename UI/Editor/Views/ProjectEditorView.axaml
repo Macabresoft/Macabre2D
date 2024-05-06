@@ -96,7 +96,8 @@
                 Classes="Card"
                 Margin="{StaticResource DoubleMarginLeftTopBottom}">
             <Panel>
-                <common:ValueCollectionsControl Collections="{Binding AssetSelectionService.Editors}" />
+                <common:ValueCollectionsControl Collections="{Binding AssetSelectionService.Editors}"
+                                                IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"

@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Gets the root content directory.
     /// </summary>
     IContentDirectory RootContentDirectory { get; }
-
+    
     /// <summary>
     /// Adds a directory as a child to selected directory.
     /// </summary>
@@ -64,6 +65,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// <summary>
     /// Refreshes the content.
     /// </summary>
+    /// <param name="forceRebuild">A value indicating whether or not rebuild should be forced.</param>
     void RefreshContent(bool forceRebuild);
 
     /// <summary>

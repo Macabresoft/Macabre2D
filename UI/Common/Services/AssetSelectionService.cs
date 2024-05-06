@@ -16,7 +16,8 @@ public enum ProjectSelectionType {
     None,
     File,
     Directory,
-    Asset
+    Asset,
+    Shader
 }
 
 /// <summary>
@@ -73,7 +74,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     public IReadOnlyCollection<ValueControlCollection> Editors {
         get {
             return this._selected switch {
-                RootContentDirectory => this._editors,
+                RootContentDirectory or ProjectShader => this._editors,
                 IContentNode => this._contentService.Editors,
                 _ => null
             };
@@ -103,6 +104,8 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 IContentDirectory => ProjectSelectionType.Directory,
                 IContentNode => ProjectSelectionType.File,
                 SpriteSheetMember => ProjectSelectionType.Asset,
+                ProjectShaders => ProjectSelectionType.Shader,
+                ProjectShader => ProjectSelectionType.Shader,
                 _ => ProjectSelectionType.None
             };
 
@@ -180,6 +183,14 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
 
         if (this._selected is RootContentDirectory) {
             var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject);
+            this._editors.AddRange(editors);
+
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+            }
+        }
+        else if (this._selected is ProjectShader) {
+            var editors = this._valueControlService.CreateControls(this._selected);
             this._editors.AddRange(editors);
 
             foreach (var editorCollection in this._editors) {

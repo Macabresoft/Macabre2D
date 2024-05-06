@@ -41,6 +41,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="fileSystem">The file system.</param>
+    /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="undoService">The undo service.</param>
@@ -51,6 +52,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         ICommonDialogService dialogService,
         IEditorService editorService,
         IFileSystemService fileSystem,
+        IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
         IUndoService undoService) : base() {
@@ -59,6 +61,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this._dialogService = dialogService;
         this._editorService = editorService;
         this._fileSystem = fileSystem;
+        this.ProjectService = projectService;
         this._saveService = saveService;
         this._sceneService = sceneService;
         this._undoService = undoService;
@@ -160,6 +163,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     public ICommand OpenContentLocationCommand { get; }
 
     /// <summary>
+    /// Gets the project service.
+    /// </summary>
+    public IProjectService ProjectService { get; }
+
+    /// <summary>
     /// Gets the remove content command.
     /// </summary>
     public ICommand RemoveContentCommand { get; }
@@ -204,6 +212,13 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this.AssetSelectionService.Selected = selected;
     }
 
+    private void AddNewProjectShader() {
+        var newShader = new ProjectShader();
+        this._undoService.Do(
+            () => { this.ProjectService.CurrentProject.ScreenShaders.Add(newShader); },
+            () => { this.ProjectService.CurrentProject.ScreenShaders.Remove(newShader); });
+    }
+
     private void AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
         var newMember = collection.CreateNewMember();
         this._undoService.Do(
@@ -225,6 +240,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }
 
                 break;
+            case ProjectShader:
+            case ProjectShaders:
+                this.AddNewProjectShader();
+                break;
         }
     }
 
@@ -234,7 +253,15 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
-    private static bool CanAddNode(object parent) => parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection or SpriteSheetFontCollection or GamePadIconSetCollection or KeyboardIconSetCollection or SpriteSheetMember;
+    private static bool CanAddNode(object parent) => parent is IContentDirectory or
+        AutoTileSetCollection or
+        SpriteAnimationCollection or
+        SpriteSheetFontCollection or
+        GamePadIconSetCollection or
+        KeyboardIconSetCollection or
+        SpriteSheetMember or
+        ProjectShader or
+        ProjectShaders;
 
     private static bool CanClone(object selected) => selected is SpriteSheetMember;
 
@@ -359,6 +386,14 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                     var index = collection.IndexOf(member);
                     this._undoService.Do(() => collection.RemoveMember(member),
                         () => collection.InsertMember(index, member));
+                }
+
+                break;
+            case ProjectShader shader:
+                if (this.ProjectService.CurrentProject.ScreenShaders is var shaders && shaders.Contains(shader)) {
+                    var index = shaders.IndexOf(shader);
+                    this._undoService.Do(() => shaders.Remove(shader),
+                        () => shaders.Insert(index, shader));
                 }
 
                 break;

@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -18,6 +20,11 @@ public interface IProjectService : INotifyPropertyChanged {
     /// Gets the currently loaded project.
     /// </summary>
     GameProject CurrentProject { get; }
+
+    /// <summary>
+    /// Gets the tree root.
+    /// </summary>
+    IReadOnlyCollection<object> TreeRoot { get; }
 
     /// <summary>
     /// Tries to load the project.
@@ -49,6 +56,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     private readonly ISceneService _sceneService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
+    private readonly ObservableCollection<object> _treeRoot = new();
     private GameProject _currentProject;
 
     /// <summary>
@@ -76,6 +84,9 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<object> TreeRoot => this._treeRoot;
+
+    /// <inheritdoc />
     public GameProject CurrentProject {
         get => this._currentProject;
         private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
@@ -96,6 +107,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
             };
 
             this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
+            this.ResetProjectTreeRoot();
         }
         else {
             this._contentService.RefreshContent(this._settingsService.Settings.ShouldRebuildContent);
@@ -116,6 +128,8 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
                 this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
             }
         }
+
+        this.ResetProjectTreeRoot();
     }
 
     /// <inheritdoc />
@@ -156,6 +170,12 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         this._sceneService.SaveScene(metadata, scene);
         var content = new ContentFile(parent, metadata);
         return this._sceneService.TryLoadScene(content.Id, out var asset) ? asset.ContentId : Guid.Empty;
+    }
+
+    private void ResetProjectTreeRoot() {
+        this._treeRoot.Clear();
+        this._treeRoot.Add(this.CurrentProject.ScreenShaders);
+        this._treeRoot.Add(this._contentService.RootContentDirectory);
     }
 
     private void SaveProjectFile(IGameProject project, string projectFilePath) {

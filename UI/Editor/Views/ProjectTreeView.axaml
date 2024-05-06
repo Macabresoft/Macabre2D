@@ -209,7 +209,7 @@
                           Grid.Row="2"
                           IsVisible="{Binding !IsFiltered}"
                           Name="_treeView"
-                          ItemsSource="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                          ItemsSource="{Binding ProjectService.TreeRoot, Mode=OneWay}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -241,6 +241,20 @@
                                                                    IsFileName="False"
                                                                    Text="Project" />
                             </Border>
+                        </TreeDataTemplate>
+
+                        <TreeDataTemplate DataType="framework:ProjectShaders"
+                                          ItemsSource="{Binding}">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource ScreenIcon}"
+                                                               IconForeground="{StaticResource YellowBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneTime}" />
+                        </TreeDataTemplate>
+
+                        <TreeDataTemplate DataType="framework:ProjectShader">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource ShaderIcon}"
+                                                               IsFileName="False" />
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="common:SpriteSheetContentFile"
