@@ -96,13 +96,13 @@
                 Classes="Card"
                 Margin="{StaticResource DoubleMarginLeftTopBottom}">
             <Panel>
-                <common:ValueCollectionsControl Collections="{Binding AssetSelectionService.Editors}"
-                                                IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                <common:ValueCollectionsControl Collections="{Binding AssetSelectionService.Editors, Mode=OneWay}"
+                                                IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static common:CollectionHasItemsConverter.HasItems}}"/>
 
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Text="Select a file or directory to view details"
-                           IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
+                           IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static common:CollectionHasItemsConverter.HasNoItems}}" />
             </Panel>
         </Border>
 

@@ -37,7 +37,7 @@
                       VerticalScrollBarVisibility="Auto"
                       Margin="{StaticResource StandardMarginAll}">
             <Grid>
-                <ItemsControl ItemsSource="{Binding Collections}">
+                <ItemsControl ItemsSource="{Binding Collections, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <avaloniaEx:GroupBox Header="{Binding Name}"

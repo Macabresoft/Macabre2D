@@ -41,7 +41,7 @@ public interface IAssetSelectionService : ISelectionService<object> {
 public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionService {
     private readonly IUnityContainer _container;
     private readonly IContentService _contentService;
-    private readonly List<ValueControlCollection> _editors = new();
+    private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
     private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
@@ -71,15 +71,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ValueControlCollection> Editors {
-        get {
-            return this._selected switch {
-                RootContentDirectory or ProjectShader => this._editors,
-                IContentNode => this._contentService.Editors,
-                _ => null
-            };
-        }
-    }
+    public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
 
     /// <inheritdoc />
     public Control AssetEditor {
@@ -188,6 +180,9 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             foreach (var editorCollection in this._editors) {
                 editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
             }
+        }
+        else if (this._selected is IContentNode) {
+            this._editors.AddRange(this._contentService.Editors);
         }
         else if (this._selected is ProjectShader) {
             var editors = this._valueControlService.CreateControls(this._selected);
