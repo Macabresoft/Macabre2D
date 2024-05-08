@@ -126,15 +126,17 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// <inheritdoc />
     protected override void HandleAnimationFinished() {
         if (this._queuedSpriteAnimations.Any()) {
-            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
+            var finishedAnimation = this.QueuedAnimation?.Animation;
             var millisecondsPassed = this.QueuedAnimation?.MillisecondsPassed ?? 0d;
             this.QueuedAnimation = this._queuedSpriteAnimations.Dequeue();
             this.QueuedAnimation.Reset();
             this.QueuedAnimation.MillisecondsPassed = millisecondsPassed;
+            this.OnAnimationFinished.SafeInvoke(this, finishedAnimation);
         }
         else if (this.QueuedAnimation?.ShouldLoopIndefinitely == false) {
-            this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation?.Animation);
+            var finishedAnimation = this.QueuedAnimation?.Animation;
             this.QueuedAnimation = null;
+            this.OnAnimationFinished.SafeInvoke(this, finishedAnimation);
         }
     }
 
