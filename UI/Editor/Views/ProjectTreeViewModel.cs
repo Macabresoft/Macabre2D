@@ -213,7 +213,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     }
 
     private void AddNewProjectShader() {
-        var newShader = new ProjectShader();
+        var newShader = new ScreenShader();
         this._undoService.Do(
             () => { this.ProjectService.CurrentProject.ScreenShaders.Add(newShader); },
             () => { this.ProjectService.CurrentProject.ScreenShaders.Remove(newShader); });
@@ -240,8 +240,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }
 
                 break;
-            case ProjectShader:
-            case ProjectShaders:
+            case ScreenShader:
+            case ScreenShaderCollection:
                 this.AddNewProjectShader();
                 break;
         }
@@ -260,8 +260,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         GamePadIconSetCollection or
         KeyboardIconSetCollection or
         SpriteSheetMember or
-        ProjectShader or
-        ProjectShaders;
+        ScreenShader or
+        ScreenShaderCollection;
 
     private static bool CanClone(object selected) => selected is SpriteSheetMember;
 
@@ -389,7 +389,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }
 
                 break;
-            case ProjectShader shader:
+            case ScreenShader shader:
                 if (this.ProjectService.CurrentProject.ScreenShaders is var shaders && shaders.Contains(shader)) {
                     var index = shaders.IndexOf(shader);
                     this._undoService.Do(() => shaders.Remove(shader),

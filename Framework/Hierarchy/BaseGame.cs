@@ -261,14 +261,14 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null && this.SpriteBatch != null) {
-            if (this.Project.ScreenShaders.HasShaders && !IsDesignMode) {
+            if (this.Project.ScreenShaders.CheckHasEnabledShaders(this) && !IsDesignMode) {
                 var previousRenderTarget = this.GetGameRenderTarget(this.GraphicsDevice);
                 this.GraphicsDevice.SetRenderTarget(previousRenderTarget);
                 this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
                 this.RenderScenes();
 
                 foreach (var shader in this.Project.ScreenShaders) {
-                    if (shader.Shader.PrepareAndGetShader(this, this.CurrentScene) is { } effect) {
+                    if (shader.IsEnabled && shader.Shader.PrepareAndGetShader(this, this.CurrentScene) is { } effect) {
                         var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader);
                         this.GraphicsDevice.SetRenderTarget(renderTarget);
                         this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
@@ -437,7 +437,7 @@ public class BaseGame : Game, IGame {
 
     private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= this.CreateRenderTarget(device);
 
-    private RenderTarget2D GetRenderTarget(GraphicsDevice device, ProjectShader shader) {
+    private RenderTarget2D GetRenderTarget(GraphicsDevice device, ScreenShader shader) {
         if (!this._screenShaderIdToRenderTargets.TryGetValue(shader.Id, out var renderTarget)) {
             renderTarget = this.CreateRenderTarget(device);
             this._screenShaderIdToRenderTargets[shader.Id] = renderTarget;

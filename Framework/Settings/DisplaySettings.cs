@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -56,9 +57,13 @@ public enum AspectRatio : byte {
 [DataContract]
 [Category(CommonCategories.Display)]
 public sealed class DisplaySettings {
+    [DataMember]
+    private readonly HashSet<Guid> _disabledScreenShaders = new();
+    
     private const int DefaultVerticalPixels = 480;
     private const byte MinimumWindowScale = 1;
     private byte _windowScale = 4;
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
@@ -94,6 +99,34 @@ public sealed class DisplaySettings {
     }
 
     /// <summary>
+    /// Gets a collection of identifiers for disabled screen shaders.
+    /// </summary>
+    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
+
+    /// <summary>
+    /// Enables a screen shader that was previously disabled.
+    /// </summary>
+    /// <param name="identifier">The screen shader identifier.</param>
+    public void EnableScreenShader(Guid identifier) {
+        this._disabledScreenShaders.Remove(identifier);
+    }
+
+    /// <summary>
+    /// Disables a screen shader.
+    /// </summary>
+    /// <param name="identifier">The screen shader identifier.</param>
+    public void DisableScreenShader(Guid identifier) {
+        this._disabledScreenShaders.Add(identifier);
+    }
+
+    /// <summary>
+    /// Enables all screen shaders.
+    /// </summary>
+    public void EnableAllScreenShaders() {
+        this._disabledScreenShaders.Clear();
+    }
+
+    /// <summary>
     /// Clones this instance.
     /// </summary>
     /// <returns>A clone of this instance.</returns>
@@ -111,6 +144,10 @@ public sealed class DisplaySettings {
         other.DisplayMode = this.DisplayMode;
         other.AspectRatio = this.AspectRatio;
         other.WindowScale = this.WindowScale;
+        other.EnableAllScreenShaders();
+        foreach (var shaderId in this.DisabledScreenShaders) {
+            other.DisableScreenShader(shaderId);
+        }
     }
 
     /// <summary>

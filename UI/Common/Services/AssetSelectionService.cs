@@ -96,8 +96,8 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 IContentDirectory => ProjectSelectionType.Directory,
                 IContentNode => ProjectSelectionType.File,
                 SpriteSheetMember => ProjectSelectionType.Asset,
-                ProjectShaders => ProjectSelectionType.Shader,
-                ProjectShader => ProjectSelectionType.Shader,
+                ScreenShaderCollection => ProjectSelectionType.Shader,
+                ScreenShader => ProjectSelectionType.Shader,
                 _ => ProjectSelectionType.None
             };
 
@@ -184,7 +184,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         else if (this._selected is IContentNode) {
             this._editors.AddRange(this._contentService.Editors);
         }
-        else if (this._selected is ProjectShader) {
+        else if (this._selected is ScreenShader) {
             var editors = this._valueControlService.CreateControls(this._selected);
             this._editors.AddRange(editors);
 

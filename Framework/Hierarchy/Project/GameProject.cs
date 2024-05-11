@@ -49,7 +49,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// <summary>
     /// Gets the screen shaders for this project.
     /// </summary>
-    ProjectShaders ScreenShaders { get; }
+    ScreenShaderCollection ScreenShaders { get; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
@@ -157,7 +157,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public ProjectShaders ScreenShaders { get; } = new();
+    public ScreenShaderCollection ScreenShaders { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
