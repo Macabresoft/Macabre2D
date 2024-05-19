@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
@@ -25,13 +26,14 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
     /// <summary>
     /// Prepares a shader and returns it.
     /// </summary>
+    /// <param name="renderSize">The render size.</param>
     /// <param name="game">The game.</param>
     /// <param name="scene">The scene.</param>
     /// <returns>The shader.</returns>
-    public Effect? PrepareAndGetShader(IGame game, IScene scene) {
+    public Effect? PrepareAndGetShader(Vector2 renderSize, IGame game, IScene scene) {
         var effect = this.Asset?.Content;
         if (effect != null) {
-            this.Configuration.FillParameters(effect, game, scene);
+            this.Configuration.FillParameters(effect, renderSize, game, scene);
         }
 
         return effect;

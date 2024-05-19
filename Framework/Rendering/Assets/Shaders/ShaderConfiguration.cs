@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
@@ -11,9 +12,10 @@ public interface IShaderConfiguration {
     /// Fills the effect with parameters.
     /// </summary>
     /// <param name="effect">The effect.</param>
+    /// <param name="renderSize">The render size.</param>
     /// <param name="game">The game.</param>
     /// <param name="scene">The scene.</param>
-    void FillParameters(Effect effect, IGame game, IScene scene);
+    void FillParameters(Effect effect, Vector2 renderSize, IGame game, IScene scene);
 
     /// <summary>
     /// Resets this configuration to defaults.
@@ -33,7 +35,7 @@ public class ShaderConfiguration : IShaderConfiguration {
     public static IShaderConfiguration Empty { get; } = new ShaderConfiguration();
 
     /// <inheritdoc />
-    public virtual void FillParameters(Effect effect, IGame game, IScene scene) {
+    public virtual void FillParameters(Effect effect, Vector2 renderSize, IGame game, IScene scene) {
     }
 
     /// <inheritdoc />

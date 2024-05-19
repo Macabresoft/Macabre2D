@@ -29,7 +29,6 @@ public class BaseGame : Game, IGame {
     private IScene _persistentOverlay = Scene.Empty;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
-    private Point _viewportSize;
 
     /// <inheritdoc />
     public event EventHandler<double>? GameSpeedChanged;
@@ -74,9 +73,6 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public SaveManager SaveManager { get; } = new();
-
-    /// <inheritdoc />
-    public Point ViewportSize => this._viewportSize;
 
     /// <inheritdoc />
     public IScene CurrentScene {
@@ -125,6 +121,9 @@ public class BaseGame : Game, IGame {
     public static bool IsDesignMode { get; set; }
 
     /// <inheritdoc />
+    public Point PixelRenderSize { get; private set; }
+
+    /// <inheritdoc />
     public IGameProject Project {
         get => this._project;
         protected set {
@@ -144,6 +143,9 @@ public class BaseGame : Game, IGame {
             this.ApplyDisplaySettings();
         }
     }
+
+    /// <inheritdoc />
+    public Point ViewportSize { get; private set; }
 
     /// <summary>
     /// Gets the graphics device manager.
@@ -268,14 +270,17 @@ public class BaseGame : Game, IGame {
                 this.RenderScenes();
 
                 foreach (var shader in this.Project.ScreenShaders) {
-                    if (shader.IsEnabled && shader.Shader.PrepareAndGetShader(this, this.CurrentScene) is { } effect) {
-                        var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader);
-                        this.GraphicsDevice.SetRenderTarget(renderTarget);
-                        this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                        this.SpriteBatch.Begin(effect: effect);
-                        this.SpriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
-                        this.SpriteBatch.End();
-                        previousRenderTarget = renderTarget;
+                    if (shader.IsEnabled) {
+                        var renderSize = shader.GetRenderSize(this.ViewportSize, this.PixelRenderSize);
+                        if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
+                            var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
+                            this.GraphicsDevice.SetRenderTarget(renderTarget);
+                            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+                            this.SpriteBatch.Begin(effect: effect);
+                            this.SpriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
+                            this.SpriteBatch.End();
+                            previousRenderTarget = renderTarget;
+                        }
                     }
                 }
 
@@ -393,7 +398,7 @@ public class BaseGame : Game, IGame {
             }
         }
 
-        if (this._viewportSize.X != this.GraphicsDevice.Viewport.Width || this._viewportSize.Y != this.GraphicsDevice.Viewport.Height) {
+        if (this.ViewportSize.X != this.GraphicsDevice.Viewport.Width || this.ViewportSize.Y != this.GraphicsDevice.Viewport.Height) {
             this.ResetViewPort();
         }
 
@@ -435,11 +440,17 @@ public class BaseGame : Game, IGame {
             height);
     }
 
+    private RenderTarget2D CreateRenderTarget(GraphicsDevice device, Point renderSize) =>
+        new(
+            device,
+            renderSize.X,
+            renderSize.Y);
+
     private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= this.CreateRenderTarget(device);
 
-    private RenderTarget2D GetRenderTarget(GraphicsDevice device, ScreenShader shader) {
+    private RenderTarget2D GetRenderTarget(GraphicsDevice device, ScreenShader shader, Point renderSize) {
         if (!this._screenShaderIdToRenderTargets.TryGetValue(shader.Id, out var renderTarget)) {
-            renderTarget = this.CreateRenderTarget(device);
+            renderTarget = this.CreateRenderTarget(device, renderSize);
             this._screenShaderIdToRenderTargets[shader.Id] = renderTarget;
         }
 
@@ -459,8 +470,10 @@ public class BaseGame : Game, IGame {
     }
 
     private void ResetViewPort() {
-        this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
+        this.ViewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+        var ratio = this.Project.GetPixelAgnosticRatio(this.Project.CommonViewHeight, this.ViewportSize.Y);
+        this.PixelRenderSize = new Point((int)Math.Round(this.ViewportSize.X * ratio), (int)Math.Round(this.ViewportSize.Y * ratio));
+        this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 
         this._gameRenderTarget?.Dispose();
         this._gameRenderTarget = null;
@@ -491,6 +504,7 @@ public class BaseGame : Game, IGame {
         public GraphicsDevice? GraphicsDevice => null;
         public InputBindings InputBindings => this.UserSettings.Input;
         public IScene Overlay => Scene.Empty;
+        public Point PixelRenderSize => default;
         public IGameProject Project => GameProject.Empty;
         public SaveManager SaveManager { get; } = new();
         public SpriteBatch? SpriteBatch => null;

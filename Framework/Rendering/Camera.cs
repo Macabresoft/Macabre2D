@@ -230,7 +230,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.ShaderReference.PrepareAndGetShader(this.Game, this.Scene));
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.ShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
     }
 
     /// <summary>
@@ -375,30 +375,7 @@ public class Camera : Entity, ICamera {
     }
 
     private void CalculateActualViewHeight() {
-        var viewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.CommonViewHeight;
-
-        if (this.ShouldSnapToPixels(this.Project)) {
-            var originalPixelHeight = (uint)Math.Round(viewHeight * this.Project.PixelsPerUnit, MidpointRounding.AwayFromZero);
-            var viewportHeight = this.Game.ViewportSize.Y;
-            if (originalPixelHeight < viewportHeight) {
-                var internalPixelHeight = originalPixelHeight;
-                var count = 0;
-
-                while (internalPixelHeight < viewportHeight) {
-                    internalPixelHeight += originalPixelHeight;
-                    count++;
-                }
-
-                this.ActualViewHeight = this.Project.UnitsPerPixel * (viewportHeight / (float)count);
-            }
-            else {
-                this.ActualViewHeight = viewHeight;
-            }
-        }
-        else {
-            this.ActualViewHeight = viewHeight;
-        }
-
+        this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.CommonViewHeight;
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
     }
 

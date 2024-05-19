@@ -42,11 +42,6 @@ public interface IGame {
     ContentManager? Content { get; }
 
     /// <summary>
-    /// Gets the overlay.
-    /// </summary>
-    IScene Overlay { get; }
-
-    /// <summary>
     /// Gets the scene.
     /// </summary>
     IScene CurrentScene { get; }
@@ -80,6 +75,16 @@ public interface IGame {
     /// Gets the state of input.
     /// </summary>
     InputState InputState => new();
+
+    /// <summary>
+    /// Gets the overlay.
+    /// </summary>
+    IScene Overlay { get; }
+
+    /// <summary>
+    /// Gets the pixel render size when applying shaders.
+    /// </summary>
+    Point PixelRenderSize { get; }
 
     /// <summary>
     /// Gets the project.
