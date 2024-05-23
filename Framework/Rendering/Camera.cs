@@ -82,8 +82,6 @@ public class Camera : Entity, ICamera {
     private readonly ResettableLazy<float> _viewWidth;
     private bool _overrideCommonViewHeight = true;
     private int _renderOrder;
-    private SamplerState _samplerState = SamplerState.PointClamp;
-    private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
     private float _viewHeight = 10f;
 
     /// <inheritdoc />
@@ -165,14 +163,7 @@ public class Camera : Entity, ICamera {
     /// </summary>
     /// <value>The type of the sampler state.</value>
     [DataMember(Name = "Sampler State")]
-    public SamplerStateType SamplerStateType {
-        get => this._samplerStateType;
-        set {
-            this._samplerStateType = value;
-            this._samplerState = this._samplerStateType.ToSamplerState();
-            this.RaisePropertyChanged(nameof(this._samplerState));
-        }
-    }
+    public SamplerStateType Sampler { get; set; } = SamplerStateType.PointClamp;
 
     /// <summary>
     /// Gets or sets the height of the view.
@@ -192,11 +183,6 @@ public class Camera : Entity, ICamera {
             this.OnScreenAreaChanged();
         }
     }
-
-    /// <summary>
-    /// Gets the sampler state.
-    /// </summary>
-    protected SamplerState SamplerState => this._samplerState;
 
     /// <inheritdoc />
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
@@ -221,7 +207,6 @@ public class Camera : Entity, ICamera {
 
         this.OffsetOptions.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
-        this._samplerState = this._samplerStateType.ToSamplerState();
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
@@ -353,7 +338,7 @@ public class Camera : Entity, ICamera {
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
-                this._samplerState,
+                this.Sampler.ToSamplerState(),
                 null,
                 RasterizerState.CullNone,
                 shader,

@@ -276,7 +276,7 @@ public class BaseGame : Game, IGame {
                             var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
                             this.GraphicsDevice.SetRenderTarget(renderTarget);
                             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                            this.SpriteBatch.Begin(effect: effect);
+                            this.SpriteBatch.Begin(effect: effect, samplerState: shader.SamplerStateType.ToSamplerState());
                             this.SpriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
                             this.SpriteBatch.End();
                             previousRenderTarget = renderTarget;

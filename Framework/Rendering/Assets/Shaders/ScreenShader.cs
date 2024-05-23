@@ -60,6 +60,12 @@ public class ScreenShader : PropertyChangedNotifier, IEnableable, IIdentifiable,
     }
 
     /// <summary>
+    /// Gets or sets the type of the sampler state.
+    /// </summary>
+    [DataMember(Name = "Sampler State")]
+    public SamplerStateType SamplerStateType { get; set; }
+
+    /// <summary>
     /// Gets the sizing to use when creating a render target.
     /// </summary>
     [DataMember]
