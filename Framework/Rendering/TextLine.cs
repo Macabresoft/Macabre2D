@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -18,6 +19,7 @@ public class TextLine : RenderableEntity {
     private SpriteSheetFont? _font;
     private SpriteSheetFontReference? _fontReference;
     private int _kerning;
+    private string _resourceName = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
 
@@ -32,9 +34,7 @@ public class TextLine : RenderableEntity {
     }
 
     /// <inheritdoc />
-    public override BoundingArea BoundingArea {
-        get => this._boundingArea.Value;
-    }
+    public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
     /// Gets the font asset reference.
@@ -70,6 +70,16 @@ public class TextLine : RenderableEntity {
     [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
 
+    [ResourceName]
+    [DataMember]
+    public string ResourceName {
+        get => this._resourceName;
+        set {
+            this._resourceName = value;
+            this.ResetResource();
+        }
+    }
+
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
@@ -97,6 +107,7 @@ public class TextLine : RenderableEntity {
         this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
+        this.ResetResource();
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
@@ -120,9 +131,7 @@ public class TextLine : RenderableEntity {
     /// Allows dynamic kerning by being overridable.
     /// </remarks>
     /// <returns>The kerning.</returns>
-    protected virtual int GetKerning() {
-        return this.Kerning;
-    }
+    protected virtual int GetKerning() => this.Kerning;
 
     /// <inheritdoc />
     protected override void OnTransformChanged() {
@@ -163,16 +172,13 @@ public class TextLine : RenderableEntity {
         this.BoundingAreaChanged.SafeInvoke(this);
     }
 
-    private bool CouldBeVisible() {
-        return !string.IsNullOrEmpty(this.Text) &&
-               this._characterHeight > 0f &&
-               this._spriteCharacters.Any() &&
-               this._font != null;
-    }
+    private bool CouldBeVisible() =>
+        !string.IsNullOrEmpty(this.Text) &&
+        this._characterHeight > 0f &&
+        this._spriteCharacters.Any() &&
+        this._font != null;
 
-    private BoundingArea CreateBoundingArea() {
-        return this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
-    }
+    private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
     private Vector2 CreateSize() {
         if (this._font != null && this._spriteSheet != null) {
@@ -226,6 +232,12 @@ public class TextLine : RenderableEntity {
                     this._spriteCharacters.Add(spriteCharacter);
                 }
             }
+        }
+    }
+
+    private void ResetResource() {
+        if (!string.IsNullOrEmpty(this.ResourceName)) {
+            this.Text = Resources.ResourceManager.GetString(this._resourceName) ?? string.Empty;
         }
     }
 }

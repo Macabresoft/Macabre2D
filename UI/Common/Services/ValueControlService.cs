@@ -120,6 +120,14 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType.IsAssignableTo(typeof(string))) {
+            var isResource = member.MemberInfo.GetCustomAttribute<ResourceNameAttribute>() != null;
+            var editor = this.CreateValueEditorFromType(isResource ? typeof(ResourceStringEditor) : typeof(StringEditor), owner, value, memberType, member, propertyPath);
+
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
         else if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
             if (editor != null) {
