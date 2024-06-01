@@ -34,7 +34,7 @@ public interface ITransformable {
     Vector2 GetWorldPosition(Vector2 originOffset);
 
     /// <summary>
-    /// Moves this actor the specified amount.
+    /// Moves this transformable object the specified amount.
     /// </summary>
     /// <param name="amount">The amount.</param>
     void Move(Vector2 amount);
