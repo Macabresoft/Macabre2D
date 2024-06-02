@@ -37,6 +37,11 @@ public interface IGameProject : INotifyPropertyChanged {
     ProjectFallbacks Fallbacks { get; }
 
     /// <summary>
+    /// Gets a collection of fonts defined by <see cref="FontCategory" /> and <see cref="ResourceCulture" />.
+    /// </summary>
+    ProjectFonts Fonts { get; }
+
+    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -154,6 +159,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     [Category(CommonCategories.Fallback)]
     public ProjectFallbacks Fallbacks { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember]
+    public ProjectFonts Fonts { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

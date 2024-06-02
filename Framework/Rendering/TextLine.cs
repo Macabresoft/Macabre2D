@@ -17,6 +17,7 @@ public class TextLine : RenderableEntity {
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
     private SpriteSheetFont? _font;
+    private FontCategory _fontCategory = FontCategory.None;
     private SpriteSheetFontReference? _fontReference;
     private int _kerning;
     private string _resourceName = string.Empty;
@@ -50,6 +51,20 @@ public class TextLine : RenderableEntity {
     public Color Color { get; set; } = Color.White;
 
     /// <summary>
+    /// Gets or sets the font category.
+    /// </summary>
+    [DataMember]
+    public FontCategory FontCategory {
+        get => this._fontCategory;
+        set {
+            if (value != this._fontCategory) {
+                this._fontCategory = value;
+                this.ReloadFontFromCategory();
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
     /// </summary>
     [DataMember]
@@ -70,6 +85,9 @@ public class TextLine : RenderableEntity {
     [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
 
+    /// <summary>
+    /// Gets or sets the resource name.
+    /// </summary>
     [ResourceName]
     [DataMember]
     public string ResourceName {
@@ -102,6 +120,7 @@ public class TextLine : RenderableEntity {
 
         base.Initialize(scene, parent);
 
+        this.ReloadFontFromCategory();
         this.FontReference.Initialize(this.Scene.Assets);
         this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
         this.ResetIndexes();
@@ -197,6 +216,13 @@ public class TextLine : RenderableEntity {
 
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.RenderOptions.InvalidateSize();
+    }
+
+    private void ReloadFontFromCategory() {
+        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
+            this.FontReference.ContentId = fontDefinition.SpriteSheetId;
+            this.FontReference.PackagedAssetId = fontDefinition.FontId;
+        }
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

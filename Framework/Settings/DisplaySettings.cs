@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -57,13 +58,13 @@ public enum AspectRatio : byte {
 [DataContract]
 [Category(CommonCategories.Display)]
 public sealed class DisplaySettings {
-    [DataMember]
-    private readonly HashSet<Guid> _disabledScreenShaders = new();
-    
     private const int DefaultVerticalPixels = 480;
     private const byte MinimumWindowScale = 1;
-    private byte _windowScale = 4;
 
+    [DataMember]
+    private readonly HashSet<Guid> _disabledScreenShaders = new();
+
+    private byte _windowScale = 4;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
@@ -72,10 +73,21 @@ public sealed class DisplaySettings {
     }
 
     /// <summary>
+    /// Gets a collection of identifiers for disabled screen shaders.
+    /// </summary>
+    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
+
+    /// <summary>
     /// Gets or sets the aspect ratio.
     /// </summary>
     [DataMember]
     public AspectRatio AspectRatio { get; set; } = AspectRatio.FourToThree;
+
+    /// <summary>
+    /// Gets or sets the current culture.
+    /// </summary>
+    [DataMember]
+    public ResourceCulture Culture { get; set; } = ResourceCulture.Default;
 
     /// <summary>
     /// Gets or sets the display mode.
@@ -84,7 +96,7 @@ public sealed class DisplaySettings {
     public DisplayMode DisplayMode { get; set; } = DisplayMode.Windowed;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not the persistent overlay should be shown.
+    /// Gets or sets a value indicating whether the persistent overlay should be shown.
     /// </summary>
     [DataMember]
     public bool ShowPersistentOverlay { get; set; } = true;
@@ -96,34 +108,6 @@ public sealed class DisplaySettings {
     public byte WindowScale {
         get => this._windowScale;
         set => this._windowScale = Math.Max(MinimumWindowScale, value);
-    }
-
-    /// <summary>
-    /// Gets a collection of identifiers for disabled screen shaders.
-    /// </summary>
-    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
-
-    /// <summary>
-    /// Enables a screen shader that was previously disabled.
-    /// </summary>
-    /// <param name="identifier">The screen shader identifier.</param>
-    public void EnableScreenShader(Guid identifier) {
-        this._disabledScreenShaders.Remove(identifier);
-    }
-
-    /// <summary>
-    /// Disables a screen shader.
-    /// </summary>
-    /// <param name="identifier">The screen shader identifier.</param>
-    public void DisableScreenShader(Guid identifier) {
-        this._disabledScreenShaders.Add(identifier);
-    }
-
-    /// <summary>
-    /// Enables all screen shaders.
-    /// </summary>
-    public void EnableAllScreenShaders() {
-        this._disabledScreenShaders.Clear();
     }
 
     /// <summary>
@@ -148,6 +132,29 @@ public sealed class DisplaySettings {
         foreach (var shaderId in this.DisabledScreenShaders) {
             other.DisableScreenShader(shaderId);
         }
+    }
+
+    /// <summary>
+    /// Disables a screen shader.
+    /// </summary>
+    /// <param name="identifier">The screen shader identifier.</param>
+    public void DisableScreenShader(Guid identifier) {
+        this._disabledScreenShaders.Add(identifier);
+    }
+
+    /// <summary>
+    /// Enables all screen shaders.
+    /// </summary>
+    public void EnableAllScreenShaders() {
+        this._disabledScreenShaders.Clear();
+    }
+
+    /// <summary>
+    /// Enables a screen shader that was previously disabled.
+    /// </summary>
+    /// <param name="identifier">The screen shader identifier.</param>
+    public void EnableScreenShader(Guid identifier) {
+        this._disabledScreenShaders.Remove(identifier);
     }
 
     /// <summary>
