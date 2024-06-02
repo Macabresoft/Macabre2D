@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 /// A definition for a project font that includes the sprite sheet and font identifier.
 /// </summary>
 [DataContract]
-public struct ProjectFontDefinition {
+public readonly struct ProjectFontDefinition {
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectFontDefinition" /> class.
     /// </summary>

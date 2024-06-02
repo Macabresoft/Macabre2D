@@ -8,7 +8,7 @@ using Macabresoft.Macabre2D.Project.Common;
 /// A key used internally by <see cref="ProjectFonts" /> to access <see cref="ProjectFontDefinition" />.
 /// </summary>
 [DataContract]
-internal struct ProjectFontKey {
+public readonly struct ProjectFontKey {
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectFontKey" /> class.
