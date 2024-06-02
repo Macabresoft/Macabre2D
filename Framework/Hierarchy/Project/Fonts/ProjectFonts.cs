@@ -15,6 +15,21 @@ public class ProjectFonts {
     private readonly Dictionary<ProjectFontKey, ProjectFontDefinition> _categoryAndCultureToFontDefinition = new();
 
     /// <summary>
+    /// Removes the font with the given <see cref="FontCategory" /> and <see cref="ResourceCulture" />.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <param name="culture">The culture.</param>
+    /// <returns>A value indicating whether the font was removed.</returns>
+    public bool RemoveFont(FontCategory category, ResourceCulture culture) => this.RemoveFont(new ProjectFontKey(category, culture));
+
+    /// <summary>
+    /// Removes the font with the given <see cref="ProjectFontKey" />.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <returns>A value indicating whether the font was removed.</returns>
+    public bool RemoveFont(ProjectFontKey key) => this._categoryAndCultureToFontDefinition.Remove(key);
+
+    /// <summary>
     /// Sets a font for the given <see cref="FontCategory" /> and <see cref="ResourceCulture" />.
     /// </summary>
     /// <param name="category">The category.</param>
@@ -29,12 +44,19 @@ public class ProjectFonts {
     /// <param name="key">The key.</param>
     /// <param name="fontId">The font identifier.</param>
     /// <param name="spriteSheetId">The sprite sheet identifier.</param>
-    public void SetFont(ProjectFontKey key, Guid fontId, Guid spriteSheetId) {
+    public void SetFont(ProjectFontKey key, Guid fontId, Guid spriteSheetId) => this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId));
+
+    /// <summary>
+    /// Sets a font for the given <see cref="ProjectFontKey" />.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="fontDefinition">The font definition.</param>
+    public void SetFont(ProjectFontKey key, ProjectFontDefinition fontDefinition) {
         if (key.Category == FontCategory.None) {
             return;
         }
 
-        this._categoryAndCultureToFontDefinition[key] = new ProjectFontDefinition(fontId, spriteSheetId);
+        this._categoryAndCultureToFontDefinition[key] = fontDefinition;
     }
 
     /// <summary>
@@ -59,7 +81,7 @@ public class ProjectFonts {
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="font">The font.</param>
-    /// <returns>A value indicating whether or not the font was set.</returns>
+    /// <returns>A value indicating whether the font was set.</returns>
     public bool TrySetFont(ProjectFontKey key, SpriteSheetFont font) {
         if (font.SpriteSheet == null || key.Category == FontCategory.None) {
             return false;
