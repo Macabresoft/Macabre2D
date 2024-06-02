@@ -147,6 +147,10 @@
           <DependentUpon>ResourceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\ProjectFontsEditor.axaml.cs">
+          <DependentUpon>ProjectFontsReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>
