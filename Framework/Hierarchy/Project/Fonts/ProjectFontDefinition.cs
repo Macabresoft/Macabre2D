@@ -9,6 +9,11 @@ using System.Runtime.Serialization;
 [DataContract]
 public readonly struct ProjectFontDefinition {
     /// <summary>
+    /// Gets an empty definition.
+    /// </summary>
+    public static readonly ProjectFontDefinition Empty = new();
+    
+    /// <summary>
     /// Initializes a new instance of the <see cref="ProjectFontDefinition" /> class.
     /// </summary>
     public ProjectFontDefinition() : this(Guid.Empty, Guid.Empty) {

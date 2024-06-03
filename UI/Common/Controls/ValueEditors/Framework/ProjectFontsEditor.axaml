@@ -6,16 +6,43 @@
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            x:TypeArguments="framework:ProjectFonts"
                            x:Class="Macabresoft.Macabre2D.UI.Common.ProjectFontsEditor">
-    <Grid ColumnDefinitions="Auto, *, Auto"
+    <Grid ColumnDefinitions="Auto, *"
+          RowDefinitions="Auto, Auto"
           DataContext="{Binding $parent[local:ProjectFontsEditor]}">
         <Design.DataContext>
             <local:ProjectFontsEditor />
         </Design.DataContext>
         
-        <Border Background="DarkRed">
-            <TextBlock Text="TODO: Category Dropdown, Culture Dropdown, and an asset editor that updates when any are changed." />
-        </Border>
-
-
+        <TextBlock Grid.Column="0"
+                   Grid.Row="0"
+                   Classes="Label"
+                   Text="Culture" />
+        
+        <ComboBox Grid.Column="1"
+                  Grid.Row="0"
+                  ItemsSource="{Binding AvailableCultures, Mode=OneTime}"
+                  SelectedItem="{Binding CurrentCulture}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock HorizontalAlignment="Stretch"
+                               Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
+                               TextAlignment="Left"
+                               ToolTip.Tip="{Binding}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        
+        <ItemsControl Grid.Column="0"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      ItemsSource="{Binding FontsInCurrentCulture, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="DarkRed">
+                        <TextBlock Text="{Binding Category}" />
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </common:ValueEditorControl>
