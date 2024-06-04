@@ -11,7 +11,7 @@ public class ProjectFontModel : PropertyChangedNotifier {
     private readonly ProjectFonts _fonts;
     private readonly IUndoService _undoService;
     private ProjectFontDefinition _definition;
-    private string _selectedFontName = string.Empty;
+    private string _path = string.Empty;
 
     public ProjectFontModel(ProjectFontKey key, IAssetManager assetManager, IUndoService undoService, ProjectFonts fonts) {
         this.Key = key;
@@ -47,17 +47,17 @@ public class ProjectFontModel : PropertyChangedNotifier {
         }
     }
 
-    public string SelectedFontName {
-        get => this._selectedFontName;
-        set => this.Set(ref this._selectedFontName, value);
+    public string Path {
+        get => this._path;
+        private set => this.Set(ref this._path, value);
     }
 
     private void ResetFontName() {
         if (this._definition.FontId != Guid.Empty && this._definition.SpriteSheetId != Guid.Empty && this._assetManager.TryGetMetadata(this.Definition.SpriteSheetId, out var metadata)) {
-            this.SelectedFontName = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
+            this.Path = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
         else {
-            this.SelectedFontName = string.Empty;
+            this.Path = string.Empty;
         }
     }
 }

@@ -162,6 +162,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
+    [Category("Font Definitions")]
     public ProjectFonts Fonts { get; } = new();
 
     /// <inheritdoc />

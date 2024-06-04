@@ -36,10 +36,10 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
             nameof(FontsInCurrentCulture),
             editor => editor.FontsInCurrentCulture);
 
-    public static readonly DirectProperty<ProjectFontsEditor, ICommand> SelectFontCommandProperty =
+    public static readonly DirectProperty<ProjectFontsEditor, ICommand> SelectCommandProperty =
         AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ICommand>(
-            nameof(SelectFontCommand),
-            editor => editor.SelectFontCommand);
+            nameof(SelectCommand),
+            editor => editor.SelectCommand);
 
     private readonly IAssetManager _assetManager;
     private readonly ICommonDialogService _dialogService;
@@ -66,7 +66,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
 
         this.AvailableCultures = Enum.GetValues<ResourceCulture>().ToList();
         this.ClearCommand = ReactiveCommand.Create<ProjectFontModel>(this.Clear);
-        this.SelectFontCommand = ReactiveCommand.CreateFromTask<ProjectFontModel>(this.SelectFont);
+        this.SelectCommand = ReactiveCommand.CreateFromTask<ProjectFontModel>(this.SelectFont);
         this.ResetFontCategories();
         this.InitializeComponent();
     }
@@ -77,7 +77,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
 
     public IReadOnlyCollection<ProjectFontModel> FontsInCurrentCulture => this._fontsInCurrentCulture;
 
-    public ICommand SelectFontCommand { get; }
+    public ICommand SelectCommand { get; }
 
     public ResourceCulture CurrentCulture {
         get => this._currentCulture;

@@ -17,7 +17,7 @@
         <AutoCompleteBox Grid.Row="0"
                          Text="{Binding FilterText}"
                          ItemsSource="{Binding Types}"
-                         ValueMemberBinding="{Binding Name}"
+                         ValueMemberBinding="{Binding Path}"
                          SelectionChanged="AutoCompleteBox_OnSelectionChanged"
                          FilterMode="Contains"
                          Watermark="Filter..." />

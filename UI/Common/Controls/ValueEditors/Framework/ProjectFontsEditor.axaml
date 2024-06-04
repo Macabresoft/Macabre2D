@@ -7,7 +7,7 @@
                            x:TypeArguments="framework:ProjectFonts"
                            x:Class="Macabresoft.Macabre2D.UI.Common.ProjectFontsEditor">
     <Grid ColumnDefinitions="Auto, *"
-          RowDefinitions="Auto, Auto"
+          RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:ProjectFontsEditor]}">
         <Design.DataContext>
             <local:ProjectFontsEditor />
@@ -32,15 +32,46 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Classes="HorizontalSeparator" />
+        
         <ItemsControl Grid.Column="0"
-                      Grid.Row="1"
+                      Grid.Row="2"
                       Grid.ColumnSpan="2"
                       ItemsSource="{Binding FontsInCurrentCulture, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="DarkRed">
-                        <TextBlock Text="{Binding Category}" />
-                    </Border>
+                    <Grid ColumnDefinitions="Auto, *, Auto, Auto">
+                        <TextBlock Grid.Column="0"
+                                   Classes="Label"
+                                   FontWeight="Normal"
+                                   Text="{Binding Category, Converter={x:Static local:ToDisplayNameConverter.Instance}}" />
+
+                        <TextBox Grid.Column="1"
+                                 IsReadOnly="True"
+                                 VerticalAlignment="Top"
+                                 Text="{Binding Path}"
+                                 ToolTip.Tip="{Binding Path}" />
+
+                        <Button Grid.Column="2"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontsEditor].SelectCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Search for an asset">
+                            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+                        </Button>
+                        <Button Grid.Column="3"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontsEditor].ClearCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Clear the audio clip">
+                            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+                        </Button>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
