@@ -50,15 +50,15 @@ public static class CloneExtensions {
     }
 
     /// <summary>
-    /// Clones a sprite sheet member.
+    /// Clones an <see cref="IIdentifiable" /> object and provides it a new identifier.
     /// </summary>
-    /// <param name="member">The sprite sheet member to clone.</param>
+    /// <param name="originalInstance">The original instance to clone.</param>
     /// <param name="clone">The cloned sprite sheet member.</param>
-    /// <returns>A value indicating whether or not the clone was successful.</returns>
-    public static bool TryClone<T>(this T member, [NotNullWhen(true)] out T? clone) where T : SpriteSheetMember {
+    /// <returns>A value indicating whether the clone was successful.</returns>
+    public static bool TryClone<T>(this T originalInstance, [NotNullWhen(true)] out T? clone) where T : class, IIdentifiable {
         var result = false;
-        var json = Serializer.Instance.SerializeToString(member);
-        if (Serializer.Instance.DeserializeFromString(json, member.GetType()) is T tempClone) {
+        var json = Serializer.Instance.SerializeToString(originalInstance);
+        if (Serializer.Instance.DeserializeFromString(json, originalInstance.GetType()) is T tempClone) {
             result = true;
             clone = tempClone;
             clone.Id = Guid.NewGuid();

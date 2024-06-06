@@ -93,10 +93,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => !this.IsFiltered && CanMoveDown(x.Value)));
+            x => !this.IsFiltered && this.CanMoveDown(x.Value)));
         this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.AssetSelectionService.WhenAny(
             x => x.Selected,
-            x => !this.IsFiltered && CanMoveUp(x.Value)));
+            x => !this.IsFiltered && this.CanMoveUp(x.Value)));
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
             x => x.Selected,
             x => !this.IsFiltered && CanClone(x.Value)));
@@ -123,6 +123,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     public IAssetSelectionService AssetSelectionService { get; }
 
     /// <summary>
+    /// Gets a value indicating whether a <see cref="SpriteSheetMember" /> is selected.
+    /// </summary>
+    public bool CanMoveOrClone => CanClone(this.AssetSelectionService.Selected);
+
+    /// <summary>
     /// Gets a command to clone an entity.
     /// </summary>
     public ICommand CloneCommand { get; }
@@ -136,11 +141,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the import command.
     /// </summary>
     public ICommand ImportCommand { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether or not a <see cref="SpriteSheetMember" /> is selected.
-    /// </summary>
-    public bool IsSpriteSheetMemberSelected => CanClone(this.AssetSelectionService.Selected);
 
     /// <summary>
     /// Gets a command to move a child down.
@@ -249,7 +249,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.AssetSelectionService.Selected)) {
-            this.RaisePropertyChanged(nameof(this.IsSpriteSheetMemberSelected));
+            this.RaisePropertyChanged(nameof(this.CanMoveOrClone));
         }
     }
 
@@ -263,9 +263,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         ScreenShader or
         ScreenShaderCollection;
 
-    private static bool CanClone(object selected) => selected is SpriteSheetMember;
+    private static bool CanClone(object selected) => selected is SpriteSheetMember or ScreenShader;
 
-    private static bool CanMoveDown(object selected) {
+    private bool CanMoveDown(object selected) {
         var result = false;
 
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
@@ -273,15 +273,24 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             var maxIndex = collection.Count - 1;
             result = index < maxIndex;
         }
+        else if (selected is ScreenShader shader) {
+            var index = this.ProjectService.CurrentProject.ScreenShaders.IndexOf(shader);
+            var maxIndex = this.ProjectService.CurrentProject.ScreenShaders.Count;
+            result = index < maxIndex;
+        }
 
         return result;
     }
 
-    private static bool CanMoveUp(object selected) {
+    private bool CanMoveUp(object selected) {
         var result = false;
 
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
             var index = collection.IndexOf(member);
+            result = index > 0;
+        }
+        else if (selected is ScreenShader shader) {
+            var index = this.ProjectService.CurrentProject.ScreenShaders.IndexOf(shader);
             result = index > 0;
         }
 
@@ -297,15 +306,27 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         (this._sceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId));
 
     private void Clone(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection && member.TryClone(out var clone)) {
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection && member.TryClone(out var clonedMember)) {
             this._undoService.Do(() =>
             {
-                collection.AddMember(clone);
-                this.AssetSelectionService.Selected = clone;
+                collection.AddMember(clonedMember);
+                this.AssetSelectionService.Selected = clonedMember;
             }, () =>
             {
-                collection.RemoveMember(clone);
+                collection.RemoveMember(clonedMember);
                 this.AssetSelectionService.Selected = member;
+            });
+        }
+        else if (selected is ScreenShader shader && shader.TryClone(out var clonedShader)) {
+            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            this._undoService.Do(() =>
+            {
+                shaders.Add(clonedShader);
+                this.AssetSelectionService.Selected = clonedShader;
+            }, () =>
+            {
+                shaders.Remove(clonedShader);
+                this.AssetSelectionService.Selected = shader;
             });
         }
     }
@@ -327,6 +348,23 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 });
             }
         }
+        else if (selected is ScreenShader shader) {
+            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            var index = shaders.IndexOf(shader);
+            if (index < shaders.Count - 1 && index >= 0) {
+                this._undoService.Do(() =>
+                {
+                    shaders.Remove(shader);
+                    shaders.Insert(index + 1, shader);
+                    this.AssetSelectionService.Selected = shader;
+                }, () =>
+                {
+                    shaders.Remove(shader);
+                    shaders.Insert(index, shader);
+                    this.AssetSelectionService.Selected = shader;
+                });
+            }
+        }
     }
 
     private void MoveUp(object selected) {
@@ -343,6 +381,23 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                     collection.RemoveMember(member);
                     collection.InsertMember(index, member);
                     this.AssetSelectionService.Selected = member;
+                });
+            }
+        }
+        else if (selected is ScreenShader shader) {
+            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            var index = shaders.IndexOf(shader);
+            if (index > 0) {
+                this._undoService.Do(() =>
+                {
+                    shaders.Remove(shader);
+                    shaders.Insert(index - 1, shader);
+                    this.AssetSelectionService.Selected = shader;
+                }, () =>
+                {
+                    shaders.Remove(shader);
+                    shaders.Insert(index, shader);
+                    this.AssetSelectionService.Selected = shader;
                 });
             }
         }

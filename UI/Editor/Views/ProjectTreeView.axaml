@@ -146,7 +146,7 @@
                             CommandParameter="{Binding AssetSelectionService.Selected}"
                             HotKey="Ctrl + Shift + C"
                             Classes="Icon"
-                            IsVisible="{Binding IsSpriteSheetMemberSelected}"
+                            IsVisible="{Binding CanMoveOrClone}"
                             ToolTip.Tip="Clone the selected asset member">
                         <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
                     </Button>
@@ -155,7 +155,7 @@
                             CommandParameter="{Binding AssetSelectionService.Selected}"
                             ToolTip.Tip="Move the selected child up one spot in the list"
                             Classes="Icon"
-                            IsVisible="{Binding IsSpriteSheetMemberSelected}">
+                            IsVisible="{Binding CanMoveOrClone}">
                         <avaloniaEx:Icon Content="{StaticResource ChevronUpIcon}" />
                     </Button>
 
@@ -163,7 +163,7 @@
                             CommandParameter="{Binding AssetSelectionService.Selected}"
                             ToolTip.Tip="Move the selected child down one spot in the list"
                             Classes="Icon"
-                            IsVisible="{Binding IsSpriteSheetMemberSelected}">
+                            IsVisible="{Binding CanMoveOrClone}">
                         <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
                     </Button>
                 </StackPanel>
