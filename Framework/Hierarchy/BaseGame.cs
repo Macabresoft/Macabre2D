@@ -270,7 +270,7 @@ public class BaseGame : Game, IGame {
                 this.RenderScenes();
 
                 foreach (var shader in this.Project.ScreenShaders) {
-                    if (shader.IsEnabled) {
+                    if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
                         var renderSize = shader.GetRenderSize(this.ViewportSize, this.PixelRenderSize);
                         if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
                             var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
