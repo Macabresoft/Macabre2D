@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
 public class BoundableCover : RenderableEntity {
     private Color _color;
     private Texture2D? _texture;
+    private Vector2 _padding = Vector2.Zero;
+    private Vector2 _paddingForScale = Vector2.Zero;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -30,6 +32,18 @@ public class BoundableCover : RenderableEntity {
                 this._color = value;
                 this.ResetColor();
             }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundable"/>.
+    /// </summary>
+    [DataMember]
+    public Vector2 Padding {
+        get => this._padding;
+        set {
+            this._padding = value;
+            this._paddingForScale = value * 2f;
         }
     }
 
@@ -58,10 +72,11 @@ public class BoundableCover : RenderableEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this._texture != null && this.SpriteBatch is { } spriteBatch && this.Parent is IBoundable boundable) {
-            var scale = new Vector2(boundable.BoundingArea.Width, boundable.BoundingArea.Height) * this.Project.PixelsPerUnit;
+            
+            var scale = new Vector2(boundable.BoundingArea.Width + this._paddingForScale.X, boundable.BoundingArea.Height + this._paddingForScale.Y) * this.Project.PixelsPerUnit;
             spriteBatch.Draw(
                 this._texture,
-                boundable.BoundingArea.Minimum * this.Project.PixelsPerUnit,
+                (boundable.BoundingArea.Minimum - this.Padding) * this.Project.PixelsPerUnit,
                 null,
                 colorOverride,
                 0f,
