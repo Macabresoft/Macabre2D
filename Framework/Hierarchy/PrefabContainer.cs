@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -13,7 +14,6 @@ public sealed class PrefabContainer : Entity {
     /// Initializes a new instance of the <see cref="PrefabContainer" /> class.
     /// </summary>
     public PrefabContainer() : base() {
-        this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
     }
 
     /// <summary>
@@ -23,10 +23,14 @@ public sealed class PrefabContainer : Entity {
     public PrefabReference PrefabReference { get; } = new();
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.PrefabReference.PropertyChanged -= this.PrefabReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
-        this.PrefabReference.PropertyChanged -= this.PrefabReference_PropertyChanged;
         this.Reset();
         this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
     }
@@ -35,9 +39,12 @@ public sealed class PrefabContainer : Entity {
     /// Gets a value indicating whether or not the other entity is a descendent of this container's prefab.
     /// </summary>
     /// <param name="otherEntity">The other entity.</param>
-    /// <returns>A value indicating whether or not the other entity is a descendent of this container's prefab.</returns>
-    public bool IsPartOfPrefab(IEntity otherEntity) {
-        return this._prefabChild != null && otherEntity.IsDescendentOf(this._prefabChild);
+    /// <returns>A value indicating whether the other entity is a descendent of this container's prefab.</returns>
+    public bool IsPartOfPrefab(IEntity otherEntity) => this._prefabChild != null && otherEntity.IsDescendentOf(this._prefabChild);
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.PrefabReference;
     }
 
     private void PrefabReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -47,8 +54,6 @@ public sealed class PrefabContainer : Entity {
     }
 
     private void Reset() {
-        this.PrefabReference.Initialize(this.Scene.Assets);
-
         if (this._prefabChild != null) {
             this.RemoveChild(this._prefabChild);
         }

@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -62,6 +63,12 @@ public sealed class AudioPlayer : Entity {
     }
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.AudioClipReference.PropertyChanged -= this.AudioClipReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
@@ -100,6 +107,11 @@ public sealed class AudioPlayer : Entity {
     /// <param name="isImmediate">If set to <c>true</c> is immediate.</param>
     public void Stop(bool isImmediate) {
         this._instance.Stop(isImmediate);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.AudioClipReference;
     }
 
     /// <inheritdoc />
