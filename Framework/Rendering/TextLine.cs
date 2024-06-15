@@ -21,6 +21,8 @@ public class TextLine : RenderableEntity {
     private SpriteSheetFontReference? _fontReference;
     private int _kerning;
     private string _resourceName = string.Empty;
+
+    private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
 
@@ -112,6 +114,11 @@ public class TextLine : RenderableEntity {
         }
     }
 
+    /// <summary>
+    /// Gets the actual text. This is defined first by <see cref="ResourceName" />, but falls back to <see cref="Text" /> if that resource doesn't exist.
+    /// </summary>
+    protected string ActualText => string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
@@ -192,7 +199,7 @@ public class TextLine : RenderableEntity {
     }
 
     private bool CouldBeVisible() =>
-        !string.IsNullOrEmpty(this.Text) &&
+        !string.IsNullOrEmpty(this.ActualText) &&
         this._characterHeight > 0f &&
         this._spriteCharacters.Any() &&
         this._font != null;
@@ -253,7 +260,8 @@ public class TextLine : RenderableEntity {
         }
 
         if (this._font != null) {
-            foreach (var character in this.Text) {
+            var actualText = this.ActualText;
+            foreach (var character in actualText) {
                 if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
                     this._spriteCharacters.Add(spriteCharacter);
                 }
@@ -263,7 +271,9 @@ public class TextLine : RenderableEntity {
 
     private void ResetResource() {
         if (!string.IsNullOrEmpty(this.ResourceName)) {
-            this.Text = Resources.ResourceManager.GetString(this._resourceName) ?? string.Empty;
+            if (Resources.ResourceManager.TryGetString(this.ResourceName, out var resource)) {
+                this._resourceText = resource;
+            }
         }
     }
 }

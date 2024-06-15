@@ -156,29 +156,7 @@ public sealed class DisplaySettings {
     public void EnableScreenShader(Guid identifier) {
         this._disabledScreenShaders.Remove(identifier);
     }
-
-    /// <summary>
-    /// Gets the display name for a ratio.
-    /// </summary>
-    /// <param name="ratio">The ratio.</param>
-    /// <returns>The display name.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">The ratio requested has not been accounted for.</exception>
-    public static string GetRatioDisplayName(AspectRatio ratio) {
-        return ratio switch {
-            AspectRatio.FourToThree => "4:3",
-            AspectRatio.SixteenToNine => "16:9",
-            AspectRatio.SixteenToTen => "16:10",
-            AspectRatio.FiveToFour => "5:4",
-            AspectRatio.ThreeToTwo => "3:2",
-            AspectRatio.SeventeenToNine => "17:9",
-            AspectRatio.TwentyOneToNine => "21:9",
-            AspectRatio.ThirtyTwoToNine => "32:9",
-            AspectRatio.OneToOne => "1:1",
-            AspectRatio.FourToOne => "4:1",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-
+    
     /// <summary>
     /// Gets the resolution given the desired number of vertical pixels. This uses the <see cref="AspectRatio" /> and <see cref="WindowScale" /> values.
     /// </summary>

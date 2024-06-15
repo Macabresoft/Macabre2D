@@ -11,6 +11,12 @@ using Microsoft.Xna.Framework.Graphics;
 /// Interface for the base object running the update loop for a game.
 /// </summary>
 public interface IGame {
+
+    /// <summary>
+    /// Occurs when the culture has changed.
+    /// </summary>
+    event EventHandler<ResourceCulture> CultureChanged;
+
     /// <summary>
     /// Occurs when the game speed has changed.
     /// </summary>
@@ -144,6 +150,14 @@ public interface IGame {
     /// </summary>
     /// <param name="scene">The scene to push.</param>
     void PushScene(IScene scene);
+
+    /// <summary>
+    /// Raises the <see cref="CultureChanged" /> event after making sure <see cref="Resources" /> is aware of the change.
+    /// </summary>
+    /// <remarks>
+    /// If you have a settings menu where a user can change culture/language, make sure to call this any time it is changed.
+    /// </remarks>
+    void RaiseCultureChanged();
 
     /// <summary>
     /// Saves the applies graphics settings.

@@ -24,6 +24,7 @@ public partial class ResourceStringEditor : ValueEditorControl<string> {
             resourceNames.AddRange(from DictionaryEntry resource in resourceSet select resource.Key.ToString());
         }
 
+        resourceNames.Sort();
         this.ResourceNames = resourceNames;
         this.InitializeComponent();
     }

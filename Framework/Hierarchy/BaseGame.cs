@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Common;
@@ -29,6 +30,9 @@ public class BaseGame : Game, IGame {
     private IScene _persistentOverlay = Scene.Empty;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
+
+    /// <inheritdoc />
+    public event EventHandler<ResourceCulture>? CultureChanged;
 
     /// <inheritdoc />
     public event EventHandler<double>? GameSpeedChanged;
@@ -226,6 +230,12 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public void RaiseCultureChanged() {
+        Resources.Culture = CultureInfo.GetCultureInfo(this.DisplaySettings.Culture.ToCultureName());
+        this.CultureChanged.SafeInvoke(this, this.DisplaySettings.Culture);
+    }
+
+    /// <inheritdoc />
     public void SaveAndApplyUserSettings() {
         this.SaveUserSettings();
         this.ApplyDisplaySettings();
@@ -325,6 +335,7 @@ public class BaseGame : Game, IGame {
             }
         }
 
+        this.RaiseCultureChanged();
         this.SaveManager.Initialize(this.DataManager);
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
         this._persistentOverlay.Initialize(this, this.CreateAssetManager());
@@ -491,6 +502,7 @@ public class BaseGame : Game, IGame {
     }
 
     private sealed class EmptyGame : IGame {
+        public event EventHandler<ResourceCulture>? CultureChanged;
         public event EventHandler<double>? GameSpeedChanged;
         public event EventHandler<InputDevice>? InputDeviceChanged;
         public event EventHandler? SettingsSaved;
@@ -532,6 +544,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void PushScene(IScene scene) {
+        }
+
+        public void RaiseCultureChanged() {
         }
 
         public void SaveAndApplyUserSettings() {
