@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// Interface for the base object running the update loop for a game.
 /// </summary>
 public interface IGame {
-
     /// <summary>
     /// Occurs when the culture has changed.
     /// </summary>

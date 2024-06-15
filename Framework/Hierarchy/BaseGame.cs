@@ -83,7 +83,7 @@ public class BaseGame : Game, IGame {
         get => this._sceneStack.Any() ? this._sceneStack.Peek() : Scene.Empty;
         private set {
             if (this.CurrentScene != value) {
-                this._sceneStack.Clear();
+                this.ClearSceneStack();
                 this._sceneStack.Push(value);
 
                 if (this.IsInitialized) {
@@ -251,6 +251,7 @@ public class BaseGame : Game, IGame {
     public bool TryPopScene(out IScene scene) {
         if (this._sceneStack.Count > 1) {
             scene = this._sceneStack.Pop();
+            scene.Deinitialize();
             this.CurrentScene.RaiseActivated();
             return true;
         }
@@ -439,6 +440,14 @@ public class BaseGame : Game, IGame {
                 this.DesiredInputDevice = this.InputBindings.DesiredInputDevice;
             }
         }
+    }
+
+    private void ClearSceneStack() {
+        foreach (var scene in this._sceneStack) {
+            scene.Deinitialize();
+        }
+
+        this._sceneStack.Clear();
     }
 
 

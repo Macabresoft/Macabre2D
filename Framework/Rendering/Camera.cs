@@ -199,10 +199,14 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
+        base.Deinitialize();
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.OffsetOptions.Initialize(this.CreateSize);

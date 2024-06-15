@@ -88,14 +88,18 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
+        base.Deinitialize();
+        
         this.Game.InputDeviceChanged -= this.Game_InputDisplayChanged;
         this.Game.SettingsSaved -= this.Game_SettingsSaved;
-
         this.GamePadNReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
         this.GamePadSReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
         this.GamePadXReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.GamePadNReference.Initialize(this.Scene.Assets);
