@@ -43,14 +43,11 @@ public sealed class BinaryTileMap : RenderableTileMap {
     public Color Color { get; set; } = Color.White;
 
     /// <inheritdoc />
-    public override bool HasActiveTileAt(Point tilePosition) {
-        return this._activeTiles.Contains(tilePosition);
-    }
+    public override bool HasActiveTileAt(Point tilePosition) => this._activeTiles.Contains(tilePosition);
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.SpriteReference.Initialize(this.Scene.Assets);
         this.ResetSpriteScale();
     }
 
@@ -88,6 +85,11 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.SpriteReference;
+    }
+
+    /// <inheritdoc />
     protected override Point GetMaximumTile() {
         return new Point(this._activeTiles.Select(t => t.X).Max(), this._activeTiles.Select(t => t.Y).Max());
     }
@@ -98,9 +100,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
-    protected override bool HasActiveTiles() {
-        return this._activeTiles.Any();
-    }
+    protected override bool HasActiveTiles() => this._activeTiles.Any();
 
     /// <inheritdoc />
     protected override void OnTransformChanged() {
@@ -118,14 +118,10 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
-    protected override bool TryAddTile(Point tile) {
-        return this._activeTiles.Add(tile);
-    }
+    protected override bool TryAddTile(Point tile) => this._activeTiles.Add(tile);
 
     /// <inheritdoc />
-    protected override bool TryRemoveTile(Point tile) {
-        return this._activeTiles.Remove(tile);
-    }
+    protected override bool TryRemoveTile(Point tile) => this._activeTiles.Remove(tile);
 
     private void ResetSpriteScale() {
         if (this.SpriteReference.Asset is { } spriteSheet) {

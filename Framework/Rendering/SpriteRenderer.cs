@@ -1,6 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
-using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -30,12 +30,20 @@ public class SpriteRenderer : BaseSpriteEntity {
     protected override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
-        this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
-        this.SpriteReference.Initialize(this.Scene.Assets);
         this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.SpriteReference;
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

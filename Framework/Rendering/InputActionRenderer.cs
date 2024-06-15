@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -47,9 +48,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <inheritdoc />
-    public override byte? SpriteIndex {
-        get => this._spriteIndex;
-    }
+    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <summary>
     /// Gets the input action to display.
@@ -83,14 +82,12 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheet? SpriteSheet {
-        get => this._spriteSheet;
-    }
+    protected override SpriteSheet? SpriteSheet => this._spriteSheet;
 
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        
+
         this.Game.InputDeviceChanged -= this.Game_InputDisplayChanged;
         this.Game.SettingsSaved -= this.Game_SettingsSaved;
         this.GamePadNReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
@@ -101,11 +98,6 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
-        this.GamePadNReference.Initialize(this.Scene.Assets);
-        this.GamePadSReference.Initialize(this.Scene.Assets);
-        this.GamePadXReference.Initialize(this.Scene.Assets);
-        this.KeyboardReference.Initialize(this.Scene.Assets);
 
         this.GamePadNReference.PropertyChanged += this.IconSetReference_PropertyChanged;
         this.GamePadSReference.PropertyChanged += this.IconSetReference_PropertyChanged;
@@ -123,6 +115,14 @@ public class InputActionRenderer : BaseSpriteEntity {
         }
 
         base.Render(frameTime, viewBoundingArea, colorOverride);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.GamePadNReference;
+        yield return this.GamePadSReference;
+        yield return this.GamePadXReference;
+        yield return this.KeyboardReference;
     }
 
     private void Game_InputDisplayChanged(object? sender, InputDevice e) {
@@ -152,9 +152,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         };
     }
 
-    private KeyboardIconSet? GetKeyboardIconSet() {
-        return this.KeyboardReference.PackagedAsset ?? this.Project.Fallbacks.KeyboardReference.PackagedAsset;
-    }
+    private KeyboardIconSet? GetKeyboardIconSet() => this.KeyboardReference.PackagedAsset ?? this.Project.Fallbacks.KeyboardReference.PackagedAsset;
 
     private void IconSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.GamePadXReference.ContentId)) {

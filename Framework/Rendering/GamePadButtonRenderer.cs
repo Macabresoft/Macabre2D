@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -33,9 +34,7 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     public GamePadIconSetReference GamePadXReference { get; } = new();
 
     /// <inheritdoc />
-    public override byte? SpriteIndex {
-        get => this._spriteIndex;
-    }
+    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <summary>
     /// Gets and sets the button. Please don't use multiple values, it won't work.
@@ -52,21 +51,19 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     }
 
     /// <inheritdoc />
-    protected override SpriteSheet? SpriteSheet {
-        get => this._spriteSheet;
+    protected override SpriteSheet? SpriteSheet => this._spriteSheet;
+
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.GamePadNReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
+        this.GamePadSReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
+        this.GamePadXReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
     }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
-        this.GamePadNReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-
         base.Initialize(scene, parent);
-
-        this.GamePadNReference.Initialize(this.Scene.Assets);
-        this.GamePadSReference.Initialize(this.Scene.Assets);
-        this.GamePadXReference.Initialize(this.Scene.Assets);
 
         this.GamePadNReference.PropertyChanged += this.GamePadReference_PropertyChanged;
         this.GamePadSReference.PropertyChanged += this.GamePadReference_PropertyChanged;
@@ -81,6 +78,13 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
         }
 
         base.Render(frameTime, viewBoundingArea, colorOverride);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.GamePadNReference;
+        yield return this.GamePadSReference;
+        yield return this.GamePadXReference;
     }
 
     private void GamePadReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A sprite animator that loops a single animation.
@@ -17,16 +17,20 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     public SpriteAnimationReference AnimationReference { get; } = new();
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should start playing by default.
+    /// Gets or sets a value indicating whether this should start playing by default.
     /// </summary>
     [DataMember]
     public bool StartPlaying { get; set; } = true;
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.AnimationReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.AnimationReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
-        this.AnimationReference.Initialize(this.Scene.Assets);
 
         if (this.TryResetAnimation()) {
             this._queueableAnimation?.Reset();
@@ -37,9 +41,12 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     }
 
     /// <inheritdoc />
-    protected override QueueableSpriteAnimation? GetCurrentAnimation() {
-        return this._queueableAnimation;
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.AnimationReference;
     }
+
+    /// <inheritdoc />
+    protected override QueueableSpriteAnimation? GetCurrentAnimation() => this._queueableAnimation;
 
     /// <inheritdoc />
     protected override void HandleAnimationFinished() {
@@ -49,7 +56,7 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
             this._queueableAnimation.MillisecondsPassed = millisecondsPassed;
         }
     }
-    
+
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);

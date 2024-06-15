@@ -13,13 +13,13 @@ using Microsoft.Xna.Framework;
 public class TextArea : RenderableEntity, IRenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<(SpriteSheetFontCharacter character, Vector2 position)> _spriteCharacters = new();
+    private SpriteSheetFont? _font;
     private float _height;
     private int _kerning;
+    private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
     private float _width;
-    private SpriteSheetFont? _font;
-    private SpriteSheet? _spriteSheet;
-    
+
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
@@ -112,11 +112,17 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
+        base.Deinitialize();
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+        this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
+        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.FontReference.Initialize(this.Scene.Assets);
         this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
         this.RenderOptions.Initialize(this.CreateSize);
         this.ResetLines();
@@ -144,6 +150,11 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     }
 
     /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.FontReference;
+    }
+
+    /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
 
@@ -153,20 +164,15 @@ public class TextArea : RenderableEntity, IRenderableEntity {
         }
     }
 
-    private bool CouldBeVisible() {
-        return !string.IsNullOrEmpty(this.Text) &&
-               this._height > 0f &&
-               this._width > 0f &&
-               this.FontReference.Asset != null;
-    }
+    private bool CouldBeVisible() =>
+        !string.IsNullOrEmpty(this.Text) &&
+        this._height > 0f &&
+        this._width > 0f &&
+        this.FontReference.Asset != null;
 
-    private BoundingArea CreateBoundingArea() {
-        return this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
-    }
+    private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
-    private Vector2 CreateSize() {
-        return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
-    }
+    private Vector2 CreateSize() => new(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
 
     private void FontReference_AssetLoaded(object? sender, EventArgs e) {
         this.RequestRefresh();
@@ -184,7 +190,7 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     private void ResetLines() {
         this._spriteCharacters.Clear();
-        
+
         if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
             this._font = this.FontReference.PackagedAsset;
             this._spriteSheet = this.FontReference.Asset;

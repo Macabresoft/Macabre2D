@@ -134,7 +134,6 @@ public class TextLine : RenderableEntity {
         base.Initialize(scene, parent);
 
         this.ReloadFontFromCategory();
-        this.FontReference.Initialize(this.Scene.Assets);
         this.ResetResource();
         this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
@@ -156,6 +155,11 @@ public class TextLine : RenderableEntity {
         if (this._fontReference != null) {
             this.RenderWithFont(this._fontReference, colorOverride);
         }
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.FontReference;
     }
 
     /// <summary>

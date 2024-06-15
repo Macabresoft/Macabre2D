@@ -214,7 +214,6 @@ public class Camera : Entity, ICamera {
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
-        this.ShaderReference.Initialize(this.Scene.Assets);
     }
 
     /// <inheritdoc />
@@ -266,6 +265,11 @@ public class Camera : Entity, ICamera {
         if (this.ActualViewHeight < difference.X && this.ViewWidth != 0f) {
             this.ActualViewHeight *= difference.X / this.ViewWidth;
         }
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.ShaderReference;
     }
 
     /// <summary>

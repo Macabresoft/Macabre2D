@@ -330,7 +330,10 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public virtual void Initialize(IScene scene, IEntity parent) {
         try {
-            this.Deinitialize();
+            if (this.IsInitialized) {
+                this.Deinitialize();
+            }
+            
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);

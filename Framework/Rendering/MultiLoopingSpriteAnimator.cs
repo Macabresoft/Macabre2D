@@ -23,22 +23,31 @@ public class MultiLoopingSpriteAnimator : BaseSpriteAnimator {
     public bool IsRandom { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should start playing by default.
+    /// Gets or sets a value indicating whether this should start playing by default.
     /// </summary>
     [DataMember]
     public bool StartPlaying { get; set; } = true;
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.SpriteSheetReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.SpriteSheetReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
-        this.SpriteSheetReference.Initialize(this.Scene.Assets);
 
         if (this.TryResetAnimations()) {
             this.TryStart();
         }
 
         this.SpriteSheetReference.PropertyChanged += this.AnimationReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.SpriteSheetReference;
     }
 
     /// <inheritdoc />
