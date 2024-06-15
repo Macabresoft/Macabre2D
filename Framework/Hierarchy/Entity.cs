@@ -240,7 +240,7 @@ public class Entity : Transformable, IEntity {
     protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
 
     /// <summary>
-    /// Gets a value indicating whether or not this is initialized.
+    /// Gets a value indicating whether this is initialized.
     /// </summary>
     protected bool IsInitialized { get; private set; }
 
@@ -270,6 +270,10 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public virtual void Deinitialize() {
         this.Parent.TransformChanged -= this.Parent_TransformChanged;
+
+        foreach (var assetReference in this.GetAssetReferences()) {
+            assetReference.Deinitialize();
+        }
     }
 
     /// <inheritdoc />
@@ -330,6 +334,10 @@ public class Entity : Transformable, IEntity {
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
+
+            foreach (var assetReference in this.GetAssetReferences()) {
+                assetReference.Initialize(this.Scene.Assets);
+            }
 
             foreach (var child in this.Children) {
                 child.Initialize(this.Scene, this);
@@ -411,6 +419,14 @@ public class Entity : Transformable, IEntity {
     public bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity {
         entity = this.Children.OfType<T>().FirstOrDefault();
         return entity != null;
+    }
+
+    /// <summary>
+    /// Gets the asset references for initalization and deinitialization.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IEnumerable<IAssetReference> GetAssetReferences() {
+        yield break;
     }
 
     /// <inheritdoc />

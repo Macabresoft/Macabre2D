@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 
+/// <summary>
+/// Interface for an asset reference.
+/// </summary>
 public interface IAssetReference : INotifyPropertyChanged {
 
     /// <summary>
@@ -28,11 +31,16 @@ public interface IAssetReference : INotifyPropertyChanged {
     void Clear();
 
     /// <summary>
+    /// Deinitializes this reference.
+    /// </summary>
+    void Deinitialize();
+
+    /// <summary>
     /// Initializes this reference with the asset manager.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
     void Initialize(IAssetManager assetManager);
-    
+
     /// <summary>
     /// Loads this instance with the content identifier..
     /// </summary>
@@ -86,12 +94,15 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     public abstract void Clear();
 
     /// <inheritdoc />
-    public abstract void LoadAsset(Guid contentId);
+    public abstract void Deinitialize();
 
     /// <inheritdoc />
     public virtual void Initialize(IAssetManager assetManager) {
         this.Assets = assetManager;
     }
+
+    /// <inheritdoc />
+    public abstract void LoadAsset(Guid contentId);
 }
 
 /// <summary>
@@ -127,6 +138,13 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
 
         this.Asset = null;
         this.ContentId = Guid.Empty;
+    }
+
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        if (this.Asset != null) {
+            this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
+        }
     }
 
     /// <inheritdoc />
