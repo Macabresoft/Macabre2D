@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -18,6 +17,9 @@ public class EmptyObject : IScene {
     public static readonly EmptyObject Instance = new();
 
     /// <inheritdoc />
+    public event EventHandler? Activated;
+
+    /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
@@ -25,9 +27,6 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    /// <inheritdoc />
-    public event EventHandler? Activated;
 
     /// <inheritdoc />
     public event EventHandler? TransformChanged;
@@ -87,14 +86,10 @@ public class EmptyObject : IScene {
     public Version Version { get; set; } = new();
 
     /// <inheritdoc />
-    public T AddChild<T>() where T : IEntity, new() {
-        throw new NotSupportedException("Initialization has not occured.");
-    }
+    public T AddChild<T>() where T : IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
 
     /// <inheritdoc />
-    public IEntity AddChild() {
-        throw new NotSupportedException("Initialization has not occured.");
-    }
+    public IEntity AddChild() => throw new NotSupportedException("Initialization has not occured.");
 
     /// <inheritdoc />
     public void AddChild(IEntity entity) {
@@ -102,9 +97,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public T AddLoop<T>() where T : ILoop, new() {
-        return new T();
-    }
+    public T AddLoop<T>() where T : ILoop, new() => new();
 
 
     /// <inheritdoc />
@@ -112,59 +105,41 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public IEntity FindChild(Guid id) {
-        return this;
+    public void Deinitialize() {
     }
 
     /// <inheritdoc />
-    public IEntity FindChild(string name) {
-        return this;
-    }
+    public IEntity FindChild(Guid id) => this;
 
     /// <inheritdoc />
-    public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
-        return null;
-    }
+    public IEntity FindChild(string name) => this;
 
     /// <inheritdoc />
-    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop {
-        return null;
-    }
+    public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity => null;
 
     /// <inheritdoc />
-    public IEnumerable<T> GetDescendants<T>() {
-        return Enumerable.Empty<T>();
-    }
+    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop => null;
 
     /// <inheritdoc />
-    public IEnumerable<IEntity> GetDescendants(Type type) {
-        return Enumerable.Empty<IEntity>();
-    }
+    public IEnumerable<T> GetDescendants<T>() => [];
 
     /// <inheritdoc />
-    public T? GetLoop<T>() where T : class, ILoop {
-        return null;
-    }
+    public IEnumerable<IEntity> GetDescendants(Type type) => [];
 
     /// <inheritdoc />
-    public Vector2 GetNearestTilePosition(Vector2 position) {
-        throw new NotSupportedException();
-    }
+    public T? GetLoop<T>() where T : class, ILoop => null;
 
     /// <inheritdoc />
-    public T GetOrAddChild<T>() where T : class, IEntity, new() {
-        throw new NotSupportedException("Initialization has not occured.");
-    }
+    public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public Vector2 GetTilePosition(Point tile) {
-        throw new NotSupportedException();
-    }
+    public T GetOrAddChild<T>() where T : class, IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
 
     /// <inheritdoc />
-    public Vector2 GetWorldPosition(Vector2 originOffset) {
-        return this.WorldPosition;
-    }
+    public Vector2 GetTilePosition(Point tile) => throw new NotSupportedException();
+
+    /// <inheritdoc />
+    public Vector2 GetWorldPosition(Vector2 originOffset) => this.WorldPosition;
 
 
     /// <inheritdoc />
@@ -174,10 +149,6 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public void Initialize(IGame gameLoop, IAssetManager assetManager) {
-    }
-
-    /// <inheritdoc />
-    public void Initialize(IGame game, IAssetManager assetManager, bool forceReinitialize) {
     }
 
     /// <inheritdoc />
@@ -194,9 +165,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool IsDescendentOf(IEntity entity) {
-        return false;
-    }
+    public bool IsDescendentOf(IEntity entity) => false;
 
     /// <inheritdoc />
     public void Move(Vector2 amount) {
@@ -208,11 +177,11 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void RaiseDeactivated() {
+    public void RaiseActivated() {
     }
 
     /// <inheritdoc />
-    public void RaiseActivated() {
+    public void RaiseDeactivated() {
     }
 
     /// <inheritdoc />
@@ -224,9 +193,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveLoop(ILoop loop) {
-        return false;
-    }
+    public bool RemoveLoop(ILoop loop) => false;
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, InputState inputState) {
@@ -241,15 +208,11 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public T ResolveDependency<T>() where T : new() {
-        return new T();
-    }
+    public T ResolveDependency<T>() where T : new() => new();
 
 
     /// <inheritdoc />
-    public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
-        return objectFactory.SafeInvoke();
-    }
+    public T ResolveDependency<T>(Func<T> objectFactory) where T : class => objectFactory.SafeInvoke();
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {

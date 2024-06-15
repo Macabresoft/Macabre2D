@@ -26,14 +26,14 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEntity Parent => Framework.Scene.Empty;
 
     /// <summary>
-    /// Gets the scene.
-    /// </summary>
-    IScene Scene => Framework.Scene.Empty;
-
-    /// <summary>
     /// Gets the game project.
     /// </summary>
     IGameProject Project => GameProject.Empty;
+
+    /// <summary>
+    /// Gets the scene.
+    /// </summary>
+    IScene Scene => Framework.Scene.Empty;
 
     /// <summary>
     /// Gets the layers.
@@ -60,6 +60,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// </summary>
     /// <param name="entity">The entity.</param>
     void AddChild(IEntity entity);
+
+    /// <summary>
+    /// Deinitializes the entity.
+    /// </summary>
+    void Deinitialize();
 
     /// <summary>
     /// Finds the first child with the specified identifier.
@@ -139,6 +144,14 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void ReorderChild(IEntity entity, int newIndex);
 
     /// <summary>
+    /// Tries the get an ancestor of specified type. This entity could be a parent going all the way up to the scene.
+    /// </summary>
+    /// <typeparam name="T">The type of parent entity.</typeparam>
+    /// <param name="entity">The parent entity.</param>
+    /// <returns>A value indicating whether or not the entity was found.</returns>
+    bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity);
+
+    /// <summary>
     /// Tries the get a child of the specific type. This is recursive.
     /// </summary>
     /// <typeparam name="T">The type of entity for which to search.</typeparam>
@@ -147,14 +160,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// A value indicating whether or not a child of the specified type was found.
     /// </returns>
     bool TryGetChild<T>(out T? entity) where T : class, IEntity;
-
-    /// <summary>
-    /// Tries the get an ancestor of specified type. This entity could be a parent going all the way up to the scene.
-    /// </summary>
-    /// <typeparam name="T">The type of parent entity.</typeparam>
-    /// <param name="entity">The parent entity.</param>
-    /// <returns>A value indicating whether or not the entity was found.</returns>
-    bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity);
 }
 
 /// <summary>
@@ -188,6 +193,11 @@ public class Entity : Transformable, IEntity {
     /// Gets the game.
     /// </summary>
     public virtual IGame Game => this.Scene.Game;
+
+    /// <summary>
+    /// Gets the project.
+    /// </summary>
+    public IGameProject Project => this.Game.Project;
 
     /// <inheritdoc />
     [DataMember]
@@ -225,11 +235,6 @@ public class Entity : Transformable, IEntity {
     public IScene Scene { get; private set; } = Framework.Scene.Empty;
 
     /// <summary>
-    /// Gets the project.
-    /// </summary>
-    public IGameProject Project => this.Game.Project;
-
-    /// <summary>
     /// Gets the sprite batch.
     /// </summary>
     protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
@@ -251,9 +256,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public IEntity AddChild() {
-        return this.AddChild<Entity>();
-    }
+    public IEntity AddChild() => this.AddChild<Entity>();
 
     /// <inheritdoc />
     public void AddChild(IEntity entity) {
@@ -262,6 +265,11 @@ public class Entity : Transformable, IEntity {
             this._children.Add(entity);
             this.OnAddChild(entity);
         }
+    }
+
+    /// <inheritdoc />
+    public virtual void Deinitialize() {
+        this.Parent.TransformChanged -= this.Parent_TransformChanged;
     }
 
     /// <inheritdoc />
@@ -307,24 +315,18 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetDescendants(Type type) {
-        var descendents = new List<IEntity>(this.Children.Where(type.IsInstanceOfType));
-        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendants(type)));
-        return descendents;
+        var descendants = new List<IEntity>(this.Children.Where(type.IsInstanceOfType));
+        descendants.AddRange(this.Children.SelectMany(x => x.GetDescendants(type)));
+        return descendants;
     }
 
     /// <inheritdoc />
-    public T GetOrAddChild<T>() where T : class, IEntity, new() {
-        if (this.TryGetChild<T>(out var entity)) {
-            return entity;
-        }
-
-        return this.AddChild<T>();
-    }
+    public T GetOrAddChild<T>() where T : class, IEntity, new() => this.TryGetChild<T>(out var entity) ? entity : this.AddChild<T>();
 
     /// <inheritdoc />
     public virtual void Initialize(IScene scene, IEntity parent) {
         try {
-            this.Parent.TransformChanged -= this.Parent_TransformChanged;
+            this.Deinitialize();
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
@@ -351,9 +353,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public bool IsDescendentOf(IEntity entity) {
-        return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
-    }
+    public bool IsDescendentOf(IEntity entity) => entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
 
     /// <summary>
     /// Gets a value indicating whether or not the entity is null or empty.
@@ -396,12 +396,6 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity {
-        entity = this.Children.OfType<T>().FirstOrDefault();
-        return entity != null;
-    }
-
-    /// <inheritdoc />
     public virtual bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) {
         if (this.Parent is T parent) {
             entity = parent;
@@ -414,9 +408,13 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    protected override ITransformable GetParentTransformable() {
-        return this.Parent;
+    public bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity {
+        entity = this.Children.OfType<T>().FirstOrDefault();
+        return entity != null;
     }
+
+    /// <inheritdoc />
+    protected override ITransformable GetParentTransformable() => this.Parent;
 
     /// <summary>
     /// Occurs when a child is added.

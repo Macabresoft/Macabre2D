@@ -96,7 +96,7 @@ public class TextLine : RenderableEntity {
         get => this._resourceName;
         set {
             this._resourceName = value;
-            this.ResetResource();
+            this.RequestRefresh();
         }
     }
 
@@ -120,22 +120,30 @@ public class TextLine : RenderableEntity {
     protected string ActualText => string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
+        base.Deinitialize();
+
         this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+        this.Game.CultureChanged -= this.Game_CultureChanged;
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.ReloadFontFromCategory();
         this.FontReference.Initialize(this.Scene.Assets);
-        this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
+        this.ResetResource();
         this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
-        this.ResetResource();
+
+        this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
+        this.Game.CultureChanged += this.Game_CultureChanged;
     }
 
     /// <inheritdoc />
@@ -225,6 +233,10 @@ public class TextLine : RenderableEntity {
         this.RenderOptions.InvalidateSize();
     }
 
+    private void Game_CultureChanged(object? sender, ResourceCulture e) {
+        this.RequestRefresh();
+    }
+
     private void ReloadFontFromCategory() {
         if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
             this.FontReference.ContentId = fontDefinition.SpriteSheetId;
@@ -240,6 +252,7 @@ public class TextLine : RenderableEntity {
 
     private void RequestRefresh() {
         if (this.IsInitialized) {
+            this.ResetResource();
             this.ResetIndexes();
             this.ResetSize();
         }
