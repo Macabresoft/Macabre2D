@@ -159,7 +159,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <returns>
     /// A value indicating whether or not a child of the specified type was found.
     /// </returns>
-    bool TryGetChild<T>(out T? entity) where T : class, IEntity;
+    bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity;
 }
 
 /// <summary>
