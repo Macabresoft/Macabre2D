@@ -23,6 +23,12 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
         this.ResetConfigurationType();
     }
 
+    /// <inheritdoc />
+    public override void Initialize(IAssetManager assetManager) {
+        base.Initialize(assetManager);
+        this.Configuration.Initialize(assetManager);
+    }
+
     /// <summary>
     /// Prepares a shader and returns it.
     /// </summary>

@@ -18,6 +18,12 @@ public interface IShaderConfiguration {
     void FillParameters(Effect effect, Vector2 renderSize, IGame game, IScene scene);
 
     /// <summary>
+    /// Initializes this instance.
+    /// </summary>
+    /// <param name="assetManager">The asset manager.</param>
+    void Initialize(IAssetManager assetManager);
+
+    /// <summary>
     /// Resets this configuration to defaults.
     /// </summary>
     void ResetToDefault();
@@ -36,6 +42,13 @@ public class ShaderConfiguration : IShaderConfiguration {
 
     /// <inheritdoc />
     public virtual void FillParameters(Effect effect, Vector2 renderSize, IGame game, IScene scene) {
+    }
+
+    /// <summary>
+    /// Initializes this instance.
+    /// </summary>
+    /// <param name="assetManager">The asset manager.</param>
+    public virtual void Initialize(IAssetManager assetManager) {
     }
 
     /// <inheritdoc />
