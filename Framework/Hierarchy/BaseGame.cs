@@ -23,6 +23,7 @@ public class BaseGame : Game, IGame {
 
     private readonly Stack<IScene> _sceneStack = new();
     private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
+    private readonly LaunchArguments _launchArguments;
     private bool _canToggleFullscreen = true;
     private InputDevice _desiredInputDevice = InputDevice.Auto;
     private RenderTarget2D? _gameRenderTarget;
@@ -55,9 +56,23 @@ public class BaseGame : Game, IGame {
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseGame" /> class.
     /// </summary>
+    public BaseGame(string[] arguments) : this(arguments.ToLaunchArguments()) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BaseGame" /> class.
+    /// </summary>
     public BaseGame() : base() {
         this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
         this.Content.RootDirectory = "Content";
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BaseGame" /> class.
+    /// </summary>
+    protected BaseGame(LaunchArguments launchArguments) : this() {
+        this._launchArguments = launchArguments;
+        IsDesignMode = launchArguments.HasFlag(LaunchArguments.EditorMode);
     }
 
     /// <inheritdoc />
@@ -120,9 +135,9 @@ public class BaseGame : Game, IGame {
     public InputState InputState { get; protected set; }
 
     /// <summary>
-    /// Gets or sets a value which indicates whether or not the game is running in design mode.
+    /// Gets or sets a value which indicates whether the game is running in design mode.
     /// </summary>
-    public static bool IsDesignMode { get; set; }
+    public static bool IsDesignMode { get; private set; }
 
     /// <inheritdoc />
     public Point PixelRenderSize { get; private set; }
@@ -357,7 +372,12 @@ public class BaseGame : Game, IGame {
             this.Project = project;
         }
 
-        if (assetManager.TryLoadContent<Scene>(this.Project.StartupSceneId, out var scene)) {
+        var startupSceneId = this.Project.StartupSceneId;
+        if (this._launchArguments.HasFlag(LaunchArguments.DebugMode) && this.Project.StartupDebugSceneId != Guid.Empty) {
+            startupSceneId = this.Project.StartupDebugSceneId;
+        }
+
+        if (assetManager.TryLoadContent<Scene>(startupSceneId, out var scene)) {
             this.LoadScene(scene);
         }
 

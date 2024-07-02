@@ -55,10 +55,9 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
     /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
-    protected AvaloniaGame(IAssetManager assetManager) : base() {
+    protected AvaloniaGame(IAssetManager assetManager) : base(LaunchArguments.EditorMode) {
         this.Assets = assetManager;
         this.IsFixedTimeStep = false;
-        IsDesignMode = true;
     }
 
     /// <inheritdoc />

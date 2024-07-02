@@ -57,9 +57,14 @@ public interface IGameProject : INotifyPropertyChanged {
     ScreenShaderCollection ScreenShaders { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not this should pixel snap.
+    /// Gets a value indicating whether this should pixel snap.
     /// </summary>
     bool SnapToPixels { get; }
+
+    /// <summary>
+    /// Gets the identifier of the scene to load on a debug startup.
+    /// </summary>
+    public Guid StartupDebugSceneId { get; }
 
     /// <summary>
     /// Gets the identifier of the scene to load on startup.
@@ -205,6 +210,11 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <inheritdoc />
     [DataMember(Name = "Snap to Pixels During Render")]
     public bool SnapToPixels { get; set; }
+
+    /// <inheritdoc />
+    [DataMember(Name = "Debug Scene")]
+    [AssetGuid(typeof(SceneAsset))]
+    public Guid StartupDebugSceneId { get; set; }
 
     /// <inheritdoc />
     [DataMember(Name = "Startup Scene")]

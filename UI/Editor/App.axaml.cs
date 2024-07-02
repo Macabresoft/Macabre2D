@@ -30,7 +30,6 @@ public class App : Application {
             var splashScreen = new SplashScreen();
             desktop.MainWindow = splashScreen;
             splashScreen.Show();
-            BaseGame.IsDesignMode = true;
             var mainWindow = new MainWindow();
 
             Resolver.Container.RegisterInstance(mainWindow);
