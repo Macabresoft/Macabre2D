@@ -37,19 +37,7 @@ public enum AspectRatio : byte {
     ThreeToTwo = 4,
 
     [Display(Name = "17:9")]
-    SeventeenToNine = 5,
-
-    [Display(Name = "21:9")]
-    TwentyOneToNine = 6,
-
-    [Display(Name = "32:9")]
-    ThirtyTwoToNine = 7,
-
-    [Display(Name = "1:1")]
-    OneToOne = 8,
-
-    [Display(Name = "4:1")]
-    FourToOne = 9
+    SeventeenToNine = 5
 }
 
 /// <summary>
@@ -156,7 +144,7 @@ public sealed class DisplaySettings {
     public void EnableScreenShader(Guid identifier) {
         this._disabledScreenShaders.Remove(identifier);
     }
-    
+
     /// <summary>
     /// Gets the resolution given the desired number of vertical pixels. This uses the <see cref="AspectRatio" /> and <see cref="WindowScale" /> values.
     /// </summary>
@@ -181,10 +169,6 @@ public sealed class DisplaySettings {
             AspectRatio.FiveToFour => 5f / 4f,
             AspectRatio.ThreeToTwo => 3f / 2f,
             AspectRatio.SeventeenToNine => 17f / 9f,
-            AspectRatio.TwentyOneToNine => 21 / 9f,
-            AspectRatio.ThirtyTwoToNine => 32 / 9f,
-            AspectRatio.OneToOne => 1f,
-            AspectRatio.FourToOne => 4f,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
