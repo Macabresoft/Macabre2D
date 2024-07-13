@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A base class for sprite animators.
@@ -48,6 +49,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
 
     /// <inheritdoc />
     [DataMember]
+    [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
     public int UpdateOrder {
         get => this._updateOrder;
         set => this.Set(ref this._updateOrder, value);

@@ -1,0 +1,42 @@
+<local:BaseNumericEditor xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                         xmlns:system="clr-namespace:System;assembly=mscorlib"
+                         x:TypeArguments="system:Int32"
+                         x:Class="Macabresoft.Macabre2D.UI.Common.PredefinedIntEditor"
+                         UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, *, Auto"
+          DataContext="{Binding $parent[local:PredefinedIntEditor]}">
+        <Design.DataContext>
+            <local:PredefinedIntEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <TextBox Grid.Column="1"
+                 KeyDown="InputElement_OnKeyDown"
+                 LostFocus="ValueDisplay_OnLostFocus"
+                 Text="{Binding ValueDisplay}" />
+
+        <DropDownButton Grid.Column="2"
+                        x:Name="_integerSelectionButton"
+                        Width="32"
+                        ToolTip.Tip="{Binding SelectedInteger, Converter={x:Static local:PredefinedIntegerToDisplayConverter.Instance}}">
+            <DropDownButton.Flyout>
+                <Flyout Placement="Bottom">
+                    <ListBox ItemsSource="{Binding AvailablePredefinedIntegers}"
+                             SelectedItem="{Binding SelectedInteger}"
+                             SelectionChanged="SelectingItemsControl_OnSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={x:Static local:PredefinedIntegerToDisplayConverter.Instance}}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Flyout>
+            </DropDownButton.Flyout>
+        </DropDownButton>
+    </Grid>
+</local:BaseNumericEditor>

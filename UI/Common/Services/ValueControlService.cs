@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using ReactiveUI;
 using Unity;
 using Unity.Resolution;
@@ -120,9 +121,22 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
-        else if (memberType.IsAssignableTo(typeof(string))) {
+        else if (memberType == typeof(string)) {
             var isResource = member.MemberInfo.GetCustomAttribute<ResourceNameAttribute>() != null;
             var editor = this.CreateValueEditorFromType(isResource ? typeof(ResourceStringEditor) : typeof(StringEditor), owner, value, memberType, member, propertyPath);
+
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
+        else if (memberType == typeof(int)) {
+            IValueEditor editor;
+            if (member.MemberInfo.GetCustomAttribute<PredefinedIntegerAttribute>() is { } predefinedIntegerAttribute) {
+                editor = this.CreateValueEditorFromType(typeof(PredefinedIntEditor), owner, value, memberType, member, propertyPath, new DependencyOverride(typeof(PredefinedIntegerKind), predefinedIntegerAttribute.Kind));
+            }
+            else {
+                editor = this.CreateValueEditorFromType(typeof(IntEditor), owner, value, memberType, member, propertyPath);
+            }
 
             if (editor != null) {
                 result.Add(editor);
@@ -181,9 +195,11 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         object value,
         Type memberType,
         AttributeMemberInfo<DataMemberAttribute> member,
-        string propertyPath) {
+        string propertyPath,
+        params ResolverOverride[] overrides) {
         var dependencies = new ValueControlDependencies(value, memberType, GetPropertyName(propertyPath), GetTitle(member), owner);
-        if (this._container.Resolve(editorType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueEditor editor) {
+        var actualOverrides = overrides.Concat(new[] { new DependencyOverride(typeof(ValueControlDependencies), dependencies) }).ToArray();
+        if (this._container.Resolve(editorType, actualOverrides) is IValueEditor editor) {
             this.SetCategoryForEditor(editor, owner, member);
             return editor;
         }

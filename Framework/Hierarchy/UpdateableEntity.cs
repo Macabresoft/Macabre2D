@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A <see cref="IEntity" /> which implements <see cref="IUpdateableGameObject" />.
@@ -23,6 +24,7 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
 
     /// <inheritdoc />
     [DataMember]
+    [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
     public int UpdateOrder {
         get => this._updateOrder;
         set => this.Set(ref this._updateOrder, value);

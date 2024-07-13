@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -26,6 +27,7 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     [DataMember]
+    [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
     public int RenderOrder {
         get => this._renderOrder;
         set => this.Set(ref this._renderOrder, value);

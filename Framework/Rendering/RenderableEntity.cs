@@ -3,16 +3,13 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for an entity which can be rendered.
 /// </summary>
 public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
-    /// <summary>
-    /// Gets or sets a value indicating whether this instance is visible.
-    /// </summary>
-    bool IsVisible { get; set; }
 
     /// <summary>
     /// Gets the render order.
@@ -20,7 +17,12 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should be rendered when out of bounds.
+    /// Gets or sets a value indicating whether this instance is visible.
+    /// </summary>
+    bool IsVisible { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this should be rendered when out of bounds.
     /// </summary>
     bool RenderOutOfBounds { get; set; }
 
@@ -71,6 +73,7 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
+    [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
     public int RenderOrder {
         get => this._renderOrder;
         set => this.Set(ref this._renderOrder, value);
