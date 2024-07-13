@@ -20,12 +20,16 @@
                  LostFocus="ValueDisplay_OnLostFocus"
                  Text="{Binding ValueDisplay}" />
 
-        <DropDownButton Grid.Column="2"
-                        x:Name="_integerSelectionButton"
+        <DropDownButton x:Name="_integerSelectionButton"
+                        Grid.Column="2"
+                        Margin="{StaticResource StandardMarginAll}"
+                        Height="32"
                         Width="32"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
                         ToolTip.Tip="{Binding SelectedInteger, Converter={x:Static local:PredefinedIntegerToDisplayConverter.Instance}}">
             <DropDownButton.Flyout>
-                <Flyout Placement="Bottom">
+                <Flyout Placement="BottomEdgeAlignedLeft">
                     <ListBox ItemsSource="{Binding AvailablePredefinedIntegers}"
                              SelectedItem="{Binding SelectedInteger}"
                              SelectionChanged="SelectingItemsControl_OnSelectionChanged">
