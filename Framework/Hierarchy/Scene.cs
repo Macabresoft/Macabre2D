@@ -320,6 +320,14 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        foreach (var loop in this._loops) {
+            loop.Deinitialize();
+        }
+    }
+
     /// <inheritdoc />
     public bool IsActive { get; private set; }
 
@@ -443,7 +451,11 @@ public sealed class Scene : GridContainer, IScene {
     public bool RemoveLoop(ILoop loop) {
         var result = false;
         if (this._loops.Contains(loop)) {
-            this.Invoke(() => this._loops.Remove(loop));
+            this.Invoke(() =>
+            {
+                this._loops.Remove(loop);
+                loop.Deinitialize();
+            });
             result = true;
         }
 

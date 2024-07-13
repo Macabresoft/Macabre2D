@@ -14,11 +14,13 @@ public class RenderLoop : Loop {
     public override LoopKind Kind => LoopKind.Render;
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene) {
-        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
-            this.Scene.PropertyChanged -= this.Scene_PropertyChanged;
-        }
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.Scene.PropertyChanged -= this.Scene_PropertyChanged;
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene) {
         base.Initialize(scene);
 
         if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {

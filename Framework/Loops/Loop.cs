@@ -16,6 +16,11 @@ public interface ILoop : IUpdateableGameObject, INameable, IIdentifiable {
     LoopKind Kind { get; }
 
     /// <summary>
+    /// Deinitializes this service.
+    /// </summary>
+    void Deinitialize();
+
+    /// <summary>
     /// Initializes this service as a descendent of <paramref name="scene" />.
     /// </summary>
     /// <param name="scene">The scene.</param>
@@ -42,6 +47,11 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
 
     /// <inheritdoc />
     [DataMember]
+    [Browsable(false)]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <inheritdoc />
+    [DataMember]
     public bool IsEnabled {
         get => this._isEnabled;
         set => this.Set(ref this._isEnabled, value);
@@ -63,15 +73,14 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
     protected IScene Scene { get; private set; } = Framework.Scene.Empty;
 
     /// <inheritdoc />
+    public virtual void Deinitialize() {
+    }
+
+    /// <inheritdoc />
     public virtual void Initialize(IScene scene) {
         this.Scene = scene;
     }
 
     /// <inheritdoc />
     public abstract void Update(FrameTime frameTime, InputState inputState);
-
-    /// <inheritdoc />
-    [DataMember]
-    [Browsable(false)]
-    public Guid Id { get; set; } = Guid.NewGuid();
 }
