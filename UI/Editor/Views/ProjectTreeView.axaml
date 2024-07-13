@@ -211,8 +211,9 @@
                           Name="_treeView"
                           ItemsSource="{Binding ProjectService.TreeRoot, Mode=OneWay}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
+                          Padding="{StaticResource VerticalScrollBarMargin}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                          ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <TreeView.Styles>
                         <Style Selector="avaloniaEx|EditableSelectableItem.File">
                             <Design.DataContext>
@@ -312,7 +313,9 @@
                          Margin="{StaticResource StandardMarginAll}"
                          ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
                          SelectedItem="{Binding FilteredSelection}"
-                         SelectionMode="Single">
+                         SelectionMode="Single"
+                         Padding="{StaticResource VerticalScrollBarMargin}"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="Transparent"

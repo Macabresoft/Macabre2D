@@ -1,0 +1,11 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="ScrollBar">
+        <Style.Resources>
+            <!-- 16 is the width of the scroll bar + 6 for standard margin = 22 -->
+            <Thickness x:Key="VerticalScrollBarMargin">0,0,22,0</Thickness> 
+            <Thickness x:Key="HorizontalScrollBarMargin">0,0,0,22</Thickness>
+        </Style.Resources>
+        <Setter Property="AllowAutoHide" Value="False" />
+    </Style>
+</Styles>

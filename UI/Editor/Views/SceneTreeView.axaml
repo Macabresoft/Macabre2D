@@ -141,7 +141,9 @@
                       Name="_treeView"
                       ItemsSource="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"
-                      LostFocus="TreeView_OnLostFocus">
+                      LostFocus="TreeView_OnLostFocus"
+                      Padding="{StaticResource VerticalScrollBarMargin}"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <TreeView.Styles>
                     <Style Selector="TreeViewItem">
                         <Design.DataContext>
@@ -354,7 +356,9 @@
                      Margin="{StaticResource StandardMarginAll}"
                      ItemsSource="{Binding FilteredNodes, Mode=OneWay}"
                      SelectedItem="{Binding FilteredSelection}"
-                     SelectionMode="Single">
+                     SelectionMode="Single"
+                     Padding="{StaticResource VerticalScrollBarMargin}"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border Background="Transparent"

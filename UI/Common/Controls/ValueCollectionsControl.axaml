@@ -34,9 +34,9 @@
         </Grid>
         <ScrollViewer Grid.Row="1"
                       HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Visible"
                       Margin="{StaticResource StandardMarginAll}">
-            <Grid>
+            <Grid Margin="{StaticResource VerticalScrollBarMargin}">
                 <ItemsControl ItemsSource="{Binding Collections, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

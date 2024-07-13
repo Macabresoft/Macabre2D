@@ -4,6 +4,7 @@
     <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Base.axaml" />
     <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Accents/Purple.axaml" />
     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Border.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ScrollBar.axaml" />
     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/IconPaths.axaml" />
 
     <Style Selector="Window">
