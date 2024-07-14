@@ -29,6 +29,16 @@ public class TileChunk {
     }
 
     /// <summary>
+    /// Gets or sets the maximum tile.
+    /// </summary>
+    public Point MaximumTile { get; set; }
+
+    /// <summary>
+    /// Gets or sets the minimum tile.
+    /// </summary>
+    public Point MinimumTile { get; set; }
+
+    /// <summary>
     /// Gets the chunks as a set of columns given the active tiles.
     /// </summary>
     /// <param name="activeTiles">The active tiles.</param>
@@ -36,17 +46,7 @@ public class TileChunk {
     public static IEnumerable<TileChunk> GetColumnChunks(IReadOnlyCollection<Point> activeTiles) {
         IEnumerable<TileChunk> chunks;
         if (activeTiles.Any()) {
-            var tempChunks = new List<TileChunk>();
-            var orderedTiles = activeTiles.OrderBy(tile => tile.X).ThenBy(tile => tile.Y).ToList();
-            var currentVisualChunk = new TileChunk(orderedTiles.First());
-            tempChunks.Add(currentVisualChunk);
-            orderedTiles.RemoveAt(0);
-
-            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToColumn(activeTile))) {
-                currentVisualChunk = new TileChunk(activeTile);
-                tempChunks.Add(currentVisualChunk);
-            }
-
+            var tempChunks = GetColumns(activeTiles);
             var reversedVisualChunks = tempChunks.OrderByDescending(x => x.MaximumTile.X).ToList();
             foreach (var visualChunk in reversedVisualChunks) {
                 var candidates = tempChunks.Where(x => x.MaximumTile.X == visualChunk.MinimumTile.X - 1).ToList();
@@ -59,11 +59,26 @@ public class TileChunk {
             chunks = tempChunks;
         }
         else {
-            chunks = Enumerable.Empty<TileChunk>();
+            chunks = [];
         }
 
         return chunks;
     }
+
+
+    /// <summary>
+    /// Gets the chunks as a set of uncombined rows given the active tiles.
+    /// </summary>
+    /// <param name="activeTiles">The active tiles.</param>
+    /// <returns>The chunks built by the active tiles.</returns>
+    public static IEnumerable<TileChunk> GetIndividualColumnsAsChunks(IReadOnlyCollection<Point> activeTiles) => GetColumns(activeTiles);
+
+    /// <summary>
+    /// Gets the chunks as a set of uncombined rows given the active tiles.
+    /// </summary>
+    /// <param name="activeTiles">The active tiles.</param>
+    /// <returns>The chunks built by the active tiles.</returns>
+    public static IEnumerable<TileChunk> GetIndividualRowsAsChunks(IReadOnlyCollection<Point> activeTiles) => GetRows(activeTiles);
 
     /// <summary>
     /// Gets the chunks as a set of rows given the active tiles.
@@ -73,16 +88,7 @@ public class TileChunk {
     public static IEnumerable<TileChunk> GetRowChunks(IReadOnlyCollection<Point> activeTiles) {
         IEnumerable<TileChunk> chunks;
         if (activeTiles.Any()) {
-            var tempChunks = new List<TileChunk>();
-            var orderedTiles = activeTiles.OrderBy(tile => tile.Y).ThenBy(tile => tile.X).ToList();
-            var currentVisualChunk = new TileChunk(orderedTiles.First());
-            tempChunks.Add(currentVisualChunk);
-            orderedTiles.RemoveAt(0);
-
-            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToRow(activeTile))) {
-                currentVisualChunk = new TileChunk(activeTile);
-                tempChunks.Add(currentVisualChunk);
-            }
+            var tempChunks = GetRows(activeTiles);
 
             var reversedVisualChunks = tempChunks.OrderByDescending(x => x.MaximumTile.Y).ToList();
             foreach (var visualChunk in reversedVisualChunks) {
@@ -92,25 +98,15 @@ public class TileChunk {
                     tempChunks.Remove(visualChunk);
                 }
             }
-            
+
             chunks = tempChunks;
         }
         else {
-            chunks = Enumerable.Empty<TileChunk>();
+            chunks = [];
         }
 
         return chunks;
     }
-
-    /// <summary>
-    /// Gets or sets the maximum tile.
-    /// </summary>
-    public Point MaximumTile { get; set; }
-
-    /// <summary>
-    /// Gets or sets the minimum tile.
-    /// </summary>
-    public Point MinimumTile { get; set; }
 
     /// <summary>
     /// Tries to add a tile to a column.
@@ -186,5 +182,34 @@ public class TileChunk {
         }
 
         return false;
+    }
+
+    private static List<TileChunk> GetColumns(IReadOnlyCollection<Point> activeTiles) {
+        var chunks = new List<TileChunk>();
+        if (activeTiles.Any()) {
+            var orderedTiles = activeTiles.OrderBy(tile => tile.X).ThenBy(tile => tile.Y).ToList();
+            var currentVisualChunk = new TileChunk(orderedTiles.First());
+            chunks.Add(currentVisualChunk);
+            orderedTiles.RemoveAt(0);
+        }
+
+        return chunks;
+    }
+
+    private static List<TileChunk> GetRows(IReadOnlyCollection<Point> activeTiles) {
+        var chunks = new List<TileChunk>();
+        if (activeTiles.Any()) {
+            var orderedTiles = activeTiles.OrderBy(tile => tile.Y).ThenBy(tile => tile.X).ToList();
+            var currentVisualChunk = new TileChunk(orderedTiles.First());
+            chunks.Add(currentVisualChunk);
+            orderedTiles.RemoveAt(0);
+
+            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToRow(activeTile))) {
+                currentVisualChunk = new TileChunk(activeTile);
+                chunks.Add(currentVisualChunk);
+            }
+        }
+
+        return chunks;
     }
 }

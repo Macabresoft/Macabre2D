@@ -2,16 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A tileable body that creates rectangle colliders to fill out the active tiles on a <see cref="ITileableEntity" />.
+/// A <see cref="PhysicsBody" /> which reacts to a <see cref="ITileableEntity" /> parent
+/// and creates horizontal line colliders based on the grid.
 /// </summary>
-[Display(Name = "Tileable Body (Box)")]
-public class TileableBoxBody : PhysicsBody {
+public class TileableLineBody : PhysicsBody {
     private readonly List<Collider> _colliders = new();
     private Orientation _colliderOrientation;
     private ITileableEntity? _tileable;
@@ -43,16 +42,16 @@ public class TileableBoxBody : PhysicsBody {
     }
 
     /// <inheritdoc />
-    public override IEnumerable<Collider> GetColliders() => this._colliders;
-
-    /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        
+
         if (this._tileable != null) {
             this._tileable.TilesChanged -= this.OnRequestReset;
         }
     }
+
+    /// <inheritdoc />
+    public override IEnumerable<Collider> GetColliders() => this._colliders;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -75,13 +74,13 @@ public class TileableBoxBody : PhysicsBody {
         this._colliders.Clear();
 
         if (this._tileable is { CurrentGrid: not EmptyObject } && this._tileable.ActiveTiles.Any()) {
-            var chunks = this._colliderOrientation == Orientation.Horizontal ? TileChunk.GetRowChunks(this._tileable.ActiveTiles) : TileChunk.GetColumnChunks(this._tileable.ActiveTiles);
+            var chunks = this._colliderOrientation == Orientation.Horizontal ? TileChunk.GetIndividualRowsAsChunks(this._tileable.ActiveTiles) : TileChunk.GetIndividualColumnsAsChunks(this._tileable.ActiveTiles);
 
             foreach (var chunk in chunks) {
-                var minimum = this._tileable.CurrentGrid.GetTilePosition(chunk.MinimumTile);
-                var maximum = this._tileable.CurrentGrid.GetTilePosition(new Point(chunk.MaximumTile.X + 1, chunk.MaximumTile.Y + 1));
+                var minimum = this._tileable.CurrentGrid.GetTilePosition(new Point(chunk.MinimumTile.X, chunk.MinimumTile.Y + 1));
+                var maximum = this._tileable.CurrentGrid.GetTilePosition(new Point(chunk.MaximumTile.X + 1, chunk.MinimumTile.Y + 1));
 
-                var collider = new RectangleCollider(minimum, maximum) {
+                var collider = new LineCollider(minimum, maximum) {
                     Layers = this.Layers
                 };
 
