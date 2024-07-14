@@ -16,8 +16,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
     [DataMember]
     private readonly HashSet<Point> _activeTiles = new();
 
-    private Vector2 _tileScale;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BinaryTileMap" /> class.
     /// </summary>
@@ -48,7 +46,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.ResetSpriteScale();
+        this.ReorderActiveTiles();
     }
 
     /// <inheritdoc />
@@ -58,8 +56,8 @@ public sealed class BinaryTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this.SpriteBatch is { } spriteBatch && this.SpriteReference.Asset is { } spriteSheet && this._activeTiles.Any()) {
-            var tileBoundingAreas = this._activeTiles
+        if (this.SpriteBatch is { } spriteBatch && this.SpriteReference.Asset is { } spriteSheet && this.OrderedActiveTiles.Any()) {
+            var tileBoundingAreas = this.OrderedActiveTiles
                 .Select(this.GetTileBoundingArea)
                 .Where(boundingArea => boundingArea.Overlaps(viewBoundingArea));
 
@@ -73,7 +71,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
                     spriteSheet,
                     this.SpriteReference.SpriteIndex,
                     boundingArea.Minimum,
-                    this._tileScale,
                     colorOverride);
             }
         }
@@ -81,6 +78,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     protected override void ClearActiveTiles() {
+        base.ClearActiveTiles();
         this._activeTiles.Clear();
     }
 
@@ -103,30 +101,23 @@ public sealed class BinaryTileMap : RenderableTileMap {
     protected override bool HasActiveTiles() => this._activeTiles.Any();
 
     /// <inheritdoc />
-    protected override void OnTransformChanged() {
-        base.OnTransformChanged();
-
-        if (this.SpriteReference.Asset is { } spriteSheet) {
-            this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
+    protected override bool TryAddTile(Point tile) {
+        if (this._activeTiles.Add(tile)) {
+            this.ReorderActiveTiles();
+            return true;
         }
+
+        return false;
     }
 
     /// <inheritdoc />
-    protected override void ResetBoundingArea() {
-        base.ResetBoundingArea();
-        this.ResetSpriteScale();
-    }
-
-    /// <inheritdoc />
-    protected override bool TryAddTile(Point tile) => this._activeTiles.Add(tile);
-
-    /// <inheritdoc />
-    protected override bool TryRemoveTile(Point tile) => this._activeTiles.Remove(tile);
-
-    private void ResetSpriteScale() {
-        if (this.SpriteReference.Asset is { } spriteSheet) {
-            this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
+    protected override bool TryRemoveTile(Point tile) {
+        if (this._activeTiles.Remove(tile)) {
+            this.ReorderActiveTiles();
+            return true;
         }
+
+        return false;
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

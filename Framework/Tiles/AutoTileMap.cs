@@ -48,7 +48,6 @@ public sealed class AutoTileMap : RenderableTileMap {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<Point, byte> _activeTileToIndex = new();
 
-    private Vector2 _spriteScale = Vector2.One;
     private AutoTileMapVisualBehavior _visualBehavior;
 
     /// <inheritdoc />
@@ -79,9 +78,7 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
-    public override bool HasActiveTileAt(Point tilePosition) {
-        return this._activeTileToIndex.ContainsKey(tilePosition);
-    }
+    public override bool HasActiveTileAt(Point tilePosition) => this._activeTileToIndex.ContainsKey(tilePosition);
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -91,7 +88,7 @@ public sealed class AutoTileMap : RenderableTileMap {
         this.TileSetReference.Initialize(this.Scene.Assets);
         this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
         this.ReevaluateIndexes();
-        this.ResetSpriteScale();
+        this.ReorderActiveTiles();
     }
 
 
@@ -103,16 +100,17 @@ public sealed class AutoTileMap : RenderableTileMap {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch && this.TileSetReference is { PackagedAsset: { } tileSet, Asset: { } spriteSheet }) {
-            foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
-                var boundingArea = this.GetTileBoundingArea(activeTile);
-                if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex) && (this.Scene.BoundingArea.IsEmpty || boundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
-                    spriteBatch.Draw(
-                        this.Project.PixelsPerUnit,
-                        spriteSheet,
-                        spriteIndex,
-                        boundingArea.Minimum,
-                        this._spriteScale,
-                        colorOverride);
+            foreach (var activeTile in this.OrderedActiveTiles) {
+                if (this._activeTileToIndex.TryGetValue(activeTile, out var tileIndex)) {
+                    var boundingArea = this.GetTileBoundingArea(activeTile);
+                    if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex) && (this.Scene.BoundingArea.IsEmpty || boundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
+                        spriteBatch.Draw(
+                            this.Project.PixelsPerUnit,
+                            spriteSheet,
+                            spriteIndex,
+                            boundingArea.Minimum,
+                            colorOverride);
+                    }
                 }
             }
         }
@@ -120,6 +118,7 @@ public sealed class AutoTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     protected override void ClearActiveTiles() {
+        base.ClearActiveTiles();
         this._activeTileToIndex.Clear();
     }
 
@@ -134,15 +133,7 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
-    protected override bool HasActiveTiles() {
-        return this._activeTileToIndex.Any();
-    }
-
-    /// <inheritdoc />
-    protected override void ResetBoundingArea() {
-        base.ResetBoundingArea();
-        this.ResetSpriteScale();
-    }
+    protected override bool HasActiveTiles() => this._activeTileToIndex.Any();
 
     /// <inheritdoc />
     protected override bool TryAddTile(Point tile) {
@@ -152,6 +143,7 @@ public sealed class AutoTileMap : RenderableTileMap {
 
             this._activeTileToIndex[tile] = this.GetIndex(tile);
             this.ReevaluateSurroundingIndexes(tile);
+            this.ReorderActiveTiles();
         }
 
         return result;
@@ -162,6 +154,7 @@ public sealed class AutoTileMap : RenderableTileMap {
         var result = this._activeTileToIndex.Remove(tile);
         if (result) {
             this.ReevaluateSurroundingIndexes(tile);
+            this.ReorderActiveTiles();
         }
 
         return result;
@@ -285,12 +278,6 @@ public sealed class AutoTileMap : RenderableTileMap {
                     this.ReevaluateIndex(tile + new Point(x, y));
                 }
             }
-        }
-    }
-
-    private void ResetSpriteScale() {
-        if (this.TileSetReference.Asset is { } spriteSheet) {
-            this._spriteScale = this.GetTileScale(spriteSheet.SpriteSize);
         }
     }
 
