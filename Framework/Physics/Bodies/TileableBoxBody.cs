@@ -43,16 +43,16 @@ public class TileableBoxBody : PhysicsBody {
     }
 
     /// <inheritdoc />
-    public override IEnumerable<Collider> GetColliders() => this._colliders;
-
-    /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        
+
         if (this._tileable != null) {
             this._tileable.TilesChanged -= this.OnRequestReset;
         }
     }
+
+    /// <inheritdoc />
+    public override IEnumerable<Collider> GetColliders() => this._colliders;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
