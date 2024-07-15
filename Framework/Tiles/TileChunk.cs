@@ -191,6 +191,11 @@ public class TileChunk {
             var currentVisualChunk = new TileChunk(orderedTiles.First());
             chunks.Add(currentVisualChunk);
             orderedTiles.RemoveAt(0);
+            
+            foreach (var activeTile in orderedTiles.Where(activeTile => !currentVisualChunk.TryAddToColumn(activeTile))) {
+                currentVisualChunk = new TileChunk(activeTile);
+                chunks.Add(currentVisualChunk);
+            }
         }
 
         return chunks;

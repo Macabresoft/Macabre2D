@@ -91,7 +91,6 @@ public sealed class AutoTileMap : RenderableTileMap {
         this.ReorderActiveTiles();
     }
 
-
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         this.Render(frameTime, viewBoundingArea, this.Color);
