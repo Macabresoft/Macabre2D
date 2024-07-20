@@ -31,11 +31,6 @@ public interface IPathService {
     string EditorMetadataDirectoryPath { get; }
 
     /// <summary>
-    /// Gets the path to the metadata archive directory.
-    /// </summary>
-    string MetadataArchiveDirectoryPath { get; }
-
-    /// <summary>
     /// Gets the path to the metadata directory.
     /// </summary>
     string MetadataDirectoryPath { get; }
@@ -129,7 +124,6 @@ public class PathService : IPathService {
         this.ContentDirectoryPath = contentDirectoryPath;
         this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
         this.EditorMetadataDirectoryPath = Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
-        this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
         this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
         this.ProjectDirectoryPath = new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ProjectDirectoryName)).FullName;
@@ -153,9 +147,6 @@ public class PathService : IPathService {
     public string EditorMetadataDirectoryPath { get; }
 
     /// <inheritdoc />
-    public string MetadataArchiveDirectoryPath { get; }
-
-    /// <inheritdoc />
     public string MetadataDirectoryPath { get; }
 
     /// <inheritdoc />
@@ -168,12 +159,8 @@ public class PathService : IPathService {
     public string ProjectFilePath { get; }
 
     /// <inheritdoc />
-    public string GetEditorMetadataFilePath(Guid contentId) {
-        return Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
-    }
+    public string GetEditorMetadataFilePath(Guid contentId) => Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
 
     /// <inheritdoc />
-    public string GetMetadataFilePath(Guid contentId) {
-        return Path.Combine(this.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
-    }
+    public string GetMetadataFilePath(Guid contentId) => Path.Combine(this.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
 }

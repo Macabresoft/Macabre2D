@@ -5,7 +5,9 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.UI.Common;
+using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
@@ -13,7 +15,7 @@ public class BuildServiceTests {
     [Test]
     [Category("Integration Tests")]
     public void Build_ShouldRunMGCB() {
-        var service = new BuildService(new FileSystemService(), new ProcessService());
+        var service = new BuildService(Substitute.For<IAssemblyService>(), new FileSystemService(), new PathService(), new ProcessService(), Substitute.For<ISerializer>());
 
         var contentDirectory = Path.Combine(
             TestContext.CurrentContext.TestDirectory,

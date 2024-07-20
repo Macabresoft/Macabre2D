@@ -1,11 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
@@ -21,7 +18,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Gets the root content directory.
     /// </summary>
     IContentDirectory RootContentDirectory { get; }
-    
+
     /// <summary>
     /// Adds a directory as a child to selected directory.
     /// </summary>
@@ -78,35 +75,15 @@ public interface IContentService : ISelectionService<IContentNode> {
 /// A service which loads, imports, deletes, and moves content.
 /// </summary>
 public sealed class ContentService : SelectionService<IContentNode>, IContentService {
-    private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
     private readonly IAssetManager _assetManager;
     private readonly IBuildService _buildService;
     private readonly ICommonDialogService _dialogService;
     private readonly IFileSystemService _fileSystem;
-    private readonly ILoggingService _loggingService;
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
 
     private RootContentDirectory _rootContentDirectory;
-
-    /// <summary>
-    /// Static constructor for <see cref="ContentService" />.
-    /// </summary>
-    static ContentService() {
-        FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
-        FileExtensionToAssetType.Add(PrefabAsset.FileExtension, typeof(PrefabAsset));
-
-        foreach (var extension in SpriteSheet.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
-        }
-
-        foreach (var extension in AudioClipAsset.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(AudioClipAsset));
-        }
-
-        FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContentService" /> class.
@@ -128,7 +105,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         IBuildService buildService,
         ICommonDialogService dialogService,
         IFileSystemService fileSystem,
-        ILoggingService loggingService,
         IPathService pathService,
         ISerializer serializer,
         IEditorSettingsService settingsService,
@@ -138,7 +114,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         this._buildService = buildService;
         this._dialogService = dialogService;
         this._fileSystem = fileSystem;
-        this._loggingService = loggingService;
         this._pathService = pathService;
         this._serializer = serializer;
         this._settingsService = settingsService;
@@ -148,9 +123,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
     /// <inheritdoc />
-    public IContentDirectory AddDirectory(IContentDirectory parent) {
-        return parent != null ? this.CreateDirectory("New Directory", parent) : null;
-    }
+    public IContentDirectory AddDirectory(IContentDirectory parent) => parent != null ? this.CreateDirectory("New Directory", parent) : null;
 
     /// <inheritdoc />
     public void AddScene(IContentDirectory parent) {
@@ -167,7 +140,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
             if (contentFile != null) {
                 this.CopyToEditorBin(parent, contentFile);
-                this.CreateMGCBFile(out _);
+                this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
                 this._settingsService.Settings.ShouldRebuildContent = true;
             }
         }
@@ -205,7 +178,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
                 if (contentFile != null) {
                     this.CopyToEditorBin(parent, contentFile);
-                    this.CreateMGCBFile(out _);
+                    this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
                 }
             }
@@ -267,13 +240,17 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
             this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
-            foreach (var metadata in this.GetMetadata()) {
-                this.ResolveContentFile(metadata);
+            var exitCode = this._buildService.BuildContentFromScratch(this._rootContentDirectory, forceRebuild || this.CheckForMetadataChanges());
+
+            foreach (var metadata in this._rootContentDirectory.GetAllContentFiles().Select(x => x.Metadata)) {
+                this._assetManager.RegisterMetadata(metadata);
             }
 
-            if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild || this.CheckForMetadataChanges()) {
+            if (exitCode == 0) {
                 this.ResetAssets();
-                this.BuildContentForProject();
+                if (this._settingsService.Settings is { } settings) {
+                    settings.ShouldRebuildContent = false;
+                }
             }
 
             this.RaisePropertyChanged(nameof(this.RootContentDirectory));
@@ -292,18 +269,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     /// <inheritdoc />
-    protected override bool ShouldLoadEditors() {
-        return this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
-    }
-
-    private void BuildContentForProject() {
-        var buildArgs = this.CreateMGCBFile(out var outputDirectoryPath);
-        this._buildService.BuildContent(buildArgs, outputDirectoryPath);
-
-        if (this._settingsService.Settings is { } settings) {
-            settings.ShouldRebuildContent = false;
-        }
-    }
+    protected override bool ShouldLoadEditors() => this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
 
     private bool CheckForMetadataChanges() {
         var editorMetadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList() : null;
@@ -344,16 +310,14 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
     }
 
-    private bool CreateContentFile(IContentDirectory parent, string fileName) {
-        return this.CreateContentFile(parent, fileName, out _);
-    }
+    private bool CreateContentFile(IContentDirectory parent, string fileName) => this.CreateContentFile(parent, fileName, out _);
 
     private bool CreateContentFile(IContentDirectory parent, string fileName, out ContentFile contentFile) {
         var result = false;
         var extension = Path.GetExtension(fileName);
         contentFile = null;
 
-        if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
+        if (BuildService.FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
             var parentPath = parent.GetContentPath();
             var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
             splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
@@ -361,23 +325,13 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             if (Activator.CreateInstance(assetType) is IAsset asset) {
                 var metadata = new ContentMetadata(asset, splitPath, extension);
                 this.SaveMetadata(metadata);
-                contentFile = this.CreateContentFileObject(parent, metadata);
+                contentFile = this.AssemblyService.CreateContentFileObject(parent, metadata);
                 this._assetManager.RegisterMetadata(contentFile.Metadata);
                 result = true;
             }
         }
 
         return result;
-    }
-
-    private ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
-        ContentFile contentFile = null;
-        var contentFileType = this.AssemblyService.LoadFirstGenericType(typeof(ContentFile<>), metadata.Asset.GetType());
-        if (contentFileType != null) {
-            contentFile = this.AssemblyService.CreateObjectFromType(contentFileType, parent, metadata) as ContentFile;
-        }
-
-        return contentFile ?? new ContentFile(parent, metadata);
     }
 
     private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
@@ -400,72 +354,9 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         return new ContentDirectory(name, parent);
     }
 
-    private BuildContentArguments CreateMGCBFile(out string outputDirectoryPath) {
-        const string Platform = "DesktopGL";
-        var mgcbStringBuilder = new StringBuilder();
-        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{Platform}.mgcb");
-        var buildArgs = new BuildContentArguments(
-            mgcbFilePath,
-            Platform,
-            true);
-
-        outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
-
-        mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
-        mgcbStringBuilder.AppendLine();
-
-        foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
-            mgcbStringBuilder.AppendLine(argument);
-        }
-
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
-        mgcbStringBuilder.AppendLine();
-
-        mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine();
-
-        var contentFiles = this.RootContentDirectory.GetAllContentFiles();
-        foreach (var contentFile in contentFiles.Where(x => !x.Asset.IgnoreInBuild)) {
-            mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
-            mgcbStringBuilder.AppendLine();
-        }
-
-        var mgcbText = mgcbStringBuilder.ToString();
-        this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
-
-        return buildArgs;
-    }
-
-    private IEnumerable<ContentMetadata> GetMetadata() {
-        var metadata = new List<ContentMetadata>();
-        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
-            var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
-            foreach (var file in files) {
-                try {
-                    var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
-                    metadata.Add(contentMetadata);
-                }
-                catch (Exception e) {
-                    var fileName = Path.GetFileName(file);
-                    var message = $"Archiving metadata '{fileName}' due to an exception";
-                    this._loggingService.LogException(message, e);
-                    this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
-                    this._fileSystem.MoveFile(file, Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName));
-                }
-            }
-        }
-
-        return metadata;
-    }
 
     private void RefreshMGCBFiles() {
-        this.CreateMGCBFile(out _);
+        this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
     }
 
     private void ResetAssets() {
@@ -476,66 +367,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
     }
 
-
-    private void ResolveContentFile(ContentMetadata metadata) {
-        ContentFile contentNode = null;
-        var splitPath = metadata.SplitContentPath;
-        if (splitPath.Any()) {
-            IContentDirectory parentDirectory;
-            if (splitPath.Count == this._rootContentDirectory.GetDepth() + 1) {
-                parentDirectory = this._rootContentDirectory;
-            }
-            else {
-                parentDirectory = this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
-            }
-
-            if (parentDirectory != null) {
-                var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
-                if (this._fileSystem.DoesFileExist(contentFilePath)) {
-                    contentNode = this.CreateContentFileObject(parentDirectory, metadata);
-                }
-            }
-        }
-
-        if (contentNode == null) {
-            var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
-            var current = Path.Combine(this._pathService.MetadataDirectoryPath, fileName);
-            var moveTo = Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName);
-
-            if (!this._fileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath)) {
-                this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
-            }
-
-            if (this._fileSystem.DoesFileExist(current)) {
-                if (this._fileSystem.DoesFileExist(moveTo)) {
-                    this._fileSystem.DeleteFile(moveTo);
-                }
-
-                this._fileSystem.MoveFile(current, moveTo);
-            }
-        }
-        else {
-            this._assetManager.RegisterMetadata(metadata);
-        }
-    }
-
-    private bool ResolveNewContentFiles(IContentDirectory currentDirectory) {
-        var result = false;
-        var currentPath = currentDirectory.GetFullPath();
-        var files = this._fileSystem.GetFiles(currentPath);
-        var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
-
-        foreach (var file in files.Select(Path.GetFileName).Where(fileName => currentContentFiles.All(x => x.Name != fileName))) {
-            result = this.CreateContentFile(currentDirectory, file) || result;
-        }
-
-        var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
-        foreach (var child in currentContentDirectories) {
-            result = this.ResolveNewContentFiles(child) || result;
-        }
-
-        return result;
-    }
 
     private void SaveMetadata(ContentMetadata metadata) {
         if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {

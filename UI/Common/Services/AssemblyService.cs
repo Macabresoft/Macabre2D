@@ -6,12 +6,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Macabre2D.Framework;
 using Unity;
 
 /// <summary>
 /// Interface for a service which loads types from assemblies.
 /// </summary>
 public interface IAssemblyService {
+
+    /// <summary>
+    /// Creates a content file object with the given parent and metadata.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="metadata">The metadata.</param>
+    /// <returns>The content file.</returns>
+    ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata);
+
     /// <summary>
     /// Creates an object by type with the provided constructor parameters.
     /// </summary>
@@ -55,26 +65,48 @@ public sealed class AssemblyService : IAssemblyService {
     /// Initializes a new instance of the <see cref="AssemblyService" /> class.
     /// </summary>
     /// <param name="container">The container.</param>
-    public AssemblyService(IUnityContainer container) {
+    [InjectionConstructor]
+    public AssemblyService(IUnityContainer container) : this(container, true) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AssemblyService" /> class.
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="includeEditorAssembly">A value indicating whether to include the editor assembly.</param>
+    [InjectionConstructor]
+    public AssemblyService(IUnityContainer container, bool includeEditorAssembly) {
         this._container = container;
-        this._assemblies = new[] {
-            Assembly.Load("Macabre2D"),
-            Assembly.Load("Macabre2D.Framework"),
-            Assembly.Load("Macabre2D.Project.Gameplay"),
-            Assembly.Load("Macabre2D.Project.Common"),
-            Assembly.Load("Macabre2D.UI.Common")
-        };
+
+        var assemblies = new List<Assembly>();
+
+        if (includeEditorAssembly) {
+            assemblies.Add(Assembly.Load("Macabre2D"));
+        }
+
+        assemblies.Add(Assembly.Load("Macabre2D.Framework"));
+        assemblies.Add(Assembly.Load("Macabre2D.Project.Gameplay"));
+        assemblies.Add(Assembly.Load("Macabre2D.Project.Common"));
+        assemblies.Add(Assembly.Load("Macabre2D.UI.Common"));
+        this._assemblies = assemblies;
     }
 
     /// <inheritdoc />
-    public object CreateObjectFromType(Type type, params object[] constructorParameters) {
-        return this._container.Resolve(type, new GenericParameterOverride(constructorParameters));
+    public ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
+        ContentFile contentFile = null;
+        var contentFileType = this.LoadFirstGenericType(typeof(ContentFile<>), metadata.Asset.GetType());
+        if (contentFileType != null) {
+            contentFile = this.CreateObjectFromType(contentFileType, parent, metadata) as ContentFile;
+        }
+
+        return contentFile ?? new ContentFile(parent, metadata);
     }
 
     /// <inheritdoc />
-    public Type LoadFirstGenericType(Type genericType, params Type[] typeArguments) {
-        return this.LoadFirstType(genericType.MakeGenericType(typeArguments));
-    }
+    public object CreateObjectFromType(Type type, params object[] constructorParameters) => this._container.Resolve(type, new GenericParameterOverride(constructorParameters));
+
+    /// <inheritdoc />
+    public Type LoadFirstGenericType(Type genericType, params Type[] typeArguments) => this.LoadFirstType(genericType.MakeGenericType(typeArguments));
 
     /// <inheritdoc />
     public Type LoadFirstType(Type baseType) {
@@ -120,11 +152,7 @@ public sealed class AssemblyService : IAssemblyService {
         return types;
     }
 
-    private static bool CheckIfTypeMatch(Type baseType, Type testingType) {
-        return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && baseType.IsAssignableFrom(testingType);
-    }
+    private static bool CheckIfTypeMatch(Type baseType, Type testingType) => baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && baseType.IsAssignableFrom(testingType);
 
-    private static bool CheckIfTypeMatchGeneric(Type baseType, Type testingType) {
-        return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && testingType.BaseType?.IsGenericType == true && testingType.BaseType.GetGenericTypeDefinition() == baseType;
-    }
+    private static bool CheckIfTypeMatchGeneric(Type baseType, Type testingType) => baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && testingType.BaseType?.IsGenericType == true && testingType.BaseType.GetGenericTypeDefinition() == baseType;
 }

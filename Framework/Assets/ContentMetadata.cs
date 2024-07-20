@@ -74,9 +74,7 @@ public class ContentMetadata {
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
     /// <returns>The archive path.</returns>
-    public static string GetArchivePath(Guid contentId) {
-        return Path.Combine(ArchiveDirectoryName, $"{contentId.ToString()}{FileExtension}");
-    }
+    public static string GetArchivePath(Guid contentId) => Path.Combine(ArchiveDirectoryName, $"{contentId.ToString()}{FileExtension}");
 
     /// <summary>
     /// Gets the content build commands used by MGCB to compile this metadata and its associated asset and content.
@@ -89,7 +87,6 @@ public class ContentMetadata {
         contentStringBuilder.AppendLine($"#begin {metadataPath}");
         contentStringBuilder.AppendLine($@"/copy:{metadataPath}");
         contentStringBuilder.AppendLine($"#end {metadataPath}");
-        contentStringBuilder.AppendLine();
         contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
         return contentStringBuilder.ToString();
     }
@@ -112,26 +109,20 @@ public class ContentMetadata {
     /// Gets the name of the content file associated with this metadata and includes the file's extension.
     /// </summary>
     /// <returns>The name of the content file.</returns>
-    public string GetFileName() {
-        return !string.IsNullOrWhiteSpace(this.ContentFileExtension) ? $"{this.GetFileNameWithoutExtension()}{this.ContentFileExtension}" : this.GetFileNameWithoutExtension();
-    }
+    public string GetFileName() => !string.IsNullOrWhiteSpace(this.ContentFileExtension) ? $"{this.GetFileNameWithoutExtension()}{this.ContentFileExtension}" : this.GetFileNameWithoutExtension();
 
     /// <summary>
     /// Gets the name of the content file associated with this metadata, but does not include the file's extension.
     /// </summary>
     /// <returns>The name of the content file.</returns>
-    public string GetFileNameWithoutExtension() {
-        return this._splitContentPath.Any() ? this._splitContentPath.Last() : string.Empty;
-    }
+    public string GetFileNameWithoutExtension() => this._splitContentPath.Any() ? this._splitContentPath.Last() : string.Empty;
 
     /// <summary>
     /// Gets the metadata path from a given identifier.
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
     /// <returns>The metadata path.</returns>
-    public static string GetMetadataPath(Guid contentId) {
-        return Path.Combine(MetadataDirectoryName, $"{contentId.ToString()}{FileExtension}");
-    }
+    public static string GetMetadataPath(Guid contentId) => Path.Combine(MetadataDirectoryName, $"{contentId.ToString()}{FileExtension}");
 
     /// <summary>
     /// Sets the content path to a new value.

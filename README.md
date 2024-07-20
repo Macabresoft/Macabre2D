@@ -30,6 +30,10 @@ The full source code is available here from GitHub:
 * Place your existing Macabre2D project or [pull down a template](https://github.com/Macabresoft/Macabre2D-Project-Template) into the `\Project\` folder
 * Restore NuGet packages and build Macabre2D.sln
 
+### Rebuilding Content
+
+You can rebuild content from the editor or by running `BuildContent.sh`
+
 ### Compiling Shaders on Linux
 
 MonoGame has a guide for compiling Shaders on linux [here](https://docs.monogame.net/articles/getting_started/1_setting_up_your_development_environment_ubuntu.html#install-mgcb-editor).

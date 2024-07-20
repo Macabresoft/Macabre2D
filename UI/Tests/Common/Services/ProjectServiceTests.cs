@@ -167,7 +167,6 @@ public class ProjectServiceTests {
         fileSystem.DoesDirectoryExist(pathService.PlatformsDirectoryPath).Returns(true);
         fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
         fileSystem.DoesDirectoryExist(pathService.MetadataDirectoryPath).Returns(true);
-        fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);
         return fileSystem;
     }
 }

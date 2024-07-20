@@ -95,7 +95,6 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     /// <inheritdoc />
     public GameProject LoadProject() {
         this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
-        this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
         this._fileSystem.CreateDirectory(this._pathService.MetadataDirectoryPath);
 
         var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
