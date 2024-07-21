@@ -8,6 +8,7 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
 using ReactiveUI;
 
 /// <summary>
@@ -149,6 +150,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     /// <inheritdoc />
     public async Task CreatePrefab(IEntity entity) {
         if (entity?.TryClone(out var prefabChild) == true) {
+            prefabChild.LocalPosition = Vector2.Zero;
+
             var prefab = new Entity {
                 Name = !string.IsNullOrEmpty(prefabChild.Name) ? $"{prefabChild.Name}" : "Prefab"
             };
