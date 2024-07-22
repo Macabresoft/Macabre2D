@@ -379,6 +379,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public virtual void OnRemovedFromSceneTree() {
+        this.Deinitialize();
         this.Scene.UnregisterEntity(this);
         this.Scene = Framework.Scene.Empty;
         this.Parent = Empty;

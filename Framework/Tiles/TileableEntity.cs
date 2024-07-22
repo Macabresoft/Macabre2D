@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -162,18 +163,23 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// Clears the active tiles.
     /// </summary>
     protected abstract void ClearActiveTiles();
+    
 
     /// <summary>
     /// Gets the maximum tile.
     /// </summary>
     /// <returns>The maximum tile.</returns>
-    protected abstract Point GetMaximumTile();
+    protected virtual Point GetMaximumTile() {
+        return new Point(this.ActiveTiles.Select(t => t.X).Max(), this.ActiveTiles.Select(t => t.Y).Max());
+    }
 
     /// <summary>
     /// Gets the minimum tile.
     /// </summary>
     /// <returns>The minimum tile.</returns>
-    protected abstract Point GetMinimumTile();
+    protected virtual Point GetMinimumTile() {
+        return new Point(this.ActiveTiles.Select(t => t.X).Min(), this.ActiveTiles.Select(t => t.Y).Min());
+    }
 
     /// <summary>
     /// Gets the tile scale for the specified sprite.
@@ -197,7 +203,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// Determines whether this has active tiles.
     /// </summary>
     /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
-    protected abstract bool HasActiveTiles();
+    protected virtual bool HasActiveTiles() => this.ActiveTiles.Any();
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {

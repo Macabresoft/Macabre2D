@@ -86,17 +86,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.SpriteReference;
     }
-
-    /// <inheritdoc />
-    protected override Point GetMaximumTile() {
-        return new Point(this._activeTiles.Select(t => t.X).Max(), this._activeTiles.Select(t => t.Y).Max());
-    }
-
-    /// <inheritdoc />
-    protected override Point GetMinimumTile() {
-        return new Point(this._activeTiles.Select(t => t.X).Min(), this._activeTiles.Select(t => t.Y).Min());
-    }
-
+    
     /// <inheritdoc />
     protected override bool HasActiveTiles() => this._activeTiles.Any();
 

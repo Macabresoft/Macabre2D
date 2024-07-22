@@ -120,17 +120,7 @@ public sealed class AutoTileMap : RenderableTileMap {
         base.ClearActiveTiles();
         this._activeTileToIndex.Clear();
     }
-
-    /// <inheritdoc />
-    protected override Point GetMaximumTile() {
-        return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
-    }
-
-    /// <inheritdoc />
-    protected override Point GetMinimumTile() {
-        return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
-    }
-
+    
     /// <inheritdoc />
     protected override bool HasActiveTiles() => this._activeTileToIndex.Any();
 

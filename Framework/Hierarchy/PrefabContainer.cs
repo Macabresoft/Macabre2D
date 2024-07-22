@@ -38,7 +38,7 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public bool IsVisible {
-        get => this._isVisible && this.IsEnabled;
+        get => this._isVisible && this.IsEnabled && BaseGame.IsDesignMode;
         set => this.Set(ref this._isVisible, value);
     }
 
@@ -88,6 +88,7 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
         yield return this.PrefabReference;
     }
 
+    /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.ResetBoundingArea();
@@ -111,13 +112,12 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
         this.DeinitializeChild();
 
         if (this.PrefabReference.Asset?.Content is { } prefab && prefab.TryClone(out var clone)) {
+            this._prefabChild = clone;
             if (BaseGame.IsDesignMode) {
-                this._prefabChild = clone;
                 this._prefabChild.Initialize(this.Scene, this);
                 this.ResetBoundingArea();
             }
             else {
-                this._prefabChild = clone;
                 this.AddChild(this._prefabChild);
             }
         }
