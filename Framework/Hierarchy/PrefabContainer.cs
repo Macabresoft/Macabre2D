@@ -96,8 +96,13 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
 
     private void DeinitializeChild() {
         if (this._prefabChild != null) {
-            this._prefabChild.Deinitialize();
-            this.RemoveChild(this._prefabChild);
+            if (BaseGame.IsDesignMode) {
+                this.ForceChildRemoval(this._prefabChild);
+            }
+            else {
+                this.RemoveChild(this._prefabChild);
+            }
+
             this._prefabChild = null;
         }
     }

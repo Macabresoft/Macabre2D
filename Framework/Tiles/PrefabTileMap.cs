@@ -63,7 +63,7 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     /// <inheritdoc />
     public void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (BaseGame.IsDesignMode && this._activeTileToEntity.Any()) {
-            var renderables = this._activeTileToEntity.Values.SelectMany(x => x.GetDescendants<IRenderableEntity>().OrderBy(x => x.RenderOrder));
+            var renderables = this._activeTileToEntity.Values.SelectMany(x => x.GetDescendants<IRenderableEntity>()).OrderBy(x => x.RenderOrder);
 
             foreach (var renderable in renderables) {
                 renderable.Render(frameTime, viewBoundingArea);
@@ -118,6 +118,7 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
 
             if (BaseGame.IsDesignMode) {
                 clone.Initialize(this.Scene, this);
+                this.Scene.UnregisterEntity(clone);
                 this.ResetBoundingArea();
             }
             else {
@@ -142,8 +143,12 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     }
 
     private void RemovePrefabFromChildren(IEntity entity) {
-        entity.Deinitialize();
-        this.RemoveChild(entity);
+        if (BaseGame.IsDesignMode) {
+            this.ForceChildRemoval(entity);
+        }
+        else {
+            this.RemoveChild(entity);
+        }
     }
 
     private void Reset() {

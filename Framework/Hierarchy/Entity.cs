@@ -333,7 +333,7 @@ public class Entity : Transformable, IEntity {
             if (this.IsInitialized) {
                 this.Deinitialize();
             }
-            
+
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
@@ -426,6 +426,16 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <summary>
+    /// Removes the entity without any regard to whether it is a child.
+    /// </summary>
+    /// <remarks>This should only be used in the editor.</remarks>
+    /// <param name="entity">The entity to remove.</param>
+    protected void ForceChildRemoval(IEntity entity) {
+        entity.OnRemovedFromSceneTree();
+        this._children.Remove(entity);
+    }
+
+    /// <summary>
     /// Gets the asset references for initalization and deinitialization.
     /// </summary>
     /// <returns></returns>
@@ -478,8 +488,7 @@ public class Entity : Transformable, IEntity {
 
     private void PerformChildRemoval(IEntity entity) {
         if (this._children.Contains(entity)) {
-            entity.OnRemovedFromSceneTree();
-            this._children.Remove(entity);
+            this.ForceChildRemoval(entity);
         }
     }
 }
