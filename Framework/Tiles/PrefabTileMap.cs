@@ -50,7 +50,6 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.IsVisible = BaseGame.IsDesignMode;
         this.Reset();
         this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
     }
@@ -119,7 +118,6 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
             if (BaseGame.IsDesignMode) {
                 clone.Initialize(this.Scene, this);
                 this.Scene.UnregisterEntity(clone);
-                this.ResetBoundingArea();
             }
             else {
                 this.AddChild(clone);

@@ -55,7 +55,6 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.IsVisible = BaseGame.IsDesignMode;
         this.Reset();
         this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
     }
