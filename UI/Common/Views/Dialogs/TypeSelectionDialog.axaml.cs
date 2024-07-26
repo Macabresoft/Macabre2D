@@ -3,7 +3,8 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Macabresoft.AvaloniaEx;
 using Unity;
 
@@ -17,8 +18,15 @@ public partial class TypeSelectionDialog : BaseDialog {
         this.InitializeComponent();
     }
 
-
     public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
+
+    protected override void OnLoaded(RoutedEventArgs e) {
+        base.OnLoaded(e);
+
+        if (this.Find<IInputElement>("_filterBox") is { } filterBox) {
+            filterBox.Focus();
+        }
+    }
 
     private void AutoCompleteBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
         var addedTypes = e.AddedItems.OfType<Type>().ToList();

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
@@ -31,6 +33,14 @@ public partial class LicenseDialog : BaseDialog {
     public IReadOnlyCollection<LicenseDefinition> FilteredLicenses => this._filteredLicenses;
 
     public IReadOnlyCollection<LicenseDefinition> Licenses => LicenseHelper.Definitions;
+
+    protected override void OnLoaded(RoutedEventArgs e) {
+        base.OnLoaded(e);
+
+        if (this.Find<IInputElement>("_filterBox") is { } filterBox) {
+            filterBox.Focus();
+        }
+    }
 
     private void AdjustGroupBoxes(bool showContent) {
         foreach (var groupBox in this.GetVisualDescendants().OfType<GroupBox>()) {

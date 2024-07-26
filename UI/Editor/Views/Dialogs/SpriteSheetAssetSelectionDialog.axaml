@@ -35,7 +35,8 @@
         <Grid Grid.Row="0"
               Grid.Column="0"
               ColumnDefinitions="*, Auto">
-            <TextBox Grid.Column="0"
+            <TextBox x:Name="_filterBox"
+                     Grid.Column="0"
                      Height="14"
                      Text="{Binding FilterText}"
                      Watermark="Filter..." />

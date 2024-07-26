@@ -14,7 +14,8 @@
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="Auto, *, Auto">
-        <AutoCompleteBox Grid.Row="0"
+        <AutoCompleteBox x:Name="_filterBox"
+                         Grid.Row="0"
                          Text="{Binding FilterText}"
                          ItemsSource="{Binding Types}"
                          ValueMemberBinding="{Binding Path}"
