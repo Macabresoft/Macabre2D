@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia;
@@ -10,18 +12,41 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
+public enum AutoLayoutBehaviour {
+    None,
+    Normal,
+    Row,
+    Column
+}
+
 /// <summary>
 /// A view model for editing auto tile sets.
 /// </summary>
 public class AutoTileSetEditorViewModel : BaseViewModel {
     private const double MaxTileSize = 128;
 
-    private static readonly byte[] TileIndexToAutoSpriteIndex = {
+    private static readonly byte[] NormalTileIndexToSpriteIndex = [
         15, 11, 14, 10,
         12, 8, 13, 9,
         3, 7, 2, 6,
         0, 4, 1, 5
-    };
+    ];
+
+    private static readonly byte[] RowTileIndexToAutoSpriteIndex = [
+        3, 3, 2, 2,
+        0, 0, 1, 1,
+        3, 3, 2, 2,
+        0, 0, 1, 1
+    ];
+    
+    private static readonly byte[] ColumnTileIndexToAutoSpriteIndex = [
+        3, 2, 3, 2,
+        3, 2, 3, 2,
+        0, 1, 0, 1,
+        0, 1, 0, 1
+    ];
+
+    private readonly AutoLayoutBehaviour _autoLayoutBehaviour = AutoLayoutBehaviour.None;
 
     private readonly IUndoService _undoService;
     private SpriteDisplayModel _selectedSprite;
@@ -63,7 +88,16 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
         this.SelectedTile = this.Tiles.First();
         this.TileSize = this.GetTileSize();
 
-        this.CanPerformAutoLayout = spriteSheet.Rows * spriteSheet.Columns == tileSet.Size;
+        if (spriteSheet.Rows * spriteSheet.Columns == tileSet.Size) {
+            this._autoLayoutBehaviour = AutoLayoutBehaviour.Normal;
+        }
+        else if (spriteSheet.Rows == 1 && spriteSheet.Columns > 0 && tileSet.Size / spriteSheet.Columns == spriteSheet.Columns) {
+            this._autoLayoutBehaviour = AutoLayoutBehaviour.Row;
+        }
+        else if (spriteSheet.Columns == 1 && spriteSheet.Rows > 0 && tileSet.Size / spriteSheet.Rows == spriteSheet.Rows) {
+            this._autoLayoutBehaviour = AutoLayoutBehaviour.Column;
+        }
+
         this.AutoLayoutCommand = ReactiveCommand.Create(this.PerformAutoLayout, this.WhenAnyValue(x => x.CanPerformAutoLayout));
     }
 
@@ -140,10 +174,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
         }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether or not auto layout can be performed for this tile set.
-    /// </summary>
-    private bool CanPerformAutoLayout { get; }
+    private bool CanPerformAutoLayout => this._autoLayoutBehaviour != AutoLayoutBehaviour.None;
 
     private void ClearSprite() {
         if (this.SelectedTile is { SpriteIndex: not null }) {
@@ -171,14 +202,21 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     }
 
     private void PerformAutoLayout() {
-        if (this.CanPerformAutoLayout) {
+        if (this._autoLayoutBehaviour != AutoLayoutBehaviour.None) {
             var tiles = this.Tiles.ToList();
             var spriteIndexes = tiles.Select(x => x.SpriteIndex).ToList();
+            var tileToSpriteIndex = this._autoLayoutBehaviour switch {
+                AutoLayoutBehaviour.Normal => NormalTileIndexToSpriteIndex,
+                AutoLayoutBehaviour.Row => RowTileIndexToAutoSpriteIndex,
+                AutoLayoutBehaviour.Column => ColumnTileIndexToAutoSpriteIndex,
+                AutoLayoutBehaviour.None => throw new NotSupportedException(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             this._undoService.Do(() =>
             {
                 foreach (var tile in tiles) {
-                    tile.SpriteIndex = TileIndexToAutoSpriteIndex[tile.Key];
+                    tile.SpriteIndex = tileToSpriteIndex[tile.Key];
                 }
             }, () =>
             {
