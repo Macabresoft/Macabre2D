@@ -34,7 +34,17 @@
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
-                    <common:ValueCollectionsControl Collections="{Binding SceneService.Editors}" />
+                    <Grid RowDefinitions="Auto, *"
+                          IsVisible="{Binding SceneService.Editors, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <TextBlock Grid.Row="0"
+                                   Classes="Caption"
+                                   Text="{Binding SceneService.ImpliedSelected, Converter={x:Static common:ToTypeNameConverter.Name}}"
+                                   ToolTip.Tip="{Binding SceneService.ImpliedSelected, Converter={x:Static common:ToTypeNameConverter.FullName}}" />
+
+                        <common:ValueCollectionsControl Grid.Row="1"
+                                                        Collections="{Binding SceneService.Editors}" />
+
+                    </Grid>
 
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"

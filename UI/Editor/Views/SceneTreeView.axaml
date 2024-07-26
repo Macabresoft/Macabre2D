@@ -371,7 +371,7 @@
                                 <TextBlock FontWeight="Bold"
                                            Text="{Binding Name, Mode=OneTime}" />
                                 <TextBlock FontStyle="Italic"
-                                           Text="{Binding Converter={x:Static common:ToTypeNameConverter.Instance}, StringFormat={}({0})}" />
+                                           Text="{Binding Converter={x:Static common:ToTypeNameConverter.DisplayName}, StringFormat={}({0})}" />
                             </StackPanel>
                         </Border>
                     </DataTemplate>
