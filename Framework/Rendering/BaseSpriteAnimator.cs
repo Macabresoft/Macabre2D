@@ -1,58 +1,32 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
 /// A base class for sprite animators.
 /// </summary>
-public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
-    private byte _frameRate = 30;
+public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     private bool _isPlaying;
-    private int _updateOrder;
 
-    /// <summary>
-    /// Gets the current animation.
-    /// </summary>
+    /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => this.GetCurrentAnimation()?.Animation;
 
-    /// <summary>
-    /// Gets a value indicating whether or not this is looping on the current animation.
-    /// </summary>
+    /// <inheritdoc />
+    [DataMember(Order = 11, Name = "Frame Rate")]
+    public ByteOverride FrameRateOverride { get; } = new();
+
+    /// <inheritdoc />
     public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
 
-    /// <summary>
-    /// Gets or sets the frame rate. This is represented in frames per second.
-    /// </summary>
-    /// <value>The frame rate.</value>
-    [DataMember(Order = 11, Name = "Frame Rate")]
-    public byte FrameRate {
-        get => this._frameRate;
-        set {
-            if (value != this._frameRate) {
-                this._frameRate = value;
-                this.ResetFrameRate();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether or not this is playing.
-    /// </summary>
+    /// <inheritdoc />
     public bool IsPlaying {
         get => this._isPlaying;
         protected set => this.Set(ref this._isPlaying, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
-    public int UpdateOrder {
-        get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
     }
 
     /// <inheritdoc />
@@ -63,10 +37,13 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// </summary>
     protected int MillisecondsPerFrame { get; private set; }
 
-    /// <summary>
-    /// Gets the percentage complete for the current animation.
-    /// </summary>
-    /// <returns>The percentage complete.</returns>
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.FrameRateOverride.PropertyChanged -= this.FrameRateOverride_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public float GetPercentageComplete() {
         var result = 0f;
 
@@ -78,9 +55,31 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     }
 
     /// <inheritdoc />
+    public virtual void IncrementTime(FrameTime frameTime) {
+        if (this.TryGetCurrentAnimation(out var animation)) {
+            animation.Update(frameTime, this.MillisecondsPerFrame, out var isAnimationOver);
+
+            if (isAnimationOver) {
+                this.HandleAnimationFinished();
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.ResetFrameRate();
+        this.FrameRateOverride.PropertyChanged += this.FrameRateOverride_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    public virtual void NextFrame() {
+        if (this.TryGetCurrentAnimation(out var animation)) {
+            animation.TryNextFrame(out var isAnimationOver);
+            if (isAnimationOver) {
+                this.HandleAnimationFinished();
+            }
+        }
     }
 
     /// <summary>
@@ -108,17 +107,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         this.ResetAnimation();
     }
 
-    /// <inheritdoc />
-    public virtual void Update(FrameTime frameTime, InputState inputState) {
-        if (this.IsPlaying && this.GetCurrentAnimation() is { } animation) {
-            animation.Update(frameTime, this.MillisecondsPerFrame, out var isAnimationOver);
-
-            if (isAnimationOver) {
-                this.HandleAnimationFinished();
-            }
-        }
-    }
-
     /// <summary>
     /// Gets the sprite animation to render.
     /// </summary>
@@ -130,11 +118,25 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// </summary>
     protected abstract void HandleAnimationFinished();
 
+    private void FrameRateOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.ResetFrameRate();
+    }
+
     private void ResetAnimation() {
         this.GetCurrentAnimation()?.Reset();
     }
 
     private void ResetFrameRate() {
-        this.MillisecondsPerFrame = this._frameRate > 0 ? this.MillisecondsPerFrame = 1000 / this._frameRate : 0;
+        if (this.FrameRateOverride is { IsEnabled: true, Value: > 0 }) {
+            this.MillisecondsPerFrame = 1000 / this.FrameRateOverride.Value;
+        }
+        else {
+            this.MillisecondsPerFrame = 0;
+        }
+    }
+
+    private bool TryGetCurrentAnimation([NotNullWhen(true)] out QueueableSpriteAnimation? animation) {
+        animation = this.IsPlaying ? this.GetCurrentAnimation() : null;
+        return animation != null;
     }
 }

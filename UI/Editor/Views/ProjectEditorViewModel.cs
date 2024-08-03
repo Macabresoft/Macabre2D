@@ -91,8 +91,8 @@ public class ProjectEditorViewModel : BaseViewModel {
     public byte AnimationPreviewFrameRate {
         get => this._settingsService.Settings.AnimationPreviewFrameRate;
         set {
-            this._spriteAnimator.FrameRate = value;
-            this._settingsService.Settings.AnimationPreviewFrameRate = this._spriteAnimator.FrameRate;
+            this._spriteAnimator.FrameRateOverride.Value = value;
+            this._settingsService.Settings.AnimationPreviewFrameRate = value;
             this.RaisePropertyChanged();
         }
     }
@@ -166,7 +166,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._camera = scene.AddChild<Camera>();
         this._camera.LocalPosition = CameraAdjustment;
-        
+
         this._textArea = scene.AddChild<TextArea>();
         this._textArea.IsVisible = false;
         this._textArea.RenderOptions.OffsetType = PixelOffsetType.BottomLeft;
@@ -238,7 +238,8 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
         this._spriteAnimator.IsEnabled = false;
-        
+        this._spriteAnimator.FrameRateOverride.IsEnabled = true;
+
         // This applies the frame rate to the sprite animator and also insures the frame rate is valid.
         this.AnimationPreviewFrameRate = this._settingsService.Settings.AnimationPreviewFrameRate;
 
@@ -251,9 +252,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         }
     }
 
-    private float GetRequiredViewHeight() {
-        return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
-    }
+    private float GetRequiredViewHeight() => this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
 
     private void ResetScene(AutoTileSet tileSet) {
         if (tileSet.SpriteSheet != null) {
@@ -270,6 +269,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._spriteAnimator.AnimationReference.Initialize(this._scene.Assets);
             this._spriteAnimator.Play();
             this._spriteAnimator.IsEnabled = true;
+            this._spriteAnimator.FrameRateOverride.IsEnabled = true;
         }
     }
 
@@ -303,7 +303,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             else {
                 this._camera.ViewHeight = ViewHeightRequired;
             }
-            
+
             if (this._textArea != null) {
                 this._textArea.Width = this._camera.BoundingArea.Maximum.X + CameraAdjustment.X;
                 this._textArea.Height = this._camera.BoundingArea.Maximum.Y + CameraAdjustment.Y;

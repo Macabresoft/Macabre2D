@@ -135,9 +135,7 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     ///     cref="T:System.Collections.Generic.ICollection`1" />
     /// ; otherwise, false.
     /// </returns>
-    public bool Contains(T item) {
-        return this._items.Contains(item);
-    }
+    public bool Contains(T item) => this._items.Contains(item);
 
     /// <summary>
     /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to
@@ -162,8 +160,6 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// </summary>
     /// <param name="action">The action.</param>
     public void ForEachFilteredItem(Action<T> action) {
-        this.RebuildCache();
-
         for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
             action(this._cachedFilteredItems[i]);
         }
@@ -182,8 +178,6 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// <param name="action">The action.</param>
     /// <param name="userData">The user data.</param>
     public void ForEachFilteredItem<TUserData>(Action<T, TUserData> action, TUserData userData) {
-        this.RebuildCache();
-
         for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
             action(this._cachedFilteredItems[i], userData);
         }
@@ -202,8 +196,6 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// <param name="action">The action.</param>
     /// <param name="userData">The user data.</param>
     public void ForEachFilteredItem<TUserData1, TUserData2>(Action<T, TUserData1, TUserData2> action, TUserData1 userData1, TUserData2 userData2) {
-        this.RebuildCache();
-
         for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
             action(this._cachedFilteredItems[i], userData1, userData2);
         }
@@ -222,29 +214,28 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate
     /// through the collection.
     /// </returns>
-    public IEnumerator<T> GetEnumerator() {
-        this.RebuildCache();
-        return this._cachedFilteredItems.GetEnumerator();
-    }
+    public IEnumerator<T> GetEnumerator() => this._cachedFilteredItems.GetEnumerator();
 
     /// <summary>
     /// Rebuilds the cache.
     /// </summary>
     public void RebuildCache() {
-        lock (this._lock) {
-            if (this._shouldRebuildCache) {
-                this.ProcessRemoveJournal();
-                this.ProcessAddJournal();
+        if (this._shouldRebuildCache) {
+            lock (this._lock) {
+                if (this._shouldRebuildCache) {
+                    this.ProcessRemoveJournal();
+                    this.ProcessAddJournal();
 
-                // Rebuild the cache
-                this._cachedFilteredItems.Clear();
-                foreach (var item in this._items) {
-                    if (this._filter(item)) {
-                        this._cachedFilteredItems.Add(item);
+                    // Rebuild the cache
+                    this._cachedFilteredItems.Clear();
+                    foreach (var item in this._items) {
+                        if (this._filter(item)) {
+                            this._cachedFilteredItems.Add(item);
+                        }
                     }
-                }
 
-                this._shouldRebuildCache = false;
+                    this._shouldRebuildCache = false;
+                }
             }
         }
     }
@@ -305,9 +296,7 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// Gets the enumerator.
     /// </summary>
     /// <returns>The enumerator.</returns>
-    IEnumerator IEnumerable.GetEnumerator() {
-        return ((IEnumerable)this._items).GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this._items).GetEnumerator();
 
     private void InvalidateCache() {
         this._shouldRebuildCache = true;
@@ -384,9 +373,7 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
         /// </summary>
         /// <returns>The key.</returns>
         /// <param name="item">Item.</param>
-        public static AddJournalEntry CreateKey(T item) {
-            return new AddJournalEntry(-1, item);
-        }
+        public static AddJournalEntry CreateKey(T item) => new(-1, item);
 
         /// <inheritdoc />
         public override bool Equals(object? obj) {
@@ -398,8 +385,6 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
         }
 
         /// <inheritdoc />
-        public override int GetHashCode() {
-            return this.Item.GetHashCode();
-        }
+        public override int GetHashCode() => this.Item.GetHashCode();
     }
 }

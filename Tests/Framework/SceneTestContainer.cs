@@ -21,7 +21,7 @@ internal class SceneTestContainer {
         this.UpdateableEntity = this.RenderableEntity.AddChild<FrameRateEntity>();
         this.CameraEntity = this.UpdateableEntity.AddChild<Camera>();
         this.CameraEntity.Name = nameof(this.CameraEntity);
-        this.UpdateableAndRenderableEntity = this.Scene.AddChild<QueueableSpriteAnimator>();
+        this.UpdateableAndRenderableEntity = this.Scene.AddChild<BoundingAreaDrawer>();
         this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
 
         if (initializationMode == InitializationMode.After) {

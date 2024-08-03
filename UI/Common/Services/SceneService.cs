@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
@@ -101,15 +100,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <inheritdoc />
     public IScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
 
-    /// <inheritdoc />
-    public ContentMetadata CurrentSceneMetadata {
-        get => this._currentSceneMetadata;
-        private set {
-            this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
-            this.RaisePropertyChanged(nameof(this.CurrentScene));
-        }
-    }
-
 
     /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> Editors {
@@ -119,6 +109,15 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                 ILoop => this._loopService.Editors,
                 _ => null
             };
+        }
+    }
+
+    /// <inheritdoc />
+    public ContentMetadata CurrentSceneMetadata {
+        get => this._currentSceneMetadata;
+        private set {
+            this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
+            this.RaisePropertyChanged(nameof(this.CurrentScene));
         }
     }
 

@@ -65,7 +65,7 @@ public static class UpdateLoopTests {
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
                 entity.UpdateCount.Should().Be(i);
-                updateLoop.Update(new FrameTime(), new InputState());
+                scene.Update(new FrameTime(), new InputState());
             }
         }
     }
@@ -74,7 +74,7 @@ public static class UpdateLoopTests {
     [Test]
     public static void Update_ShouldUpdateAll_WhenNoLayerOverride() {
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
+        scene.AddLoop<UpdateLoop>();
         var entities = new List<TestUpdateableEntity>();
         var layers = Enum.GetValues<Layers>();
         foreach (var layer in layers) {
@@ -92,7 +92,7 @@ public static class UpdateLoopTests {
                     entity.UpdateCount.Should().Be(i);
                 }
 
-                updateLoop.Update(new FrameTime(), new InputState());
+                scene.Update(new FrameTime(), new InputState());
             }
         }
     }
@@ -102,7 +102,7 @@ public static class UpdateLoopTests {
     public static void Update_ShouldUpdateAllEntities() {
         const int NumberOfChildren = 10;
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
+        scene.AddLoop<UpdateLoop>();
         var entities = new List<TestUpdateableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {
@@ -119,7 +119,7 @@ public static class UpdateLoopTests {
                     entity.UpdateCount.Should().Be(i);
                 }
 
-                updateLoop.Update(new FrameTime(), new InputState());
+                scene.Update(new FrameTime(), new InputState());
             }
         }
     }
@@ -148,7 +148,7 @@ public static class UpdateLoopTests {
                     entity.UpdateCount.Should().Be(0);
                 }
 
-                updateLoop.Update(new FrameTime(), new InputState());
+                scene.Update(new FrameTime(), new InputState());
             }
         }
     }

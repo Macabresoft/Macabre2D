@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia;
@@ -25,6 +24,13 @@ public enum AutoLayoutBehaviour {
 public class AutoTileSetEditorViewModel : BaseViewModel {
     private const double MaxTileSize = 128;
 
+    private static readonly byte[] ColumnTileIndexToAutoSpriteIndex = [
+        3, 2, 3, 2,
+        3, 2, 3, 2,
+        0, 1, 0, 1,
+        0, 1, 0, 1
+    ];
+
     private static readonly byte[] NormalTileIndexToSpriteIndex = [
         15, 11, 14, 10,
         12, 8, 13, 9,
@@ -37,13 +43,6 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
         0, 0, 1, 1,
         3, 3, 2, 2,
         0, 0, 1, 1
-    ];
-    
-    private static readonly byte[] ColumnTileIndexToAutoSpriteIndex = [
-        3, 2, 3, 2,
-        3, 2, 3, 2,
-        0, 1, 0, 1,
-        0, 1, 0, 1
     ];
 
     private readonly AutoLayoutBehaviour _autoLayoutBehaviour = AutoLayoutBehaviour.None;

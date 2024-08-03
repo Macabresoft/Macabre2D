@@ -29,6 +29,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     event EventHandler Deactivated;
 
     /// <summary>
+    /// Gets thje animatable entities.
+    /// </summary>
+    IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => Array.Empty<IAnimatableEntity>();
+
+    /// <summary>
     /// Gets the asset manager.
     /// </summary>
     IAssetManager Assets => AssetManager.Empty;
@@ -36,7 +41,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
-    IEnumerable<ICamera> Cameras => Array.Empty<ICamera>();
+    IReadOnlyCollection<ICamera> Cameras => Array.Empty<ICamera>();
 
     /// <summary>
     /// Gets the fixed updateable entities.
@@ -66,12 +71,12 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
     /// Gets the physics bodies.
     /// </summary>
-    IEnumerable<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
+    IReadOnlyCollection<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
 
     /// <summary>
     /// Gets the renderable entities in the scene.
     /// </summary>
-    IEnumerable<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
+    IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
 
     /// <summary>
     /// Gets the updateable entities.
@@ -212,6 +217,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
+
+    private readonly FilterCollection<IAnimatableEntity> _animatableEntities = new(
+        c => c.IsEnabled,
+        nameof(IAnimatableEntity.IsEnabled));
+
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,
         nameof(IEnableable.IsEnabled),
@@ -273,7 +283,10 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public IEnumerable<ICamera> Cameras => this._cameras;
+    public IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => this._animatableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
 
     /// <summary>
     /// Gets the default empty <see cref="IScene" /> that is present before initialization.
@@ -293,10 +306,10 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
-    public IEnumerable<IPhysicsBody> PhysicsBodies => this._physicsBodies;
+    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
 
     /// <inheritdoc />
-    public IEnumerable<IRenderableEntity> RenderableEntities => this._renderableEntities;
+    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
@@ -317,14 +330,6 @@ public sealed class Scene : GridContainer, IScene {
             if (this.IsInitialized) {
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
-        }
-    }
-
-    public override void Deinitialize() {
-        base.Deinitialize();
-
-        foreach (var loop in this._loops) {
-            loop.Deinitialize();
         }
     }
 
@@ -351,6 +356,14 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        foreach (var loop in this._loops) {
+            loop.Deinitialize();
+        }
+    }
+
     /// <inheritdoc />
     public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity {
         if (this is TEntity entity && entity.Id == id) {
@@ -366,9 +379,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public T? GetLoop<T>() where T : class, ILoop {
-        return this.Loops.OfType<T>().FirstOrDefault();
-    }
+    public T? GetLoop<T>() where T : class, ILoop => this.Loops.OfType<T>().FirstOrDefault();
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
@@ -378,14 +389,15 @@ public sealed class Scene : GridContainer, IScene {
                 this.IsActive = true;
                 this.Assets = assetManager;
                 this._game = game;
-                
+
                 this.Project.Initialize(this.Assets);
-                
+
                 foreach (var loop in this.Loops) {
                     loop.Initialize(this);
                 }
-                
+
                 this.Initialize(this, this);
+                this.RebuildFilterCaches();
             }
             finally {
                 this._isInitialized = true;
@@ -422,9 +434,7 @@ public sealed class Scene : GridContainer, IScene {
     /// <returns>
     /// <c>true</c> if the specified scene is null or <see cref="Scene.Empty" />; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsNullOrEmpty(IScene? scene) {
-        return scene == null || scene == Empty;
-    }
+    public static bool IsNullOrEmpty(IScene? scene) => scene == null || scene == Empty;
 
     /// <inheritdoc />
     public void RaiseActivated() {
@@ -440,6 +450,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void RegisterEntity(IEntity entity) {
+        this._animatableEntities.Add(entity);
         this._cameras.Add(entity);
         this._physicsBodies.Add(entity);
         this._renderableEntities.Add(entity);
@@ -513,6 +524,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void UnregisterEntity(IEntity entity) {
+        this._animatableEntities.Remove(entity);
         this._cameras.Remove(entity);
         this._physicsBodies.Remove(entity);
         this._renderableEntities.Remove(entity);
@@ -524,6 +536,7 @@ public sealed class Scene : GridContainer, IScene {
     public void Update(FrameTime frameTime, InputState inputState) {
         try {
             this._isBusy = true;
+            this.RebuildFilterCaches();
             this.InvokePendingActions();
 
             foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PreUpdate })) {
@@ -555,5 +568,14 @@ public sealed class Scene : GridContainer, IScene {
             action();
             this._pendingActions.Remove(action);
         }
+    }
+
+    private void RebuildFilterCaches() {
+        this._animatableEntities.RebuildCache();
+        this._cameras.RebuildCache();
+        this._physicsBodies.RebuildCache();
+        this._renderableEntities.RebuildCache();
+        this._updateableEntities.RebuildCache();
+        this._fixedUpdateableEntities.RebuildCache();
     }
 }

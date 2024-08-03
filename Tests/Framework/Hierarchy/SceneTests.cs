@@ -208,8 +208,9 @@ public sealed class SceneTests {
 
     [Test]
     [Category("Unit Tests")]
-    public static void Scene_RegistersEntity_WhenInitialized() {
+    public static void Scene_RegistersEntity_WhenUpdated() {
         var test = new SceneTestContainer(SceneTestContainer.InitializationMode.Before);
+        test.Scene.Update(FrameTime.Zero, new InputState());
         test.AssertExistenceOfEntities(true);
     }
 

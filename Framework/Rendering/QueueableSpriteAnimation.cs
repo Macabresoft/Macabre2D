@@ -31,16 +31,6 @@ public class QueueableSpriteAnimation {
     public SpriteAnimation Animation { get; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this should loop indefinitely when no other animation
-    /// has been queued.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if this should loop indefinitely when no other animation has been queued;
-    /// otherwise, <c>false</c>.
-    /// </value>
-    public bool ShouldLoopIndefinitely { get; set; }
-
-    /// <summary>
     /// Gets the sprite sheet associated with this animation.
     /// </summary>
     public SpriteSheet? SpriteSheet => this.Animation?.SpriteSheet;
@@ -54,6 +44,16 @@ public class QueueableSpriteAnimation {
     /// Gets or sets the milliseconds that have passed for this animation.
     /// </summary>
     public double MillisecondsPassed { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this should loop indefinitely when no other animation
+    /// has been queued.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this should loop indefinitely when no other animation has been queued;
+    /// otherwise, <c>false</c>.
+    /// </value>
+    public bool ShouldLoopIndefinitely { get; set; }
 
     /// <summary>
     /// Gets the percentage complete for the current animation.
@@ -86,17 +86,44 @@ public class QueueableSpriteAnimation {
         this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
     }
 
+    public void TryNextFrame(out bool isAnimationOver) {
+        isAnimationOver = false;
+        this._currentFrameIndex++;
+        var currentStep = this.GetCurrentStep();
+        if (currentStep == null) {
+            isAnimationOver = true;
+        }
+        else if (this._currentFrameIndex >= currentStep.Frames) {
+            this._currentFrameIndex = 0;
+            this._currentStepIndex++;
+
+            if (this._currentStepIndex >= this.Animation.Steps.Count) {
+                if (this.ShouldLoopIndefinitely) {
+                    this._currentStepIndex = 0;
+                    this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
+                }
+                else {
+                    this._currentStepIndex -= 1;
+                    isAnimationOver = true;
+                }
+            }
+            else {
+                this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
+            }
+        }
+    }
+
     /// <summary>
     /// Updates this instance.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="millisecondsPerFrame">The milliseconds per frame.</param>
-    /// <param name="isAnimationOver">A value indicating whether or not the animation is over.</param>
+    /// <param name="isAnimationOver">A value indicating whether the animation is over.</param>
     public virtual void Update(FrameTime frameTime, int millisecondsPerFrame, out bool isAnimationOver) {
         isAnimationOver = false;
         this.MillisecondsPassed += frameTime.MillisecondsPassed;
 
-        if (this.MillisecondsPassed >= millisecondsPerFrame) {
+        if (this.MillisecondsPassed >= millisecondsPerFrame && millisecondsPerFrame > 0) {
             while (this.MillisecondsPassed >= millisecondsPerFrame) {
                 this.MillisecondsPassed -= millisecondsPerFrame;
                 this._currentFrameIndex++;
@@ -127,7 +154,5 @@ public class QueueableSpriteAnimation {
         }
     }
 
-    private SpriteAnimationStep? GetCurrentStep() {
-        return this._currentStepIndex < this.Animation.Steps.Count ? this.Animation.Steps.ElementAt(this._currentStepIndex) : null;
-    }
+    private SpriteAnimationStep? GetCurrentStep() => this._currentStepIndex < this.Animation.Steps.Count ? this.Animation.Steps.ElementAt(this._currentStepIndex) : null;
 }

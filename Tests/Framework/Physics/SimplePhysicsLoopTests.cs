@@ -35,7 +35,7 @@ public static class SimplePhysicsLoopTests {
         scene.Initialize(game, Substitute.For<IAssetManager>());
 
         // Need to do this update to insure colliders are inserter.
-        physicsSystem.Update(new FrameTime(new GameTime(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)), 1), new InputState());
+        scene.Update(new FrameTime(new GameTime(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)), 1), new InputState());
 
         var raycastLayer = layersCompatible ? circleBody.Layers : (Layers)2;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
@@ -67,14 +67,14 @@ public static class SimplePhysicsLoopTests {
 
         scene.Initialize(game, Substitute.For<IAssetManager>());
         physicsSystem.TimeStep = 1f;
-        physicsSystem.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 1)), 1), new InputState());
+        scene.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 1)), 1), new InputState());
 
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
         Assert.That(raycastHit, Is.EqualTo(result));
         result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
         Assert.That(raycastHit, Is.EqualTo(result));
 
-        physicsSystem.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 2), new TimeSpan(0, 0, 1)), 1), new InputState());
+        scene.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 2), new TimeSpan(0, 0, 1)), 1), new InputState());
 
         result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
         Assert.That(raycastHit, Is.EqualTo(result));

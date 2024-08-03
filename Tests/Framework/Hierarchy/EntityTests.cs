@@ -23,6 +23,7 @@ public static class EntityTests {
     public static void Entity_UnregistersChild_WhenRemovedFromSceneTree() {
         var test = new SceneTestContainer(SceneTestContainer.InitializationMode.After);
         test.Scene.RemoveChild(test.RenderableEntity);
+        test.Scene.Update(FrameTime.Zero, new InputState());
 
         using (new AssertionScope()) {
             test.Scene.RenderableEntities.Any(x => x.Id == test.RenderableEntity.Id).Should().BeFalse();
