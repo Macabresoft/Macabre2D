@@ -59,6 +59,20 @@ public class AnimationEmitterReference : SpriteSheetReference {
     }
 
     /// <summary>
+    /// Moves any running animations to the next frame.
+    /// </summary>
+    public void NextFrame() {
+        for (var i = this._runningAnimations.Count - 1; i >= 0; i--) {
+            var animation = this._runningAnimations[i];
+            animation.TryNextFrame(out var isAnimationOver);
+            if (isAnimationOver) {
+                this._runningAnimations.Remove(animation);
+                this._availableAnimations.Add(animation);
+            }
+        }
+    }
+
+    /// <summary>
     /// Updates the animations and creates new ones when needed.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
@@ -87,6 +101,27 @@ public class AnimationEmitterReference : SpriteSheetReference {
             }
         }
 
+        this.UpdateEmissions(frameTime, timeMultiplier, trySpawn, spawnWorldPosition, velocity, orientation, project);
+    }
+
+    /// <summary>
+    /// Updates emissions without animating. This will simply create new emissions according to <see cref="TimeBetweenEmissions" />.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="timeMultiplier">A time multiplier for incrementing <see cref="TimeBetweenEmissions" />.</param>
+    /// <param name="trySpawn">A value indicating whether or not this update should attempt a new spawn if ready.</param>
+    /// <param name="spawnWorldPosition">The new spawn position.</param>
+    /// <param name="velocity">The velocity.</param>
+    /// <param name="orientation">The orientation.</param>
+    /// <param name="project">The project.</param>
+    public void UpdateEmissions(
+        FrameTime frameTime,
+        float timeMultiplier,
+        bool trySpawn,
+        Vector2 spawnWorldPosition,
+        Vector2 velocity,
+        SpriteEffects orientation,
+        IGameProject project) {
         this.TimeBetweenEmissions.Increment(frameTime, timeMultiplier);
 
         if (this.TimeBetweenEmissions.State == TimerState.Finished && trySpawn && this.TryGetAvailableAnimation(out var newAnimation)) {
