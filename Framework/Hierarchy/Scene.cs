@@ -489,9 +489,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void ReorderSystem(IGameSystem system, int newIndex) {
-        if (this._systems.Remove(system)) {
-            this._systems.InsertOrAdd(newIndex, system);
-        }
+        this._systems.Reorder(system, newIndex);
     }
 
     /// <inheritdoc />
