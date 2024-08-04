@@ -4,14 +4,14 @@ using System.ComponentModel;
 using System.Linq;
 
 /// <summary>
-/// The default rendering loop, which attempts to render every
+/// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderLoop : Loop {
+public class RenderSystem : GameSystem {
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
 
     /// <inheritdoc />
-    public override LoopKind Kind => LoopKind.Render;
+    public override GameSystemKind Kind => GameSystemKind.Render;
 
     /// <inheritdoc />
     public override void Deinitialize() {

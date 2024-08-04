@@ -7,25 +7,25 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// An update system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
-public class EditorUpdateLoop : UpdateLoop {
+public class EditorUpdateSystem : UpdateSystem {
     private readonly IEntityService _entityService;
     private readonly ISceneService _sceneService;
     private readonly IGizmo _selectorGizmo;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EditorUpdateLoop" /> class.
+    /// Initializes a new instance of the <see cref="EditorUpdateSystem" /> class.
     /// </summary>
     /// <param name="entityService">The entity service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="selectorGizmo">The selector gizmo.</param>
-    public EditorUpdateLoop(IEntityService entityService, ISceneService sceneService, IGizmo selectorGizmo) {
+    public EditorUpdateSystem(IEntityService entityService, ISceneService sceneService, IGizmo selectorGizmo) {
         this._entityService = entityService;
         this._sceneService = sceneService;
         this._selectorGizmo = selectorGizmo;
     }
 
     /// <inheritdoc />
-    public override LoopKind Kind => LoopKind.Update;
+    public override GameSystemKind Kind => GameSystemKind.Update;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

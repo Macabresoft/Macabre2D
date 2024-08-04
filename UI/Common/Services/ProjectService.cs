@@ -153,8 +153,8 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
             Name = DefaultSceneName
         };
 
-        scene.AddLoop<UpdateLoop>();
-        scene.AddLoop<RenderLoop>();
+        scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<RenderSystem>();
         scene.AddChild<Camera>();
 
         var sceneAsset = new SceneAsset();

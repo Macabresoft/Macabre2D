@@ -8,7 +8,7 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public static class SimplePhysicsLoopTests {
+public static class SimplePhysicsGameSystemTests {
     [Test]
     [Category("Unit Tests")]
     [TestCase(-2f, 0f, 1f, 0f, true, true, TestName = "Raycast to Circle Collider - Collision")]
@@ -27,7 +27,7 @@ public static class SimplePhysicsLoopTests {
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
 
-        var physicsSystem = scene.AddLoop<SimplePhysicsLoop>();
+        var physicsSystem = scene.AddSystem<SimplePhysicsGameSystem>();
         var circleBody = scene.AddChild<SimplePhysicsBody>();
         circleBody.SetWorldPosition(Vector2.Zero);
         circleBody.Collider = new CircleCollider(1f);
@@ -57,7 +57,7 @@ public static class SimplePhysicsLoopTests {
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
 
-        var physicsSystem = scene.AddLoop<SimplePhysicsLoop>();
+        var physicsSystem = scene.AddSystem<SimplePhysicsGameSystem>();
 
         var lineBody = scene.AddChild<SimplePhysicsBody>();
         lineBody.SetWorldPosition(Vector2.Zero);

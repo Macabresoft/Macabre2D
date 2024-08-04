@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// Interface for the base object running the update loop for a game.
+/// Interface for the base object running the main loop of a game.
 /// </summary>
 public interface IGame {
     /// <summary>

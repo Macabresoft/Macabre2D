@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A physics system that handles collisions.
 /// </summary>
-public interface IPhysicsLoop : ISimplePhysicsLoop {
+public interface IPhysicsSystem : ISimplePhysicsGameSystem {
     /// <summary>
     /// Gets or sets the gravity.
     /// </summary>
@@ -50,9 +50,9 @@ public interface IPhysicsLoop : ISimplePhysicsLoop {
 /// <summary>
 /// A system which allows for raycasting and handles rigidbody physics interactions.
 /// </summary>
-/// <seealso cref="SimplePhysicsLoop" />
+/// <seealso cref="SimplePhysicsGameSystem" />
 [Category(CommonCategories.Physics)]
-public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
+public class PhysicsSystem : SimplePhysicsGameSystem, IPhysicsSystem {
     private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new();
 
     /// <summary>

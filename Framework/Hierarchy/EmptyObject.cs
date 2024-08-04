@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -97,11 +98,11 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public T AddLoop<T>() where T : ILoop, new() => new();
+    public T AddSystem<T>() where T : IGameSystem, new() => new();
 
 
     /// <inheritdoc />
-    public void AddLoop(ILoop loop) {
+    public void AddSystem(IGameSystem system) {
     }
 
     /// <inheritdoc />
@@ -118,7 +119,7 @@ public class EmptyObject : IScene {
     public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity => null;
 
     /// <inheritdoc />
-    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop => null;
+    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem => null;
 
     /// <inheritdoc />
     public IEnumerable<T> GetDescendants<T>() => [];
@@ -127,13 +128,13 @@ public class EmptyObject : IScene {
     public IEnumerable<IEntity> GetDescendants(Type type) => [];
 
     /// <inheritdoc />
-    public T? GetLoop<T>() where T : class, ILoop => null;
-
-    /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
 
     /// <inheritdoc />
     public T GetOrAddChild<T>() where T : class, IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
+
+    /// <inheritdoc />
+    public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />
     public Vector2 GetTilePosition(Point tile) => throw new NotSupportedException();
@@ -148,7 +149,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void Initialize(IGame gameLoop, IAssetManager assetManager) {
+    public void Initialize(IGame game, IAssetManager assetManager) {
     }
 
     /// <inheritdoc />
@@ -157,7 +158,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void InsertLoop(int index, ILoop loop) {
+    public void InsertSystem(int index, IGameSystem system) {
     }
 
     /// <inheritdoc />
@@ -193,7 +194,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveLoop(ILoop loop) => false;
+    public bool RemoveSystem(IGameSystem system) => false;
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, InputState inputState) {
@@ -204,7 +205,7 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public void ReorderLoop(ILoop loop, int newIndex) {
+    public void ReorderSystem(IGameSystem system, int newIndex) {
     }
 
     /// <inheritdoc />
@@ -219,13 +220,13 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool TryGetAncestor<T>(out T? entity) {
+    public bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) {
         entity = default;
         return false;
     }
 
     /// <inheritdoc />
-    public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
+    public bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity {
         entity = null;
         return false;
     }

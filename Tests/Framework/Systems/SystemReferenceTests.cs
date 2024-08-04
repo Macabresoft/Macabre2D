@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Loops;
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems;
 
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -6,18 +6,18 @@ using Macabresoft.Macabre2D.Framework;
 using NUnit.Framework;
 
 [TestFixture]
-public class LoopReferenceTests {
+public class SystemReferenceTests {
     [Test]
     [Category("Unit Tests")]
     public static void Initialize_ShouldSetEntity_WhenEntityIdIsAlreadySet() {
         var scene = new Scene();
-        var loop = scene.AddLoop<SimplePhysicsLoop>();
-        var reference = new LoopReference<ILoop>();
-        reference.LoopId = loop.Id;
+        var system = scene.AddSystem<SimplePhysicsGameSystem>();
+        var reference = new SystemReference<IGameSystem>();
+        reference.SystemId = system.Id;
         reference.Initialize(scene);
 
         using (new AssertionScope()) {
-            reference.Loop.Should().Be(loop);
+            reference.System.Should().Be(system);
         }
     }
 
@@ -25,12 +25,12 @@ public class LoopReferenceTests {
     [Category("Unit Tests")]
     public static void SetEntityId_ShouldNotSetEntity_WhenNotInitialized() {
         var scene = new Scene();
-        var loop = scene.AddLoop<SimplePhysicsLoop>();
-        var reference = new LoopReference<ILoop>();
-        reference.LoopId = loop.Id;
+        var system = scene.AddSystem<SimplePhysicsGameSystem>();
+        var reference = new SystemReference<IGameSystem>();
+        reference.SystemId = system.Id;
 
         using (new AssertionScope()) {
-            reference.Loop.Should().BeNull();
+            reference.System.Should().BeNull();
         }
     }
 
@@ -38,13 +38,13 @@ public class LoopReferenceTests {
     [Category("Unit Tests")]
     public static void SetEntityId_ShouldSetEntity_WhenAlreadyInitialized() {
         var scene = new Scene();
-        var loop = scene.AddLoop<SimplePhysicsLoop>();
-        var reference = new LoopReference<ILoop>();
+        var system = scene.AddSystem<SimplePhysicsGameSystem>();
+        var reference = new SystemReference<IGameSystem>();
         reference.Initialize(scene);
-        reference.LoopId = loop.Id;
+        reference.SystemId = system.Id;
 
         using (new AssertionScope()) {
-            reference.Loop.Should().Be(loop);
+            reference.System.Should().Be(system);
         }
     }
 }

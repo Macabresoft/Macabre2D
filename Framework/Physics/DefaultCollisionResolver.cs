@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 /// <seealso cref="ICollisionResolver" />
 public sealed class DefaultCollisionResolver : ICollisionResolver {
-    private IPhysicsLoop? _system;
+    private IPhysicsSystem? _system;
 
     /// <inheritdoc />
-    public void Initialize(IPhysicsLoop loop) {
-        this._system = loop;
+    public void Initialize(IPhysicsSystem system) {
+        this._system = system;
     }
 
     /// <inheritdoc />

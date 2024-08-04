@@ -11,19 +11,19 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
-    public static readonly DirectProperty<LoopReferenceEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<LoopReferenceEditor, ICommand>(
+public partial class SystemReferenceEditor : ValueEditorControl<SystemReference> {
+    public static readonly DirectProperty<SystemReferenceEditor, ICommand> ClearCommandProperty =
+        AvaloniaProperty.RegisterDirect<SystemReferenceEditor, ICommand>(
             nameof(ClearCommand),
             editor => editor.ClearCommand);
 
-    public static readonly DirectProperty<LoopReferenceEditor, string> PathTextProperty =
-        AvaloniaProperty.RegisterDirect<LoopReferenceEditor, string>(
+    public static readonly DirectProperty<SystemReferenceEditor, string> PathTextProperty =
+        AvaloniaProperty.RegisterDirect<SystemReferenceEditor, string>(
             nameof(PathText),
             editor => editor.PathText);
 
-    public static readonly DirectProperty<LoopReferenceEditor, ICommand> SelectCommandProperty =
-        AvaloniaProperty.RegisterDirect<LoopReferenceEditor, ICommand>(
+    public static readonly DirectProperty<SystemReferenceEditor, ICommand> SelectCommandProperty =
+        AvaloniaProperty.RegisterDirect<SystemReferenceEditor, ICommand>(
             nameof(SelectCommand),
             editor => editor.SelectCommand);
 
@@ -33,14 +33,14 @@ public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
     private ICommand _clearCommand;
     private string _pathText;
 
-    public LoopReferenceEditor() : this(
+    public SystemReferenceEditor() : this(
         null,
         Resolver.Resolve<ICommonDialogService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
     [InjectionConstructor]
-    public LoopReferenceEditor(
+    public SystemReferenceEditor(
         ValueControlDependencies dependencies,
         ICommonDialogService dialogService,
         IUndoService undoService) : base(dependencies) {
@@ -64,7 +64,7 @@ public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<LoopReference> args) {
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SystemReference> args) {
         base.OnValueChanged(args);
         
         if (args.OldValue is { HasValue: true, Value: { } reference }) {
@@ -74,7 +74,7 @@ public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
         if (this.Value != null) {
             this.ClearCommand = ReactiveCommand.Create(
                 this.Clear,
-                this.Value.WhenAny(x => x.LoopId, y => y.Value != Guid.Empty));
+                this.Value.WhenAny(x => x.SystemId, y => y.Value != Guid.Empty));
 
             this.ResetPath();
             this.Value.PropertyChanged += this.Value_PropertyChanged;
@@ -82,37 +82,37 @@ public partial class LoopReferenceEditor : ValueEditorControl<LoopReference> {
     }
 
     private void Clear() {
-        var identifier = this.Value.LoopId;
+        var identifier = this.Value.SystemId;
 
         if (identifier != Guid.Empty) {
-            var previousId = this.Value.LoopId;
+            var previousId = this.Value.SystemId;
             this._undoService.Do(
-                () => this.Value.LoopId = Guid.Empty,
-                () => this.Value.LoopId = previousId);
+                () => this.Value.SystemId = Guid.Empty,
+                () => this.Value.SystemId = previousId);
         }
     }
 
     private void ResetPath() {
         this.PathText = null;
 
-        if (this.Value != null && this.Value.LoopId != Guid.Empty && this.Value.UntypedLoop != null) {
-            this.PathText = this.Value.UntypedLoop.Name;
+        if (this.Value != null && this.Value.SystemId != Guid.Empty && this.Value.UntypedSystem != null) {
+            this.PathText = this.Value.UntypedSystem.Name;
         }
     }
 
     private async Task Select() {
-        var loop = await this._dialogService.OpenLoopSelectionDialog(this.Value.Type);
-        if (loop != null) {
-            var originalId = this.Value.LoopId;
-            var newId = loop.Id;
+        var system = await this._dialogService.OpenSystemSelectionDialog(this.Value.Type);
+        if (system != null) {
+            var originalId = this.Value.SystemId;
+            var newId = system.Id;
             this._undoService.Do(
-                () => this.Value.LoopId = newId,
-                () => this.Value.LoopId = originalId);
+                () => this.Value.SystemId = newId,
+                () => this.Value.SystemId = originalId);
         }
     }
 
     private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(LoopReference.LoopId)) {
+        if (e.PropertyName is nameof(SystemReference.SystemId)) {
             this.ResetPath();
         }
     }

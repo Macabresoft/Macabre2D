@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Loops; 
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems; 
 
 using System;
 using FluentAssertions;
@@ -9,7 +9,7 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public static class FixedUpdateLoopTests {
+public static class FixedUpdateSystemTests {
     [TestCase(1f, 1, 1)]
     [TestCase(1.5f, 1, 0)]
     [TestCase(2f, 5, 2)]
@@ -17,11 +17,11 @@ public static class FixedUpdateLoopTests {
     public static void Update_ShouldWork(float timeStep, int secondsPassed, int callsExpected) {
         var scene = new Scene();
         var entity = scene.AddChild<FixedUpdateTestEntity>();
-        var loop = scene.AddLoop<FixedUpdateLoop>();
-        loop.TimeStep = timeStep;
+        var system = scene.AddSystem<FixedUpdateSystem>();
+        system.TimeStep = timeStep;
         scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
 
-        loop.Update(new FrameTime(new GameTime(TimeSpan.Zero, new TimeSpan(0, 0, 0, secondsPassed)), 1D), new InputState());
+        system.Update(new FrameTime(new GameTime(TimeSpan.Zero, new TimeSpan(0, 0, 0, secondsPassed)), 1D), new InputState());
 
         using (new AssertionScope()) {
             entity.UpdateCount.Should().Be(callsExpected);

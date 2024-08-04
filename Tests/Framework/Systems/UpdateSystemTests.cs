@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Loops; 
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems; 
 
 using System;
 using System.Collections.Generic;
@@ -10,14 +10,14 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public static class UpdateLoopTests {
+public static class UpdateSystemTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotUpdate_WhenLayerOverrideDoesNotMatch() {
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
-        updateLoop.LayersToUpdate.IsEnabled = true;
-        updateLoop.LayersToUpdate.Value = (Layers)1;
+        var updateSystem = scene.AddSystem<UpdateSystem>();
+        updateSystem.LayersToUpdate.IsEnabled = true;
+        updateSystem.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
         entity.Layers = (Layers)2;
 
@@ -26,7 +26,7 @@ public static class UpdateLoopTests {
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
                 entity.UpdateCount.Should().Be(0);
-                updateLoop.Update(new FrameTime(), new InputState());
+                updateSystem.Update(new FrameTime(), new InputState());
             }
         }
     }
@@ -35,7 +35,7 @@ public static class UpdateLoopTests {
     [Test]
     public static void Update_ShouldNotUpdateDisabled() {
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
+        var updateSystem = scene.AddSystem<UpdateSystem>();
         var disabled = scene.AddChild<TestUpdateableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -44,7 +44,7 @@ public static class UpdateLoopTests {
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
-                updateLoop.Update(new FrameTime(), new InputState());
+                updateSystem.Update(new FrameTime(), new InputState());
                 disabled.UpdateCount.Should().Be(0);
             }
         }
@@ -54,9 +54,9 @@ public static class UpdateLoopTests {
     [Test]
     public static void Update_ShouldUpdate_WhenLayerOverrideMatches() {
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
-        updateLoop.LayersToUpdate.IsEnabled = true;
-        updateLoop.LayersToUpdate.Value = (Layers)1;
+        var updateSystem = scene.AddSystem<UpdateSystem>();
+        updateSystem.LayersToUpdate.IsEnabled = true;
+        updateSystem.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
         entity.Layers = (Layers)1;
 
@@ -74,7 +74,7 @@ public static class UpdateLoopTests {
     [Test]
     public static void Update_ShouldUpdateAll_WhenNoLayerOverride() {
         var scene = new Scene();
-        scene.AddLoop<UpdateLoop>();
+        scene.AddSystem<UpdateSystem>();
         var entities = new List<TestUpdateableEntity>();
         var layers = Enum.GetValues<Layers>();
         foreach (var layer in layers) {
@@ -102,7 +102,7 @@ public static class UpdateLoopTests {
     public static void Update_ShouldUpdateAllEntities() {
         const int NumberOfChildren = 10;
         var scene = new Scene();
-        scene.AddLoop<UpdateLoop>();
+        scene.AddSystem<UpdateSystem>();
         var entities = new List<TestUpdateableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {
@@ -128,9 +128,9 @@ public static class UpdateLoopTests {
     [Test]
     public static void Update_ShouldUpdateNone_WhenLayerOverrideOfNone() {
         var scene = new Scene();
-        var updateLoop = scene.AddLoop<UpdateLoop>();
-        updateLoop.LayersToUpdate.IsEnabled = true;
-        updateLoop.LayersToUpdate.Value = Layers.None;
+        var updateSystem = scene.AddSystem<UpdateSystem>();
+        updateSystem.LayersToUpdate.IsEnabled = true;
+        updateSystem.LayersToUpdate.Value = Layers.None;
         var entities = new List<TestUpdateableEntity>();
         var layers = Enum.GetValues<Layers>();
         foreach (var layer in layers) {

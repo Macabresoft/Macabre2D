@@ -64,7 +64,7 @@ public interface ISceneService : ISelectionService<object> {
 public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly IEntityService _entityService;
     private readonly IFileSystemService _fileSystem;
-    private readonly ILoopService _loopService;
+    private readonly ISystemService _systemService;
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
@@ -81,20 +81,20 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <param name="pathService">The path service.</param>
     /// <param name="serializer">The serializer.</param>
     /// <param name="settingsService">The settings service.</param>
-    /// <param name="loopService">The system service.</param>
+    /// <param name="systemService">The system service.</param>
     public SceneService(
         IEntityService entityService,
         IFileSystemService fileSystem,
         IPathService pathService,
         ISerializer serializer,
         IEditorSettingsService settingsService,
-        ILoopService loopService) {
+        ISystemService systemService) {
         this._entityService = entityService;
         this._fileSystem = fileSystem;
         this._pathService = pathService;
         this._serializer = serializer;
         this._settingsService = settingsService;
-        this._loopService = loopService;
+        this._systemService = systemService;
     }
 
     /// <inheritdoc />
@@ -106,7 +106,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get {
             return this._selected switch {
                 IEntity => this._entityService.Editors,
-                ILoop => this._loopService.Editors,
+                IGameSystem => this._systemService.Editors,
                 _ => null
             };
         }
@@ -142,39 +142,39 @@ public sealed class SceneService : ReactiveObject, ISceneService {
             switch (this._selected) {
                 case IScene scene:
                     this._entityService.Selected = scene;
-                    this._loopService.Selected = null;
+                    this._systemService.Selected = null;
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case ILoop loop:
-                    this._loopService.Selected = loop;
+                case IGameSystem system:
+                    this._systemService.Selected = system;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = false;
                     break;
                 case IEntity entity:
                     this._entityService.Selected = entity;
-                    this._loopService.Selected = null;
+                    this._systemService.Selected = null;
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case LoopCollection:
+                case SystemCollection:
                     this._entityService.Selected = null;
-                    this._loopService.Selected = null;
+                    this._systemService.Selected = null;
                     this.IsEntityContext = false;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case EntityCollection:
                     this._entityService.Selected = null;
-                    this._loopService.Selected = null;
+                    this._systemService.Selected = null;
                     this.IsEntityContext = true;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case null:
                     this._entityService.Selected = null;
-                    this._loopService.Selected = null;
+                    this._systemService.Selected = null;
                     this.IsEntityContext = true;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
@@ -237,7 +237,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                                 this.CurrentSceneMetadata = metadata;
                                 this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
                                 this._entityService.Selected = scene;
-                                this._loopService.Selected = scene.Loops.FirstOrDefault();
+                                this._systemService.Selected = scene.Systems.FirstOrDefault();
                                 this._impliedSelected = scene;
                             }
                         }

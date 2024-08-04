@@ -9,7 +9,7 @@ using Macabresoft.Macabre2D.Project.Common;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Represents a collision map of <see cref="Layers" />. Can define on the <see cref="IPhysicsLoop" /> level to
+/// Represents a collision map of <see cref="Layers" />. Can define on the <see cref="IPhysicsSystem" /> level to
 /// determine which layers should collide.
 /// </summary>
 [DataContract]

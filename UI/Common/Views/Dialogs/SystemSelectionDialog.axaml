@@ -2,21 +2,21 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-                       x:Class="Macabresoft.Macabre2D.UI.Common.LoopSelectionDialog"
+                       x:Class="Macabresoft.Macabre2D.UI.Common.SystemSelectionDialog"
                        Height="480"
                        Width="640"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection">
     <Design.DataContext>
-        <local:LoopSelectionViewModel />
+        <local:SystemSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
         <ListBox Grid.Row="0"
                  Margin="{StaticResource StandardMarginAll}"
-                 ItemsSource="{Binding Loops, Mode=OneWay}"
-                 SelectedItem="{Binding SelectedLoop}"
+                 ItemsSource="{Binding Systems, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedGameSystem}"
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -34,12 +34,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
-                    CommandParameter="{Binding $parent[local:LoopSelectionDialog]}"
+                    CommandParameter="{Binding $parent[local:SystemSelectionDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
-                    Command="{Binding $parent[local:LoopSelectionDialog].CloseCommand}"
-                    CommandParameter="{Binding $parent[local:LoopSelectionDialog]}"
+                    Command="{Binding $parent[local:SystemSelectionDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:SystemSelectionDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

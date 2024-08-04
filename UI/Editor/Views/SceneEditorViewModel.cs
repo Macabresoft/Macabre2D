@@ -16,7 +16,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
     private readonly IEditorGame _game;
-    private readonly ILoopService _loopService;
+    private readonly ISystemService _systemService;
     private readonly IScene _scene;
     private readonly IEditorSettingsService _settingsService;
     private readonly IUndoService _undoService;
@@ -35,7 +35,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The entity service.</param>
     /// <param name="game">The game.</param>
-    /// <param name="loopService">The loop service.</param>
+    /// <param name="systemService">The system service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="settingsService">The settings service.</param>
     /// <param name="undoService">The undo service.</param>
@@ -44,14 +44,14 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         IEditorService editorService,
         IEntityService entityService,
         IEditorGame game,
-        ILoopService loopService,
+        ISystemService systemService,
         ISceneService sceneService,
         IEditorSettingsService settingsService,
         IUndoService undoService) : base() {
         this._editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
         this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
         this._game = game ?? throw new ArgumentNullException(nameof(game));
-        this._loopService = loopService;
+        this._systemService = systemService;
         this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
         this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         this._undoService = undoService ?? throw new ArgumentNullException(nameof(undoService));
@@ -86,7 +86,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
 
     private IScene CreateScene() {
         var scene = new Scene();
-        scene.AddLoop(new EditorRenderLoop(this.SceneService));
+        scene.AddSystem(new EditorRenderSystem(this.SceneService));
         var camera = scene.AddChild<Camera>();
         camera.PixelSnap = PixelSnap.No;
         this._camera = camera;
@@ -94,7 +94,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this._camera.SetWorldPosition(this._settingsService.Settings.CameraPosition);
         this._camera.AddChild(new CameraController(this._editorService));
         this._camera.AddChild(new EditorGrid(this._editorService, this._entityService));
-        this._camera.AddChild(new SelectionDisplay(this._editorService, this._entityService, this._loopService));
+        this._camera.AddChild(new SelectionDisplay(this._editorService, this._entityService, this._systemService));
         var selectorGizmo = new SelectorGizmo(this.SceneService);
         this._camera.AddChild(selectorGizmo);
 
@@ -108,7 +108,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
             this._editorService.SelectedGizmo = GizmoKind.Selector;
         }
 
-        scene.AddLoop(new EditorUpdateLoop(this._entityService, this.SceneService, selectorGizmo));
+        scene.AddSystem(new EditorUpdateSystem(this._entityService, this.SceneService, selectorGizmo));
         return scene;
     }
 

@@ -16,7 +16,7 @@ public class SelectionDisplay : BaseDrawer {
     private readonly List<IBoundable> _boundables = new();
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
-    private readonly ILoopService _loopService;
+    private readonly ISystemService _systemService;
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IBoundable _selectedBoundable;
 
@@ -28,16 +28,16 @@ public class SelectionDisplay : BaseDrawer {
     /// </summary>
     /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The selection service.</param>
-    /// <param name="loopService">The loop service.</param>
-    public SelectionDisplay(IEditorService editorService, IEntityService entityService, ILoopService loopService) : base() {
+    /// <param name="systemService">The system service.</param>
+    public SelectionDisplay(IEditorService editorService, IEntityService entityService, ISystemService systemService) : base() {
         this.UseDynamicLineThickness = true;
         this.LineThickness = 2f;
         this._editorService = editorService;
         this._entityService = entityService;
-        this._loopService = loopService;
+        this._systemService = systemService;
 
         this._entityService.PropertyChanged += this.EntityService_PropertyChanged;
-        this._loopService.PropertyChanged += this.LoopService_PropertyChanged;
+        this._systemService.PropertyChanged += this.SystemServicePropertyChanged;
 
         this.Color = this._editorService.SelectionColor;
         this.RenderOrder = int.MaxValue;
@@ -170,10 +170,10 @@ public class SelectionDisplay : BaseDrawer {
         }
     }
 
-    private void LoopService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ILoopService.Selected)) {
+    private void SystemServicePropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(ISystemService.Selected)) {
             this._boundables.Clear();
-            this._selectedBoundable = this._loopService.Selected as IBoundable;
+            this._selectedBoundable = this._systemService.Selected as IBoundable;
         }
     }
 }

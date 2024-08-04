@@ -8,12 +8,12 @@ using Macabresoft.Core;
 /// <summary>
 /// Interface for an system which runs operations for a <see cref="IScene" />.
 /// </summary>
-public interface ILoop : IUpdateableGameObject, INameable, IIdentifiable {
+public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
     /// <summary>
-    /// Gets the loop.
+    /// Gets the system.
     /// </summary>
-    /// <value>The loop.</value>
-    LoopKind Kind { get; }
+    /// <value>The system.</value>
+    GameSystemKind Kind { get; }
 
     /// <summary>
     /// Deinitializes this service.
@@ -31,19 +31,19 @@ public interface ILoop : IUpdateableGameObject, INameable, IIdentifiable {
 /// Base class for a system which runs operations for a <see cref="IScene" />.
 /// </summary>
 [DataContract]
-[Category("Loop")]
-public abstract class Loop : PropertyChangedNotifier, ILoop {
+[Category("System")]
+public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     private bool _isEnabled = true;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Loop" /> class.
+    /// Initializes a new instance of the <see cref="GameSystem" /> class.
     /// </summary>
-    protected Loop() {
+    protected GameSystem() {
         this.Name = this.GetType().Name;
     }
 
     /// <inheritdoc />
-    public abstract LoopKind Kind { get; }
+    public abstract GameSystemKind Kind { get; }
 
     /// <inheritdoc />
     [DataMember]

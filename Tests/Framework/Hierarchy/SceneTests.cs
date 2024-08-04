@@ -123,39 +123,39 @@ public sealed class SceneTests {
 
     [Test]
     [Category("Unit Tests")]
-    public static void FindLoop_ShouldFindLoop() {
+    public static void FindSystem_ShouldFindSystem() {
         var scene = new Scene();
-        var loop = scene.AddLoop<RenderLoop>();
+        var system = scene.AddSystem<RenderSystem>();
 
         using (new AssertionScope()) {
-            scene.FindLoop<RenderLoop>(loop.Id).Should().Be(loop);
-            scene.FindLoop<ILoop>(loop.Id).Should().Be(loop);
+            scene.FindSystem<RenderSystem>(system.Id).Should().Be(system);
+            scene.FindSystem<IGameSystem>(system.Id).Should().Be(system);
         }
     }
 
     [Test]
     [Category("Unit Tests")]
-    public static void FindLoop_ShouldFindLoop_WhenSerialized() {
+    public static void FindSystem_ShouldFindSystem_WhenSerialized() {
         var scene = new Scene();
-        var loop = scene.AddLoop<SimplePhysicsLoop>();
+        var system = scene.AddSystem<SimplePhysicsGameSystem>();
 
         var serialized = Serializer.Instance.SerializeToString(scene);
         var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
 
         using (new AssertionScope()) {
-            deserialized.FindLoop<SimplePhysicsLoop>(loop.Id).Should().BeEquivalentTo(loop);
-            deserialized.FindLoop<ILoop>(loop.Id).Should().BeEquivalentTo(loop);
+            deserialized.FindSystem<SimplePhysicsGameSystem>(system.Id).Should().BeEquivalentTo(system);
+            deserialized.FindSystem<IGameSystem>(system.Id).Should().BeEquivalentTo(system);
         }
     }
 
     [Test]
     [Category("Unit Tests")]
-    public static void FindLoop_ShouldNotFindLoop_WhenMismatched() {
+    public static void FindSystem_ShouldNotFindSystem_WhenMismatched() {
         var scene = new Scene();
-        var loop = scene.AddLoop<SimplePhysicsLoop>();
+        var system = scene.AddSystem<SimplePhysicsGameSystem>();
 
         using (new AssertionScope()) {
-            scene.FindLoop<RenderLoop>(loop.Id).Should().BeNull();
+            scene.FindSystem<RenderSystem>(system.Id).Should().BeNull();
         }
     }
 
@@ -166,15 +166,15 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddLoop<UpdateLoop>();
+            scene.AddSystem<UpdateSystem>();
         }
 
-        var reordered = scene.Loops.ElementAt(0);
-        scene.ReorderLoop(reordered, 1);
+        var reordered = scene.Systems.ElementAt(0);
+        scene.ReorderSystem(reordered, 1);
 
         using (new AssertionScope()) {
-            scene.Loops.Count.Should().Be(NumberOfChildren);
-            scene.Loops.ElementAt(1).Should().Be(reordered);
+            scene.Systems.Count.Should().Be(NumberOfChildren);
+            scene.Systems.ElementAt(1).Should().Be(reordered);
         }
     }
 
@@ -187,15 +187,15 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddLoop<UpdateLoop>();
+            scene.AddSystem<UpdateSystem>();
         }
 
-        var reordered = scene.Loops.ElementAt(OriginalIndex);
-        scene.ReorderLoop(reordered, NewIndex);
+        var reordered = scene.Systems.ElementAt(OriginalIndex);
+        scene.ReorderSystem(reordered, NewIndex);
 
         using (new AssertionScope()) {
-            scene.Loops.Count.Should().Be(NumberOfChildren);
-            scene.Loops.ElementAt(NewIndex).Should().Be(reordered);
+            scene.Systems.Count.Should().Be(NumberOfChildren);
+            scene.Systems.ElementAt(NewIndex).Should().Be(reordered);
         }
     }
 

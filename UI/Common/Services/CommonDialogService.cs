@@ -41,11 +41,11 @@ public interface ICommonDialogService : IBaseDialogService {
     Task OpenLicenseDialog();
 
     /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="ILoop" /> which inherits from the specified base type.
+    /// Opens a dialog that allows the user to pick an <see cref="IGameSystem" /> which inherits from the specified base type.
     /// </summary>
-    /// <param name="baseLoopType">The base loop type.</param>
+    /// <param name="baseSystemType">The base system type.</param>
     /// <returns>The selected entity.</returns>
-    Task<ILoop> OpenLoopSelectionDialog(Type baseLoopType);
+    Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a sprite.
@@ -155,16 +155,16 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<ILoop> OpenLoopSelectionDialog(Type baseLoopType) {
-        ILoop selectedLoop = null;
-        var window = Resolver.Resolve<LoopSelectionDialog>(new ParameterOverride(typeof(Type), baseLoopType));
+    public async Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType) {
+        IGameSystem selectedGameSystem = null;
+        var window = Resolver.Resolve<SystemSelectionDialog>(new ParameterOverride(typeof(Type), baseSystemType));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
         if (result) {
-            selectedLoop = window.ViewModel.SelectedLoop;
+            selectedGameSystem = window.ViewModel.SelectedGameSystem;
         }
 
-        return selectedLoop;
+        return selectedGameSystem;
     }
 
     /// <inheritdoc />

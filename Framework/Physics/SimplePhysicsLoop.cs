@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
 /// </summary>
-public interface ISimplePhysicsLoop : ILoop {
+public interface ISimplePhysicsGameSystem : IGameSystem {
     /// <summary>
     /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
     /// </summary>
@@ -72,7 +72,7 @@ public interface ISimplePhysicsLoop : ILoop {
 /// A system which allows simple raycasting through colliders.
 /// </summary>
 [Category(CommonCategories.Physics)]
-public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
+public class SimplePhysicsGameSystem : FixedTimeStepSystem, ISimplePhysicsGameSystem {
     /// <summary>
     /// Gets the collider tree.
     /// </summary>

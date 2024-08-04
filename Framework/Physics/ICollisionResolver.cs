@@ -5,10 +5,10 @@ namespace Macabresoft.Macabre2D.Framework;
 /// </summary>
 public interface ICollisionResolver {
     /// <summary>
-    /// Initializes the collision resolver, providing it the physics loop.
+    /// Initializes the collision resolver, providing it the physics system.
     /// </summary>
-    /// <param name="loop">The loop.</param>
-    void Initialize(IPhysicsLoop loop);
+    /// <param name="system">The system.</param>
+    void Initialize(IPhysicsSystem system);
 
     /// <summary>
     /// Resolves the collision.

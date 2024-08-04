@@ -57,7 +57,7 @@ public partial class SceneTreeView : UserControl {
     }
 
     private bool CanInsert(Control target) =>
-        target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
+        target is { DataContext: IEntity or IGameSystem or EntityCollection or SystemCollection } &&
         target.DataContext != this.DraggedObject;
 
     private void Drag(object sender, DragEventArgs e) {
@@ -94,17 +94,17 @@ public partial class SceneTreeView : UserControl {
                     case EntityCollection when this.DraggedObject is IEntity draggedEntity:
                         this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentScene, 0);
                         break;
-                    case ILoop targetSystem when this.DraggedObject is ILoop draggedSystem:
-                        index = this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(targetSystem);
+                    case IGameSystem targetSystem when this.DraggedObject is IGameSystem draggedSystem:
+                        index = this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(targetSystem);
 
-                        if (index < this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(draggedSystem)) {
+                        if (index < this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(draggedSystem)) {
                             index++;
                         }
 
-                        this.ViewModel.MoveLoop(draggedSystem, index);
+                        this.ViewModel.MoveSystem(draggedSystem, index);
                         break;
-                    case LoopCollection when this.DraggedObject is ILoop draggedSystem:
-                        this.ViewModel.MoveLoop(draggedSystem, 0);
+                    case SystemCollection when this.DraggedObject is IGameSystem draggedSystem:
+                        this.ViewModel.MoveSystem(draggedSystem, 0);
                         break;
                 }
             }
@@ -125,7 +125,7 @@ public partial class SceneTreeView : UserControl {
         if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
             Control toCheck = null;
 
-            if (this._currentDropTarget.DataContext is EntityCollection or LoopCollection) {
+            if (this._currentDropTarget.DataContext is EntityCollection or SystemCollection) {
                 toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
             }
 
@@ -176,7 +176,7 @@ public partial class SceneTreeView : UserControl {
 
     private async void TreeNode_OnPointerMoved(object sender, PointerEventArgs e) {
         if (!this._isDragging && this.DraggedObject != null &&
-            sender is Control { DataContext: ILoop or IEntity and not IScene } control &&
+            sender is Control { DataContext: IGameSystem or IEntity and not IScene } control &&
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
@@ -186,7 +186,7 @@ public partial class SceneTreeView : UserControl {
 
     private void TreeNode_OnPointerPressed(object sender, PointerPressedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
-            sender is Control { DataContext: ILoop or IEntity and not IScene } control) {
+            sender is Control { DataContext: IGameSystem or IEntity and not IScene } control) {
             this.DraggedObject = control.DataContext as INameable;
         }
     }
@@ -212,7 +212,7 @@ public partial class SceneTreeView : UserControl {
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
                        (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
-                        draggedObject is ILoop && dropTarget is ILoop or LoopCollection);
+                        draggedObject is IGameSystem && dropTarget is IGameSystem or SystemCollection);
             }
 
             return false;

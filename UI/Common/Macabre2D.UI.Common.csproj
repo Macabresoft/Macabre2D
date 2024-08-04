@@ -96,12 +96,12 @@
             <DependentUpon>EntityReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\LoopReferenceEditor.axaml.cs">
-            <DependentUpon>LoopReferenceEditor.axaml</DependentUpon>
+        <Compile Update="Controls\ValueEditors\Framework\SystemReferenceEditor.axaml.cs">
+            <DependentUpon>SystemReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\Dialogs\LoopSelectionDialog.axaml.cs">
-            <DependentUpon>LoopSelectionDialog.axaml</DependentUpon>
+        <Compile Update="Views\Dialogs\SystemSelectionDialog.axaml.cs">
+            <DependentUpon>SystemSelectionDialog.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Dialogs\SpriteFontLayoutDialog.axaml.cs">

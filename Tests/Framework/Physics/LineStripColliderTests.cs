@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Loops; 
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics; 
 
 using FluentAssertions;
 using FluentAssertions.Execution;

@@ -35,7 +35,7 @@ public sealed class CommonContainerExtension : UnityContainerExtension {
             .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
             .RegisterType<ISaveService, SaveService>(new SingletonLifetimeManager())
             .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
-            .RegisterType<ILoopService, LoopService>(new SingletonLifetimeManager())
+            .RegisterType<ISystemService, SystemService>(new SingletonLifetimeManager())
             .RegisterType<IValueControlService, ValueControlService>(new SingletonLifetimeManager());
     }
 

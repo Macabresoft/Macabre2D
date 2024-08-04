@@ -13,14 +13,14 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class RenderLoopTests {
+public class RenderSystemTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotRenderDisabled() {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddLoop<RenderLoop>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
         var disabled = scene.AddChild<TestRenderableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -43,7 +43,7 @@ public class RenderLoopTests {
         var game = Substitute.For<IGame>();
         var project = Substitute.For<IGameProject>();
         game.Project.Returns(project);
-        var renderSystem = new RenderLoop();
+        var renderSystem = new RenderSystem();
         var scene = Substitute.For<IScene>();
         scene.Game.Returns(game);
         renderSystem.Initialize(scene);
@@ -70,7 +70,7 @@ public class RenderLoopTests {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddLoop<RenderLoop>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
         var disabled = scene.AddChild<TestRenderableEntity>();
         disabled.IsVisible = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -93,7 +93,7 @@ public class RenderLoopTests {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddLoop<RenderLoop>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
         var entities = new List<TestRenderableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {

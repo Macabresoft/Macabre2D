@@ -17,7 +17,7 @@ public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
     /// Performs a fixed update.
     /// </summary>
     /// <remarks>
-    /// Seconds passed should always be equal to the time step of the fixed update loop calling update.
+    /// Seconds passed should always be equal to the time step of the fixed update system calling update.
     /// </remarks>
     /// <param name="timeStep">The time step.</param>
     void FixedUpdate(float timeStep);

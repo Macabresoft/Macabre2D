@@ -6,21 +6,21 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// A render system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
-public class EditorRenderLoop : Loop {
+public class EditorRenderSystem : GameSystem {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EditorRenderLoop" /> class.
+    /// Initializes a new instance of the <see cref="EditorRenderSystem" /> class.
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
-    public EditorRenderLoop(ISceneService sceneService) {
+    public EditorRenderSystem(ISceneService sceneService) {
         this._sceneService = sceneService;
     }
 
     /// <inheritdoc />
-    public override LoopKind Kind => LoopKind.Render;
+    public override GameSystemKind Kind => GameSystemKind.Render;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

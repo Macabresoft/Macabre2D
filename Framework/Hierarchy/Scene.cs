@@ -9,7 +9,7 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for a combination of <see cref="ILoop" /> and <see cref="IEntity" />
+/// Interface for a combination of <see cref="IGameSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
@@ -59,9 +59,9 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     bool IsActive { get; }
 
     /// <summary>
-    /// Gets the loops.
+    /// Gets the systems.
     /// </summary>
-    IReadOnlyCollection<ILoop> Loops => Array.Empty<ILoop>();
+    IReadOnlyCollection<IGameSystem> Systems => Array.Empty<IGameSystem>();
 
     /// <summary>
     /// Gets the named children.
@@ -94,19 +94,19 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     Version Version { get; set; }
 
     /// <summary>
-    /// Adds the loop.
+    /// Adds the system.
     /// </summary>
     /// <typeparam name="T">
-    /// A type that implements <see cref="ILoop" /> and has an empty constructor.
+    /// A type that implements <see cref="IGameSystem" /> and has an empty constructor.
     /// </typeparam>
-    /// <returns>The added loop.</returns>
-    T AddLoop<T>() where T : ILoop, new();
+    /// <returns>The added system.</returns>
+    T AddSystem<T>() where T : IGameSystem, new();
 
     /// <summary>
-    /// Adds the loop.
+    /// Adds the system.
     /// </summary>
-    /// <param name="loop">The loop.</param>
-    void AddLoop(ILoop loop);
+    /// <param name="system">The system.</param>
+    void AddSystem(IGameSystem system);
 
     /// <summary>
     /// Finds an entity by its identifier.
@@ -117,19 +117,19 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity;
 
     /// <summary>
-    /// Finds a loop by its identifier.
+    /// Finds a system by its identifier.
     /// </summary>
-    /// <param name="id">The loop identifier.</param>
-    /// <typeparam name="TLoop">The loop type.</typeparam>
-    /// <returns>The loop if found.</returns>
-    TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop;
+    /// <param name="id">The system identifier.</param>
+    /// <typeparam name="TSystem">The system type.</typeparam>
+    /// <returns>The system if found.</returns>
+    TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem;
 
     /// <summary>
-    /// Gets the first found loop of the specified type.
+    /// Gets the first found system of the specified type.
     /// </summary>
-    /// <typeparam name="T">The type of loop.</typeparam>
-    /// <returns>The loop.</returns>
-    T? GetLoop<T>() where T : class, ILoop;
+    /// <typeparam name="T">The type of system.</typeparam>
+    /// <returns>The system.</returns>
+    T? GetSystem<T>() where T : class, IGameSystem;
 
     /// <summary>
     /// Initializes this instance.
@@ -139,11 +139,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     void Initialize(IGame game, IAssetManager assetManager);
 
     /// <summary>
-    /// Inserts a loop at the specified index.
+    /// Inserts a system at the specified index.
     /// </summary>
     /// <param name="index">The index.</param>
-    /// <param name="loop">The loop.</param>
-    void InsertLoop(int index, ILoop loop);
+    /// <param name="system">The system.</param>
+    void InsertSystem(int index, IGameSystem system);
 
     /// <summary>
     /// Invokes the specified action after the current update
@@ -168,11 +168,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     void RegisterEntity(IEntity entity);
 
     /// <summary>
-    /// Removes the loop.
+    /// Removes the system.
     /// </summary>
-    /// <param name="loop">The loop.</param>
-    /// <returns>A value indicating whether or not the loop was removed.</returns>
-    bool RemoveLoop(ILoop loop);
+    /// <param name="system">The system.</param>
+    /// <returns>A value indicating whether the system was removed.</returns>
+    bool RemoveSystem(IGameSystem system);
 
     /// <summary>
     /// Renders the scene.
@@ -182,11 +182,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     public void Render(FrameTime frameTime, InputState inputState);
 
     /// <summary>
-    /// Reorders loops so the specified loop is moved to the specified index.
+    /// Reorders systems so the specified system is moved to the specified index.
     /// </summary>
-    /// <param name="loop">The loop.</param>
+    /// <param name="system">The system.</param>
     /// <param name="newIndex">The new index.</param>
-    void ReorderLoop(ILoop loop, int newIndex);
+    void ReorderSystem(IGameSystem system, int newIndex);
 
     /// <summary>
     /// Resolves the dependency.
@@ -213,7 +213,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
 }
 
 /// <summary>
-/// A user-created combination of <see cref="ILoop" /> and <see cref="IEntity" />
+/// A user-created combination of <see cref="IGameSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
@@ -237,7 +237,7 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IFixedUpdateableEntity.UpdateOrder));
 
     [DataMember]
-    private readonly LoopCollection _loops = new();
+    private readonly SystemCollection _systems = new();
 
     private readonly List<INameableCollection> _namedChildren = new();
     private readonly List<Action> _pendingActions = new();
@@ -276,7 +276,7 @@ public sealed class Scene : GridContainer, IScene {
     /// Initializes a new instance of the <see cref="Scene" /> class.
     /// </summary>
     public Scene() : base() {
-        this._namedChildren.Add(this._loops);
+        this._namedChildren.Add(this._systems);
         if (this.Children is INameableCollection nameableCollection) {
             this._namedChildren.Add(nameableCollection);
         }
@@ -300,7 +300,7 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ILoop> Loops => this._loops;
+    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
     /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
@@ -341,26 +341,26 @@ public sealed class Scene : GridContainer, IScene {
     public Version Version { get; set; } = new(0, 0, 0, 0);
 
     /// <inheritdoc />
-    public T AddLoop<T>() where T : ILoop, new() {
-        var loop = new T();
-        this.AddLoop(loop);
-        return loop;
+    public T AddSystem<T>() where T : IGameSystem, new() {
+        var system = new T();
+        this.AddSystem(system);
+        return system;
     }
 
     /// <inheritdoc />
-    public void AddLoop(ILoop loop) {
-        this._loops.Add(loop);
+    public void AddSystem(IGameSystem system) {
+        this._systems.Add(system);
 
         if (this._isInitialized) {
-            loop.Initialize(this);
+            system.Initialize(this);
         }
     }
 
     public override void Deinitialize() {
         base.Deinitialize();
 
-        foreach (var loop in this._loops) {
-            loop.Deinitialize();
+        foreach (var system in this._systems) {
+            system.Deinitialize();
         }
     }
 
@@ -374,12 +374,12 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public TLoop? FindLoop<TLoop>(Guid id) where TLoop : class, ILoop {
-        return this.Loops.OfType<TLoop>().FirstOrDefault(x => x.Id == id);
+    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem {
+        return this.Systems.OfType<TSystem>().FirstOrDefault(x => x.Id == id);
     }
 
     /// <inheritdoc />
-    public T? GetLoop<T>() where T : class, ILoop => this.Loops.OfType<T>().FirstOrDefault();
+    public T? GetSystem<T>() where T : class, IGameSystem => this.Systems.OfType<T>().FirstOrDefault();
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
@@ -392,8 +392,8 @@ public sealed class Scene : GridContainer, IScene {
 
                 this.Project.Initialize(this.Assets);
 
-                foreach (var loop in this.Loops) {
-                    loop.Initialize(this);
+                foreach (var system in this.Systems) {
+                    system.Initialize(this);
                 }
 
                 this.Initialize(this, this);
@@ -409,11 +409,11 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void InsertLoop(int index, ILoop loop) {
-        this._loops.InsertOrAdd(index, loop);
+    public void InsertSystem(int index, IGameSystem system) {
+        this._systems.InsertOrAdd(index, system);
 
         if (this._isInitialized) {
-            loop.Initialize(this);
+            system.Initialize(this);
         }
     }
 
@@ -459,13 +459,13 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveLoop(ILoop loop) {
+    public bool RemoveSystem(IGameSystem system) {
         var result = false;
-        if (this._loops.Contains(loop)) {
+        if (this._systems.Contains(system)) {
             this.Invoke(() =>
             {
-                this._loops.Remove(loop);
-                loop.Deinitialize();
+                this._systems.Remove(system);
+                system.Deinitialize();
             });
             result = true;
         }
@@ -478,8 +478,8 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
 
-            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.Render })) {
-                loop.Update(frameTime, inputState);
+            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.Render })) {
+                system.Update(frameTime, inputState);
             }
         }
         finally {
@@ -488,9 +488,9 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void ReorderLoop(ILoop loop, int newIndex) {
-        if (this._loops.Remove(loop)) {
-            this._loops.InsertOrAdd(newIndex, loop);
+    public void ReorderSystem(IGameSystem system, int newIndex) {
+        if (this._systems.Remove(system)) {
+            this._systems.InsertOrAdd(newIndex, system);
         }
     }
 
@@ -539,16 +539,16 @@ public sealed class Scene : GridContainer, IScene {
             this.RebuildFilterCaches();
             this.InvokePendingActions();
 
-            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PreUpdate })) {
-                loop.Update(frameTime, inputState);
+            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.PreUpdate })) {
+                system.Update(frameTime, inputState);
             }
 
-            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.Update })) {
-                loop.Update(frameTime, inputState);
+            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.Update })) {
+                system.Update(frameTime, inputState);
             }
 
-            foreach (var loop in this.Loops.Where(x => x is { IsEnabled: true, Kind: LoopKind.PostUpdate })) {
-                loop.Update(frameTime, inputState);
+            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.PostUpdate })) {
+                system.Update(frameTime, inputState);
             }
         }
         finally {

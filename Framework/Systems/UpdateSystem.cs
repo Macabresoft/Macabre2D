@@ -6,11 +6,11 @@ using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
-/// A loop that calls updates on entities.
+/// A system that calls updates on entities.
 /// </summary>
-public class UpdateLoop : Loop {
+public class UpdateSystem : GameSystem {
     /// <inheritdoc />
-    public override LoopKind Kind => LoopKind.Update;
+    public override GameSystemKind Kind => GameSystemKind.Update;
 
     /// <summary>
     /// Gets the bottom edge's overriden layer.

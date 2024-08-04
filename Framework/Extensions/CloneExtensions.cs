@@ -30,15 +30,15 @@ public static class CloneExtensions {
     }
 
     /// <summary>
-    /// Clones a loop.
+    /// Clones a system.
     /// </summary>
-    /// <param name="loop">The loop to clone.</param>
-    /// <param name="clone">The cloned loop.</param>
-    /// <returns>A value indicating whether or not the clone was successful.</returns>
-    public static bool TryClone(this ILoop loop, [NotNullWhen(true)] out ILoop? clone) {
+    /// <param name="system">The system to clone.</param>
+    /// <param name="clone">The cloned system.</param>
+    /// <returns>A value indicating whether the clone was successful.</returns>
+    public static bool TryClone(this IGameSystem system, [NotNullWhen(true)] out IGameSystem? clone) {
         var result = false;
-        var json = Serializer.Instance.SerializeToString(loop);
-        if (Serializer.Instance.DeserializeFromString(json, loop.GetType()) is ILoop tempClone) {
+        var json = Serializer.Instance.SerializeToString(system);
+        if (Serializer.Instance.DeserializeFromString(json, system.GetType()) is IGameSystem tempClone) {
             result = true;
             clone = tempClone;
         }

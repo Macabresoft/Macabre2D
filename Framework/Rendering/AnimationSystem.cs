@@ -6,13 +6,13 @@ using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
-/// A loop that handles animations
+/// A system that handles animations.
 /// </summary>
-public class AnimationLoop : Loop {
+public class AnimationSystem : GameSystem {
     private byte _frameRate = 30;
 
     /// <inheritdoc />
-    public override LoopKind Kind => LoopKind.PostUpdate;
+    public override GameSystemKind Kind => GameSystemKind.PostUpdate;
 
     /// <summary>
     /// Gets the bottom edge's overriden layer.
