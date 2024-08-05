@@ -94,7 +94,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     /// <param name="buildService">The build service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="fileSystem">The file system service.</param>
-    /// <param name="loggingService">The logging service.</param>
     /// <param name="pathService">The path service.</param>
     /// <param name="serializer">The serializer.</param>
     /// <param name="settingsService">The settings service.</param>

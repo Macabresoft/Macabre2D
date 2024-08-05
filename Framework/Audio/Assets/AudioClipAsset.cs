@@ -16,7 +16,7 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// <summary>
     /// The valid file extensions for a <see cref="SoundEffectInstance" />.
     /// </summary>
-    public static readonly string[] ValidFileExtensions = { ".wav", ".mp3", ".wma" };
+    public static readonly string[] ValidFileExtensions = [".wav", ".mp3", ".wma"];
 
     private VolumeCategory _category;
 
