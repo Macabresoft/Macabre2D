@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -14,6 +13,11 @@ public interface IAudioClipInstance : IDisposable {
     /// Gets the audio category.
     /// </summary>
     VolumeCategory Category { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this <see cref="AudioPlayer" /> should loop.
+    /// </summary>
+    bool ShouldLoop { get; }
 
     /// <summary>
     /// Gets the state.
@@ -29,11 +33,6 @@ public interface IAudioClipInstance : IDisposable {
     /// Gets or sets the pitch.
     /// </summary>
     float Pitch { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this <see cref="AudioPlayer" /> should loop.
-    /// </summary>
-    bool ShouldLoop { get; set; }
 
     /// <summary>
     /// Gets or sets the volume.
@@ -73,13 +72,69 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     /// <summary>
     /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
     /// </summary>
-    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, VolumeCategory category) {
+    /// <param name="instance">The sound effect instance.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="category">The category.</param>
+    /// <param name="volume">The volume.</param>
+    /// <param name="pan">The pan.</param>
+    /// <param name="pitch">The pitch.</param>
+    /// <param name="shouldLoop">A value indicating whether this should loop.</param>
+    public AudioClipInstance(
+        SoundEffectInstance instance,
+        AudioSettings settings,
+        VolumeCategory category,
+        float volume,
+        float pan,
+        float pitch,
+        bool shouldLoop) {
         this._instance = instance;
         this._settings = settings;
-        this._volume = this._instance.Volume;
         this.Category = category;
 
+        this.Volume = volume;
+        this.Pan = pan;
+        this.Pitch = pitch;
+        this.ShouldLoop = shouldLoop;
+
         this._settings.VolumeChanged += this.Settings_VolumeChanged;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
+    /// </summary>
+    /// <param name="soundEffect">The sound effect.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="category">The category.</param>
+    /// <param name="volume">The volume.</param>
+    /// <param name="pan">The pan.</param>
+    /// <param name="pitch">The pitch.</param>
+    /// <param name="shouldLoop">A value indicating whether this should loop.</param>
+    public AudioClipInstance(
+        SoundEffect soundEffect,
+        AudioSettings settings,
+        VolumeCategory category,
+        float volume,
+        float pan,
+        float pitch,
+        bool shouldLoop) : this(soundEffect.CreateInstance(), settings, category, volume, pan, pitch, shouldLoop) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
+    /// </summary>
+    /// <param name="instance">The sound effect instance.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="category">The category.</param>
+    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, VolumeCategory category) : this(instance, settings, category, 1f, 0f, 0f, false) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
+    /// </summary>
+    /// <param name="soundEffect">The sound effect.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="category">The category.</param>
+    public AudioClipInstance(SoundEffect soundEffect, AudioSettings settings, VolumeCategory category) : this(soundEffect.CreateInstance(), settings, category) {
     }
 
     /// <inheritdoc />
@@ -106,14 +161,12 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     }
 
     /// <inheritdoc />
-    [DataMember(Order = 1, Name = "Should Loop")]
     public bool ShouldLoop {
         get => this._instance.IsLooped;
-        set => this._instance.IsLooped = value;
+        private init => this._instance.IsLooped = value;
     }
 
     /// <inheritdoc />
-    [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
         get => this._volume;
         set {
@@ -151,9 +204,7 @@ public sealed class AudioClipInstance : IAudioClipInstance {
         this._instance.Stop(isImmediate);
     }
 
-    private float GetVolume() {
-        return this._settings.GetVolume(this.Category, this._volume);
-    }
+    private float GetVolume() => this._settings.GetVolume(this.Category, this._volume);
 
     private void Settings_VolumeChanged(object? sender, VolumeCategory e) {
         if (this.State == SoundState.Playing && (e == VolumeCategory.Overall || e == this.Category)) {
@@ -163,10 +214,10 @@ public sealed class AudioClipInstance : IAudioClipInstance {
 
     private sealed class EmptyAudioClipInstance : IAudioClipInstance {
         public VolumeCategory Category => VolumeCategory.Overall;
+        public bool ShouldLoop => false;
         public SoundState State => SoundState.Stopped;
         public float Pan { get; set; }
         public float Pitch { get; set; }
-        public bool ShouldLoop { get; set; }
         public float Volume { get; set; }
 
         public void Dispose() {

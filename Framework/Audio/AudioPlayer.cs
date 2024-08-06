@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework.Audio;
 [Display(Name = "Audio Player")]
 public sealed class AudioPlayer : Entity {
     private IAudioClipInstance _instance = AudioClipInstance.Empty;
+    private float _pan;
+    private float _pitch;
+    private float _volume;
 
     /// <summary>
     /// Gets the audio clip reference.
@@ -27,10 +30,12 @@ public sealed class AudioPlayer : Entity {
     /// <summary>
     /// Gets or sets the pan.
     /// </summary>
-    [DataMember(Order = 3, Name = "Pan")]
     public float Pan {
-        get => this._instance.Pan;
-        set => this._instance.Pan = value;
+        get => this._pan;
+        set {
+            this._pan = value;
+            this._instance.Pan = value;
+        }
     }
 
     /// <summary>
@@ -38,8 +43,11 @@ public sealed class AudioPlayer : Entity {
     /// </summary>
     [DataMember(Order = 4, Name = "Pitch")]
     public float Pitch {
-        get => this._instance.Pitch;
-        set => this._instance.Pitch = value;
+        get => this._pitch;
+        set {
+            this._pitch = value;
+            this._instance.Pitch = value;
+        }
     }
 
     /// <summary>
@@ -47,10 +55,7 @@ public sealed class AudioPlayer : Entity {
     /// </summary>
     /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
     [DataMember(Order = 1, Name = "Should Loop")]
-    public bool ShouldLoop {
-        get => this._instance.ShouldLoop;
-        set => this._instance.ShouldLoop = value;
-    }
+    public bool ShouldLoop { get; private set; }
 
     /// <summary>
     /// Gets or sets the volume.
@@ -58,8 +63,11 @@ public sealed class AudioPlayer : Entity {
     /// <value>The volume.</value>
     [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
-        get => this._instance.Volume;
-        set => this._instance.Volume = value;
+        get => this._volume;
+        set {
+            this._volume = value;
+            this._instance.Volume = value;
+        }
     }
 
     /// <inheritdoc />

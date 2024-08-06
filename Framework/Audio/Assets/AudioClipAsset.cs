@@ -102,11 +102,7 @@ public sealed class AudioClipAsset : Asset<SoundEffect> {
     public IAudioClipInstance GetInstance(AudioSettings settings, float volume, float pan, float pitch, bool shouldLoop) {
         var instance = AudioClipInstance.Empty;
         if (this.Content is { } soundEffect) {
-            instance = new AudioClipInstance(soundEffect.CreateInstance(), settings, this.Category);
-            instance.Volume = volume;
-            instance.Pan = pan;
-            instance.Pitch = pitch;
-            instance.ShouldLoop = shouldLoop;
+            instance = new AudioClipInstance(soundEffect, settings, this.Category, volume, pan, pitch, shouldLoop);
         }
 
         return instance;
