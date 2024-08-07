@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
-/// Interface for an instance of a <see cref="AudioClipAsset" />.
+/// Interface for an instance of a <see cref="AudioClip" />.
 /// </summary>
 public interface IAudioClipInstance : IDisposable {
     /// <summary>
@@ -62,7 +62,7 @@ public interface IAudioClipInstance : IDisposable {
 }
 
 /// <summary>
-/// An instance of a <see cref="AudioClipAsset" /> that can handle operations for a <see cref="SoundEffectInstance" />.
+/// An instance of a <see cref="AudioClip" /> that can handle operations for a <see cref="SoundEffectInstance" />.
 /// </summary>
 public sealed class AudioClipInstance : IAudioClipInstance {
     private readonly SoundEffectInstance _instance;

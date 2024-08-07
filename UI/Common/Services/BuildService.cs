@@ -73,8 +73,8 @@ public class BuildService : IBuildService {
             FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
         }
 
-        foreach (var extension in AudioClipAsset.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(AudioClipAsset));
+        foreach (var extension in AudioClip.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(AudioClip));
         }
 
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));

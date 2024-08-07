@@ -3,9 +3,17 @@
 using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
-/// A reference to an <see cref="AudioClipAsset" />.
+/// A reference to an <see cref="AudioClip" />.
 /// </summary>
-public class AudioClipReference : AssetReference<AudioClipAsset, SoundEffect> {
+public class AudioClipReference : AssetReference<AudioClip, SoundEffect> {
+
+    /// <summary>
+    /// Gets the audio instance.
+    /// </summary>
+    /// <param name="settings">The settings.</param>
+    /// <returns>A new instance.</returns>
+    public IAudioClipInstance GetInstance(AudioSettings settings) => this.Asset?.GetInstance(settings) ?? AudioClipInstance.Empty;
+
     /// <summary>
     /// Initializes the audio clip and gets an instance.
     /// </summary>
@@ -14,7 +22,7 @@ public class AudioClipReference : AssetReference<AudioClipAsset, SoundEffect> {
     /// <returns>An audio clip instance.</returns>
     public IAudioClipInstance InitializeAndGetInstance(IAssetManager assets, AudioSettings settings) {
         this.Initialize(assets);
-        return this.Asset?.GetInstance(settings) ?? AudioClipInstance.Empty;
+        return this.GetInstance(settings);
     }
 
     /// <summary>

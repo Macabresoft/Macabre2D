@@ -105,7 +105,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
                 Patterns = new[] { "*" }
             },
             new FilePickerFileType("Audio") {
-                Patterns = AudioClipAsset.ValidFileExtensions.Select(x => $"*{x}").ToArray()
+                Patterns = AudioClip.ValidFileExtensions.Select(x => $"*{x}").ToArray()
             },
             new FilePickerFileType("Images") {
                 Patterns = SpriteSheet.ValidFileExtensions.Select(x => $"*{x}").ToArray()

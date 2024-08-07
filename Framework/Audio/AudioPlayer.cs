@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
-/// Plays a <see cref="AudioClipAsset" />.
+/// Plays a <see cref="AudioClip" />.
 /// </summary>
 [Display(Name = "Audio Player")]
 public sealed class AudioPlayer : Entity {
