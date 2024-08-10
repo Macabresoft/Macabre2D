@@ -40,10 +40,8 @@ public class BaseSpriteSheetReferenceEditor<TAssetReference> : BaseAssetReferenc
         this.Bitmap = null;
 
         if (this.AssetManager != null &&
-            this.Value?.Asset != null &&
-            this.Value.ContentId != Guid.Empty &&
-            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
-            metadata != null) {
+            this.Value is { Asset: not null, HasContent: true } &&
+            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata)) {
             var fileName = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
             var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, fileName);
 

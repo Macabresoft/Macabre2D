@@ -21,9 +21,9 @@ public interface IAssetReference : INotifyPropertyChanged {
     public Type ContentType { get; }
 
     /// <summary>
-    /// Gets or sets the asset identifier.
+    /// Gets a value indicating whether this has content.
     /// </summary>
-    public Guid ContentId { get; set; }
+    public bool HasContent { get; }
 
     /// <summary>
     /// Clears the asset reference.
@@ -40,12 +40,6 @@ public interface IAssetReference : INotifyPropertyChanged {
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
     void Initialize(IAssetManager assetManager);
-
-    /// <summary>
-    /// Loads this instance with the content identifier..
-    /// </summary>
-    /// <param name="contentId">The content identifier.</param>
-    void LoadAsset(Guid contentId);
 }
 
 /// <summary>
@@ -59,6 +53,17 @@ public interface IAssetReference<TAsset> : IAssetReference where TAsset : class,
     TAsset? Asset { get; }
 
     /// <summary>
+    /// Gets or sets the asset identifier.
+    /// </summary>
+    public Guid ContentId { get; set; }
+
+    /// <summary>
+    /// Loads this instance with the content identifier..
+    /// </summary>
+    /// <param name="contentId">The content identifier.</param>
+    void LoadAsset(Guid contentId);
+
+    /// <summary>
     /// Loads this instance with an asset.
     /// </summary>
     /// <param name="asset">The asset.</param>
@@ -70,7 +75,6 @@ public interface IAssetReference<TAsset> : IAssetReference where TAsset : class,
 /// </summary>
 [DataContract]
 public abstract class AssetReference : PropertyChangedNotifier, IAssetReference {
-    private Guid _contentId = Guid.Empty;
 
     /// <inheritdoc />
     public abstract Type AssetType { get; }
@@ -79,16 +83,12 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     public abstract Type ContentType { get; }
 
     /// <inheritdoc />
-    [DataMember]
-    public Guid ContentId {
-        get => this._contentId;
-        set => this.Set(ref this._contentId, value);
-    }
+    public abstract bool HasContent { get; }
 
     /// <summary>
     /// Gets the asset manager.
     /// </summary>
-    protected IAssetManager Assets { get; private set; } = AssetManager.Empty;
+    protected IAssetManager AssetManager { get; private set; } = Framework.AssetManager.Empty;
 
     /// <inheritdoc />
     public abstract void Clear();
@@ -98,11 +98,8 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
 
     /// <inheritdoc />
     public virtual void Initialize(IAssetManager assetManager) {
-        this.Assets = assetManager;
+        this.AssetManager = assetManager;
     }
-
-    /// <inheritdoc />
-    public abstract void LoadAsset(Guid contentId);
 }
 
 /// <summary>
@@ -112,6 +109,7 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<TAsset> where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private TAsset? _asset;
+    private Guid _contentId = Guid.Empty;
 
     /// <summary>
     /// An event called when an asset is loaded.
@@ -125,9 +123,19 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
     public override Type ContentType => typeof(TContent);
 
     /// <inheritdoc />
+    public override bool HasContent => this._contentId != Guid.Empty;
+
+    /// <inheritdoc />
     public TAsset? Asset {
         get => this._asset;
         private set => this.Set(ref this._asset, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public Guid ContentId {
+        get => this._contentId;
+        set => this.Set(ref this._contentId, value);
     }
 
     /// <inheritdoc />
@@ -144,6 +152,7 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
     public override void Deinitialize() {
         if (this.Asset != null) {
             this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
+            this.Asset = null;
         }
     }
 
@@ -151,7 +160,7 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
     public override void Initialize(IAssetManager assetManager) {
         base.Initialize(assetManager);
 
-        if (this.Assets.TryGetAsset(this, out var asset)) {
+        if (this.AssetManager.TryGetAsset(this, out var asset)) {
             this.LoadAsset(asset);
         }
     }
@@ -165,18 +174,18 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
         this.Asset = asset;
         this.Asset.PropertyChanged += this.Asset_PropertyChanged;
         this.ContentId = this.Asset.ContentId;
-        this.Assets.LoadContentForAsset<TContent>(this.Asset);
+        this.AssetManager.LoadContentForAsset<TContent>(this.Asset);
         this.AssetLoaded.SafeInvoke(this);
     }
 
     /// <inheritdoc />
-    public override void LoadAsset(Guid contentId) {
+    public void LoadAsset(Guid contentId) {
         this.ContentId = contentId;
 
         if (this.ContentId == Guid.Empty) {
             this.Clear();
         }
-        else if (this.Assets.TryGetAsset(this, out var asset)) {
+        else if (this.AssetManager.TryGetAsset(this, out var asset)) {
             this.LoadAsset(asset);
         }
     }

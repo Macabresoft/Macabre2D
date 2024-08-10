@@ -56,7 +56,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
             this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
 
-        if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(AssetReference.ContentId) }) {
+        if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(SpriteSheet.ContentId) }) {
             this._assetType = assetReference.AssetType;
         } 
         else if (dependencies?.Owner?.GetType() is { } ownerType) {

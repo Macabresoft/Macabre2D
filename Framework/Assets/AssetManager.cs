@@ -60,9 +60,22 @@ public interface IAssetManager : IDisposable {
     /// <param name="asset">The asset if found.</param>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
     /// <typeparam name="TContent">The type of content.</typeparam>
-    /// <returns>A value indicating whether or not the asset was resolved.</returns>
+    /// <returns>A value indicating whether the asset was resolved.</returns>
     bool TryGetAsset<TAsset, TContent>(AssetReference<TAsset, TContent> assetReference, [NotNullWhen(true)] out TAsset? asset)
-        where TAsset : class, IAsset, IAsset<TContent> where TContent : class;
+        where TAsset : class, IAsset, IAsset<TContent>
+        where TContent : class;
+
+    /// <summary>
+    /// Tries to get an asset with the specified content identifier.
+    /// </summary>
+    /// <param name="contentId">The content identifier..</param>
+    /// <param name="asset">The asset if found.</param>
+    /// <typeparam name="TAsset">The type of asset.</typeparam>
+    /// <typeparam name="TContent">The type of content.</typeparam>
+    /// <returns>A value indicating whether the asset was resolved.</returns>
+    bool TryGetAsset<TAsset, TContent>(Guid contentId, [NotNullWhen(true)] out TAsset? asset)
+        where TAsset : class, IAsset, IAsset<TContent>
+        where TContent : class;
 
     /// <summary>
     /// Tries sto get metadata.
@@ -112,9 +125,7 @@ public sealed class AssetManager : IAssetManager {
     private ISerializer? _serializer;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ContentMetadata> LoadedMetadata {
-        get => this._loadedMetadata;
-    }
+    public IReadOnlyCollection<ContentMetadata> LoadedMetadata => this._loadedMetadata;
 
     /// <inheritdoc />
     public void Dispose() {
@@ -151,7 +162,7 @@ public sealed class AssetManager : IAssetManager {
             return assets;
         }
 
-        return Enumerable.Empty<(TAsset, ContentMetadata)>();
+        return [];
     }
 
     /// <inheritdoc />
@@ -177,6 +188,14 @@ public sealed class AssetManager : IAssetManager {
         where TAsset : class, IAsset, IAsset<TContent>
         where TContent : class {
         asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.ContentId);
+        return asset != null;
+    }
+
+    /// <inheritdoc />
+    public bool TryGetAsset<TAsset, TContent>(Guid contentId, [NotNullWhen(true)] out TAsset? asset)
+        where TAsset : class, IAsset, IAsset<TContent>
+        where TContent : class {
+        asset = this.GetAsset<TAsset>(contentId);
         return asset != null;
     }
 
@@ -269,20 +288,14 @@ public sealed class AssetManager : IAssetManager {
     }
 
     private sealed class EmptyAssetManager : IAssetManager {
-        public IReadOnlyCollection<ContentMetadata> LoadedMetadata {
-            get => Array.Empty<ContentMetadata>();
-        }
+        public IReadOnlyCollection<ContentMetadata> LoadedMetadata => Array.Empty<ContentMetadata>();
 
         public void Dispose() {
         }
 
-        public IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : class, IAsset {
-            return Enumerable.Empty<TAsset>();
-        }
+        public IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : class, IAsset => [];
 
-        public IEnumerable<(TAsset asset, ContentMetadata metadata)> GetAssetsOfTypeWithMetadata<TAsset>() where TAsset : class, IAsset {
-            return Enumerable.Empty<(TAsset, ContentMetadata)>();
-        }
+        public IEnumerable<(TAsset asset, ContentMetadata metadata)> GetAssetsOfTypeWithMetadata<TAsset>() where TAsset : class, IAsset => [];
 
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
         }
@@ -294,7 +307,15 @@ public sealed class AssetManager : IAssetManager {
         }
 
         public bool TryGetAsset<TAsset, TContent>(AssetReference<TAsset, TContent> assetReference, [NotNullWhen(true)] out TAsset? asset)
-            where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
+            where TAsset : class, IAsset, IAsset<TContent>
+            where TContent : class {
+            asset = null;
+            return false;
+        }
+
+        public bool TryGetAsset<TAsset, TContent>(Guid contentId, [NotNullWhen(true)] out TAsset? asset)
+            where TAsset : class, IAsset, IAsset<TContent>
+            where TContent : class {
             asset = null;
             return false;
         }
