@@ -1,0 +1,56 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          x:TypeArguments="framework:IAssetReferenceCollection"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.AssetReferenceCollectionEditor">
+    <Grid RowDefinitions="Auto, Auto, Auto"
+          DataContext="{Binding $parent[local:AssetReferenceCollectionEditor]}">
+        <Design.DataContext>
+            <local:AssetReferenceCollectionEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Row="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddCommand}"
+                    CommandParameter="{x:Null}"
+                    Classes="Icon"
+                    ToolTip.Tip="Add an asset">
+                <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
+            </Button>
+
+            <Button Command="{Binding RemoveCommand}"
+                    CommandParameter="{Binding SelectedMetadata}"
+                    Classes="Icon"
+                    ToolTip.Tip="Remove the selected asset">
+                <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
+
+            <Border Classes="VerticalSeparator" />
+
+            <Button Command="{Binding ClearCommand}"
+                    ToolTip.Tip="Clear the assets"
+                    Classes="Icon">
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+        </StackPanel>
+        
+        <ListBox Grid.Row="2"
+                 MaxHeight="256"
+                 ItemsSource="{Binding Metadata}"
+                 SelectedItem="{Binding SelectedMetadata}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={x:Static local:MetadataToNameConverter.WithoutExtension}}"
+                               ToolTip.Tip="{Binding Converter={x:Static local:MetadataToNameConverter.FullPath}}"/>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</local:ValueEditorControl>

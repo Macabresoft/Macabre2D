@@ -142,7 +142,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
-        else if (memberType == typeof(Guid) && (owner is AssetReference && member.MemberInfo.Name == nameof(SpriteSheet.ContentId) || memberType.GetCustomAttribute<AssetGuidAttribute>() != null)) {
+        else if (memberType == typeof(Guid) && (owner is IAssetReference && member.MemberInfo.Name == nameof(SpriteSheet.ContentId) || memberType.GetCustomAttribute<AssetGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 editor.Title = $"Content Id ({propertyPath})";
@@ -151,6 +151,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         }
         else if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
+        else if (memberType.IsAssignableTo(typeof(IAssetReferenceCollection))) {
+            var editor = this.CreateValueEditorFromType(typeof(AssetReferenceCollectionEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 result.Add(editor);
             }

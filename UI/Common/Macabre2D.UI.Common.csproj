@@ -155,6 +155,10 @@
           <DependentUpon>PredefinedIntEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\AssetReferenceCollectionEditor.axaml.cs">
+          <DependentUpon>AssetReferenceCollectionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>
