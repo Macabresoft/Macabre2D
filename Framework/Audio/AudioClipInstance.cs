@@ -65,39 +65,12 @@ public interface IAudioClipInstance : IDisposable {
 /// An instance of a <see cref="AudioClip" /> that can handle operations for a <see cref="SoundEffectInstance" />.
 /// </summary>
 public sealed class AudioClipInstance : IAudioClipInstance {
-    private readonly SoundEffectInstance _instance;
+    private readonly SoundEffectInstance _leftChannel;
+    private readonly SoundEffectInstance _rightChannel;
     private readonly AudioSettings _settings;
+    private float _categoryVolume;
+    private float _pan;
     private float _volume;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
-    /// </summary>
-    /// <param name="instance">The sound effect instance.</param>
-    /// <param name="settings">The settings.</param>
-    /// <param name="category">The category.</param>
-    /// <param name="volume">The volume.</param>
-    /// <param name="pan">The pan.</param>
-    /// <param name="pitch">The pitch.</param>
-    /// <param name="shouldLoop">A value indicating whether this should loop.</param>
-    public AudioClipInstance(
-        SoundEffectInstance instance,
-        AudioSettings settings,
-        VolumeCategory category,
-        float volume,
-        float pan,
-        float pitch,
-        bool shouldLoop) {
-        this._instance = instance;
-        this._settings = settings;
-        this.Category = category;
-
-        this.Volume = volume;
-        this.Pan = pan;
-        this.Pitch = pitch;
-        this.ShouldLoop = shouldLoop;
-
-        this._settings.VolumeChanged += this.Settings_VolumeChanged;
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
@@ -116,16 +89,21 @@ public sealed class AudioClipInstance : IAudioClipInstance {
         float volume,
         float pan,
         float pitch,
-        bool shouldLoop) : this(soundEffect.CreateInstance(), settings, category, volume, pan, pitch, shouldLoop) {
-    }
+        bool shouldLoop) {
+        this._leftChannel = soundEffect.CreateInstance();
+        this._rightChannel = soundEffect.CreateInstance();
+        this._leftChannel.Pan = -1f;
+        this._rightChannel.Pan = 1f;
+        this._settings = settings;
+        this.Category = category;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SoundEffectInstance" /> class.
-    /// </summary>
-    /// <param name="instance">The sound effect instance.</param>
-    /// <param name="settings">The settings.</param>
-    /// <param name="category">The category.</param>
-    public AudioClipInstance(SoundEffectInstance instance, AudioSettings settings, VolumeCategory category) : this(instance, settings, category, 1f, 0f, 0f, false) {
+        this._volume = volume;
+        this._categoryVolume = this.GetVolume();
+        this.Pan = pan;
+        this.Pitch = pitch;
+        this.ShouldLoop = shouldLoop;
+
+        this._settings.VolumeChanged += this.Settings_VolumeChanged;
     }
 
     /// <summary>
@@ -134,7 +112,7 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     /// <param name="soundEffect">The sound effect.</param>
     /// <param name="settings">The settings.</param>
     /// <param name="category">The category.</param>
-    public AudioClipInstance(SoundEffect soundEffect, AudioSettings settings, VolumeCategory category) : this(soundEffect.CreateInstance(), settings, category) {
+    public AudioClipInstance(SoundEffect soundEffect, AudioSettings settings, VolumeCategory category) : this(soundEffect, settings, category, 1f, 0f, 0f, false) {
     }
 
     /// <inheritdoc />
@@ -146,24 +124,33 @@ public sealed class AudioClipInstance : IAudioClipInstance {
     public static IAudioClipInstance Empty => new EmptyAudioClipInstance();
 
     /// <inheritdoc />
-    public SoundState State => this._instance.State;
+    public SoundState State => this._leftChannel.State;
 
     /// <inheritdoc />
     public float Pan {
-        get => this._instance.Pan;
-        set => this._instance.Pan = MathHelper.Clamp(value, -1f, 1f);
+        get => this._pan;
+        set {
+            this._pan = MathHelper.Clamp(value, -1f, 1f);
+            this.ResetVolume();
+        }
     }
 
     /// <inheritdoc />
     public float Pitch {
-        get => this._instance.Pitch;
-        set => this._instance.Pitch = MathHelper.Clamp(value, -1f, 1f);
+        get => this._leftChannel.Pitch;
+        set {
+            this._leftChannel.Pitch = MathHelper.Clamp(value, -1f, 1f);
+            this._rightChannel.Pitch = this._leftChannel.Pitch;
+        }
     }
 
     /// <inheritdoc />
     public bool ShouldLoop {
-        get => this._instance.IsLooped;
-        private init => this._instance.IsLooped = value;
+        get => this._leftChannel.IsLooped;
+        private init {
+            this._leftChannel.IsLooped = value;
+            this._rightChannel.IsLooped = value;
+        }
     }
 
     /// <inheritdoc />
@@ -171,7 +158,8 @@ public sealed class AudioClipInstance : IAudioClipInstance {
         get => this._volume;
         set {
             this._volume = MathHelper.Clamp(value, 0f, 1f);
-            this._instance.Volume = this.GetVolume();
+            this._categoryVolume = this.GetVolume();
+            this.ResetVolume();
         }
     }
 
@@ -182,16 +170,22 @@ public sealed class AudioClipInstance : IAudioClipInstance {
 
     /// <inheritdoc />
     public void Pause() {
-        if (this._instance.State == SoundState.Playing) {
-            this._instance.Pause();
+        if (this._leftChannel.State == SoundState.Playing) {
+            this._leftChannel.Pause();
+        }
+
+        if (this._rightChannel.State == SoundState.Playing) {
+            this._rightChannel.Pause();
         }
     }
 
     /// <inheritdoc />
     public void Play() {
-        this._instance.IsLooped = this.ShouldLoop;
-        this._instance.Volume = this.GetVolume();
-        this._instance.Play();
+        this._leftChannel.IsLooped = this.ShouldLoop;
+        this._rightChannel.IsLooped = this.ShouldLoop;
+        this._leftChannel.Volume = this.GetVolume();
+        this._leftChannel.Play();
+        this._rightChannel.Play();
     }
 
     /// <inheritdoc />
@@ -201,14 +195,24 @@ public sealed class AudioClipInstance : IAudioClipInstance {
 
     /// <inheritdoc />
     public void Stop(bool isImmediate) {
-        this._instance.Stop(isImmediate);
+        this._leftChannel.Stop(isImmediate);
+        this._rightChannel.Stop(isImmediate);
     }
 
     private float GetVolume() => this._settings.GetVolume(this.Category, this._volume);
 
+    private void ResetVolume() {
+        var rightChannelMultiplier = (this._pan + 1f) / 2f;
+        this._rightChannel.Volume = this._categoryVolume * rightChannelMultiplier;
+
+        var leftChannelMultipler = 1f - rightChannelMultiplier;
+        this._leftChannel.Volume = this._categoryVolume * leftChannelMultipler;
+    }
+
     private void Settings_VolumeChanged(object? sender, VolumeCategory e) {
         if (this.State == SoundState.Playing && (e == VolumeCategory.Overall || e == this.Category)) {
-            this._instance.Volume = this.GetVolume();
+            this._categoryVolume = this.GetVolume();
+            this.ResetVolume();
         }
     }
 
