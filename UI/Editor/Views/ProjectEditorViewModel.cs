@@ -257,7 +257,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(AutoTileSet tileSet) {
         if (tileSet.SpriteSheet != null) {
             this._tileMap.TileSetReference.Reset(tileSet);
-            this._tileMap.TileSetReference.Initialize(this._scene.Assets);
+            this._tileMap.TileSetReference.Initialize(this._scene.Assets, this._game);
             this._tileMap.IsEnabled = true;
             this._grid.IsEnabled = true;
         }
@@ -266,7 +266,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(SpriteAnimation spriteAnimation) {
         if (spriteAnimation.SpriteSheet != null) {
             this._spriteAnimator.AnimationReference.Reset(spriteAnimation);
-            this._spriteAnimator.AnimationReference.Initialize(this._scene.Assets);
+            this._spriteAnimator.AnimationReference.Initialize(this._scene.Assets, this._game);
             this._spriteAnimator.Play();
             this._spriteAnimator.IsEnabled = true;
             this._spriteAnimator.FrameRateOverride.IsEnabled = true;
@@ -277,7 +277,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         if (font.SpriteSheet != null) {
             this._textArea.IsVisible = true;
             this._textArea.FontReference.Reset(font);
-            this._textArea.FontReference.Initialize(this._scene.Assets);
+            this._textArea.FontReference.Initialize(this._scene.Assets, this._game);
             this._textArea.Text = font.CharacterLayout;
         }
     }

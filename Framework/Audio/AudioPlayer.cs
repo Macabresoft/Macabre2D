@@ -80,7 +80,7 @@ public sealed class AudioPlayer : Entity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this._instance = this.AudioClipReference.InitializeAndGetInstance(this.Scene.Assets, this.Game.AudioSettings, this.Volume, this.Pan, this.Pitch, this.ShouldLoop);
+        this._instance = this.AudioClipReference.InitializeAndGetInstance(this.Scene.Assets, this.Game, this.Volume, this.Pan, this.Pitch, this.ShouldLoop);
         this.AudioClipReference.PropertyChanged += this.AudioClipReference_PropertyChanged;
 
         if (this.ShouldLoop && this.IsEnabled && !BaseGame.IsDesignMode) {

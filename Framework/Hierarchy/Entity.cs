@@ -339,7 +339,7 @@ public class Entity : Transformable, IEntity {
             this.Scene.RegisterEntity(this);
 
             foreach (var assetReference in this.GetAssetReferences()) {
-                assetReference.Initialize(this.Scene.Assets);
+                assetReference.Initialize(this.Scene.Assets, this.Game);
             }
 
             foreach (var child in this.Children) {

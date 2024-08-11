@@ -24,9 +24,9 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assetManager) {
-        base.Initialize(assetManager);
-        this.Configuration.Initialize(assetManager);
+    public override void Initialize(IAssetManager assetManager, IGame game) {
+        base.Initialize(assetManager, game);
+        this.Configuration.Initialize(assetManager, game);
     }
 
     /// <summary>

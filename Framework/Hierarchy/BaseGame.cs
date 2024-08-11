@@ -358,7 +358,7 @@ public class BaseGame : Game, IGame {
 
         var assetManager = this.CreateAssetManager();
         foreach (var shader in this.Project.ScreenShaders) {
-            shader.Shader.Initialize(assetManager);
+            shader.Shader.Initialize(assetManager, this);
         }
 
         this.IsInitialized = true;

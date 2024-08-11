@@ -77,13 +77,16 @@ public class BoxTileMap : RenderableEntity {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.TileSet.PropertyChanged -= this.TileSet_PropertyChanged;
+        base.Deinitialize();
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.TileSet.Initialize(this.Scene.Assets);
         this.TileSet.PropertyChanged += this.TileSet_PropertyChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
@@ -107,22 +110,17 @@ public class BoxTileMap : RenderableEntity {
     }
 
     /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.TileSet;
+    }
+
+    /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.Reset();
     }
 
-    /// <summary>
-    /// Resets the render options, bounding area, and render transform.
-    /// </summary>
-    protected void Reset() {
-        this.RenderOptions.InvalidateSize();
-        this.ResetBoundingArea();
-    }
-
-    private BoundingArea CreateBoundingArea() {
-        return this.RenderOptions.CreateBoundingArea(this);
-    }
+    private BoundingArea CreateBoundingArea() => this.RenderOptions.CreateBoundingArea(this);
 
     private Vector2 CreateSize() {
         var result = Vector2.Zero;
@@ -147,6 +145,11 @@ public class BoxTileMap : RenderableEntity {
             position,
             colorOverride,
             this.RenderOptions.Orientation);
+    }
+
+    private void Reset() {
+        this.RenderOptions.InvalidateSize();
+        this.ResetBoundingArea();
     }
 
 

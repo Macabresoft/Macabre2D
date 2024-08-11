@@ -21,7 +21,8 @@ public interface IShaderConfiguration {
     /// Initializes this instance.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
-    void Initialize(IAssetManager assetManager);
+    /// <param name="game">The game</param>
+    void Initialize(IAssetManager assetManager, IGame game);
 
     /// <summary>
     /// Resets this configuration to defaults.
@@ -48,7 +49,8 @@ public class ShaderConfiguration : IShaderConfiguration {
     /// Initializes this instance.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
-    public virtual void Initialize(IAssetManager assetManager) {
+    /// <param name="game"></param>
+    public virtual void Initialize(IAssetManager assetManager, IGame game) {
     }
 
     /// <inheritdoc />

@@ -100,7 +100,8 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Initializes this instance.
     /// </summary>
     /// <param name="assets">The asset manager.</param>
-    void Initialize(IAssetManager assets);
+    /// <param name="game">The game</param>
+    void Initialize(IAssetManager assets, IGame game);
 }
 
 /// <summary>
@@ -228,11 +229,11 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
 
     /// <inheritdoc />
-    public void Initialize(IAssetManager assets) {
-        this.Fallbacks.GamePadNReference.Initialize(assets);
-        this.Fallbacks.GamePadSReference.Initialize(assets);
-        this.Fallbacks.GamePadXReference.Initialize(assets);
-        this.Fallbacks.KeyboardReference.Initialize(assets);
-        this.Fallbacks.Font.Initialize(assets);
+    public void Initialize(IAssetManager assets, IGame game) {
+        this.Fallbacks.GamePadNReference.Initialize(assets, game);
+        this.Fallbacks.GamePadSReference.Initialize(assets, game);
+        this.Fallbacks.GamePadXReference.Initialize(assets, game);
+        this.Fallbacks.KeyboardReference.Initialize(assets, game);
+        this.Fallbacks.Font.Initialize(assets, game);
     }
 }

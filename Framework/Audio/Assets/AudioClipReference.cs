@@ -18,18 +18,18 @@ public class AudioClipReference : AssetReference<AudioClip, SoundEffect> {
     /// Initializes the audio clip and gets an instance.
     /// </summary>
     /// <param name="assets">The asset manager.</param>
-    /// <param name="settings">The audio settings.</param>
+    /// <param name="game">The game.</param>
     /// <returns>An audio clip instance.</returns>
-    public IAudioClipInstance InitializeAndGetInstance(IAssetManager assets, AudioSettings settings) {
-        this.Initialize(assets);
-        return this.GetInstance(settings);
+    public IAudioClipInstance InitializeAndGetInstance(IAssetManager assets, IGame game) {
+        this.Initialize(assets, game);
+        return this.GetInstance(game.AudioSettings);
     }
 
     /// <summary>
     /// Initializes the audio clip and gets an instance.
     /// </summary>
     /// <param name="assets">The asset manager.</param>
-    /// <param name="settings">The audio settings.</param>
+    /// <param name="game">The game.</param>
     /// <param name="volume">The volume.</param>
     /// <param name="pan">The panning.</param>
     /// <param name="pitch">The pitch.</param>
@@ -37,12 +37,12 @@ public class AudioClipReference : AssetReference<AudioClip, SoundEffect> {
     /// <returns>An audio clip instance.</returns>
     public IAudioClipInstance InitializeAndGetInstance(
         IAssetManager assets,
-        AudioSettings settings,
+        IGame game,
         float volume,
         float pan,
         float pitch,
         bool shouldLoop) {
-        this.Initialize(assets);
-        return this.Asset?.GetInstance(settings, volume, pan, pitch, shouldLoop) ?? AudioClipInstance.Empty;
+        this.Initialize(assets, game);
+        return this.Asset?.GetInstance(game.AudioSettings, volume, pan, pitch, shouldLoop) ?? AudioClipInstance.Empty;
     }
 }

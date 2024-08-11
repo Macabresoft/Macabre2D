@@ -39,7 +39,8 @@ public interface IAssetReference : INotifyPropertyChanged {
     /// Initializes this reference with the asset manager.
     /// </summary>
     /// <param name="assetManager">The asset manager.</param>
-    void Initialize(IAssetManager assetManager);
+    /// <param name="game">The game</param>
+    void Initialize(IAssetManager assetManager, IGame game);
 }
 
 /// <summary>
@@ -97,8 +98,8 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     public abstract void Deinitialize();
 
     /// <inheritdoc />
-    public virtual void Initialize(IAssetManager assetManager) {
-        this.AssetManager = assetManager;
+    public virtual void Initialize(IAssetManager assets, IGame game) {
+        this.AssetManager = assets;
     }
 }
 
@@ -157,8 +158,8 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
     }
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assetManager) {
-        base.Initialize(assetManager);
+    public override void Initialize(IAssetManager assetManager, IGame game) {
+        base.Initialize(assetManager, game);
 
         if (this.AssetManager.TryGetAsset(this, out var asset)) {
             this.LoadAsset(asset);

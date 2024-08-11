@@ -390,7 +390,7 @@ public sealed class Scene : GridContainer, IScene {
                 this.Assets = assetManager;
                 this._game = game;
 
-                this.Project.Initialize(this.Assets);
+                this.Project.Initialize(this.Assets, this.Game);
 
                 foreach (var system in this.Systems) {
                     system.Initialize(this);

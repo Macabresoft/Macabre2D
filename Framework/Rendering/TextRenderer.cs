@@ -73,7 +73,7 @@ public class TextRenderer : RenderableEntity {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
-        this.FontReference.Initialize(this.Scene.Assets);
+        this.FontReference.Initialize(this.Scene.Assets, this.Game);
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
     }

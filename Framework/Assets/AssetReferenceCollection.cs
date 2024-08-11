@@ -83,7 +83,8 @@ public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAsset
         if (this._contentIds.Add(asset.ContentId) && this._isInitialized) {
             this.LoadAndAddAsset(asset);
         }
-        
+
+        this.OnAssetAdded(asset);
         this.RaisePropertyChanged(nameof(this.HasContent));
     }
 
@@ -107,9 +108,9 @@ public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAsset
     }
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assetManager) {
+    public override void Initialize(IAssetManager assetManager, IGame game) {
         try {
-            base.Initialize(assetManager);
+            base.Initialize(assetManager, game);
 
             foreach (var contentId in this._contentIds) {
                 if (this.AssetManager.TryGetAsset<TAsset, TContent>(contentId, out var asset)) {
@@ -126,6 +127,7 @@ public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAsset
     public void RemoveAsset(TAsset asset) {
         this._contentIds.Remove(asset.ContentId);
         this._assets.Remove(asset);
+        this.OnAssetRemoved(asset);
         this.RaisePropertyChanged(nameof(this.HasContent));
     }
 
@@ -134,9 +136,24 @@ public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAsset
         this._contentIds.Remove(contentId);
         foreach (var asset in this._assets.Where(x => x.ContentId == contentId).ToList()) {
             this._assets.Remove(asset);
+            this.OnAssetRemoved(asset);
         }
 
         this.RaisePropertyChanged(nameof(this.HasContent));
+    }
+
+    /// <summary>
+    /// Called when an asset is added.
+    /// </summary>
+    /// <param name="asset">The added asset.</param>
+    protected virtual void OnAssetAdded(TAsset asset) {
+    }
+
+    /// <summary>
+    /// Called when an asset is removed.
+    /// </summary>
+    /// <param name="asset">The removed asset.</param>
+    protected virtual void OnAssetRemoved(TAsset asset) {
     }
 
     private void LoadAndAddAsset(TAsset asset) {

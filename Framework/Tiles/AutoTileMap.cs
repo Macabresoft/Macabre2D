@@ -78,14 +78,18 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        this.TileSetReference.PropertyChanged -= this.TileSetReference_PropertyChanged;
+        base.Deinitialize();
+    }
+
+    /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) => this._activeTileToIndex.ContainsKey(tilePosition);
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.TileSetReference.PropertyChanged -= this.TileSetReference_PropertyChanged;
-        this.TileSetReference.Initialize(this.Scene.Assets);
         this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
         this.ReevaluateIndexes();
         this.ReorderActiveTiles();
@@ -120,7 +124,12 @@ public sealed class AutoTileMap : RenderableTileMap {
         base.ClearActiveTiles();
         this._activeTileToIndex.Clear();
     }
-    
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.TileSetReference;
+    }
+
     /// <inheritdoc />
     protected override bool HasActiveTiles() => this._activeTileToIndex.Any();
 
