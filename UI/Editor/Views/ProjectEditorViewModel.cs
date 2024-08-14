@@ -163,6 +163,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         scene.AddSystem<RenderSystem>();
         scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<AnimationSystem>();
 
         this._camera = scene.AddChild<Camera>();
         this._camera.LocalPosition = CameraAdjustment;
@@ -235,7 +236,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._tileMap.AddTile(new Point(8, 6));
         this._tileMap.AddTile(new Point(8, 7));
         this._tileMap.AddTile(new Point(8, 8));
-
+        
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
         this._spriteAnimator.IsEnabled = false;
         this._spriteAnimator.FrameRateOverride.IsEnabled = true;
