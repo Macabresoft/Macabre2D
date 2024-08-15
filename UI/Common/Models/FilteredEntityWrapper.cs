@@ -10,17 +10,13 @@ using Macabresoft.Macabre2D.Framework;
 /// </summary>
 public class FilteredEntityWrapper {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FilteredEntityWrapper" /> class.
+    /// Initializes a new instance of the <see cref="FilteredEntityWrapper" /> class for searching on type.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <param name="entityType">The entity type to find.</param>
-    public FilteredEntityWrapper(IEntity entity, Type entityType) {
-        if (entityType == null) {
-            throw new ArgumentNullException(nameof(entityType));
-        }
+    public FilteredEntityWrapper(IEntity entity, Type entityType) : this(entity) {
+        ArgumentNullException.ThrowIfNull(entityType);
 
-        this.Entity = entity ?? throw new ArgumentNullException(nameof(entity));
-        this.EntityType = this.Entity.GetType();
         this.IsSelectable = entityType.IsInstanceOfType(this.Entity);
 
         var children = new List<FilteredEntityWrapper>(
@@ -31,10 +27,38 @@ public class FilteredEntityWrapper {
         this.Children = children;
     }
 
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FilteredEntityWrapper" /> class for searching on content identifier.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="contentId">The content identifier.</param>
+    public FilteredEntityWrapper(IEntity entity, Guid contentId) : this(entity) {
+        this.ContentId = contentId;
+        this.IsSelectable = this.Entity.ReferencesContent(this.ContentId);
+
+        var children = new List<FilteredEntityWrapper>(
+            this.Entity.Children
+                .Where(x => x.ReferencesContent(contentId) || x.GetDescendentsWithContent(this.ContentId).Any())
+                .Select(x => new FilteredEntityWrapper(x, contentId)));
+
+        this.Children = children;
+    }
+
+    private FilteredEntityWrapper(IEntity entity) {
+        this.Entity = entity ?? throw new ArgumentNullException(nameof(entity));
+        this.EntityType = this.Entity.GetType();
+    }
+
     /// <summary>
     /// Gets the children of this entity if any exist.
     /// </summary>
     public IEnumerable<FilteredEntityWrapper> Children { get; }
+
+    /// <summary>
+    /// Gets the content type.
+    /// </summary>
+    public Guid ContentId { get; } = Guid.Empty;
 
     /// <summary>
     /// Gets the entity this is wrapping.
@@ -47,7 +71,7 @@ public class FilteredEntityWrapper {
     public Type EntityType { get; }
 
     /// <summary>
-    /// Gets a value specifying whether or not this is selectable.
+    /// Gets a value specifying whether this is selectable.
     /// </summary>
     public bool IsSelectable { get; }
 }

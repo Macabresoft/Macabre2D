@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using Macabresoft.AvaloniaEx;
 using ReactiveUI;
-using Unity;
 
 /// <summary>
 /// A view model for the entity selection dialog.
@@ -23,9 +22,17 @@ public class EntitySelectionViewModel : BaseDialogViewModel {
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="desiredAssetType">The desired asset type.</param>
-    [InjectionConstructor]
     public EntitySelectionViewModel(ISceneService sceneService, Type desiredAssetType) : this() {
         this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, desiredAssetType);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntitySelectionViewModel" /> class.
+    /// </summary>
+    /// <param name="sceneService">The scene service.</param>
+    /// <param name="contentId">The content identifier.</param>
+    public EntitySelectionViewModel(ISceneService sceneService, Guid contentId) : this() {
+        this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, contentId);
     }
 
     /// <summary>

@@ -34,6 +34,11 @@
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Open the directory which contains the selected file" />
 
+            <MenuItem Header="Find Usages in Current Scene"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Find all entities in the current scene that use this content" />
+
             <Separator />
 
             <MenuItem Header="Delete"

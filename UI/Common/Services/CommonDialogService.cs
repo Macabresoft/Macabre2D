@@ -35,17 +35,17 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType);
 
     /// <summary>
+    /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which contains the specified content.
+    /// </summary>
+    /// <param name="contentId">The content type.</param>
+    /// <returns>The selected entity.</returns>
+    Task<IEntity> OpenEntitySelectionDialog(Guid contentId);
+
+    /// <summary>
     /// Opens a dialog to show the licenses.
     /// </summary>
     /// <returns>A task.</returns>
     Task OpenLicenseDialog();
-
-    /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="IGameSystem" /> which inherits from the specified base type.
-    /// </summary>
-    /// <param name="baseSystemType">The base system type.</param>
-    /// <returns>The selected entity.</returns>
-    Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a sprite.
@@ -58,6 +58,13 @@ public interface ICommonDialogService : IBaseDialogService {
     /// </summary>
     /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
     Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
+
+    /// <summary>
+    /// Opens a dialog that allows the user to pick an <see cref="IGameSystem" /> which inherits from the specified base type.
+    /// </summary>
+    /// <param name="baseSystemType">The base system type.</param>
+    /// <returns>The selected entity.</returns>
+    Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="Type" />.
@@ -74,17 +81,17 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<SpriteFontLayoutResult> ShowFontLayoutDialog(string currentLayout);
 
     /// <summary>
+    /// Shows a dialog to select a key.
+    /// </summary>
+    /// <returns>Selects a key.</returns>
+    Task<Keys?> ShowKeySelectDialog();
+
+    /// <summary>
     /// Shows a dialog to select a file.
     /// </summary>
     /// <param name="title">The title of the window.</param>
     /// <returns>The path of the selected file.</returns>
     Task<string> ShowSingleFileSelectionDialog(string title);
-
-    /// <summary>
-    /// Shows a dialog to select a key.
-    /// </summary>
-    /// <returns>Selects a key.</returns>
-    Task<Keys?> ShowKeySelectDialog();
 }
 
 /// <summary>
@@ -138,7 +145,22 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     /// <inheritdoc />
     public async Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType) {
         IEntity selectedEntity = null;
-        var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(Type), baseEntityType));
+        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), baseEntityType);
+        var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(EntitySelectionViewModel), viewModel));
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+
+        if (result && window.ViewModel is { SelectedEntity.IsSelectable: true }) {
+            selectedEntity = window.ViewModel.SelectedEntity.Entity;
+        }
+
+        return selectedEntity;
+    }
+
+    /// <inheritdoc />
+    public async Task<IEntity> OpenEntitySelectionDialog(Guid contentId) {
+        IEntity selectedEntity = null;
+        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), contentId);
+        var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(EntitySelectionViewModel), viewModel));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
         if (result && window.ViewModel is { SelectedEntity.IsSelectable: true }) {
@@ -155,6 +177,12 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
+    public abstract Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+
+    /// <inheritdoc />
+    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
+
+    /// <inheritdoc />
     public async Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType) {
         IGameSystem selectedGameSystem = null;
         var window = Resolver.Resolve<SystemSelectionDialog>(new ParameterOverride(typeof(Type), baseSystemType));
@@ -166,12 +194,6 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
 
         return selectedGameSystem;
     }
-
-    /// <inheritdoc />
-    public abstract Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
-
-    /// <inheritdoc />
-    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
 
     /// <inheritdoc />
     public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types) {
@@ -194,6 +216,13 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
+    public async Task<Keys?> ShowKeySelectDialog() {
+        var window = Resolver.Resolve<KeySelectDialog>();
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+        return result ? window.SelectedKey : null;
+    }
+
+    /// <inheritdoc />
     public async Task<string> ShowSingleFileSelectionDialog(string title) {
         var result = await this.MainWindow.StorageProvider.OpenFilePickerAsync(this._contentSelectionOptions);
 
@@ -202,12 +231,5 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         }
 
         return null;
-    }
-
-    /// <inheritdoc />
-    public async Task<Keys?> ShowKeySelectDialog() {
-        var window = Resolver.Resolve<KeySelectDialog>();
-        var result = await window.ShowDialog<bool>(this.MainWindow);
-        return result ? window.SelectedKey : null;
     }
 }

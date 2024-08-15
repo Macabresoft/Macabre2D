@@ -75,6 +75,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddDirectory(x as IContentDirectory), whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddScene(x as IContentDirectory), whenIsContentDirectory);
+
+        this.FindContentUsagesCommand = ReactiveCommand.CreateFromTask<IContentNode>(
+            this.FindContentUsages,
+            this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null));
+
         this.ImportCommand = ReactiveCommand.CreateFromTask<object>(x => this.ContentService.ImportContent(x as IContentDirectory), whenIsContentDirectory);
 
         this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
@@ -136,6 +141,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the content service.
     /// </summary>
     public IContentService ContentService { get; }
+
+    /// <summary>
+    /// Gets a command that finds usages of the selected content in the current scene.
+    /// </summary>
+    public ICommand FindContentUsagesCommand { get; }
 
     /// <summary>
     /// Gets the import command.
@@ -328,6 +338,25 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 shaders.Remove(clonedShader);
                 this.AssetSelectionService.Selected = shader;
             });
+        }
+    }
+
+    private async Task FindContentUsages(IContentNode node) {
+        if (node is ContentFile && node.Id != Guid.Empty) {
+            if (this._sceneService.CurrentScene.GetDescendentsWithContent(node.Id).Any()) {
+                var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id);
+
+                if (!Entity.IsNullOrEmpty(entity, out var found)) {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        this._editorService.SelectedTab = EditorTabs.Scene;
+                        this._sceneService.Selected = found;
+                    });
+                }
+            }
+            else {
+                await this._dialogService.ShowWarningDialog("No Usages Found", "This content is not used in the current scene. It may still be used by unopened scenes.");
+            }
         }
     }
 
