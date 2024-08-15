@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -34,6 +35,12 @@ public interface IAssetReference : INotifyPropertyChanged {
     /// Deinitializes this reference.
     /// </summary>
     void Deinitialize();
+
+    /// <summary>
+    /// Gets the content identifiers associated with this instance.
+    /// </summary>
+    /// <returns>The content identifiers.</returns>
+    public IEnumerable<Guid> GetContentIds();
 
     /// <summary>
     /// Initializes this reference with the asset manager.
@@ -98,6 +105,9 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     public abstract void Deinitialize();
 
     /// <inheritdoc />
+    public abstract IEnumerable<Guid> GetContentIds();
+
+    /// <inheritdoc />
     public virtual void Initialize(IAssetManager assets, IGame game) {
         this.AssetManager = assets;
     }
@@ -156,6 +166,9 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
             this.Asset = null;
         }
     }
+
+    /// <inheritdoc />
+    public override IEnumerable<Guid> GetContentIds() => this.ContentId != Guid.Empty ? [this.ContentId] : [];
 
     /// <inheritdoc />
     public override void Initialize(IAssetManager assetManager, IGame game) {

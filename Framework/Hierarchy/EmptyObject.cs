@@ -128,6 +128,9 @@ public class EmptyObject : IScene {
     public IEnumerable<IEntity> GetDescendants(Type type) => [];
 
     /// <inheritdoc />
+    public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) => [];
+
+    /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
 
     /// <inheritdoc />
@@ -184,6 +187,9 @@ public class EmptyObject : IScene {
     /// <inheritdoc />
     public void RaiseDeactivated() {
     }
+
+    /// <inheritdoc />
+    public bool ReferencesContent(Guid contentId) => false;
 
     /// <inheritdoc />
     public void RegisterEntity(IEntity entity) {

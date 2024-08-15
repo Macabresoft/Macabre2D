@@ -95,6 +95,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEnumerable<IEntity> GetDescendants(Type type);
 
     /// <summary>
+    /// Gets all descendents that contain the specified content.
+    /// </summary>
+    /// <param name="contentId">The content identifier.</param>
+    /// <returns>The entities with that content.</returns>
+    IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId);
+
+    /// <summary>
     /// Gets the child of the specified type if it exists; otherwise, adds a new child.
     /// </summary>
     /// <typeparam name="T">The type of child to find.</typeparam>
@@ -129,6 +136,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Called when this instance is removed from the <see cref="IScene" /> tree.
     /// </summary>
     void OnRemovedFromSceneTree();
+
+    /// <summary>
+    /// Checks whether this instance references the specified content.
+    /// </summary>
+    /// <param name="contentId">The content identifier.</param>
+    /// <returns>A value indicating whether or not this instance </returns>
+    bool ReferencesContent(Guid contentId);
 
     /// <summary>
     /// Removes the child.
@@ -325,6 +339,13 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
+    public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) {
+        var descendents = new List<IEntity>(this.Children.Where(x => x.ReferencesContent(contentId)));
+        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendentsWithContent(contentId)));
+        return descendents;
+    }
+
+    /// <inheritdoc />
     public T GetOrAddChild<T>() where T : class, IEntity, new() => this.TryGetChild<T>(out var entity) ? entity : this.AddChild<T>();
 
     /// <inheritdoc />
@@ -388,6 +409,13 @@ public class Entity : Transformable, IEntity {
             child.OnRemovedFromSceneTree();
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether this references the specified content.
+    /// </summary>
+    /// <param name="contentId">The content identifier.</param>
+    /// <returns>A value indicating whether this references the specified content.</returns>
+    public bool ReferencesContent(Guid contentId) => this.GetAssetReferences().Any(x => x.GetContentIds().Contains(contentId));
 
     /// <inheritdoc />
     public void RemoveChild(IEntity entity) {

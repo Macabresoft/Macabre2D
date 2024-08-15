@@ -108,6 +108,9 @@ public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAsset
     }
 
     /// <inheritdoc />
+    public override IEnumerable<Guid> GetContentIds() => this._contentIds;
+
+    /// <inheritdoc />
     public override void Initialize(IAssetManager assetManager, IGame game) {
         try {
             base.Initialize(assetManager, game);

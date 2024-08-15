@@ -134,6 +134,80 @@ public static class EntityTests {
 
     [Test]
     [Category("Unit Tests")]
+    public static void GetDescendentsWithContent_ShouldReturnAllChildren_WhenChildrenHaveContent() {
+        const int NumberOfChildren = 10;
+        const int MaxDepth = 5;
+
+        var parent = new Entity();
+        var contentCount = 0;
+        var contentId = Guid.NewGuid();
+
+        for (var i = 0; i < NumberOfChildren; i++) {
+            var child = parent.AddChild<Entity>();
+
+            child.Name = child.Id.ToString();
+            for (var d = 0; d < MaxDepth; d++) {
+                if (i + d % 3 == 0) {
+                    var spriteRenderer = parent.AddChild<SpriteRenderer>();
+                    spriteRenderer.SpriteReference.ContentId = Guid.NewGuid();
+                }
+                else if (i + d % 2 == 0) {
+                    contentCount++;
+                    var spriteRenderer = parent.AddChild<SpriteRenderer>();
+                    spriteRenderer.SpriteReference.ContentId = contentId;
+                }
+                else {
+                    parent.AddChild<Entity>();
+                }
+            }
+        }
+
+        using (new AssertionScope()) {
+            contentCount.Should().BePositive();
+            parent.GetDescendentsWithContent(contentId).Count().Should().Be(contentCount);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void GetDescendentsWithContent_ShouldReturnChild_WhenContentUnused() {
+        var parent = new Entity();
+        var child = parent.AddChild<SpriteRenderer>();
+        child.SpriteReference.ContentId = Guid.NewGuid();
+
+        using (new AssertionScope()) {
+            parent.GetDescendentsWithContent(Guid.NewGuid()).Count().Should().Be(0);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void GetDescendentsWithContent_ShouldReturnChild_WhenDirectChildHasContent() {
+        var parent = new Entity();
+        var child = parent.AddChild<SpriteRenderer>();
+        child.SpriteReference.ContentId = Guid.NewGuid();
+
+        var descendents = parent.GetDescendentsWithContent(child.SpriteReference.ContentId).ToList();
+
+        using (new AssertionScope()) {
+            descendents.Count().Should().Be(1);
+            descendents.FirstOrDefault().Should().Be(child);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void GetDescendentsWithContent_ShouldReturnEmpty_WhenNoChildren() {
+        var entity = new SpriteRenderer();
+        entity.SpriteReference.ContentId = Guid.NewGuid();
+
+        using (new AssertionScope()) {
+            entity.GetDescendentsWithContent(entity.SpriteReference.ContentId).Count().Should().Be(0);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
     public static void ReorderChild_FirstChildPlusOne_ShouldWork() {
         const int NumberOfChildren = 5;
         var entity = new Entity();
