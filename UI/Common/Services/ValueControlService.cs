@@ -149,6 +149,14 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType == typeof(Guid) && (owner is EntityReference && member.MemberInfo.Name == nameof(EntityReference.EntityId) || memberType.GetCustomAttribute<EntityGuidAttribute>() != null)) {
+            var editor = this.CreateValueEditorFromType(typeof(EntityGuidEditor), owner, value, memberType, member, propertyPath);
+
+            if (editor != null) {
+                editor.Title = $"Entity Id ({propertyPath})";
+                result.Add(editor);
+            }
+        }
         else if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
             if (editor != null) {

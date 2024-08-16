@@ -10,7 +10,7 @@ public sealed class AssetGuidAttribute : Attribute {
     /// <summary>
     /// Initializes a new instance of the <see cref="AssetGuidAttribute" /> class.
     /// </summary>
-    /// <param name="assetType">The asset type..</param>
+    /// <param name="assetType">The asset type.</param>
     public AssetGuidAttribute(Type assetType) {
         this.AssetType = assetType;
     }

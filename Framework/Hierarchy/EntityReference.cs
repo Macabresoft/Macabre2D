@@ -9,7 +9,6 @@ using Macabresoft.Core;
 /// </summary>
 [DataContract]
 public abstract class EntityReference : PropertyChangedNotifier {
-    [DataMember]
     private Guid _entityId;
 
     /// <summary>
@@ -18,8 +17,15 @@ public abstract class EntityReference : PropertyChangedNotifier {
     public abstract Type Type { get; }
 
     /// <summary>
+    /// Gets an untyped version of the entity.
+    /// </summary>
+    public abstract IEntity? UntypedEntity { get; }
+
+    /// <summary>
     /// Gets or sets the entity identifier.
     /// </summary>
+    [DataMember]
+    [EntityGuid]
     public Guid EntityId {
         get => this._entityId;
         set {
@@ -30,11 +36,6 @@ public abstract class EntityReference : PropertyChangedNotifier {
             }
         }
     }
-
-    /// <summary>
-    /// Gets an untyped version of the entity.
-    /// </summary>
-    public IEntity? UntypedEntity { get; protected set; }
 
     /// <summary>
     /// Gets the scene.
@@ -66,6 +67,9 @@ public class EntityReference<TEntity> : EntityReference where TEntity : class, I
     /// <inheritdoc />
     public override Type Type => typeof(TEntity);
 
+    /// <inheritdoc />
+    public override IEntity? UntypedEntity => this.Entity;
+
     /// <summary>
     /// Gets the entity.
     /// </summary>
@@ -82,7 +86,5 @@ public class EntityReference<TEntity> : EntityReference where TEntity : class, I
         else {
             this.Entity = this.Scene.FindEntity<TEntity>(this.EntityId);
         }
-
-        this.UntypedEntity = this.Entity;
     }
 }
