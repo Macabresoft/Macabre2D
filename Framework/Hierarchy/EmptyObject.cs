@@ -106,6 +106,9 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
+    public bool ContainsEntity(Guid id) => false;
+
+    /// <inheritdoc />
     public void Deinitialize() {
     }
 

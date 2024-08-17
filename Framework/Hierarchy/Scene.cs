@@ -59,11 +59,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     bool IsActive { get; }
 
     /// <summary>
-    /// Gets the systems.
-    /// </summary>
-    IReadOnlyCollection<IGameSystem> Systems => Array.Empty<IGameSystem>();
-
-    /// <summary>
     /// Gets the named children.
     /// </summary>
     IReadOnlyCollection<INameableCollection> NamedChildren => Array.Empty<INameableCollection>();
@@ -77,6 +72,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the renderable entities in the scene.
     /// </summary>
     IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
+
+    /// <summary>
+    /// Gets the systems.
+    /// </summary>
+    IReadOnlyCollection<IGameSystem> Systems => Array.Empty<IGameSystem>();
 
     /// <summary>
     /// Gets the updateable entities.
@@ -107,6 +107,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// </summary>
     /// <param name="system">The system.</param>
     void AddSystem(IGameSystem system);
+
+    /// <summary>
+    /// Gets a value indicating whether this scene contains an entity with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <returns>A value indicating whether this scene contains an entity with the specified identifier.</returns>
+    bool ContainsEntity(Guid id);
 
     /// <summary>
     /// Finds an entity by its identifier.
@@ -236,9 +243,6 @@ public sealed class Scene : GridContainer, IScene {
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IFixedUpdateableEntity.UpdateOrder));
 
-    [DataMember]
-    private readonly SystemCollection _systems = new();
-
     private readonly List<INameableCollection> _namedChildren = new();
     private readonly List<Action> _pendingActions = new();
 
@@ -248,9 +252,14 @@ public sealed class Scene : GridContainer, IScene {
         (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
         nameof(IPhysicsBody.UpdateOrder));
 
+    private readonly HashSet<Guid> _registeredEntities = new();
+
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
         c => c.IsVisible,
         nameof(IRenderableEntity.IsVisible));
+
+    [DataMember]
+    private readonly SystemCollection _systems = new();
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
         c => c.IsEnabled,
@@ -300,9 +309,6 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
-
-    /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
@@ -310,6 +316,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
@@ -355,6 +364,9 @@ public sealed class Scene : GridContainer, IScene {
             system.Initialize(this);
         }
     }
+
+    /// <inheritdoc />
+    public bool ContainsEntity(Guid id) => this._registeredEntities.Contains(id);
 
     public override void Deinitialize() {
         base.Deinitialize();
@@ -456,6 +468,7 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Add(entity);
         this._updateableEntities.Add(entity);
         this._fixedUpdateableEntities.Add(entity);
+        this._registeredEntities.Add(entity.Id);
     }
 
     /// <inheritdoc />
@@ -528,6 +541,7 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Remove(entity);
         this._updateableEntities.Remove(entity);
         this._fixedUpdateableEntities.Remove(entity);
+        this._registeredEntities.Remove(entity.Id);
     }
 
     /// <inheritdoc />
