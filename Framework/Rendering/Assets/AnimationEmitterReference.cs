@@ -73,38 +73,6 @@ public class AnimationEmitterReference : SpriteSheetReference {
     }
 
     /// <summary>
-    /// Updates the animations and creates new ones when needed.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <param name="millisecondsPerFrame">The milliseconds per frame.</param>
-    /// <param name="timeMultiplier">A time multiplier for incrementing <see cref="TimeBetweenEmissions" />.</param>
-    /// <param name="trySpawn">A value indicating whether or not this update should attempt a new spawn if ready.</param>
-    /// <param name="spawnWorldPosition">The new spawn position.</param>
-    /// <param name="velocity">The velocity.</param>
-    /// <param name="orientation">The orientation.</param>
-    /// <param name="project">The project.</param>
-    public void UpdateAnimations(
-        FrameTime frameTime,
-        int millisecondsPerFrame,
-        float timeMultiplier,
-        bool trySpawn,
-        Vector2 spawnWorldPosition,
-        Vector2 velocity,
-        SpriteEffects orientation,
-        IGameProject project) {
-        for (var i = this._runningAnimations.Count - 1; i >= 0; i--) {
-            var animation = this._runningAnimations[i];
-            animation.Update(frameTime, millisecondsPerFrame, out var isAnimationOver);
-            if (isAnimationOver) {
-                this._runningAnimations.Remove(animation);
-                this._availableAnimations.Add(animation);
-            }
-        }
-
-        this.UpdateEmissions(frameTime, timeMultiplier, trySpawn, spawnWorldPosition, velocity, orientation, project);
-    }
-
-    /// <summary>
     /// Updates emissions without animating. This will simply create new emissions according to <see cref="TimeBetweenEmissions" />.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>

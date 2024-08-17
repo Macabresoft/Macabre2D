@@ -31,6 +31,11 @@ public class QueueableSpriteAnimation {
     public SpriteAnimation Animation { get; }
 
     /// <summary>
+    /// Gets the identifier for this animation.
+    /// </summary>
+    public Guid Id { get; } = Guid.NewGuid();
+
+    /// <summary>
     /// Gets the sprite sheet associated with this animation.
     /// </summary>
     public SpriteSheet? SpriteSheet => this.Animation?.SpriteSheet;
