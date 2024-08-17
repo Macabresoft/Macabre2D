@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -56,18 +55,18 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.GamePadNReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged -= this.GamePadReference_PropertyChanged;
+        this.GamePadNReference.AssetChanged -= this.GamePadReference_AssetChanged;
+        this.GamePadSReference.AssetChanged -= this.GamePadReference_AssetChanged;
+        this.GamePadXReference.AssetChanged -= this.GamePadReference_AssetChanged;
     }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.GamePadNReference.PropertyChanged += this.GamePadReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged += this.GamePadReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged += this.GamePadReference_PropertyChanged;
+        this.GamePadNReference.AssetChanged += this.GamePadReference_AssetChanged;
+        this.GamePadSReference.AssetChanged += this.GamePadReference_AssetChanged;
+        this.GamePadXReference.AssetChanged += this.GamePadReference_AssetChanged;
 
         this.ResetSprite();
     }
@@ -87,10 +86,8 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
         yield return this.GamePadXReference;
     }
 
-    private void GamePadReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(GamePadIconSetReference.ContentId)) {
-            this.ResetSprite();
-        }
+    private void GamePadReference_AssetChanged(object? sender, bool hasAsset) {
+        this.ResetSprite();
     }
 
     private void ResetSprite() {

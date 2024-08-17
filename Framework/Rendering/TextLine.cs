@@ -123,7 +123,7 @@ public class TextLine : RenderableEntity {
     public override void Deinitialize() {
         base.Deinitialize();
 
-        this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
+        this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
         this.Game.CultureChanged -= this.Game_CultureChanged;
@@ -139,7 +139,7 @@ public class TextLine : RenderableEntity {
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
 
-        this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
+        this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
         this.Game.CultureChanged += this.Game_CultureChanged;
@@ -229,12 +229,12 @@ public class TextLine : RenderableEntity {
         return Vector2.Zero;
     }
 
-    private void FontReference_AssetLoaded(object? sender, EventArgs e) {
-        this.RequestRefresh();
-    }
-
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.RenderOptions.InvalidateSize();
+    }
+
+    private void FontReferenceAssetChanged(object? sender, bool hasAsset) {
+        this.RequestRefresh();
     }
 
     private void Game_CultureChanged(object? sender, ResourceCulture e) {

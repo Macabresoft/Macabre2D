@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
@@ -90,19 +89,20 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         this.Game.InputDeviceChanged -= this.Game_InputDisplayChanged;
         this.Game.SettingsSaved -= this.Game_SettingsSaved;
-        this.GamePadNReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged -= this.IconSetReference_PropertyChanged;
+        this.GamePadNReference.AssetChanged -= this.IconSetReference_AssetChanged;
+        this.GamePadSReference.AssetChanged -= this.IconSetReference_AssetChanged;
+        this.GamePadXReference.AssetChanged -= this.IconSetReference_AssetChanged;
+        this.KeyboardReference.AssetChanged -= this.IconSetReference_AssetChanged;
     }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.GamePadNReference.PropertyChanged += this.IconSetReference_PropertyChanged;
-        this.GamePadSReference.PropertyChanged += this.IconSetReference_PropertyChanged;
-        this.GamePadXReference.PropertyChanged += this.IconSetReference_PropertyChanged;
-        this.KeyboardReference.PropertyChanged += this.IconSetReference_PropertyChanged;
+        this.GamePadNReference.AssetChanged += this.IconSetReference_AssetChanged;
+        this.GamePadSReference.AssetChanged += this.IconSetReference_AssetChanged;
+        this.GamePadXReference.AssetChanged += this.IconSetReference_AssetChanged;
+        this.KeyboardReference.AssetChanged += this.IconSetReference_AssetChanged;
 
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
@@ -154,10 +154,8 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private KeyboardIconSet? GetKeyboardIconSet() => this.KeyboardReference.PackagedAsset ?? this.Project.Fallbacks.KeyboardReference.PackagedAsset;
 
-    private void IconSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.GamePadXReference.ContentId)) {
-            this.ResetSprite();
-        }
+    private void IconSetReference_AssetChanged(object? sender, bool hasAsset) {
+        this.ResetSprite();
     }
 
     private void ResetBindings() {

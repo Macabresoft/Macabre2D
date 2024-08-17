@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -14,7 +13,6 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     private readonly HashSet<Point> _activeTiles = new();
 
     private readonly Dictionary<Point, IEntity> _activeTileToEntity = new();
-    private bool _isVisible;
 
     /// <inheritdoc />
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
@@ -30,8 +28,8 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
 
     /// <inheritdoc />
     public bool IsVisible {
-        get => this._isVisible && this.IsEnabled && BaseGame.IsDesignMode;
-        set => this.Set(ref this._isVisible, value);
+        get => BaseGame.IsDesignMode && this.IsEnabled;
+        set { }
     }
 
     /// <inheritdoc />
@@ -40,7 +38,7 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.PrefabReference.PropertyChanged -= this.PrefabReference_PropertyChanged;
+        this.PrefabReference.AssetChanged -= this.PrefabReference_AssetChanged;
         this.DeinitializePrefabs();
     }
 
@@ -51,7 +49,7 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.Reset();
-        this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
+        this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
     }
 
     /// <inheritdoc />
@@ -118,6 +116,10 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
             if (BaseGame.IsDesignMode) {
                 clone.Initialize(this.Scene, this);
                 this.Scene.UnregisterEntity(clone);
+                var cloneChildren = clone.GetDescendants<Entity>();
+                foreach (var child in cloneChildren) {
+                    this.Scene.UnregisterEntity(child);
+                }
             }
             else {
                 this.AddChild(clone);
@@ -125,10 +127,8 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
         }
     }
 
-    private void PrefabReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.PrefabReference.ContentId)) {
-            this.Reset();
-        }
+    private void PrefabReference_AssetChanged(object? sender, bool hasAsset) {
+        this.Reset();
     }
 
     private bool RemovePrefab(Point tile) {

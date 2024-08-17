@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -12,7 +11,6 @@ using Microsoft.Xna.Framework;
 /// An entity which loads a <see cref="PrefabAsset" />.
 /// </summary>
 public sealed class PrefabContainer : Entity, IRenderableEntity {
-    private bool _isVisible;
     private IEntity? _prefabChild;
 
     /// <inheritdoc />
@@ -38,8 +36,8 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public bool IsVisible {
-        get => this._isVisible && this.IsEnabled && BaseGame.IsDesignMode;
-        set => this.Set(ref this._isVisible, value);
+        get => BaseGame.IsDesignMode && this.IsEnabled;
+        set { }
     }
 
     /// <inheritdoc />
@@ -48,7 +46,7 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.PrefabReference.PropertyChanged -= this.PrefabReference_PropertyChanged;
+        this.PrefabReference.AssetChanged -= this.PrefabReference_AssetChanged;
         this.DeinitializeChild();
     }
 
@@ -56,15 +54,8 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.Reset();
-        this.PrefabReference.PropertyChanged += this.PrefabReference_PropertyChanged;
+        this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
     }
-
-    /// <summary>
-    /// Gets a value indicating whether or not the other entity is a descendent of this container's prefab.
-    /// </summary>
-    /// <param name="otherEntity">The other entity.</param>
-    /// <returns>A value indicating whether the other entity is a descendent of this container's prefab.</returns>
-    public bool IsPartOfPrefab(IEntity otherEntity) => this._prefabChild != null && otherEntity.IsDescendentOf(this._prefabChild);
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
@@ -106,10 +97,8 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
         }
     }
 
-    private void PrefabReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.PrefabReference.ContentId)) {
-            this.Reset();
-        }
+    private void PrefabReference_AssetChanged(object? sender, bool hasAsset) {
+        this.Reset();
     }
 
     private void Reset() {
@@ -120,6 +109,13 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
             if (BaseGame.IsDesignMode) {
                 this._prefabChild.Initialize(this.Scene, this);
                 this.ResetBoundingArea();
+                this.Scene.UnregisterEntity(this._prefabChild);
+                var cloneChildren = this._prefabChild.GetDescendants<Entity>();
+                foreach (var child in cloneChildren) {
+                    this.Scene.UnregisterEntity(child);
+                }
+
+                this.RaisePropertyChanged(nameof(this.IsVisible));
             }
             else {
                 this.AddChild(this._prefabChild);

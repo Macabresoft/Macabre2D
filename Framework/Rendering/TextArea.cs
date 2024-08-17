@@ -115,7 +115,7 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     public override void Deinitialize() {
         base.Deinitialize();
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
-        this.FontReference.AssetLoaded -= this.FontReference_AssetLoaded;
+        this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
     }
 
@@ -123,7 +123,7 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.FontReference.AssetLoaded += this.FontReference_AssetLoaded;
+        this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.RenderOptions.Initialize(this.CreateSize);
         this.ResetLines();
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
@@ -174,11 +174,11 @@ public class TextArea : RenderableEntity, IRenderableEntity {
 
     private Vector2 CreateSize() => new(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
 
-    private void FontReference_AssetLoaded(object? sender, EventArgs e) {
+    private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.RequestRefresh();
     }
 
-    private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+    private void FontReferenceAssetChanged(object? sender, bool hasAsset) {
         this.RequestRefresh();
     }
 

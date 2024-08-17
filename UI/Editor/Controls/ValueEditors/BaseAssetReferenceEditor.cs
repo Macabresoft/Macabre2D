@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
@@ -79,7 +78,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         base.OnValueChanged(args);
 
         if (args.OldValue is { HasValue: true, Value: { } reference }) {
-            reference.PropertyChanged -= this.Value_PropertyChanged;
+            reference.AssetChanged -= this.Value_AssetChanged;
         }
 
         if (this.Value != null) {
@@ -88,7 +87,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
                 this.Value.WhenAny(x => x.ContentId, y => y.Value != Guid.Empty));
 
             this.ResetPath();
-            this.Value.PropertyChanged += this.Value_PropertyChanged;
+            this.Value.AssetChanged += this.Value_AssetChanged;
         }
     }
 
@@ -98,8 +97,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         if (this.AssetManager != null &&
             this.Value?.Asset != null &&
             this.Value.ContentId != Guid.Empty &&
-            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
-            metadata != null) {
+            this.AssetManager.TryGetMetadata(this.Value.ContentId, out var metadata)) {
             this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
     }
@@ -122,9 +120,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
         }
     }
 
-    private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AudioClipReference.ContentId)) {
-            this.ResetPath();
-        }
+    private void Value_AssetChanged(object sender, bool hasAsset) {
+        this.ResetPath();
     }
 }

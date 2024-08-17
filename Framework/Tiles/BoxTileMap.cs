@@ -79,7 +79,7 @@ public class BoxTileMap : RenderableEntity {
     /// <inheritdoc />
     public override void Deinitialize() {
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
-        this.TileSet.PropertyChanged -= this.TileSet_PropertyChanged;
+        this.TileSet.AssetChanged -= this.TileSet_AssetChanged;
         base.Deinitialize();
     }
 
@@ -87,7 +87,7 @@ public class BoxTileMap : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.TileSet.PropertyChanged += this.TileSet_PropertyChanged;
+        this.TileSet.AssetChanged += this.TileSet_AssetChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
         this.ResetSprites();
@@ -233,9 +233,7 @@ public class BoxTileMap : RenderableEntity {
         }
     }
 
-    private void TileSet_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(AutoTileSetReference.ContentId)) {
-            this.Reset();
-        }
+    private void TileSet_AssetChanged(object? sender, bool hasAsset) {
+        this.Reset();
     }
 }

@@ -10,6 +10,10 @@ using Macabresoft.Core;
 /// Interface for an asset reference.
 /// </summary>
 public interface IAssetReference : INotifyPropertyChanged {
+    /// <summary>
+    /// An event called when an asset is loaded. The <see cref="bool" /> passed in indicates whether an asset exists or not.
+    /// </summary>
+    event EventHandler<bool>? AssetChanged;
 
     /// <summary>
     /// Gets the asset type.
@@ -85,6 +89,9 @@ public interface IAssetReference<TAsset> : IAssetReference where TAsset : class,
 public abstract class AssetReference : PropertyChangedNotifier, IAssetReference {
 
     /// <inheritdoc />
+    public event EventHandler<bool>? AssetChanged;
+
+    /// <inheritdoc />
     public abstract Type AssetType { get; }
 
     /// <inheritdoc />
@@ -111,6 +118,13 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     public virtual void Initialize(IAssetManager assets, IGame game) {
         this.AssetManager = assets;
     }
+
+    /// <summary>
+    /// Raises the <see cref="AssetChanged" /> event.
+    /// </summary>
+    protected void RaiseAssetChanged() {
+        this.AssetChanged.SafeInvoke(this, this.HasContent);
+    }
 }
 
 /// <summary>
@@ -121,11 +135,6 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
 public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<TAsset> where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private TAsset? _asset;
     private Guid _contentId = Guid.Empty;
-
-    /// <summary>
-    /// An event called when an asset is loaded.
-    /// </summary>
-    public event EventHandler? AssetLoaded;
 
     /// <inheritdoc />
     public override Type AssetType => typeof(TAsset);
@@ -146,7 +155,11 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
     [DataMember]
     public Guid ContentId {
         get => this._contentId;
-        set => this.Set(ref this._contentId, value);
+        set {
+            if (this.Set(ref this._contentId, value)) {
+                this.LoadAsset(this.ContentId);
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -157,6 +170,7 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
 
         this.Asset = null;
         this.ContentId = Guid.Empty;
+        this.RaiseAssetChanged();
     }
 
     /// <inheritdoc />
@@ -189,12 +203,13 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
         this.Asset.PropertyChanged += this.Asset_PropertyChanged;
         this.ContentId = this.Asset.ContentId;
         this.AssetManager.LoadContentForAsset<TContent>(this.Asset);
-        this.AssetLoaded.SafeInvoke(this);
+        this.RaiseAssetChanged();
     }
 
     /// <inheritdoc />
     public void LoadAsset(Guid contentId) {
-        this.ContentId = contentId;
+        this._contentId = contentId;
+        this.RaisePropertyChanged(nameof(this.ContentId));
 
         if (this.ContentId == Guid.Empty) {
             this.Clear();

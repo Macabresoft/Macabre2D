@@ -39,8 +39,9 @@ public class SelectorGizmo : Entity, IGizmo {
             !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
             inputState.IsMouseButtonNewlyReleased(MouseButton.Left)) {
             IEntity selected = null;
+            var scene = this._sceneService.CurrentScene;
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-            var potentials = this._sceneService.CurrentScene.RenderableEntities
+            var potentials = scene.RenderableEntities
                 .Where(x => x.IsVisible && x.BoundingArea.Contains(mousePosition))
                 .OrderByDescending(x => x.RenderOrder);
 
