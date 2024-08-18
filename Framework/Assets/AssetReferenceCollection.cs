@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// Interface for a collection of assets.
+/// Interface for a collection of asset references.
 /// </summary>
 public interface IAssetReferenceCollection : IAssetReference {
     /// <summary>
@@ -28,7 +28,7 @@ public interface IAssetReferenceCollection : IAssetReference {
 }
 
 /// <summary>
-/// Interface for a collection of assets.
+/// Interface for a collection of asset references.
 /// </summary>
 /// <typeparam name="TAsset">The type of asset.</typeparam>
 public interface IAssetReferenceCollection<TAsset> : IAssetReferenceCollection where TAsset : class, IAsset {

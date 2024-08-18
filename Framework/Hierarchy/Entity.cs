@@ -288,6 +288,10 @@ public class Entity : Transformable, IEntity {
         foreach (var assetReference in this.GetAssetReferences()) {
             assetReference.Deinitialize();
         }
+
+        foreach (var entityReference in this.GetEntityReferences()) {
+            entityReference.Deinitialize();
+        }
     }
 
     /// <inheritdoc />
@@ -361,6 +365,10 @@ public class Entity : Transformable, IEntity {
 
             foreach (var assetReference in this.GetAssetReferences()) {
                 assetReference.Initialize(this.Scene.Assets, this.Game);
+            }
+
+            foreach (var entityReference in this.GetEntityReferences()) {
+                entityReference.Initialize(this.Scene);
             }
 
             foreach (var child in this.Children) {
@@ -466,8 +474,16 @@ public class Entity : Transformable, IEntity {
     /// <summary>
     /// Gets the asset references for initalization and deinitialization.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The asset references</returns>
     protected virtual IEnumerable<IAssetReference> GetAssetReferences() {
+        yield break;
+    }
+
+    /// <summary>
+    /// Gets the entity references for initalization and deinitialization.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IEnumerable<IEntityReference> GetEntityReferences() {
         yield break;
     }
 

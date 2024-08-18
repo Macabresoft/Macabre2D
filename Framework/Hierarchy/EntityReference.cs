@@ -5,15 +5,35 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
-/// Base class for entity references.
+/// Interface for a reference to an entity.
 /// </summary>
-[DataContract]
-public abstract class EntityReference : PropertyChangedNotifier {
-    private Guid _entityId;
+public interface IEntityReference {
 
     /// <summary>
     /// Gets the type of the entity referenced.
     /// </summary>
+    Type Type { get; }
+
+    /// <summary>
+    /// Deinitializes this instance.
+    /// </summary>
+    void Deinitialize();
+
+    /// <summary>
+    /// Initializes this instance.
+    /// </summary>
+    /// <param name="scene">The scene.</param>
+    void Initialize(IScene scene);
+}
+
+/// <summary>
+/// Base class for entity references.
+/// </summary>
+[DataContract]
+public abstract class EntityReference : PropertyChangedNotifier, IEntityReference {
+    private Guid _entityId;
+
+    /// <inheritdoc />
     public abstract Type Type { get; }
 
     /// <summary>
@@ -42,10 +62,12 @@ public abstract class EntityReference : PropertyChangedNotifier {
     /// </summary>
     protected IScene Scene { get; private set; } = Framework.Scene.Empty;
 
-    /// <summary>
-    /// Initializes this instance.
-    /// </summary>
-    /// <param name="scene">The scene.</param>
+    /// <inheritdoc />
+    public virtual void Deinitialize() {
+        this.Scene = Framework.Scene.Empty;
+    }
+
+    /// <inheritdoc />
     public void Initialize(IScene scene) {
         this.Scene = scene;
         this.ResetEntity();
@@ -76,6 +98,12 @@ public class EntityReference<TEntity> : EntityReference where TEntity : class, I
     public TEntity? Entity {
         get => this._entity;
         private set => this.Set(ref this._entity, value);
+    }
+
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this._entity = null;
     }
 
     /// <inheritdoc />
