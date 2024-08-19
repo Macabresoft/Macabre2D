@@ -18,7 +18,6 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
     /// </summary>
