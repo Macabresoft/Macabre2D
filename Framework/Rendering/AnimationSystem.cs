@@ -54,7 +54,7 @@ public class AnimationSystem : GameSystem {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        var animatables = this.GetEntitiesToAnimate().ToList();
+        var animatables = this.GetEntitiesToAnimate();
 
         foreach (var independentAnimatable in animatables.Where(x => x.FrameRateOverride.IsEnabled)) {
             independentAnimatable.IncrementTime(frameTime);
@@ -79,8 +79,8 @@ public class AnimationSystem : GameSystem {
         }
     }
 
-    private IEnumerable<IAnimatableEntity> GetEntitiesToAnimate() {
-        return !this.LayersToUpdate.IsEnabled ? this.Scene.AnimatableEntities : this.Scene.AnimatableEntities.Where(x => (x.Layers & this.LayersToUpdate.Value) != Layers.None);
+    private IReadOnlyCollection<IAnimatableEntity> GetEntitiesToAnimate() {
+        return !this.LayersToUpdate.IsEnabled ? this.Scene.AnimatableEntities : this.Scene.AnimatableEntities.Where(x => (x.Layers & this.LayersToUpdate.Value) != Layers.None).ToList();
     }
 
     private void ResetFrameRate() {

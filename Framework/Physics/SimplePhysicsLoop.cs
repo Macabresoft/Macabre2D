@@ -42,8 +42,17 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
     /// <param name="layers">The layers.</param>
-    /// <returns>A value indicating whether or not there was a hit.</returns>
+    /// <returns>A value indicating whether there was a hit.</returns>
     bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers);
+
+    /// <summary>
+    /// Checks if any colliders with the specified layers have bounding areas that overlap with the provided <see cref="BoundingArea" />.
+    /// </summary>
+    /// <param name="boundingArea">The bounding area.</param>
+    /// <param name="layers">The layers.</param>
+    /// <param name="hitBodies">The hit bodies.</param>
+    /// <returns>A value indicating whether there was a hit.</returns>
+    bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IEnumerable<IPhysicsBody> hitBodies);
 
     /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
@@ -136,6 +145,21 @@ public class SimplePhysicsGameSystem : FixedTimeStepSystem, ISimplePhysicsGameSy
     /// <inheritdoc />
     public bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers) {
         return !boundingArea.IsEmpty && this.GetFilteredColliders(boundingArea, layers).Any(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(boundingArea));
+    }
+
+    /// <inheritdoc />
+    public bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IEnumerable<IPhysicsBody> hitBodies) {
+        var bodies = new List<IPhysicsBody>();
+        if (!boundingArea.IsEmpty) {
+            foreach (var collider in this.GetFilteredColliders(boundingArea, layers).Where(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(boundingArea))) {
+                if (collider.Body is { } body) {
+                    bodies.Add(body);
+                }
+            }
+        }
+
+        hitBodies = bodies;
+        return bodies.Any();
     }
 
     /// <inheritdoc />
