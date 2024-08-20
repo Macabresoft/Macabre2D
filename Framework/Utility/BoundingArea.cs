@@ -79,9 +79,7 @@ public readonly struct BoundingArea {
     /// Creates a <see cref="Vector2" /> that represents the size of this instance.
     /// </summary>
     /// <returns>The size.</returns>
-    public Vector2 ToSize() {
-        return new Vector2(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
-    }
+    public Vector2 ToSize() => new(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
@@ -162,32 +160,29 @@ public readonly struct BoundingArea {
     /// </summary>
     /// <param name="x">The x value.</param>
     /// <returns>A value indicating whether or not this bounding area contains the specified x value.</returns>
-    public bool ContainsHorizontally(float x) {
-        return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
-               (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x));
-    }
+    public bool ContainsHorizontally(float x) =>
+        (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
+        (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x));
 
     /// <summary>
     /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its horizontal bounds.
     /// </summary>
     /// <param name="other">The other bounding area.</param>
     /// <returns><c>true</c>, if this bounding area contains the other bounding area within its horizontal bounds, <c>false</c> otherwise.</returns>
-    public bool ContainsHorizontally(BoundingArea other) {
-        return (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
-               (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X));
-    }
+    public bool ContainsHorizontally(BoundingArea other) =>
+        (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
+        (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X));
 
     /// <summary>
     /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its bounds.
     /// </summary>
     /// <param name="other">The other bounding area.</param>
     /// <returns><c>true</c>, if this bounding area contains the other bounding area, <c>false</c> otherwise.</returns>
-    public bool Contains(BoundingArea other) {
-        return (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
-               (this.Minimum.Y <= other.Minimum.Y || this.Minimum.Y.HasMinimalDifference(other.Minimum.Y)) &&
-               (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X)) &&
-               (this.Maximum.Y >= other.Maximum.Y || this.Maximum.Y.HasMinimalDifference(other.Maximum.Y));
-    }
+    public bool Contains(BoundingArea other) =>
+        (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
+        (this.Minimum.Y <= other.Minimum.Y || this.Minimum.Y.HasMinimalDifference(other.Minimum.Y)) &&
+        (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X)) &&
+        (this.Maximum.Y >= other.Maximum.Y || this.Maximum.Y.HasMinimalDifference(other.Maximum.Y));
 
     /// <summary>
     /// Gets a value indicating whether or not this bounding area overlaps another specified
@@ -240,9 +235,7 @@ public readonly struct BoundingArea {
     /// <param name="first">The first.</param>
     /// <param name="second">The second.</param>
     /// <returns>A value indicating equality.</returns>
-    public static bool operator ==(BoundingArea first, BoundingArea second) {
-        return first.Equals(second);
-    }
+    public static bool operator ==(BoundingArea first, BoundingArea second) => first.Equals(second);
 
     /// <summary>
     /// Checks non-equality.
@@ -250,21 +243,15 @@ public readonly struct BoundingArea {
     /// <param name="first">The first.</param>
     /// <param name="second">The second.</param>
     /// <returns>A value indicating non-equality.</returns>
-    public static bool operator !=(BoundingArea first, BoundingArea second) {
-        return !first.Equals(second);
-    }
+    public static bool operator !=(BoundingArea first, BoundingArea second) => !first.Equals(second);
 
     /// <inheritdoc />
-    public override int GetHashCode() {
-        return HashCode.Combine(this.Maximum, this.Minimum);
-    }
+    public override int GetHashCode() => HashCode.Combine(this.Maximum, this.Minimum);
 
     /// <summary>
     /// Determines if this <see cref="BoundingArea" /> equals the other <see cref="BoundingArea" />.
     /// </summary>
     /// <param name="other">The other.</param>
     /// <returns>A value indicating equality.</returns>
-    public bool Equals(BoundingArea other) {
-        return this.Minimum == other.Minimum && this.Maximum == other.Maximum;
-    }
+    public bool Equals(BoundingArea other) => this.Minimum == other.Minimum && this.Maximum == other.Maximum;
 }

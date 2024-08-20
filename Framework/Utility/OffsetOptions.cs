@@ -37,9 +37,12 @@ public class OffsetOptions : PropertyChangedNotifier {
     }
 
     /// <summary>
-    /// Gets the size.
+    /// Gets the size in pixels.
     /// </summary>
-    /// <value>The size.</value>
+    /// <remarks>
+    /// This is a float to make calculations easier, but it comes directly from a sprite's integer height and width.
+    /// </remarks>
+    /// <value>The size in pixels.</value>
     public Vector2 Size => this._size.Value;
 
     /// <summary>
