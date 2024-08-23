@@ -15,9 +15,10 @@ public sealed class WindowsDataManager : IDataManager {
     }
 
     /// <inheritdoc />
-    public string GetPathToDataDirectory() {
-        return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-    }
+    public IEnumerable<string> GetFiles(string fileExtension) => Directory.EnumerateFiles(this.GetPathToDataDirectory(), $"*{fileExtension}", SearchOption.TopDirectoryOnly);
+
+    /// <inheritdoc />
+    public string GetPathToDataDirectory() => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
     /// <inheritdoc />
     public void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData {
@@ -39,7 +40,5 @@ public sealed class WindowsDataManager : IDataManager {
         return result;
     }
 
-    private string GetFilePath(string fileName, string projectName) {
-        return Path.Combine(this.GetPathToDataDirectory(), projectName.ToSafeString(), fileName);
-    }
+    private string GetFilePath(string fileName, string projectName) => Path.Combine(this.GetPathToDataDirectory(), projectName.ToSafeString(), fileName);
 }

@@ -5,18 +5,18 @@
 /// </summary>
 public class EmptyDataManager : IDataManager {
     /// <summary>
-    /// Gets an instance of <see cref="EmptyDataManager"/>.
+    /// Gets an instance of <see cref="EmptyDataManager" />.
     /// </summary>
     public static IDataManager Instance { get; } = new EmptyDataManager();
-    
+
     /// <inheritdoc />
     public void Delete(string fileName, string projectName) {
     }
 
+    public IEnumerable<string> GetFiles(string fileExtension) => [];
+
     /// <inheritdoc />
-    public string GetPathToDataDirectory() {
-        return string.Empty;
-    }
+    public string GetPathToDataDirectory() => string.Empty;
 
     /// <inheritdoc />
     public void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData {

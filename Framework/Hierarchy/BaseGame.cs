@@ -21,9 +21,9 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
+    private readonly LaunchArguments _launchArguments;
     private readonly Stack<IScene> _sceneStack = new();
     private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
-    private readonly LaunchArguments _launchArguments;
     private bool _canToggleFullscreen = true;
     private InputDevice _desiredInputDevice = InputDevice.Auto;
     private RenderTarget2D? _gameRenderTarget;
