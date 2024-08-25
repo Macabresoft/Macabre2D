@@ -94,6 +94,9 @@ public class BaseGame : Game, IGame {
     public SaveManager SaveManager { get; } = new();
 
     /// <inheritdoc />
+    public GameState State { get; } = new();
+
+    /// <inheritdoc />
     public IScene CurrentScene {
         get => this._sceneStack.Any() ? this._sceneStack.Peek() : Scene.Empty;
         private set {
@@ -549,6 +552,7 @@ public class BaseGame : Game, IGame {
         public IGameProject Project => GameProject.Empty;
         public SaveManager SaveManager { get; } = new();
         public SpriteBatch? SpriteBatch => null;
+        public GameState State { get; } = new();
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
 

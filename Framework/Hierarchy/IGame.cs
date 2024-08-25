@@ -107,6 +107,11 @@ public interface IGame {
     SpriteBatch? SpriteBatch { get; }
 
     /// <summary>
+    /// Gets the game state.
+    /// </summary>
+    GameState State { get; }
+
+    /// <summary>
     /// Gets the user settings.
     /// </summary>
     UserSettings UserSettings { get; }
