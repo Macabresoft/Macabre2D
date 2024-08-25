@@ -24,6 +24,13 @@ public interface IDataManager {
     string GetPathToDataDirectory();
 
     /// <summary>
+    /// Initializes this <see cref="IDataManager" /> with the company and project name.
+    /// </summary>
+    /// <param name="companyName">The company name.</param>
+    /// <param name="projectName">The project name.</param>
+    void Initialize(string companyName, string projectName);
+
+    /// <summary>
     /// Saves the specified save data.
     /// </summary>
     /// <typeparam name="T">Versioned data.</typeparam>

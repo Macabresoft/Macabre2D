@@ -19,6 +19,10 @@ public class EmptyDataManager : IDataManager {
     public string GetPathToDataDirectory() => string.Empty;
 
     /// <inheritdoc />
+    public void Initialize(string companyName, string projectName) {
+    }
+
+    /// <inheritdoc />
     public void Save<T>(string fileName, T saveData) where T : IVersionedData {
     }
 

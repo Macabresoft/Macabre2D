@@ -27,6 +27,11 @@ public interface IGameProject : INotifyPropertyChanged {
     float CommonViewHeight { get; }
 
     /// <summary>
+    /// Gets the company name.
+    /// </summary>
+    string CompanyName { get; }
+
+    /// <summary>
     /// Gets the default user settings.
     /// </summary>
     UserSettings DefaultUserSettings { get; }
@@ -181,6 +186,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         get => this._commonViewHeight;
         set => this._commonViewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string CompanyName { get; set; } = string.Empty;
 
     /// <inheritdoc />
     [DataMember]

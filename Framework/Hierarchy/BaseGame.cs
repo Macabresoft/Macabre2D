@@ -338,6 +338,9 @@ public class BaseGame : Game, IGame {
             this.UserSettings = new UserSettings(this.Project);
         }
         else {
+            this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
+            this.SaveManager.Initialize(this.DataManager);
+            
             if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
             }
@@ -355,7 +358,6 @@ public class BaseGame : Game, IGame {
         }
 
         this.RaiseCultureChanged();
-        this.SaveManager.Initialize(this.DataManager);
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
         this._persistentOverlay.Initialize(this, this.CreateAssetManager());
 
