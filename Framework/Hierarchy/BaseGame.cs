@@ -261,7 +261,7 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public void SaveUserSettings() {
-        this.DataManager.Save(UserSettings.FileName, this.Project.Name, this.UserSettings);
+        this.DataManager.Save(UserSettings.FileName, this.UserSettings);
         this.SettingsSaved.SafeInvoke(this);
     }
 
@@ -338,7 +338,7 @@ public class BaseGame : Game, IGame {
             this.UserSettings = new UserSettings(this.Project);
         }
         else {
-            if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, this.Project.Name, out var userSettings) && userSettings != null) {
+            if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
             }
             else {

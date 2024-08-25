@@ -6,9 +6,12 @@ using Macabresoft.Core;
 /// Manages the loading and saving of data in Windows.
 /// </summary>
 public sealed class WindowsDataManager : IDataManager {
+    private const string CosmicJamDirectory = "Cosmic Jam";
+    private const string MacabresoftDirectory = "Macabresoft";
+
     /// <inheritdoc />
-    public void Delete(string fileName, string projectName) {
-        var filePath = this.GetFilePath(fileName, projectName);
+    public void Delete(string fileName) {
+        var filePath = this.GetFilePath(fileName);
         if (File.Exists(filePath)) {
             File.Delete(filePath);
         }
@@ -18,16 +21,16 @@ public sealed class WindowsDataManager : IDataManager {
     public IEnumerable<string> GetFiles(string fileExtension) => Directory.EnumerateFiles(this.GetPathToDataDirectory(), $"*{fileExtension}", SearchOption.TopDirectoryOnly);
 
     /// <inheritdoc />
-    public string GetPathToDataDirectory() => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    public string GetPathToDataDirectory() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MacabresoftDirectory, CosmicJamDirectory);
 
     /// <inheritdoc />
-    public void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData {
-        Serializer.Instance.Serialize(saveData, this.GetFilePath(fileName, projectName));
+    public void Save<T>(string fileName, T saveData) where T : IVersionedData {
+        Serializer.Instance.Serialize(saveData, this.GetFilePath(fileName));
     }
 
     /// <inheritdoc />
-    public bool TryLoad<T>(string fileName, string projectName, out T? loadedData) where T : class, IVersionedData {
-        var filePath = this.GetFilePath(fileName, projectName);
+    public bool TryLoad<T>(string fileName, out T? loadedData) where T : class, IVersionedData {
+        var filePath = this.GetFilePath(fileName);
         var result = true;
         try {
             loadedData = Serializer.Instance.Deserialize<T>(filePath);
@@ -40,5 +43,5 @@ public sealed class WindowsDataManager : IDataManager {
         return result;
     }
 
-    private string GetFilePath(string fileName, string projectName) => Path.Combine(this.GetPathToDataDirectory(), projectName.ToSafeString(), fileName);
+    private string GetFilePath(string fileName) => Path.Combine(this.GetPathToDataDirectory(), fileName);
 }

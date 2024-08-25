@@ -6,7 +6,6 @@ using System.Threading;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
 using NUnit.Framework;
 
 [TestFixture]
@@ -15,16 +14,16 @@ public static class WindowsDataManagerTests {
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_DeleteTest() {
         var saveDataManager = new WindowsDataManager();
-        saveDataManager.Save(SaveDataFileName, ProjectName, new TestSaveData());
+        saveDataManager.Save(SaveDataFileName, new TestSaveData());
 
-        var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+        var found = saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData);
 
         using (new AssertionScope()) {
             found.Should().BeTrue();
             loadedData.Should().NotBeNull();
-            saveDataManager.Delete(SaveDataFileName, ProjectName);
+            saveDataManager.Delete(SaveDataFileName);
 
-            found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out loadedData);
+            found = saveDataManager.TryLoad(SaveDataFileName, out loadedData);
             found.Should().BeFalse();
             loadedData.Should().BeNull();
         }
@@ -34,9 +33,9 @@ public static class WindowsDataManagerTests {
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
         var saveDataManager = new WindowsDataManager();
-        saveDataManager.Delete(SaveDataFileName, ProjectName);
+        saveDataManager.Delete(SaveDataFileName);
 
-        var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+        var found = saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData);
 
         using (new AssertionScope()) {
             found.Should().BeFalse();
@@ -50,9 +49,9 @@ public static class WindowsDataManagerTests {
         var saveDataManager = new WindowsDataManager();
 
         var saveData1 = new TestSaveData();
-        saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
+        saveDataManager.Save(SaveDataFileName, saveData1);
 
-        saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData1);
+        saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData1);
         if (loadedData1 != null) {
             using (new AssertionScope()) {
                 loadedData1.Id.Should().Be(saveData1.Id);
@@ -61,9 +60,9 @@ public static class WindowsDataManagerTests {
                 Thread.Sleep(100);
 
                 var saveData2 = new TestSaveData();
-                saveDataManager.Save(SaveDataFileName, ProjectName, saveData2);
+                saveDataManager.Save(SaveDataFileName, saveData2);
 
-                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData2);
+                saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData2);
                 loadedData2?.Id.Should().Be(saveData2.Id);
                 loadedData2?.RandomNumber.Should().Be(saveData2.RandomNumber);
             }
@@ -72,7 +71,7 @@ public static class WindowsDataManagerTests {
             throw new NullReferenceException(nameof(loadedData1));
         }
 
-        saveDataManager.Delete(SaveDataFileName, ProjectName);
+        saveDataManager.Delete(SaveDataFileName);
     }
 
     [Test]
@@ -81,22 +80,21 @@ public static class WindowsDataManagerTests {
         var saveDataManager = new WindowsDataManager();
 
         var saveData1 = new TestSaveData();
-        saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
+        saveDataManager.Save(SaveDataFileName, saveData1);
 
         using (new AssertionScope()) {
-            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+            saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData);
             loadedData?.Id.Should().Be(saveData1.Id);
             loadedData?.RandomNumber.Should().Be(saveData1.RandomNumber);
 
-            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out VersionedData versionedLoadedData);
+            saveDataManager.TryLoad(SaveDataFileName, out VersionedData versionedLoadedData);
             loadedData?.TypeName.Should().Be(versionedLoadedData?.TypeName);
             typeof(VersionedData).IsAssignableFrom(loadedData?.GetType()).Should().BeTrue();
         }
 
-        saveDataManager.Delete(SaveDataFileName, ProjectName);
+        saveDataManager.Delete(SaveDataFileName);
     }
 
-    private const string ProjectName = "Macabre2DTestProject";
     private const string SaveDataFileName = "Test.m2dsave";
 
     [DataContract]

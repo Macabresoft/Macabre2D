@@ -10,7 +10,7 @@ public class EmptyDataManager : IDataManager {
     public static IDataManager Instance { get; } = new EmptyDataManager();
 
     /// <inheritdoc />
-    public void Delete(string fileName, string projectName) {
+    public void Delete(string fileName) {
     }
 
     public IEnumerable<string> GetFiles(string fileExtension) => [];
@@ -19,11 +19,11 @@ public class EmptyDataManager : IDataManager {
     public string GetPathToDataDirectory() => string.Empty;
 
     /// <inheritdoc />
-    public void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData {
+    public void Save<T>(string fileName, T saveData) where T : IVersionedData {
     }
 
     /// <inheritdoc />
-    public bool TryLoad<T>(string fileName, string projectName, out T? data) where T : class, IVersionedData {
+    public bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData {
         data = default;
         return false;
     }
