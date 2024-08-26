@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -72,6 +73,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the renderable entities in the scene.
     /// </summary>
     IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
+
+    /// <summary>
+    /// Gets the scene state.
+    /// </summary>
+    SceneState State { get; }
 
     /// <summary>
     /// Gets the systems.
@@ -318,6 +324,10 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
 
     /// <inheritdoc />
+    [DataMember]
+    public SceneState State { get; } = new();
+
+    /// <inheritdoc />
     public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
     /// <inheritdoc />
@@ -408,6 +418,7 @@ public sealed class Scene : GridContainer, IScene {
                     system.Initialize(this);
                 }
 
+                this.State.Initialize(this._game.State);
                 this.Initialize(this, this);
                 this.RebuildFilterCaches();
             }

@@ -39,6 +39,9 @@ public class EmptyObject : IScene {
     public bool IsActive => false;
 
     /// <inheritdoc />
+    public SceneState State { get; } = new();
+
+    /// <inheritdoc />
     public Vector2 WorldPosition => Vector2.Zero;
 
     /// <inheritdoc />
