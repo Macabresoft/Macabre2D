@@ -30,7 +30,6 @@ public class SystemService : SelectionService<IGameSystem>, ISystemService {
         IAssemblyService assemblyService,
         IUndoService undoService,
         IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
-        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IGameSystem)).ToList();
         this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IGameSystem)).Where(x =>
             x.Assembly != typeof(IGizmo).Assembly &&
             x.GetConstructor(Type.EmptyTypes) != null).ToList();
