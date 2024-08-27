@@ -76,7 +76,6 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
 /// <summary>
 /// Represents a camera into the game world.
 /// </summary>
-[Display(Name = "Camera")]
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<float> _viewWidth;

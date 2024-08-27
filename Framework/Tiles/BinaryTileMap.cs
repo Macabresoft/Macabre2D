@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A tile map that is either "on" or "off". The on tiles will show the selected sprite.
 /// </summary>
-[Display(Name = "Binary Tile Map")]
 [Category(CommonCategories.TileMap)]
 public sealed class BinaryTileMap : RenderableTileMap {
     [DataMember]
@@ -30,7 +29,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
     /// Gets the sprite reference.
     /// </summary>
     [DataMember(Order = 0)]
-    [Display(Name = "Sprite")]
     public SpriteReference SpriteReference { get; } = new();
 
     /// <summary>

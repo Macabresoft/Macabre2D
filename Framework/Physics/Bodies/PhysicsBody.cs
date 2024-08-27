@@ -60,7 +60,6 @@ public interface IPhysicsBody : IEntity, IBoundable {
 /// <summary>
 /// A base for entities that implement <see cref="IPhysicsBody" />.
 /// </summary>
-[Display(Name = "Physics Body")]
 [Category("Body")]
 public abstract class PhysicsBody : Entity, IPhysicsBody {
     private int _updateOrder;

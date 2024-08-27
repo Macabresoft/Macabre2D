@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Draws a collider.
 /// </summary>
-[Display(Name = "Collider Drawer (Diagnostics)")]
 public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
     private IPhysicsBody? _body;
 

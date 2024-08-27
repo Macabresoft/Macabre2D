@@ -33,7 +33,7 @@
                     <StackPanel Orientation="Horizontal"
                                 Margin="{StaticResource StandardMarginAll}">
                         <TextBlock FontWeight="Bold"
-                                   Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}, Mode=OneTime}" />
+                                   Text="{Binding Name, Mode=OneTime}" />
                         <TextBlock FontStyle="Italic"
                                    Text="{Binding FullName, StringFormat={}({0}), Mode=OneTime}" />
                     </StackPanel>

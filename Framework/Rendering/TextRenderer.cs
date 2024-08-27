@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An entity which will render the specified text.
 /// </summary>
-[Display(Name = "Text Renderer")]
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _pixelPosition;

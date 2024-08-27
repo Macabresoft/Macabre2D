@@ -15,9 +15,9 @@
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Stretch"
-                               Text="{Binding Converter={x:Static common:ToDisplayNameConverter.Instance}}"
+                               Text="{Binding Name}"
                                TextAlignment="Left"
-                               ToolTip.Tip="{Binding}" />
+                               ToolTip.Tip="{Binding FullName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

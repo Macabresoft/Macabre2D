@@ -42,7 +42,6 @@ public enum AutoTileMapVisualBehavior {
 /// <summary>
 /// An entity which maps an <see cref="AutoTileSet" /> onto a grid.
 /// </summary>
-[Display(Name = "Auto Tile Map")]
 [Category(CommonCategories.TileMap)]
 public sealed class AutoTileMap : RenderableTileMap {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]

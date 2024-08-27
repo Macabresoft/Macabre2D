@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Collider representing a rectangle to be used by the physics engine.
 /// </summary>
-[Display(Name = "Rectangle Collider")]
 public sealed class RectangleCollider : PolygonCollider {
     private const int MaximumIndex = 2;
     private const int MinimumIndex = 0;

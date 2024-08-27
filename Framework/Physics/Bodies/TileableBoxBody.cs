@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A tileable body that creates rectangle colliders to fill out the active tiles on a <see cref="ITileableEntity" />.
 /// </summary>
-[Display(Name = "Tileable Body (Box)")]
 public class TileableBoxBody : PhysicsBody {
     private readonly List<Collider> _colliders = new();
     private Orientation _colliderOrientation;

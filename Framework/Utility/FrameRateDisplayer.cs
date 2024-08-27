@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An entity which displays frame rate in the top right corner of the screen.
 /// </summary>
-[Display(Name = "Frame Rate Display")]
 public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
     private readonly RollingMeanFloat _rollingAverage = new(10);
     private Camera? _camera;

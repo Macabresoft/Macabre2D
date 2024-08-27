@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Draws a line.
 /// </summary>
-[Display(Name = "Line Drawer (Diagnostics)")]
 public sealed class LineDrawer : BaseDrawer {
     private Vector2 _endPoint;
     private Vector2 _startPoint;

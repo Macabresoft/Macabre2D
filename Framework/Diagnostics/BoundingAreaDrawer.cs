@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Draws bounding areas from colliders for debugging purposes.
 /// </summary>
-[Display(Name = "Bounding Area Drawer (Diagnostics)")]
 public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
     private BoundingArea _boundingArea;
 

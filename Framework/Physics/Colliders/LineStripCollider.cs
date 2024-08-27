@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A strip of lines as a collider.
 /// </summary>
-[Display(Name = "Line Strip Collider")]
 public class LineStripCollider : PolygonCollider {
     private const float EqualityTolerance = 0.001f;
     private readonly List<LineSegment> _lineSegments = new();

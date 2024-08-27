@@ -6,7 +6,6 @@ using Macabresoft.Core;
 /// <summary>
 /// An entity which measures frame rate.
 /// </summary>
-[Display(Name = "Frame Rate Entity")]
 public class FrameRateEntity : UpdateableEntity {
     private readonly RollingMeanFloat _rollingAverage = new(10);
 

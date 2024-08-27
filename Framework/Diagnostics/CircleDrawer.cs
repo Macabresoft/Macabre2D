@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Draws a circle.
 /// </summary>
-[Display(Name = "Circle Drawer (Diagnostics)")]
 public sealed class CircleDrawer : BaseDrawer {
     private int _complexity;
     private float _radius;

@@ -31,7 +31,6 @@ public interface IDynamicPhysicsBody : IPhysicsBody {
 /// <summary>
 /// A dynamic body.
 /// </summary>
-[Display(Name = "Dynamic Physics Body")]
 public sealed class DynamicPhysicsBody : SimplePhysicsBody, IDynamicPhysicsBody {
     /// <inheritdoc />
     [DataMember(Name = "Kinematic")]

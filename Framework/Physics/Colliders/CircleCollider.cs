@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework;
 /// Collider representing a circle to be used by the physics engine.
 /// </summary>
 /// <seealso cref="Collider" />
-[Display(Name = "Circle Collider")]
 public sealed class CircleCollider : Collider {
     private float _radius = 1f;
 

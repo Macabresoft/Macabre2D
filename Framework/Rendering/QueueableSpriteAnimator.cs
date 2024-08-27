@@ -10,7 +10,6 @@ using Macabresoft.Core;
 /// <summary>
 /// A sprite animator that can have animations queued up.
 /// </summary>
-[Display(Name = "Sprite Animator")]
 [Category(CommonCategories.Animation)]
 public class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();

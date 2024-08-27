@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Draws a line strip.
 /// </summary>
-[Display(Name = "Line Strip Drawer (Diagnostics)")]
 public sealed class LineStripDrawer : BaseDrawer {
     private readonly List<Vector2> _vertices = new();
     private BoundingArea _boundingArea;

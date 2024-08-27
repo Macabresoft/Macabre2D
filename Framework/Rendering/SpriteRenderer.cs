@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 /// <summary>
 /// An entity which will render a single sprite.
 /// </summary>
-[Display(Name = "Sprite Renderer")]
 [Category(CommonCategories.Rendering)]
 public class SpriteRenderer : BaseSpriteEntity {
     /// <summary>

@@ -20,7 +20,6 @@ public interface ISimplePhysicsBody : IPhysicsBody {
 /// <summary>
 /// A body to be used by the physics engine.
 /// </summary>
-[Display(Name = "Simple Physics Body")]
 public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     private Collider _collider = new CircleCollider();
 

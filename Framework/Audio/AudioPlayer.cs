@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Audio;
 /// <summary>
 /// Plays a <see cref="AudioClip" />.
 /// </summary>
-[Display(Name = "Audio Player")]
 public sealed class AudioPlayer : Entity {
     private IAudioClipInstance _instance = AudioClipInstance.Empty;
     private float _pan;
