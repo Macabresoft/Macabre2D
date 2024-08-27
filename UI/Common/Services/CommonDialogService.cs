@@ -70,8 +70,9 @@ public interface ICommonDialogService : IBaseDialogService {
     /// Opens a dialog that allows the user to pick a <see cref="Type" />.
     /// </summary>
     /// <param name="types">The types to select from.</param>
+    /// <param name="defaultType">The default type to have selected upon opening the window.</param>
     /// <returns>The selected type.</returns>
-    Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types);
+    Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType);
 
     /// <summary>
     /// Shows a dialog to lay out a font.
@@ -196,9 +197,9 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types) {
+    public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType) {
         Type selectedType = null;
-        var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(IEnumerable<Type>), types));
+        var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(IEnumerable<Type>), types), new ParameterOverride(typeof(Type), defaultType));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
         if (result && window.ViewModel != null) {

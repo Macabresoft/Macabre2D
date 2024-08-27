@@ -308,7 +308,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private async Task AddEntity(Type type) {
         if (type == null || type.IsInterface) {
-            type = await this._dialogService.OpenTypeSelectionDialog(this.EntityService.AvailableTypes);
+            type = await this._dialogService.OpenTypeSelectionDialog(this.EntityService.AvailableTypes, typeof(Entity));
         }
 
         if (type != null && Activator.CreateInstance(type) is IEntity child) {
@@ -344,7 +344,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private async Task AddSystem(Type type) {
         if (this.SceneService.CurrentScene is { } scene) {
             if (type == null || type.IsInterface) {
-                type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes);
+                type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes, typeof(AnimationSystem));
             }
 
             if (type != null && Activator.CreateInstance(type) is IGameSystem system) {

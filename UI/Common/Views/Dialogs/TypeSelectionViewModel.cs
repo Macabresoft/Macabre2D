@@ -29,9 +29,11 @@ public class TypeSelectionViewModel : BaseDialogViewModel {
     /// Initializes a new instance of the <see cref="TypeSelectionViewModel" /> class.
     /// </summary>
     /// <param name="types">The types to select from.</param>
+    /// <param name="defaultType">The default type.</param>
     [InjectionConstructor]
-    public TypeSelectionViewModel(IEnumerable<Type> types) : this() {
+    public TypeSelectionViewModel(IEnumerable<Type> types, Type defaultType) : this() {
         this._types.AddRange(types.OrderBy(x => x.FullName));
+        this._selectedType = defaultType;
         this.FilterTypes();
     }
 
@@ -73,5 +75,8 @@ public class TypeSelectionViewModel : BaseDialogViewModel {
 
     private void FilterTypes() {
         this._filteredTypes.Reset(!string.IsNullOrEmpty(this._filterText) ? this.Types.Where(x => !string.IsNullOrEmpty(x.FullName) && x.FullName.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)) : this.Types);
+        if (this.SelectedType == null || !this._filteredTypes.Contains(this.SelectedType)) {
+            this.SelectedType = this._filteredTypes.FirstOrDefault();
+        }
     }
 }
