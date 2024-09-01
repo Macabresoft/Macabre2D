@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A tile map that presents a prefab at each active tile.
 /// </summary>
-public class PrefabTileMap : TileableEntity, IRenderableEntity {
+public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity {
     [DataMember]
     private readonly HashSet<Point> _activeTiles = new();
 
@@ -50,6 +50,11 @@ public class PrefabTileMap : TileableEntity, IRenderableEntity {
         base.Initialize(scene, parent);
         this.Reset();
         this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
+    }
+
+    /// <inheritdoc />
+    public bool IsPartOfPrefab(IEntity otherEntity) {
+        return this._activeTileToEntity.Values.Any(entity => otherEntity.Id == entity.Id || otherEntity.IsDescendentOf(entity));
     }
 
     /// <inheritdoc />

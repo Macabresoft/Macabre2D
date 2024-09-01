@@ -8,9 +8,24 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// Interface for an entity which contains another entity.
+/// </summary>
+public interface IPrefabContainer : IEntity {
+    /// <summary>
+    /// Gets a value indicating whether the other entity is a descendent of this container's prefab.
+    /// </summary>
+    /// <remarks>
+    /// This can be very slow and it is recommended to avoid calling this during active gameplay.
+    /// </remarks>
+    /// <param name="otherEntity">The other entity.</param>
+    /// <returns>A value indicating whether the other entity is a descendent of this container's prefab.</returns>
+    bool IsPartOfPrefab(IEntity otherEntity);
+}
+
+/// <summary>
 /// An entity which loads a <see cref="PrefabAsset" />.
 /// </summary>
-public sealed class PrefabContainer : Entity, IRenderableEntity {
+public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntity {
     private IEntity? _prefabChild;
 
     /// <inheritdoc />
@@ -56,6 +71,9 @@ public sealed class PrefabContainer : Entity, IRenderableEntity {
         this.Reset();
         this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
     }
+    
+    /// <inheritdoc />
+    public bool IsPartOfPrefab(IEntity otherEntity) => this._prefabChild != null && (otherEntity.Id == this._prefabChild.Id || otherEntity.IsDescendentOf(this._prefabChild));
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

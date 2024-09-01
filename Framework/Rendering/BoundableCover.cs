@@ -10,16 +10,17 @@ using Microsoft.Xna.Framework.Graphics;
 /// An entity which covers an entire <see cref="IBoundable" /> with a single color.
 /// </summary>
 public class BoundableCover : RenderableEntity {
+    private IBoundable _boundable = Boundable.Empty;
     private Color _color;
-    private Texture2D? _texture;
     private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
+    private Texture2D? _texture;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
-    public override BoundingArea BoundingArea => this.Parent is IBoundable parent ? parent.BoundingArea : BoundingArea.Empty;
+    public override BoundingArea BoundingArea => this._boundable.BoundingArea;
 
     /// <summary>
     /// Gets or sets the color of this cover.
@@ -36,7 +37,7 @@ public class BoundableCover : RenderableEntity {
     }
 
     /// <summary>
-    /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundable"/>.
+    /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundable" />.
     /// </summary>
     [DataMember]
     public Vector2 Padding {
@@ -48,15 +49,28 @@ public class BoundableCover : RenderableEntity {
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
-        if (this.Parent is IBoundable oldParent) {
-            oldParent.BoundingAreaChanged -= this.Parent_BoundingAreaChanged;
-        }
+    public override void Deinitialize() {
+        base.Deinitialize();
 
+        this._boundable.BoundingAreaChanged -= this.Boundable_BoundingAreaChanged;
+        this._boundable = Boundable.Empty;
+    }
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        if (this.Parent is IBoundable newParent) {
-            newParent.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
+        if (this.TryGetAncestor<IBoundable>(out var boundable)) {
+            if (boundable is IPrefabContainer prefabContainer) {
+                if (prefabContainer.TryGetAncestor<IBoundable>(out var stepRemovedBoundable)) {
+                    this._boundable = stepRemovedBoundable;
+                    this._boundable.BoundingAreaChanged += this.Boundable_BoundingAreaChanged;
+                }
+            }
+            else {
+                this._boundable = boundable;
+                this._boundable.BoundingAreaChanged += this.Boundable_BoundingAreaChanged;
+            }
         }
 
         this._texture?.Dispose();
@@ -71,12 +85,11 @@ public class BoundableCover : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this._texture != null && this.SpriteBatch is { } spriteBatch && this.Parent is IBoundable boundable) {
-            
-            var scale = new Vector2(boundable.BoundingArea.Width + this._paddingForScale.X, boundable.BoundingArea.Height + this._paddingForScale.Y) * this.Project.PixelsPerUnit;
+        if (this._texture != null && this.SpriteBatch is { } spriteBatch && !this._boundable.IsEmpty()) {
+            var scale = new Vector2(this._boundable.BoundingArea.Width + this._paddingForScale.X, this._boundable.BoundingArea.Height + this._paddingForScale.Y) * this.Project.PixelsPerUnit;
             spriteBatch.Draw(
                 this._texture,
-                (boundable.BoundingArea.Minimum - this.Padding) * this.Project.PixelsPerUnit,
+                (this._boundable.BoundingArea.Minimum - this.Padding) * this.Project.PixelsPerUnit,
                 null,
                 colorOverride,
                 0f,
@@ -87,7 +100,7 @@ public class BoundableCover : RenderableEntity {
         }
     }
 
-    private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {
+    private void Boundable_BoundingAreaChanged(object? sender, EventArgs e) {
         this.BoundingAreaChanged?.SafeInvoke(this);
     }
 
