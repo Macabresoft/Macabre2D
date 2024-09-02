@@ -1,6 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
-
-using System;
+﻿namespace Macabresoft.Macabre2D.Common.Attributes;
 
 /// <summary>
 /// Attribute for <see cref="Guid" /> asset references.

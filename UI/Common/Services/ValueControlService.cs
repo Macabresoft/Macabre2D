@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common.Attributes;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using ReactiveUI;
