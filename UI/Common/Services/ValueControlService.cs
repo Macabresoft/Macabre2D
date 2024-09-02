@@ -143,7 +143,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
-        else if (memberType == typeof(Guid) && (owner is IAssetReference && member.MemberInfo.Name == nameof(SpriteSheet.ContentId) || memberType.GetCustomAttribute<AssetGuidAttribute>() != null)) {
+        else if (memberType == typeof(Guid) && (owner is IAssetReference && member.MemberInfo.Name == nameof(SpriteSheet.ContentId) || HasAssetGuidReference(memberType))) {
             var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 editor.Title = $"Content Id ({propertyPath})";
@@ -192,7 +192,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         return result;
     }
 
-    private IValueEditor CreateTypeEditor(
+    private TypeEditor CreateTypeEditor(
         object owner,
         object value,
         Type typeRestriction,
@@ -225,6 +225,8 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
 
     private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
+
+    private static bool HasAssetGuidReference(Type type) => type.GetCustomAttribute<AssetGuidAttribute>() != null || type.GetCustomAttribute<SceneGuidAttribute>() != null;
 
     private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member) {
         editor.Category = DefaultCategoryName;

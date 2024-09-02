@@ -62,8 +62,13 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
         } 
         else if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
-            if (members.FirstOrDefault() is { } info && info.GetCustomAttribute<AssetGuidAttribute>() is { } attribute) {
-                this._assetType = attribute.AssetType;
+            if (members.FirstOrDefault() is { } info) {
+                if (info.GetCustomAttribute<AssetGuidAttribute>() is { } attribute) {
+                    this._assetType = attribute.AssetType;
+                }
+                else if (info.GetCustomAttribute<SceneGuidAttribute>() != null) {
+                    this._assetType = typeof(SceneAsset);
+                }
             }
         }
 

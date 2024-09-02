@@ -198,7 +198,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember(Name = "Persistent Overlay")]
-    [AssetGuid(typeof(SceneAsset))]
+    [SceneGuid]
     public Guid PersistentOverlaySceneId { get; set; }
 
     /// <inheritdoc />
@@ -224,12 +224,12 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]
-    [AssetGuid(typeof(SceneAsset))]
+    [SceneGuid]
     public Guid StartupDebugSceneId { get; set; }
 
     /// <inheritdoc />
     [DataMember(Name = "Startup Scene")]
-    [AssetGuid(typeof(SceneAsset))]
+    [SceneGuid]
     public Guid StartupSceneId { get; set; }
 
     /// <inheritdoc />
