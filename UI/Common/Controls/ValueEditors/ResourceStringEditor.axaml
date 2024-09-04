@@ -1,10 +1,11 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:String"
                           x:Class="Macabresoft.Macabre2D.UI.Common.ResourceStringEditor">
-    <Grid ColumnDefinitions="Auto, *"
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:ResourceStringEditor]}">
         <Design.DataContext>
             <local:ResourceStringEditor />
@@ -17,5 +18,21 @@
         <ComboBox Grid.Column="1"
                   ItemsSource="{Binding ResourceNames}"
                   SelectedItem="{Binding Value}" />
+        
+        <Button Grid.Column="2"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding SearchCommand}"
+                ToolTip.Tip="Search for a resource">
+            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+        </Button>
+        
+        <Button Grid.Column="3"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear the resource selection">
+            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
     </Grid>
 </local:ValueEditorControl>

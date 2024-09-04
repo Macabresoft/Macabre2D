@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,17 +7,17 @@ using Avalonia.Interactivity;
 using Macabresoft.AvaloniaEx;
 using Unity;
 
-public partial class TypeSelectionDialog : BaseDialog {
-    public TypeSelectionDialog() : base() {
+public partial class ResourceSelectionDialog : BaseDialog {
+    public ResourceSelectionDialog() : base() {
     }
 
     [InjectionConstructor]
-    public TypeSelectionDialog(TypeSelectionViewModel viewModel) : base() {
+    public ResourceSelectionDialog(ResourceSelectionViewModel viewModel) : base() {
         this.DataContext = viewModel;
         this.InitializeComponent();
     }
 
-    public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
+    public ResourceSelectionViewModel ViewModel => this.DataContext as ResourceSelectionViewModel;
 
     protected override void OnLoaded(RoutedEventArgs e) {
         base.OnLoaded(e);
@@ -29,9 +28,9 @@ public partial class TypeSelectionDialog : BaseDialog {
     }
 
     private void AutoCompleteBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-        var addedTypes = e.AddedItems.OfType<Type>().ToList();
-        if (addedTypes.Count == 1) {
-            this.ViewModel.SelectedItem = addedTypes.First();
+        var addedResources = e.AddedItems.OfType<ResourceEntry>().ToList();
+        if (addedResources.Count == 1) {
+            this.ViewModel.SelectedItem = addedResources.First();
         }
     }
 }

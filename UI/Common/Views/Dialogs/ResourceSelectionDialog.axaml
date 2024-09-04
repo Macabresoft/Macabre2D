@@ -2,7 +2,7 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-                       x:Class="Macabresoft.Macabre2D.UI.Common.TypeSelectionDialog"
+                       x:Class="Macabresoft.Macabre2D.UI.Common.ResourceSelectionDialog"
                        Height="480"
                        Width="640"
                        CanResize="False"
@@ -10,7 +10,7 @@
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection">
     <Design.DataContext>
-        <local:TypeSelectionViewModel />
+        <local:ResourceSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="Auto, *, Auto">
@@ -32,9 +32,9 @@
                     <StackPanel Orientation="Horizontal"
                                 Margin="{StaticResource StandardMarginAll}">
                         <TextBlock FontWeight="Bold"
-                                   Text="{Binding Name, Mode=OneTime}" />
+                                   Text="{Binding Key, Mode=OneTime}" />
                         <TextBlock FontStyle="Italic"
-                                   Text="{Binding FullName, StringFormat={}({0}), Mode=OneTime}" />
+                                   Text="{Binding Value, StringFormat={}({0}), Mode=OneTime}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -46,12 +46,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
-                    CommandParameter="{Binding $parent[local:TypeSelectionDialog]}"
+                    CommandParameter="{Binding $parent[local:ResourceSelectionDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
-                    Command="{Binding $parent[local:TypeSelectionDialog].CloseCommand}"
-                    CommandParameter="{Binding $parent[local:TypeSelectionDialog]}"
+                    Command="{Binding $parent[local:ResourceSelectionDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:ResourceSelectionDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

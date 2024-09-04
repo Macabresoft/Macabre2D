@@ -88,6 +88,13 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<Keys?> ShowKeySelectDialog();
 
     /// <summary>
+    /// Shows a dialog to filter and select a resource entry.
+    /// </summary>
+    /// <param name="resources">The resources to filter through.</param>
+    /// <returns>The selected resource.</returns>
+    Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources);
+
+    /// <summary>
     /// Shows a dialog to select a file.
     /// </summary>
     /// <param name="title">The title of the window.</param>
@@ -203,7 +210,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
         if (result && window.ViewModel != null) {
-            selectedType = window.ViewModel.SelectedType;
+            selectedType = window.ViewModel.SelectedItem;
         }
 
         return selectedType;
@@ -221,6 +228,19 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         var window = Resolver.Resolve<KeySelectDialog>();
         var result = await window.ShowDialog<bool>(this.MainWindow);
         return result ? window.SelectedKey : null;
+    }
+
+    /// <inheritdoc />
+    public async Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources) {
+        ResourceEntry? selectedResource = null;
+        var window = Resolver.Resolve<ResourceSelectionDialog>(new ParameterOverride(typeof(IEnumerable<ResourceEntry>), resources));
+        var result = await window.ShowDialog<bool>(this.MainWindow);
+
+        if (result && window.ViewModel != null) {
+            selectedResource = window.ViewModel.SelectedItem;
+        }
+
+        return selectedResource;
     }
 
     /// <inheritdoc />

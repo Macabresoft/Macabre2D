@@ -3,20 +3,12 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
-using ReactiveUI;
 using Unity;
 
 /// <summary>
 /// A view model for a type selection dialog.
 /// </summary>
-public class TypeSelectionViewModel : BaseDialogViewModel {
-    private readonly ObservableCollectionExtended<Type> _filteredTypes = new();
-    private readonly List<Type> _types = new();
-    private string _filterText;
-    private Type _selectedType;
-
+public class TypeSelectionViewModel : BaseFilterDialogViewModel<Type> {
     /// <summary>
     /// Initializes a new instance of the <see cref="TypeSelectionViewModel" /> class.
     /// </summary>
@@ -31,52 +23,10 @@ public class TypeSelectionViewModel : BaseDialogViewModel {
     /// <param name="types">The types to select from.</param>
     /// <param name="defaultType">The default type.</param>
     [InjectionConstructor]
-    public TypeSelectionViewModel(IEnumerable<Type> types, Type defaultType) : this() {
-        this._types.AddRange(types.OrderBy(x => x.FullName));
-        this._selectedType = defaultType;
-        this.FilterTypes();
+    public TypeSelectionViewModel(IEnumerable<Type> types, Type defaultType) : base(types) {
+        this.SelectedItem = defaultType;
     }
 
-    /// <summary>
-    /// Gets the filtered types.
-    /// </summary>
-    public IReadOnlyCollection<Type> FilteredTypes => this._filteredTypes;
-
-    /// <summary>
-    /// Gets or sets the filter text.
-    /// </summary>
-    public string FilterText {
-        get => this._filterText;
-        set {
-            if (this._filterText != value) {
-                this._filterText = value;
-                this.FilterTypes();
-                this.RaisePropertyChanged();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the selected type.
-    /// </summary>
-    public Type SelectedType {
-        get => this._selectedType;
-        set {
-            this.RaiseAndSetIfChanged(ref this._selectedType, value);
-            this.IsOkEnabled = this.SelectedType != null;
-        }
-    }
-
-
-    /// <summary>
-    /// Gets the available types.
-    /// </summary>
-    public IReadOnlyCollection<Type> Types => this._types;
-
-    private void FilterTypes() {
-        this._filteredTypes.Reset(!string.IsNullOrEmpty(this._filterText) ? this.Types.Where(x => !string.IsNullOrEmpty(x.FullName) && x.FullName.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)) : this.Types);
-        if (this.SelectedType == null || !this._filteredTypes.Contains(this.SelectedType)) {
-            this.SelectedType = this._filteredTypes.FirstOrDefault();
-        }
-    }
+    /// <inheritdoc />
+    protected override IEnumerable<Type> GetFilteredItems(string filter) => this.Items.Where(x => !string.IsNullOrEmpty(x.FullName) && x.FullName.Contains(filter, StringComparison.OrdinalIgnoreCase));
 }
