@@ -59,7 +59,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
 
         if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(SpriteSheet.ContentId) }) {
             this._assetType = assetReference.AssetType;
-        } 
+        }
         else if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
             if (members.FirstOrDefault() is { } info) {

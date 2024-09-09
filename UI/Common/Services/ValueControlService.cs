@@ -226,7 +226,9 @@ public class ValueControlService : ReactiveObject, IValueControlService {
 
     private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
 
-    private static bool HasAssetGuidReference(Type type) => type.GetCustomAttribute<AssetGuidAttribute>() != null || type.GetCustomAttribute<SceneGuidAttribute>() != null;
+    private static bool HasAssetGuidReference(Type type) =>
+        type.GetCustomAttribute<AssetGuidAttribute>() != null ||
+        type.GetCustomAttribute<SceneGuidAttribute>() != null;
 
     private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member) {
         editor.Category = DefaultCategoryName;

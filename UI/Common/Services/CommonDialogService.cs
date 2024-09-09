@@ -60,7 +60,7 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
 
     /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="IGameSystem" /> which inherits from the specified base type.
+    /// Opens a dialog that allows the user to pick a <see cref="IGameSystem" /> which inherits from the specified base type.
     /// </summary>
     /// <param name="baseSystemType">The base system type.</param>
     /// <returns>The selected entity.</returns>

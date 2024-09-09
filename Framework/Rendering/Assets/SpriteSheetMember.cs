@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common.Attributes;
 
 /// <summary>
 /// A base asset for assets which are packaged in a <see cref="SpriteSheet" />.
