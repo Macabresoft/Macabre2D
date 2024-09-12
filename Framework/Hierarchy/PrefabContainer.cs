@@ -125,6 +125,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
         if (this.PrefabReference.Asset?.Content is { } prefab && prefab.TryClone(out var clone)) {
             this._prefabChild = clone;
             if (BaseGame.IsDesignMode) {
+                this._prefabChild.LoadAssets(this.Scene.Assets, this.Game);
                 this._prefabChild.Initialize(this.Scene, this);
                 this.ResetBoundingArea();
                 this.Scene.UnregisterEntity(this._prefabChild);

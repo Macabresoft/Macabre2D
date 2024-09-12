@@ -119,6 +119,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
             this._activeTileToEntity[tile] = clone;
 
             if (BaseGame.IsDesignMode) {
+                clone.LoadAssets(this.Scene.Assets, this.Game);
                 clone.Initialize(this.Scene, this);
                 this.Scene.UnregisterEntity(clone);
                 var cloneChildren = clone.GetDescendants<Entity>();

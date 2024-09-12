@@ -133,6 +133,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     bool IsDescendentOf(IEntity entity);
 
     /// <summary>
+    /// Loads assets for an entity before initialization.
+    /// </summary>
+    /// <param name="assets">The assets.</param>
+    /// <param name="game">The game.</param>
+    void LoadAssets(IAssetManager assets, IGame game);
+
+    /// <summary>
     /// Called when this instance is removed from the <see cref="IScene" /> tree.
     /// </summary>
     void OnRemovedFromSceneTree();
@@ -363,10 +370,6 @@ public class Entity : Transformable, IEntity {
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
 
-            foreach (var assetReference in this.GetAssetReferences()) {
-                assetReference.Initialize(this.Scene.Assets, this.Game);
-            }
-
             foreach (var entityReference in this.GetEntityReferences()) {
                 entityReference.Initialize(this.Scene);
             }
@@ -404,6 +407,17 @@ public class Entity : Transformable, IEntity {
     public static bool IsNullOrEmpty(IEntity? entity, out IEntity notNullEntity) {
         notNullEntity = entity ?? Empty;
         return notNullEntity == Empty || notNullEntity == Framework.Scene.Empty;
+    }
+
+    /// <inheritdoc />
+    public virtual void LoadAssets(IAssetManager assets, IGame game) {
+        foreach (var assetReference in this.GetAssetReferences()) {
+            assetReference.Initialize(assets, game);
+        }
+
+        foreach (var child in this.Children) {
+            child.LoadAssets(assets, game);
+        }
     }
 
     /// <inheritdoc />
@@ -496,7 +510,11 @@ public class Entity : Transformable, IEntity {
     /// <param name="child">The child.</param>
     protected virtual void OnAddChild(IEntity child) {
         if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
-            this.Scene.Invoke(() => child.Initialize(this.Scene, this));
+            this.Scene.Invoke(() =>
+            {
+                child.LoadAssets(this.Scene.Assets, this.Game);
+                child.Initialize(this.Scene, this);
+            });
         }
     }
 

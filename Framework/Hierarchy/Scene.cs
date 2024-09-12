@@ -419,6 +419,7 @@ public sealed class Scene : GridContainer, IScene {
                 }
 
                 this.State.Initialize(this._game.State);
+                this.LoadAssets(this.Assets, this.Game);
                 this.Initialize(this, this);
                 this.RebuildFilterCaches();
             }

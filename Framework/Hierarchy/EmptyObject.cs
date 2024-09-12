@@ -178,6 +178,10 @@ public class EmptyObject : IScene {
     public bool IsDescendentOf(IEntity entity) => false;
 
     /// <inheritdoc />
+    public void LoadAssets(IAssetManager assets, IGame game) {
+    }
+
+    /// <inheritdoc />
     public void Move(Vector2 amount) {
     }
 
