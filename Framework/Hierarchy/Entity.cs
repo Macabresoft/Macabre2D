@@ -62,6 +62,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void AddChild(IEntity entity);
 
     /// <summary>
+    /// Removes all children.
+    /// </summary>
+    void ClearChildren();
+
+    /// <summary>
     /// Deinitializes the entity.
     /// </summary>
     void Deinitialize();
@@ -178,7 +183,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <typeparam name="T">The type of entity for which to search.</typeparam>
     /// <param name="entity">The child entity.</param>
     /// <returns>
-    /// A value indicating whether or not a child of the specified type was found.
+    /// A value indicating whether a child of the specified type was found.
     /// </returns>
     bool TryGetChild<T>([NotNullWhen(true)] out T? entity) where T : class, IEntity;
 }
@@ -285,6 +290,13 @@ public class Entity : Transformable, IEntity {
             entity.Parent.RemoveChild(entity);
             this._children.Add(entity);
             this.OnAddChild(entity);
+        }
+    }
+
+    /// <inheritdoc />
+    public void ClearChildren() {
+        foreach (var child in this.Children.ToList()) {
+            this.RemoveChild(child);
         }
     }
 
