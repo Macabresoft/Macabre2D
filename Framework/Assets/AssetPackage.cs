@@ -11,7 +11,7 @@ using Macabresoft.Core;
 /// </summary>
 public interface IAssetPackage {
     /// <summary>
-    /// Checks whether or not this package has an asset.
+    /// Checks whether this package has an asset.
     /// </summary>
     /// <param name="packagedAssetId">The identifier of the packaged asset.</param>
     /// <returns>A value indicating whether or not this package has an asset.</returns>
@@ -41,6 +41,12 @@ public abstract class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
     }
 
     /// <inheritdoc />
+    public override void SetNewIds() {
+        base.SetNewIds();
+        this.SetNewPackagedAssetIds();
+    }
+
+    /// <inheritdoc />
     public bool TryGetPackaged<TPackaged>(Guid id, out TPackaged? packaged) where TPackaged : class, IIdentifiable {
         packaged = this.GetPackages().FirstOrDefault(x => x.Id == id) as TPackaged;
         return packaged != null;
@@ -51,4 +57,9 @@ public abstract class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
     /// </summary>
     /// <returns>The packages.</returns>
     protected abstract IEnumerable<IIdentifiable> GetPackages();
+
+    /// <summary>
+    /// Sets new identifiers on all packaged assets.
+    /// </summary>
+    protected abstract void SetNewPackagedAssetIds();
 }

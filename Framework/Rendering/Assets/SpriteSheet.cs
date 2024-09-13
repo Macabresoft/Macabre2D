@@ -253,23 +253,20 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// </summary>
     /// <typeparam name="TMember">The member type.</typeparam>
     /// <returns>The collection.</returns>
-    public SpriteSheetMemberCollection<TMember>? GetMemberCollection<TMember>() where TMember : SpriteSheetMember, new() {
-        return this.GetMemberCollection(typeof(TMember)) as SpriteSheetMemberCollection<TMember>;
-    }
+    public SpriteSheetMemberCollection<TMember>? GetMemberCollection<TMember>() where TMember : SpriteSheetMember, new() => this.GetMemberCollection(typeof(TMember)) as SpriteSheetMemberCollection<TMember>;
 
     /// <summary>
     /// Gets all the member collections contained in this <see cref="SpriteSheet" />.
     /// </summary>
     /// <returns>The member collections.</returns>
-    public IReadOnlyCollection<INameableCollection> GetMemberCollections() {
-        return new List<INameableCollection> {
+    public IReadOnlyCollection<INameableCollection> GetMemberCollections() =>
+        new List<INameableCollection> {
             this._autoTileSets,
             this._spriteAnimations,
             this._fonts,
             this._gamePadIconSets,
             this._keyboardIconSets
         };
-    }
 
     /// <summary>
     /// Gets the sprite index given a column and row. Normalized to exist on the sprite sheet.
@@ -312,11 +309,10 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <param name="columns">The number of columns in the sprite sheet.</param>
     /// <param name="rows">The number of rows in the sprite sheet.</param>
     /// <returns>The sprite size.</returns>
-    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) {
-        return new Point(
+    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) =>
+        new(
             GetColumnWidth(imageSize.X, columns),
             GetRowHeight(imageSize.Y, rows));
-    }
 
     /// <summary>
     /// Gets the sprite size and location.
@@ -359,13 +355,16 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         return packages;
     }
 
-    private static int GetColumnWidth(int imageWidth, byte columns) {
-        return columns != 0 ? imageWidth / columns : 0;
+    /// <inheritdoc />
+    protected override void SetNewPackagedAssetIds() {
+        foreach (var package in this.GetPackages()) {
+            package.Id = Guid.NewGuid();
+        }
     }
 
-    private static int GetRowHeight(int imageHeight, byte rows) {
-        return rows != 0 ? imageHeight / rows : 0;
-    }
+    private static int GetColumnWidth(int imageWidth, byte columns) => columns != 0 ? imageWidth / columns : 0;
+
+    private static int GetRowHeight(int imageHeight, byte rows) => rows != 0 ? imageHeight / rows : 0;
 
     private void ResetColumnWidth() {
         if (this.Content != null && this._columns != 0) {

@@ -37,6 +37,12 @@ public interface IAsset : INotifyPropertyChanged {
     /// <param name="fileExtension">The file extension.</param>
     /// <returns>The content build commands.</returns>
     string GetContentBuildCommands(string contentPath, string fileExtension);
+
+    /// <summary>
+    /// Sets new identifiers for this asset and any packaged assets.
+    /// </summary>
+    /// <remarks>Used for cloning assets.</remarks>
+    void SetNewIds();
 }
 
 /// <summary>
@@ -103,6 +109,11 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
         contentStringBuilder.AppendLine($@"/copy:{contentPath}");
         contentStringBuilder.AppendLine($"#end {contentPath}");
         return contentStringBuilder.ToString();
+    }
+
+    /// <inheritdoc />
+    public virtual void SetNewIds() {
+        this.ContentId = Guid.NewGuid();
     }
 
     /// <inheritdoc />

@@ -40,6 +40,11 @@
                       ToolTip.Tip="Find all entities in the current scene that use this content" />
 
             <Separator />
+            
+            <MenuItem Header="Clone"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.CloneCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Clone the content" />
 
             <MenuItem Header="Delete"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"

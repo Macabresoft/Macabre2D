@@ -10,6 +10,7 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
@@ -273,7 +274,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         ScreenShader or
         ScreenShaderCollection;
 
-    private static bool CanClone(object selected) => selected is SpriteSheetMember or ScreenShader;
+    private static bool CanClone(object selected) => selected is SpriteSheetMember or ScreenShader or ContentFile;
 
     private bool CanMoveDown(object selected) {
         var result = false;
@@ -338,6 +339,37 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 shaders.Remove(clonedShader);
                 this.AssetSelectionService.Selected = shader;
             });
+        }
+        else if (selected is ContentFile { Asset: { } asset, Parent: { } directory } file) {
+            var assetJson = Serializer.Instance.SerializeToString(asset);
+            if (Serializer.Instance.DeserializeFromString(assetJson, asset.GetType()) is IAsset clone) {
+                clone.SetNewIds();
+
+                var newFileName = file.NameWithoutExtension;
+                var files = this._fileSystem.GetFiles(directory.GetFullPath()).Select(Path.GetFileNameWithoutExtension).ToList();
+                var count = 1;
+
+                while (files.Contains(newFileName)) {
+                    newFileName = $"{file.NameWithoutExtension} ({count})";
+                    count++;
+                }
+
+                var newContentPath = Path.Combine(directory.GetContentPath(), newFileName).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+                var newMetaData = new ContentMetadata(clone, newContentPath, file.Metadata.ContentFileExtension);
+                var newContentFile = new ContentFile(directory, newMetaData);
+
+                this._undoService.Do(() =>
+                {
+                    this._fileSystem.CopyFile(file.GetFullPath(), newContentFile.GetFullPath());
+                    directory.AddChild(newContentFile);
+                    this.AssetSelectionService.Selected = newContentFile;
+                }, () =>
+                {
+                    this._fileSystem.DeleteFile(newContentFile.GetFullPath());
+                    directory.RemoveChild(newContentFile);
+                    this.AssetSelectionService.Selected = file;
+                });
+            }
         }
     }
 
