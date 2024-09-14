@@ -530,7 +530,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                         var parentPath = parent.GetFullPath();
                         var updatedPath = Path.Combine(parentPath, updatedName);
 
-                        if (File.Exists(updatedPath) || Directory.Exists(updatedPath)) {
+                        if (this._fileSystem.DoesFileExist(updatedPath) || this._fileSystem.DoesDirectoryExist(updatedPath)) {
                             await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"A {typeName.ToLower()} named '{updatedName}' already exists.");
                         }
                         else {
