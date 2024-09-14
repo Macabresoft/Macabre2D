@@ -535,8 +535,21 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                         }
                         else {
                             var originalNodeName = node.Name;
-                            this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });
-                            node.Name = updatedName;
+                            var isCurrentScene = node.Id == this._sceneService.CurrentSceneMetadata.ContentId;
+
+                            if (!isCurrentScene) {
+                                this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });
+                            }
+                            else {
+                                // Necessary so the name refreshes.
+                                parent.RemoveChild(node);
+                                parent.AddChild(node);
+                                this.AssetSelectionService.Selected = node;
+                                
+                                await this._dialogService.ShowWarningDialog(
+                                    "Close Current Scene",
+                                    "Rename cannot be performed on an open scene. Please close the scene and try again.");
+                            }
                         }
                     }
                 }
