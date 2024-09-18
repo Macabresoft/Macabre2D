@@ -481,6 +481,15 @@ public sealed class Scene : GridContainer, IScene {
         this._updateableEntities.Add(entity);
         this._fixedUpdateableEntities.Add(entity);
         this._registeredEntities.Add(entity.Id);
+
+        if (this._isInitialized) {
+            if (BaseGame.IsDesignMode) {
+                this.RebuildFilterCaches();
+            }
+            else {
+                this.Scene.Invoke(this.RebuildFilterCaches);
+            }
+        }
     }
 
     /// <inheritdoc />
