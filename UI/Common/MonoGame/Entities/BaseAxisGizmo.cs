@@ -233,9 +233,9 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
     private void ResetIsEnabled() {
         this.IsEnabled = this.ShouldBeEnabled();
-        this.IsVisible = this.IsEnabled;
+        this.ShouldRender = this.IsEnabled;
 
-        if (this.IsVisible) {
+        if (this.ShouldRender) {
             this.ResetEndPoints();
         }
     }

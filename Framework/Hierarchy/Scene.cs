@@ -261,8 +261,8 @@ public sealed class Scene : GridContainer, IScene {
     private readonly HashSet<Guid> _registeredEntities = new();
 
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
-        c => c.IsVisible,
-        nameof(IRenderableEntity.IsVisible));
+        c => c.ShouldRender,
+        nameof(IRenderableEntity.ShouldRender));
 
     [DataMember]
     private readonly SystemCollection _systems = new();

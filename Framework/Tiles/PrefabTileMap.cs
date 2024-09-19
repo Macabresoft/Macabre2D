@@ -27,7 +27,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     public PrefabReference PrefabReference { get; } = new();
 
     /// <inheritdoc />
-    public bool IsVisible {
+    public bool ShouldRender {
         get => BaseGame.IsDesignMode && this.IsEnabled;
         set { }
     }

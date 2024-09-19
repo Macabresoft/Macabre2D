@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -18,14 +17,14 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
-    /// Gets or sets a value indicating whether this instance is visible.
-    /// </summary>
-    bool IsVisible { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether this should be rendered when out of bounds.
     /// </summary>
     bool RenderOutOfBounds { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance should render.
+    /// </summary>
+    bool ShouldRender { get; set; }
 
     /// <summary>
     /// Renders this instance.
@@ -49,22 +48,14 @@ public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
-    private bool _isVisible = true;
     private int _renderOrder;
+    private bool _shouldRender = true;
 
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public abstract BoundingArea BoundingArea { get; }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public bool IsVisible {
-        get => this._isVisible && this.IsEnabled;
-        set => this.Set(ref this._isVisible, value);
-    }
 
     /// <inheritdoc />
     [DataMember]
@@ -86,6 +77,14 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool ShouldRender {
+        get => this._shouldRender && this.IsEnabled;
+        set => this.Set(ref this._shouldRender, value);
+    }
+
+    /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
 
     /// <inheritdoc />
@@ -95,15 +94,15 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
 
-        if (this._isVisible) {
-            this.RaisePropertyChanged(nameof(this.IsVisible));
+        if (this._shouldRender) {
+            this.RaisePropertyChanged(nameof(this.ShouldRender));
         }
     }
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(IEnableable.IsEnabled) && this._isVisible) {
-            this.RaisePropertyChanged(nameof(this.IsVisible));
+        if (e.PropertyName == nameof(IEnableable.IsEnabled) && this._shouldRender) {
+            this.RaisePropertyChanged(nameof(this.ShouldRender));
         }
     }
 }

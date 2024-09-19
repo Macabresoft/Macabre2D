@@ -42,7 +42,7 @@ public class SelectorGizmo : Entity, IGizmo {
             var scene = this._sceneService.CurrentScene;
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
             var potentials = scene.RenderableEntities
-                .Where(x => x.IsVisible && x.BoundingArea.Contains(mousePosition))
+                .Where(x => x.ShouldRender && x.BoundingArea.Contains(mousePosition))
                 .OrderByDescending(x => x.RenderOrder);
 
             foreach (var potential in potentials) {

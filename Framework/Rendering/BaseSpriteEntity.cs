@@ -95,7 +95,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
-            this.RaisePropertyChanged(nameof(this.IsVisible));
+            this.RaisePropertyChanged(nameof(this.ShouldRender));
         }
     }
 

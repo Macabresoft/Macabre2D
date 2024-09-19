@@ -24,16 +24,9 @@ public enum TileMapRenderStartingPoint {
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     private readonly List<Point> _orderedActiveTiles = new();
-    private bool _isVisible = true;
     private int _renderOrder;
     private TileMapRenderStartingPoint _renderStartingPoint = TileMapRenderStartingPoint.BottomLeft;
-
-    /// <inheritdoc />
-    [DataMember]
-    public bool IsVisible {
-        get => this._isVisible && this.IsEnabled;
-        set => this.Set(ref this._isVisible, value);
-    }
+    private bool _shouldRender = true;
 
     /// <inheritdoc />
     [DataMember]
@@ -72,6 +65,13 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
         }
     }
 
+    /// <inheritdoc />
+    [DataMember]
+    public bool ShouldRender {
+        get => this._shouldRender && this.IsEnabled;
+        set => this.Set(ref this._shouldRender, value);
+    }
+
     /// <summary>
     /// Gets the active tiles in an order defined by <see cref="RenderStartingPoint" />.
     /// </summary>
@@ -92,8 +92,8 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(IEntity.IsEnabled) && this._isVisible) {
-            this.RaisePropertyChanged(nameof(this.IsVisible));
+        if (e.PropertyName == nameof(IEntity.IsEnabled) && this._shouldRender) {
+            this.RaisePropertyChanged(nameof(this.ShouldRender));
         }
     }
 

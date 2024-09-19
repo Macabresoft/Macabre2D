@@ -50,7 +50,7 @@ public sealed class EditorGrid : BaseDrawer {
 
         this._camera.BoundingAreaChanged += this.Camera_BoundingAreaChanged;
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
-        this.IsVisible = this._editorService.ShowGrid;
+        this.ShouldRender = this._editorService.ShowGrid;
         this.ResetColor();
     }
 
@@ -171,7 +171,7 @@ public sealed class EditorGrid : BaseDrawer {
 
     private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(IEditorService.ShowGrid)) {
-            this.IsVisible = this._editorService.ShowGrid;
+            this.ShouldRender = this._editorService.ShowGrid;
         }
     }
 

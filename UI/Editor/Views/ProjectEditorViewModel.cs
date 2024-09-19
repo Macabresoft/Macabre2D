@@ -134,7 +134,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._tileMap.IsEnabled = false;
             this._spriteAnimator.IsEnabled = false;
             this._grid.IsEnabled = false;
-            this._textArea.IsVisible = false;
+            this._textArea.ShouldRender = false;
 
             switch (this.AssetSelectionService.Selected) {
                 case AutoTileSet autoTileSet:
@@ -169,7 +169,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._camera.LocalPosition = CameraAdjustment;
 
         this._textArea = scene.AddChild<TextArea>();
-        this._textArea.IsVisible = false;
+        this._textArea.ShouldRender = false;
         this._textArea.RenderOptions.OffsetType = PixelOffsetType.BottomLeft;
 
         this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
@@ -276,7 +276,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
     private void ResetScene(SpriteSheetFont font) {
         if (font.SpriteSheet != null) {
-            this._textArea.IsVisible = true;
+            this._textArea.ShouldRender = true;
             this._textArea.FontReference.Reset(font);
             this._textArea.FontReference.Initialize(this._scene.Assets, this._game);
             this._textArea.Text = font.CharacterLayout;

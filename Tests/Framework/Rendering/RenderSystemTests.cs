@@ -72,7 +72,7 @@ public class RenderSystemTests {
         scene.AddChild<Camera>();
         var renderSystem = scene.AddSystem<RenderSystem>();
         var disabled = scene.AddChild<TestRenderableEntity>();
-        disabled.IsVisible = false;
+        disabled.ShouldRender = false;
         disabled.SleepAmountInMilliseconds = 0;
 
         var game = GameHelpers.CreateGameSubstitute();
@@ -147,7 +147,7 @@ public class RenderSystemTests {
         public event EventHandler BoundingAreaChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
         public PixelSnap PixelSnap => PixelSnap.Inherit;
-        public bool IsVisible { get; set; } = true;
+        public bool ShouldRender { get; set; } = true;
 
         public int RenderCount { get; private set; }
 

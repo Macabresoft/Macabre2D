@@ -572,23 +572,23 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         });
     }
 
-    private void SetIsVisible(IEntity entity, bool isVisible) {
+    private void SetIsVisible(IEntity entity, bool shouldRender) {
         var entityToIsVisible = new List<(IRenderableEntity Entity, bool IsVisible)>();
         if (entity is IRenderableEntity renderable) {
-            entityToIsVisible.Add((renderable, renderable.IsVisible));
+            entityToIsVisible.Add((renderable, renderable.ShouldRender));
         }
 
-        entityToIsVisible.AddRange(entity.GetDescendants<IRenderableEntity>().Select(child => (child, child.IsVisible)));
+        entityToIsVisible.AddRange(entity.GetDescendants<IRenderableEntity>().Select(child => (child, IsVisible: child.ShouldRender)));
 
         this._undoService.Do(() =>
         {
             foreach (var entry in entityToIsVisible) {
-                entry.Entity.IsVisible = isVisible;
+                entry.Entity.ShouldRender = shouldRender;
             }
         }, () =>
         {
             foreach (var entry in entityToIsVisible) {
-                entry.Entity.IsVisible = entry.IsVisible;
+                entry.Entity.ShouldRender = entry.IsVisible;
             }
         });
     }

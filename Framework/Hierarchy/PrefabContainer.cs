@@ -50,7 +50,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     public BoundingArea BoundingArea { get; private set; } = BoundingArea.Empty;
 
     /// <inheritdoc />
-    public bool IsVisible {
+    public bool ShouldRender {
         get => BaseGame.IsDesignMode && this.IsEnabled;
         set { }
     }
@@ -134,7 +134,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
                     this.Scene.UnregisterEntity(child);
                 }
 
-                this.RaisePropertyChanged(nameof(this.IsVisible));
+                this.RaisePropertyChanged(nameof(this.ShouldRender));
             }
             else {
                 this.AddChild(this._prefabChild);
