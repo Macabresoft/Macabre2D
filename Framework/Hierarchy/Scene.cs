@@ -244,8 +244,8 @@ public sealed class Scene : GridContainer, IScene {
     private readonly Dictionary<Type, object> _dependencies = new();
 
     private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
-        c => c.IsEnabled,
-        nameof(IFixedUpdateableEntity.IsEnabled),
+        c => c.ShouldUpdate,
+        nameof(IFixedUpdateableEntity.ShouldUpdate),
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IFixedUpdateableEntity.UpdateOrder));
 
@@ -268,8 +268,8 @@ public sealed class Scene : GridContainer, IScene {
     private readonly SystemCollection _systems = new();
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
-        c => c.IsEnabled,
-        nameof(IUpdateableEntity.IsEnabled),
+        c => c.ShouldUpdate,
+        nameof(IUpdateableEntity.ShouldUpdate),
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IUpdateableEntity.UpdateOrder));
 
@@ -322,6 +322,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+
+    /// <inheritdoc />
+    public bool ShouldUpdate => true;
 
     /// <inheritdoc />
     [DataMember]
@@ -512,7 +515,7 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
 
-            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.Render })) {
+            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.Render })) {
                 system.Update(frameTime, inputState);
             }
         }
@@ -572,15 +575,15 @@ public sealed class Scene : GridContainer, IScene {
             this.RebuildFilterCaches();
             this.InvokePendingActions();
 
-            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.PreUpdate })) {
+            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.PreUpdate })) {
                 system.Update(frameTime, inputState);
             }
 
-            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.Update })) {
+            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.Update })) {
                 system.Update(frameTime, inputState);
             }
 
-            foreach (var system in this.Systems.Where(x => x is { IsEnabled: true, Kind: GameSystemKind.PostUpdate })) {
+            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.PostUpdate })) {
                 system.Update(frameTime, inputState);
             }
         }

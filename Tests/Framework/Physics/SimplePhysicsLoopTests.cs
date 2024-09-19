@@ -24,7 +24,7 @@ public static class SimplePhysicsGameSystemTests {
         bool raycastHit) {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
-        var game = Substitute.For<IGame>();
+        var game = GameHelpers.CreateGameSubstitute();
         game.Project.Returns(project);
 
         var physicsSystem = scene.AddSystem<SimplePhysicsGameSystem>();
@@ -54,7 +54,7 @@ public static class SimplePhysicsGameSystemTests {
         bool raycastHit) {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
-        var game = Substitute.For<IGame>();
+        var game = GameHelpers.CreateGameSubstitute();
         game.Project.Returns(project);
 
         var physicsSystem = scene.AddSystem<SimplePhysicsGameSystem>();

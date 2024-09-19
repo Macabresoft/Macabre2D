@@ -39,6 +39,9 @@ public class EmptyObject : IScene {
     public bool IsActive => false;
 
     /// <inheritdoc />
+    public bool ShouldUpdate => false;
+
+    /// <inheritdoc />
     public SceneState State { get; } = new();
 
     /// <inheritdoc />

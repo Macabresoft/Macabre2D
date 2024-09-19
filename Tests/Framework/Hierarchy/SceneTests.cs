@@ -223,6 +223,7 @@ public sealed class SceneTests {
         test.Scene.RemoveChild(test.UpdateableEntity);
         test.Scene.RemoveChild(test.CameraEntity);
         test.Scene.RemoveChild(test.UpdateableAndRenderableEntity);
+        test.Scene.Update(new FrameTime(), new InputState()); // Must update to clear the cache
         test.AssertExistenceOfEntities(false);
     }
 }

@@ -31,6 +31,9 @@ public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
     }
 
     /// <inheritdoc />
+    public bool ShouldUpdate => this.IsEnabled;
+
+    /// <inheritdoc />
     public void Update(FrameTime frameTime, InputState inputState) {
         if (this._camera != null && frameTime.FrameTimeSpan.TotalSeconds > 0d) {
             this.CurrentFrameRate = 1f / (float)frameTime.FrameTimeSpan.TotalSeconds;

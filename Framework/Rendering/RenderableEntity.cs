@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -89,6 +90,15 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+
+        if (this._isVisible) {
+            this.RaisePropertyChanged(nameof(this.IsVisible));
+        }
+    }
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {

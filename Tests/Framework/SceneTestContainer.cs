@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Tests.Framework;
 using NSubstitute;
 
 internal class SceneTestContainer {
@@ -13,7 +14,7 @@ internal class SceneTestContainer {
         };
 
         if (initializationMode == InitializationMode.Before) {
-            this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+            this.Scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
         }
 
         this.RenderableEntity = this.Scene.AddChild<SpriteRenderer>();
@@ -25,7 +26,7 @@ internal class SceneTestContainer {
         this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
 
         if (initializationMode == InitializationMode.After) {
-            this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+            this.Scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
         }
     }
 

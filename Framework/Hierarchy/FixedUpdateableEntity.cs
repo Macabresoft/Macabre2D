@@ -7,6 +7,12 @@ using System.Runtime.Serialization;
 /// An updateable entity that is updated on a fixed time step.
 /// </summary>
 public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance should update.
+    /// </summary>
+    bool ShouldUpdate { get; }
+
     /// <summary>
     /// Gets the update order.
     /// </summary>
@@ -27,7 +33,14 @@ public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
 /// Base implementation of <see cref="IFixedUpdateableEntity" />.
 /// </summary>
 public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
+    private bool _shouldUpdate;
     private int _updateOrder;
+
+    [DataMember]
+    public bool ShouldUpdate {
+        get => this._shouldUpdate && this.IsEnabled;
+        set => this.Set(ref this._shouldUpdate, value);
+    }
 
     /// <inheritdoc />
     [DataMember]
@@ -38,4 +51,13 @@ public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
 
     /// <inheritdoc />
     public abstract void FixedUpdate(float timeStep);
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+
+        if (this._shouldUpdate) {
+            this.RaisePropertyChanged(nameof(this.ShouldUpdate));
+        }
+    }
 }

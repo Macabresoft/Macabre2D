@@ -234,7 +234,11 @@ public class Entity : Transformable, IEntity {
     [DataMember]
     public bool IsEnabled {
         get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
+        set {
+            if (this.Set(ref this._isEnabled, value)) {
+                this.OnIsEnableChanged();
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -252,6 +256,13 @@ public class Entity : Transformable, IEntity {
                 this.RaisePropertyChanged();
             }
         }
+    }
+
+    /// <summary>
+    /// Called when <see cref="IsEnabled"/> changes.
+    /// </summary>
+    protected virtual void OnIsEnableChanged() {
+        
     }
 
     /// <inheritdoc />

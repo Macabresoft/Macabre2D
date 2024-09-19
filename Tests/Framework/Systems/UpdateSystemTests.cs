@@ -21,7 +21,7 @@ public static class UpdateSystemTests {
         var entity = scene.AddChild<TestUpdateableEntity>();
         entity.Layers = (Layers)2;
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
@@ -40,7 +40,7 @@ public static class UpdateSystemTests {
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
@@ -60,7 +60,7 @@ public static class UpdateSystemTests {
         var entity = scene.AddChild<TestUpdateableEntity>();
         entity.Layers = (Layers)1;
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
@@ -84,7 +84,7 @@ public static class UpdateSystemTests {
             entities.Add(child);
         }
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
@@ -111,7 +111,7 @@ public static class UpdateSystemTests {
             entities.Add(entity);
         }
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {
@@ -140,7 +140,7 @@ public static class UpdateSystemTests {
             entities.Add(child);
         }
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i <= NumberOfUpdates; i++) {

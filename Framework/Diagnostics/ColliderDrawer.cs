@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -16,6 +15,9 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._body?.BoundingArea ?? BoundingArea.Empty;
+
+    /// <inheritdoc />
+    public bool ShouldUpdate => true;
 
     /// <inheritdoc />
     public int UpdateOrder => 0;

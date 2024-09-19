@@ -68,7 +68,7 @@ public class TransformableTests {
 
     private static (ITransformable Parent, ITransformable Child) GetParentChild(TransformInheritance inheritance) {
         var scene = new Scene();
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
         var parent = scene.AddChild<Entity>();
         var child = parent.AddChild<Entity>();
         child.TransformInheritance = inheritance;

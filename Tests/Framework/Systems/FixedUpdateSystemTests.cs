@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems; 
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems;
 
 using System;
 using FluentAssertions;
@@ -19,7 +19,7 @@ public static class FixedUpdateSystemTests {
         var entity = scene.AddChild<FixedUpdateTestEntity>();
         var system = scene.AddSystem<FixedUpdateSystem>();
         system.TimeStep = timeStep;
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(GameHelpers.CreateGameSubstitute(), Substitute.For<IAssetManager>());
 
         system.Update(new FrameTime(new GameTime(TimeSpan.Zero, new TimeSpan(0, 0, 0, secondsPassed)), 1D), new InputState());
 
@@ -29,6 +29,8 @@ public static class FixedUpdateSystemTests {
     }
 
     private class FixedUpdateTestEntity : Entity, IFixedUpdateableEntity {
+
+        public bool ShouldUpdate => this.IsEnabled;
         public int UpdateCount { get; private set; }
 
         public void FixedUpdate(float timeStep) {

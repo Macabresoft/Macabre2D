@@ -33,7 +33,7 @@ public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
 [DataContract]
 [Category("System")]
 public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
-    private bool _isEnabled = true;
+    private bool _shouldUpdate = true;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameSystem" /> class.
@@ -52,14 +52,14 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
 
     /// <inheritdoc />
     [DataMember]
-    public bool IsEnabled {
-        get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
-    }
+    public string Name { get; set; }
 
     /// <inheritdoc />
     [DataMember]
-    public string Name { get; set; }
+    public bool ShouldUpdate {
+        get => this._shouldUpdate;
+        set => this.Set(ref this._shouldUpdate, value);
+    }
 
     /// <summary>
     /// Gets the game.
