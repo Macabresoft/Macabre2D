@@ -70,8 +70,7 @@ public class SpriteSheetFont : SpriteSheetKeyedMember<char> {
 
     /// <inheritdoc />
     public override void ClearSprite(char character) {
-        if (this._characterToIndex.TryGetValue(character, out var index)) {
-            this._characterToIndex.Remove(character);
+        if (this._characterToIndex.Remove(character, out var index)) {
             this._characterIndexToCharacter.Remove(index);
         }
 
@@ -156,7 +155,7 @@ public class SpriteSheetFont : SpriteSheetKeyedMember<char> {
     /// </summary>
     /// <param name="character">The character.</param>
     /// <param name="spriteSheetCharacter">The sprite sheet character.</param>
-    /// <returns>A value indicating whether or not the sprite was found.</returns>
+    /// <returns>A value indicating whether the sprite was found.</returns>
     public bool TryGetSpriteCharacter(char character, [NotNullWhen(true)] out SpriteSheetFontCharacter? spriteSheetCharacter) {
         if (this._characterToIndex.TryGetValue(character, out var index) && this._characterIndexToCharacter.TryGetValue(index, out var spriteCharacter)) {
             spriteSheetCharacter = spriteCharacter;

@@ -7,9 +7,7 @@ using Macabresoft.Core;
 /// Represents a character in a <see cref="SpriteSheetFont"/>.
 /// </summary>
 [DataContract]
-public class SpriteSheetFontCharacter : PropertyChangedNotifier {
-    private int _kerning;
-    
+public class SpriteSheetFontCharacter {
     /// <summary>
     /// Gets or sets the sprite index.
     /// </summary>
@@ -26,8 +24,5 @@ public class SpriteSheetFontCharacter : PropertyChangedNotifier {
     /// Gets or sets the kerning for this character.
     /// </summary>
     [DataMember]
-    public int Kerning {
-        get => this._kerning;
-        set => this.Set(ref this._kerning, value);
-    }
+    public int Kerning { get; set; }
 }
