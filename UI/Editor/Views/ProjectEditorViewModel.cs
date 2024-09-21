@@ -25,7 +25,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private EditorGrid _grid;
     private Rect _overallSceneArea;
     private LoopingSpriteAnimator _spriteAnimator;
-    private TextArea _textArea;
+    private TextAreaRenderer _textAreaRenderer;
     private AutoTileMap _tileMap;
     private Rect _viewableSceneArea;
 
@@ -134,7 +134,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             this._tileMap.IsEnabled = false;
             this._spriteAnimator.IsEnabled = false;
             this._grid.IsEnabled = false;
-            this._textArea.ShouldRender = false;
+            this._textAreaRenderer.ShouldRender = false;
 
             switch (this.AssetSelectionService.Selected) {
                 case AutoTileSet autoTileSet:
@@ -168,9 +168,9 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._camera = scene.AddChild<Camera>();
         this._camera.LocalPosition = CameraAdjustment;
 
-        this._textArea = scene.AddChild<TextArea>();
-        this._textArea.ShouldRender = false;
-        this._textArea.RenderOptions.OffsetType = PixelOffsetType.BottomLeft;
+        this._textAreaRenderer = scene.AddChild<TextAreaRenderer>();
+        this._textAreaRenderer.ShouldRender = false;
+        this._textAreaRenderer.RenderOptions.OffsetType = PixelOffsetType.BottomLeft;
 
         this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
 
@@ -276,10 +276,10 @@ public class ProjectEditorViewModel : BaseViewModel {
 
     private void ResetScene(SpriteSheetFont font) {
         if (font.SpriteSheet != null) {
-            this._textArea.ShouldRender = true;
-            this._textArea.FontReference.Reset(font);
-            this._textArea.FontReference.Initialize(this._scene.Assets, this._game);
-            this._textArea.Text = font.CharacterLayout;
+            this._textAreaRenderer.ShouldRender = true;
+            this._textAreaRenderer.FontReference.Reset(font);
+            this._textAreaRenderer.FontReference.Initialize(this._scene.Assets, this._game);
+            this._textAreaRenderer.Text = font.CharacterLayout;
         }
     }
 
@@ -305,9 +305,9 @@ public class ProjectEditorViewModel : BaseViewModel {
                 this._camera.ViewHeight = ViewHeightRequired;
             }
 
-            if (this._textArea != null) {
-                this._textArea.Width = this._camera.BoundingArea.Maximum.X + CameraAdjustment.X;
-                this._textArea.Height = this._camera.BoundingArea.Maximum.Y + CameraAdjustment.Y;
+            if (this._textAreaRenderer != null) {
+                this._textAreaRenderer.Width = this._camera.BoundingArea.Maximum.X + CameraAdjustment.X;
+                this._textAreaRenderer.Height = this._camera.BoundingArea.Maximum.Y + CameraAdjustment.Y;
             }
         }
     }

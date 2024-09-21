@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLine : RenderableEntity {
+public class TextLineRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
@@ -30,9 +30,9 @@ public class TextLine : RenderableEntity {
     public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextLine" /> class.
+    /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
     /// </summary>
-    public TextLine() : base() {
+    public TextLineRenderer() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 

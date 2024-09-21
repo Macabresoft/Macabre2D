@@ -8,9 +8,9 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A text area.
+/// Renders text over an area.
 /// </summary>
-public class TextArea : RenderableEntity, IRenderableEntity {
+public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<(SpriteSheetFontCharacter character, Vector2 position)> _spriteCharacters = new();
     private SpriteSheetFont? _font;
@@ -24,9 +24,9 @@ public class TextArea : RenderableEntity, IRenderableEntity {
     public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextLine" /> class.
+    /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
     /// </summary>
-    public TextArea() {
+    public TextAreaRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 

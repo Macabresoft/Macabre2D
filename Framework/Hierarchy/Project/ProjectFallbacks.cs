@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 public class ProjectFallbacks {
 
     /// <summary>
-    /// Gets the default font to be used by <see cref="TextLine" /> and similar
+    /// Gets the default font to be used by <see cref="TextLineRenderer" /> and similar
     /// </summary>
     [DataMember]
     public SpriteSheetFontReference Font { get; } = new();
