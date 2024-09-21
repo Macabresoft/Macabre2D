@@ -25,6 +25,11 @@ public interface IAnimatableEntity : IEntity {
     bool IsPlaying { get; }
 
     /// <summary>
+    /// Gets a value indicating whether this should animate.
+    /// </summary>
+    bool ShouldAnimate { get; }
+
+    /// <summary>
     /// Gets the percentage complete for the current animation.
     /// </summary>
     /// <returns>The percentage complete.</returns>

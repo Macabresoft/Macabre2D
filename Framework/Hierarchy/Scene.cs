@@ -232,8 +232,8 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
 public sealed class Scene : GridContainer, IScene {
 
     private readonly FilterCollection<IAnimatableEntity> _animatableEntities = new(
-        c => c.IsEnabled,
-        nameof(IAnimatableEntity.IsEnabled));
+        c => c.ShouldAnimate,
+        nameof(IAnimatableEntity.ShouldAnimate));
 
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,

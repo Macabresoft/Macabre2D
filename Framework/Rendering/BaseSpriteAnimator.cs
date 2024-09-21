@@ -21,12 +21,19 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
 
     /// <inheritdoc />
+    public bool ShouldAnimate => this.CheckShouldAnimate();
+
+    /// <inheritdoc />
     public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
 
     /// <inheritdoc />
     public bool IsPlaying {
         get => this._isPlaying;
-        protected set => this.Set(ref this._isPlaying, value);
+        protected set {
+            if (this.Set(ref this._isPlaying, value)) {
+                this.RaisePropertyChanged(nameof(this.ShouldAnimate));
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -93,7 +100,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     /// Plays this instance.
     /// </summary>
     public void Play() {
-        this.IsEnabled = true;
         this.IsPlaying = true;
         this.Reset();
     }
@@ -102,10 +108,18 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     /// Stops this instance.
     /// </summary>
     public virtual void Stop() {
-        this.IsEnabled = false;
         this.IsPlaying = false;
         this.ResetAnimation();
     }
+
+    /// <summary>
+    /// Checks whether this should animate.
+    /// </summary>
+    /// <remarks>
+    /// Some animations may want to run the animation loop even when <see cref="IsPlaying" /> does not exist. This allows more control.
+    /// </remarks>
+    /// <returns>A value indicating whether this should animate.</returns>
+    protected virtual bool CheckShouldAnimate() => this.IsEnabled && this.IsPlaying;
 
     /// <summary>
     /// Gets the sprite animation to render.
@@ -117,6 +131,12 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     /// Handles when an animation finishes.
     /// </summary>
     protected abstract void HandleAnimationFinished();
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+        this.RaisePropertyChanged(nameof(this.ShouldAnimate));
+    }
 
     private void FrameRateOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.ResetFrameRate();
