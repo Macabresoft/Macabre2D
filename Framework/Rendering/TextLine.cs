@@ -6,6 +6,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
+/// Represents the alignment of text in a <see cref="TextLine"/>
+/// </summary>
+public enum TextAlignment {
+    Left,
+    Right,
+    Centered,
+    Justified
+}
+
+/// <summary>
 /// Represents a line of text to be rendered.
 /// </summary>
 public class TextLine {
