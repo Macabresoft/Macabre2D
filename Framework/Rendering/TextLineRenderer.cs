@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -14,7 +13,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLineRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<SpriteSheetFontCharacter> _spriteCharacters = new();
     private float _characterHeight;
     private SpriteSheetFont? _font;
     private FontCategory _fontCategory = FontCategory.None;
@@ -25,6 +23,7 @@ public class TextLineRenderer : RenderableEntity {
     private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
+    private TextLine _textLine = TextLine.Empty;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -162,15 +161,6 @@ public class TextLineRenderer : RenderableEntity {
         yield return this.FontReference;
     }
 
-    /// <summary>
-    /// Gets the kerning for rendering.
-    /// </summary>
-    /// <remarks>
-    /// Allows dynamic kerning by being overridable.
-    /// </remarks>
-    /// <returns>The kerning.</returns>
-    protected virtual int GetKerning() => this.Kerning;
-
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
@@ -183,21 +173,14 @@ public class TextLineRenderer : RenderableEntity {
     /// <param name="fontReference">The font reference.</param>
     /// <param name="color">The color.</param>
     protected void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
-        if (!this.BoundingArea.IsEmpty && fontReference is { PackagedAsset: { } font, Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
-            var position = this.BoundingArea.Minimum;
-            var kerning = this.GetKerning();
-
-            foreach (var character in this._spriteCharacters) {
-                spriteSheet.Draw(
-                    spriteBatch,
-                    this.Project.PixelsPerUnit,
-                    character.SpriteIndex,
-                    position,
-                    color,
-                    this.RenderOptions.Orientation);
-
-                position = new Vector2(position.X + font.GetCharacterWidth(character, kerning, this.Project), position.Y);
-            }
+        if (!this.BoundingArea.IsEmpty && fontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
+            this._textLine.Render(
+                spriteBatch,
+                spriteSheet,
+                color,
+                this.BoundingArea.Minimum,
+                this.Project.PixelsPerUnit,
+                this.RenderOptions.Orientation);
         }
     }
 
@@ -213,15 +196,13 @@ public class TextLineRenderer : RenderableEntity {
     private bool CouldBeVisible() =>
         !string.IsNullOrEmpty(this.ActualText) &&
         this._characterHeight > 0f &&
-        this._spriteCharacters.Any() &&
         this._font != null;
 
     private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
     private Vector2 CreateSize() {
         if (this._font != null && this._spriteSheet != null) {
-            var kerning = this.GetKerning();
-            var unitWidth = this._spriteCharacters.Sum(character => this._font.GetCharacterWidth(character, kerning, this.Project));
+            var unitWidth = this._textLine.Width;
             this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             return new Vector2(unitWidth * this.Project.PixelsPerUnit, this._spriteSheet.SpriteSize.Y);
         }
@@ -263,7 +244,7 @@ public class TextLineRenderer : RenderableEntity {
     }
 
     private void ResetIndexes() {
-        this._spriteCharacters.Clear();
+        this._textLine = TextLine.Empty;
 
         if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
             this._fontReference = this.FontReference;
@@ -278,11 +259,7 @@ public class TextLineRenderer : RenderableEntity {
 
         if (this._font != null) {
             var actualText = this.ActualText;
-            foreach (var character in actualText) {
-                if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
-                    this._spriteCharacters.Add(spriteCharacter);
-                }
-            }
+            this._textLine = TextLine.CreateTextLine(this.Project, actualText, this._font, this.Kerning);
         }
     }
 
