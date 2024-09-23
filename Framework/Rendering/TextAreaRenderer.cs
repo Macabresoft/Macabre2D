@@ -12,10 +12,13 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<(SpriteSheetFontCharacter character, Vector2 position)> _spriteCharacters = new();
+    private readonly List<TextLine> _textLines = new();
+    private float _characterHeight;
     private SpriteSheetFont? _font;
     private float _height;
+    private TextAlignment _horizontalAlignment;
     private int _kerning;
+    private Vector2 _renderStartPosition;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
     private float _width;
@@ -56,6 +59,20 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
             this._height = value;
             if (this.IsInitialized) {
                 this.ResetSize();
+                this.ResetLines();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the horizontal alignment of the text.
+    /// </summary>
+    [DataMember]
+    public TextAlignment HorizontalAlignment {
+        get => this._horizontalAlignment;
+        set {
+            if (value != this._horizontalAlignment) {
+                this._horizontalAlignment = value;
                 this.ResetLines();
             }
         }
@@ -137,14 +154,23 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!this.BoundingArea.IsEmpty && this._spriteSheet != null && this.SpriteBatch is { } spriteBatch) {
-            foreach (var (character, position) in this._spriteCharacters) {
-                this._spriteSheet.Draw(
+            var currentPosition = this._renderStartPosition;
+            foreach (var line in this._textLines) {
+                if (currentPosition.Y < this.BoundingArea.Minimum.Y) {
+                    // Don't render out of bounds.
+                    // TODO: render part of the text and cut it off?
+                    break;
+                }
+                
+                line.Render(
                     spriteBatch,
-                    this.Project.PixelsPerUnit,
-                    character.SpriteIndex,
-                    position,
+                    this._spriteSheet,
                     colorOverride,
+                    currentPosition,
+                    this.Project.PixelsPerUnit,
                     this.RenderOptions.Orientation);
+
+                currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this._characterHeight);
             }
         }
     }
@@ -160,7 +186,7 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
 
         if (this.IsInitialized) {
             this.ResetSize();
-            this.ResetLines();
+            this.ResetStartPosition();
         }
     }
 
@@ -189,7 +215,7 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     }
 
     private void ResetLines() {
-        this._spriteCharacters.Clear();
+        this._textLines.Clear();
 
         if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
             this._font = this.FontReference.PackagedAsset;
@@ -201,31 +227,9 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         }
 
         if (this._font != null && this._spriteSheet != null) {
-            var characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            var position = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - characterHeight);
-            foreach (var character in this.Text) {
-                if (position.Y < this.BoundingArea.Minimum.Y) {
-                    return;
-                }
-
-                if (this._font.TryGetSpriteCharacter(character, out var spriteCharacter)) {
-                    var characterWidth = this._font.GetCharacterWidth(spriteCharacter, this.Kerning, this.Project);
-                    if (position.X + characterWidth > this.BoundingArea.Maximum.X) {
-                        position = new Vector2(this.BoundingArea.Minimum.X, position.Y - characterHeight);
-
-                        if (character == ' ') {
-                            break;
-                        }
-
-                        if (position.Y < this.BoundingArea.Minimum.Y) {
-                            return;
-                        }
-                    }
-
-                    this._spriteCharacters.Add((spriteCharacter, position));
-                    position = new Vector2(position.X + characterWidth, position.Y);
-                }
-            }
+            this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            this.ResetStartPosition();
+            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.Text, this.BoundingArea.Width, this._font, this.Kerning, this.HorizontalAlignment));
         }
     }
 
@@ -233,5 +237,9 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
         this.BoundingAreaChanged.SafeInvoke(this);
+    }
+
+    private void ResetStartPosition() {
+        this._renderStartPosition = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - this._characterHeight);
     }
 }
