@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework;
 public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<TextLine> _textLines = new();
-    private float _characterHeight;
     private SpriteSheetFont? _font;
     private float _height;
     private TextAlignment _horizontalAlignment;
@@ -41,6 +40,11 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     /// </summary>
     [DataMember]
     public SpriteSheetFontReference FontReference { get; } = new();
+
+    /// <summary>
+    /// Gets the character height of this font.
+    /// </summary>
+    public float CharacterHeight { get; private set; }
 
     /// <summary>
     /// Gets or sets the color.
@@ -114,6 +118,16 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     }
 
     /// <summary>
+    /// Gets the height of the total text, including text that is not displayed within the <see cref="BoundingArea" />.
+    /// </summary>
+    public float TextHeight { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the vertical offset.
+    /// </summary>
+    public float VerticalOffset { get; set; }
+
+    /// <summary>
     /// Gets or sets the width.
     /// </summary>
     [DataMember]
@@ -140,6 +154,7 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
+        this.VerticalOffset = 0f;
         this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.RenderOptions.Initialize(this.CreateSize);
         this.ResetLines();
@@ -154,23 +169,20 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!this.BoundingArea.IsEmpty && this._spriteSheet != null && this.SpriteBatch is { } spriteBatch) {
-            var currentPosition = this._renderStartPosition;
+            var currentPosition = new Vector2(this._renderStartPosition.X, this._renderStartPosition.Y + this.VerticalOffset);
+            var topPosition = this.BoundingArea.Maximum.Y + Defaults.FloatComparisonTolerance;
             foreach (var line in this._textLines) {
-                if (currentPosition.Y < this.BoundingArea.Minimum.Y) {
-                    // Don't render out of bounds.
-                    // TODO: render part of the text and cut it off?
-                    break;
+                if (currentPosition.Y >= this.BoundingArea.Minimum.Y && currentPosition.Y + this.CharacterHeight <= topPosition) {
+                    line.Render(
+                        spriteBatch,
+                        this._spriteSheet,
+                        colorOverride,
+                        currentPosition,
+                        this.Project.PixelsPerUnit,
+                        this.RenderOptions.Orientation);
                 }
-                
-                line.Render(
-                    spriteBatch,
-                    this._spriteSheet,
-                    colorOverride,
-                    currentPosition,
-                    this.Project.PixelsPerUnit,
-                    this.RenderOptions.Orientation);
 
-                currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this._characterHeight);
+                currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this.CharacterHeight);
             }
         }
     }
@@ -227,9 +239,10 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         }
 
         if (this._font != null && this._spriteSheet != null) {
-            this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             this.ResetStartPosition();
             this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.Text, this.BoundingArea.Width, this._font, this.Kerning, this.HorizontalAlignment));
+            this.TextHeight = this.CharacterHeight * this._textLines.Count;
         }
     }
 
@@ -240,6 +253,6 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     }
 
     private void ResetStartPosition() {
-        this._renderStartPosition = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - this._characterHeight);
+        this._renderStartPosition = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - this.CharacterHeight);
     }
 }

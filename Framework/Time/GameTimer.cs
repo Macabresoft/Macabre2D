@@ -17,6 +17,20 @@ public enum TimerState {
 [DataContract]
 public class GameTimer {
     /// <summary>
+    /// Initializes a new instance of the <see cref="GameTimer" /> class.
+    /// </summary>
+    public GameTimer() {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GameTimer" /> class.
+    /// </summary>
+    /// <param name="timeLimit">The time limit.</param>
+    public GameTimer(float timeLimit) {
+        this.TimeLimit = timeLimit;
+    }
+
+    /// <summary>
     /// Gets the percentage complete.
     /// </summary>
     public float PercentComplete {
