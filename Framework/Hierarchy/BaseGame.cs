@@ -22,6 +22,7 @@ public class BaseGame : Game, IGame {
     public static readonly IGame Empty = new EmptyGame();
 
     private readonly LaunchArguments _launchArguments;
+    private readonly List<GameTransition> _runningTransitions = new();
     private readonly Stack<IScene> _sceneStack = new();
     private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
     private bool _canToggleFullscreen = true;
@@ -214,6 +215,11 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public void BeginTransition(GameTransition transition) {
+        this._runningTransitions.Add(transition);
+    }
+
+    /// <inheritdoc />
     public void LoadScene(string sceneName) {
         var assetManager = this.CreateAssetManager();
         if (assetManager.TryLoadContent<Scene>(sceneName, out var scene)) {
@@ -340,7 +346,7 @@ public class BaseGame : Game, IGame {
         else {
             this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
             this.SaveManager.Initialize(this.DataManager);
-            
+
             if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
             }
@@ -441,6 +447,7 @@ public class BaseGame : Game, IGame {
 
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
+        this.RunTransitions();
         this.CurrentScene.Update(this.FrameTime, this.InputState);
         this.Overlay.Update(this.FrameTime, this.InputState);
         this._persistentOverlay.Update(this.FrameTime, this.InputState);
@@ -530,6 +537,17 @@ public class BaseGame : Game, IGame {
         this._screenShaderIdToRenderTargets.Clear();
     }
 
+    private void RunTransitions() {
+        for (var i = this._runningTransitions.Count - 1; i >= 0; i--) {
+            var transition = this._runningTransitions[i];
+            transition.Update(this.FrameTime);
+
+            if (transition.IsComplete) {
+                this._runningTransitions.Remove(transition);
+            }
+        }
+    }
+
     private void ToggleFullscreen() {
         this.DisplaySettings.DisplayMode = this.DisplaySettings.DisplayMode == DisplayMode.Windowed ? DisplayMode.Borderless : DisplayMode.Windowed;
         this.SaveAndApplyUserSettings();
@@ -567,6 +585,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void ApplyDisplaySettings() {
+        }
+
+        public void BeginTransition(GameTransition transition) {
         }
 
         public void Exit() {
