@@ -10,14 +10,18 @@ using System.Runtime.Serialization;
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     private bool _isPlaying;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the current animation.
+    /// </summary>
     public SpriteAnimation? CurrentAnimation => this.GetCurrentAnimation()?.Animation;
 
     /// <inheritdoc />
     [DataMember(Order = 11, Name = "Frame Rate")]
     public ByteOverride FrameRateOverride { get; } = new();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets a value indicating whether this is looping.
+    /// </summary>
     public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
 
     /// <inheritdoc />
@@ -26,7 +30,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     /// <inheritdoc />
     public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets a value indicating whether this is playing.
+    /// </summary>
     public bool IsPlaying {
         get => this._isPlaying;
         protected set {
@@ -50,7 +56,10 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
         this.FrameRateOverride.PropertyChanged -= this.FrameRateOverride_PropertyChanged;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the animation percentage complete as a value between 0 and 1.
+    /// </summary>
+    /// <returns>The percentage completed.</returns>
     public float GetPercentageComplete() {
         var result = 0f;
 

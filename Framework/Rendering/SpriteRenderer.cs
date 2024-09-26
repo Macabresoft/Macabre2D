@@ -10,12 +10,6 @@ using System.Runtime.Serialization;
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public class SpriteRenderer : BaseSpriteEntity {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteRenderer" /> class.
-    /// </summary>
-    public SpriteRenderer() : base() {
-    }
-
     /// <inheritdoc />
     public override byte? SpriteIndex => this.SpriteReference.SpriteIndex;
 
