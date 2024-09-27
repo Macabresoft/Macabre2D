@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// A <see cref="SpriteRenderer" /> that scrolls the sprite over time.
 /// </summary>
 public class ScrollingSpriteRenderer : SpriteRenderer, IAnimatableEntity {
-    private readonly List<SpriteLocation> _spriteLocations = new();
+    private readonly List<SpriteLocation> _spriteLocations = [];
     private Point _currentOffset;
     private double _millisecondsPassed;
 
