@@ -170,6 +170,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType.IsAssignableTo(typeof(IEntityReferenceCollection))) {
+            var editor = this.CreateValueEditorFromType(typeof(EntityReferenceCollectionEditor), owner, value, memberType, member, propertyPath);
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
         else if (memberType.IsEnum) {
             if (memberType.GetCustomAttribute<FlagsAttribute>() != null) {
                 var editor = this.CreateValueEditorFromType(typeof(FlagsEnumEditor), owner, value, memberType, member, propertyPath);

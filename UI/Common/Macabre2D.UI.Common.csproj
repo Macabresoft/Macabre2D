@@ -167,6 +167,10 @@
           <DependentUpon>SpriteSheetAssetGuidEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\EntityReferenceCollectionEditor.axaml.cs">
+          <DependentUpon>EntityReferenceCollectionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>

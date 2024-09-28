@@ -38,6 +38,12 @@ public interface IEntityReferenceCollection : IEntityReference {
     /// Clears this collection.
     /// </summary>
     void Clear();
+
+    /// <summary>
+    /// Removes the entity from this collection.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    void RemoveEntity(Guid id);
 }
 
 /// <summary>
@@ -86,6 +92,9 @@ public abstract class EntityReferenceCollection : PropertyChangedNotifier, IEnti
     public virtual void Initialize(IScene scene) {
         this.Scene = scene;
     }
+
+    /// <inheritdoc />
+    public abstract void RemoveEntity(Guid id);
 
     /// <summary>
     /// Adds the entity identifier to the collection.
@@ -154,6 +163,13 @@ public class EntityReferenceCollection<TEntity> : EntityReferenceCollection wher
     public override void Initialize(IScene scene) {
         base.Initialize(scene);
         this.ResetEntities();
+    }
+
+    /// <inheritdoc />
+    public override void RemoveEntity(Guid id) {
+        if (this.RemoveEntityId(id) && this._entities.FirstOrDefault(x => x.Id == id) is { } entity) {
+            this._entities.Remove(entity);
+        }
     }
 
     private void ResetEntities() {
