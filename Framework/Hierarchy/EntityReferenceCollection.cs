@@ -49,6 +49,7 @@ public interface IEntityReferenceCollection : IEntityReference {
 /// <summary>
 /// A collection of entity references.
 /// </summary>
+[DataContract]
 public abstract class EntityReferenceCollection : PropertyChangedNotifier, IEntityReferenceCollection {
     [DataMember]
     private readonly HashSet<Guid> _entityIds = new();
