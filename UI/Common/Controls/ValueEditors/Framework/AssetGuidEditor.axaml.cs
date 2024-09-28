@@ -69,6 +69,9 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
                 else if (info.GetCustomAttribute<SceneGuidAttribute>() != null) {
                     this._assetType = typeof(SceneAsset);
                 }
+                else if (info.GetCustomAttribute<PrefabGuidAttribute>() != null) {
+                    this._assetType = typeof(PrefabAsset);
+                }
             }
         }
 
