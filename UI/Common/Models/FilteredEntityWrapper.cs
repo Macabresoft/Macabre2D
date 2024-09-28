@@ -20,13 +20,13 @@ public class FilteredEntityWrapper {
         this.IsSelectable = entityType.IsInstanceOfType(this.Entity);
 
         var children = new List<FilteredEntityWrapper>(
-            this.Entity.Children
+                this.Entity.Children
                 .Where(x => this.IsSelectable || this.Entity.GetDescendants(entityType).Any())
-                .Select(x => new FilteredEntityWrapper(x, entityType)));
+                .Select(x => new FilteredEntityWrapper(x, entityType))
+                .Where(x => x.IsSelectable || x.Entity.GetDescendants(entityType).Any())).ToList();
 
         this.Children = children;
     }
-
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FilteredEntityWrapper" /> class for searching on content identifier.
