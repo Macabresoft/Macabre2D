@@ -29,7 +29,6 @@ public class BaseGame : Game, IGame {
     private InputDevice _desiredInputDevice = InputDevice.Auto;
     private RenderTarget2D? _gameRenderTarget;
     private double _gameSpeed = 1d;
-    private IScene _persistentOverlay = Scene.Empty;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
 
@@ -89,9 +88,6 @@ public class BaseGame : Game, IGame {
     public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
-    public IScene Overlay { get; } = new Scene();
-
-    /// <inheritdoc />
     public SaveManager SaveManager { get; } = new();
 
     /// <inheritdoc />
@@ -142,6 +138,9 @@ public class BaseGame : Game, IGame {
     /// Gets or sets a value which indicates whether the game is running in design mode.
     /// </summary>
     public static bool IsDesignMode { get; private set; }
+
+    /// <inheritdoc />
+    public IScene Overlay { get; private set; } = Scene.Empty;
 
     /// <inheritdoc />
     public Point PixelRenderSize { get; private set; }
@@ -365,7 +364,7 @@ public class BaseGame : Game, IGame {
 
         this.RaiseCultureChanged();
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
-        this._persistentOverlay.Initialize(this, this.CreateAssetManager());
+        this.Overlay.Initialize(this, this.CreateAssetManager());
 
         var assetManager = this.CreateAssetManager();
         foreach (var shader in this.Project.ScreenShaders) {
@@ -393,7 +392,7 @@ public class BaseGame : Game, IGame {
         }
 
         if (assetManager.TryLoadContent<Scene>(this.Project.PersistentOverlaySceneId, out var overlay)) {
-            this._persistentOverlay = overlay;
+            this.Overlay = overlay;
         }
 
         this.TryCreateSpriteBatch();
@@ -450,7 +449,6 @@ public class BaseGame : Game, IGame {
         this.RunTransitions();
         this.CurrentScene.Update(this.FrameTime, this.InputState);
         this.Overlay.Update(this.FrameTime, this.InputState);
-        this._persistentOverlay.Update(this.FrameTime, this.InputState);
     }
 
     /// <summary>
@@ -515,10 +513,6 @@ public class BaseGame : Game, IGame {
         }
 
         this.Overlay.Render(this.FrameTime, this.InputState);
-
-        if (this.UserSettings.Display.ShowPersistentOverlay) {
-            this._persistentOverlay.Render(this.FrameTime, this.InputState);
-        }
     }
 
     private void ResetViewPort() {

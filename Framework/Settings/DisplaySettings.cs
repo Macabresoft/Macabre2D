@@ -84,12 +84,6 @@ public sealed class DisplaySettings {
     public DisplayMode DisplayMode { get; set; } = DisplayMode.Windowed;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the persistent overlay should be shown.
-    /// </summary>
-    [DataMember]
-    public bool ShowPersistentOverlay { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets the window scale.
     /// </summary>
     [DataMember]
