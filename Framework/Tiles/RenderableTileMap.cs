@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -22,30 +21,9 @@ public enum TileMapRenderStartingPoint {
 /// A base renderable tile map.
 /// </summary>
 [Category(CommonCategories.Rendering)]
-public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
+public abstract class RenderableTileMap : RenderableTileableEntity, IRenderableEntity {
     private readonly List<Point> _orderedActiveTiles = new();
-    private int _renderOrder;
     private TileMapRenderStartingPoint _renderStartingPoint = TileMapRenderStartingPoint.BottomLeft;
-    private bool _shouldRender = true;
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
-    public int RenderOrder {
-        get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public bool RenderOutOfBounds { get; set; }
 
     /// <summary>
     /// Gets or sets the render starting point.
@@ -65,36 +43,14 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
         }
     }
 
-    /// <inheritdoc />
-    [DataMember]
-    public bool ShouldRender {
-        get => this._shouldRender && this.IsEnabled;
-        set => this.Set(ref this._shouldRender, value);
-    }
-
     /// <summary>
     /// Gets the active tiles in an order defined by <see cref="RenderStartingPoint" />.
     /// </summary>
     protected IReadOnlyCollection<Point> OrderedActiveTiles => this._orderedActiveTiles;
 
     /// <inheritdoc />
-    public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
-
-    /// <inheritdoc />
-    public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
-
-    /// <inheritdoc />
     protected override void ClearActiveTiles() {
         this._orderedActiveTiles.Clear();
-    }
-
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(IEntity.IsEnabled) && this._shouldRender) {
-            this.RaisePropertyChanged(nameof(this.ShouldRender));
-        }
     }
 
     /// <summary>

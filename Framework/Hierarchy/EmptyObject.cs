@@ -7,11 +7,12 @@ using System.Diagnostics.CodeAnalysis;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : IScene {
+public class EmptyObject : IScene, ICamera {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -33,16 +34,31 @@ public class EmptyObject : IScene {
     public event EventHandler? TransformChanged;
 
     /// <inheritdoc />
+    public float ActualViewHeight => 1f;
+
+    /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
     public bool IsActive => false;
 
     /// <inheritdoc />
+    public Layers LayersToExcludeFromRender => default;
+
+    /// <inheritdoc />
+    public OffsetOptions OffsetOptions { get; } = new();
+
+    /// <inheritdoc />
+    public PixelSnap PixelSnap => PixelSnap.No;
+
+    /// <inheritdoc />
     public bool ShouldUpdate => false;
 
     /// <inheritdoc />
     public SceneState State { get; } = new();
+
+    /// <inheritdoc />
+    public float ViewWidth => 1f;
 
     /// <inheritdoc />
     public Vector2 WorldPosition => Vector2.Zero;
@@ -72,6 +88,12 @@ public class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
+    public Layers LayersToRender {
+        get => default;
+        set { }
+    }
+
+    /// <inheritdoc />
     public Vector2 LocalPosition {
         get => Vector2.Zero;
         set { }
@@ -91,6 +113,12 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public Version Version { get; set; } = new();
+
+    /// <inheritdoc />
+    public float ViewHeight {
+        get => 1f;
+        set { }
+    }
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
@@ -117,6 +145,9 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public bool ContainsEntity(Guid id) => false;
+
+    /// <inheritdoc />
+    public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) => Vector2.Zero;
 
     /// <inheritdoc />
     public void Deinitialize() {
@@ -221,6 +252,10 @@ public class EmptyObject : IScene {
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, InputState inputState) {
+    }
+
+    /// <inheritdoc />
+    public void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
     }
 
     /// <inheritdoc />

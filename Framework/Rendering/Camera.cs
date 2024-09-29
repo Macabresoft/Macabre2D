@@ -83,6 +83,11 @@ public class Camera : Entity, ICamera {
     private int _renderOrder;
     private float _viewHeight = 10f;
 
+    /// <summary>
+    /// Gets an empty <see cref="ICamera"/> instance.
+    /// </summary>
+    public static readonly ICamera EmptyCamera = new EmptyObject();
+
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
