@@ -40,6 +40,9 @@ public class EmptyObject : IScene, ICamera {
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
+    public IGame Game => BaseGame.Empty;
+
+    /// <inheritdoc />
     public bool IsActive => false;
 
     /// <inheritdoc />

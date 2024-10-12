@@ -21,6 +21,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IReadOnlyCollection<IEntity> Children => Array.Empty<IEntity>();
 
     /// <summary>
+    /// Gets the game.
+    /// </summary>
+    IGame Game { get; }
+
+    /// <summary>
     /// Gets the parent.
     /// </summary>
     IEntity Parent => Framework.Scene.Empty;
@@ -215,9 +220,7 @@ public class Entity : Transformable, IEntity {
     /// </summary>
     public static IEntity Empty => EmptyObject.Instance;
 
-    /// <summary>
-    /// Gets the game.
-    /// </summary>
+    /// <inheritdoc />
     public virtual IGame Game => this.Scene.Game;
 
     /// <summary>
@@ -256,13 +259,6 @@ public class Entity : Transformable, IEntity {
                 this.RaisePropertyChanged();
             }
         }
-    }
-
-    /// <summary>
-    /// Called when <see cref="IsEnabled"/> changes.
-    /// </summary>
-    protected virtual void OnIsEnableChanged() {
-        
     }
 
     /// <inheritdoc />
@@ -539,6 +535,12 @@ public class Entity : Transformable, IEntity {
                 child.Initialize(this.Scene, this);
             });
         }
+    }
+
+    /// <summary>
+    /// Called when <see cref="IsEnabled" /> changes.
+    /// </summary>
+    protected virtual void OnIsEnableChanged() {
     }
 
     /// <summary>

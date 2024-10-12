@@ -50,11 +50,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
 
     /// <summary>
-    /// Gets the game currently running this scene.
-    /// </summary>
-    IGame Game => BaseGame.Empty;
-
-    /// <summary>
     /// Gets or sets a value indicating whether or not this is active.
     /// </summary>
     bool IsActive { get; }
