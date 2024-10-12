@@ -52,7 +52,7 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
     /// <param name="layers">The layers.</param>
     /// <param name="hitBodies">The hit bodies.</param>
     /// <returns>A value indicating whether there was a hit.</returns>
-    bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IEnumerable<IPhysicsBody> hitBodies);
+    bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IReadOnlyCollection<IPhysicsBody> hitBodies);
 
     /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
@@ -148,7 +148,7 @@ public class SimplePhysicsGameSystem : FixedTimeStepSystem, ISimplePhysicsGameSy
     }
 
     /// <inheritdoc />
-    public bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IEnumerable<IPhysicsBody> hitBodies) {
+    public bool TryBoundingAreaToBoundingAreaCast(BoundingArea boundingArea, Layers layers, out IReadOnlyCollection<IPhysicsBody> hitBodies) {
         var bodies = new List<IPhysicsBody>();
         if (!boundingArea.IsEmpty) {
             foreach (var collider in this.GetFilteredColliders(boundingArea, layers).Where(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(boundingArea))) {
