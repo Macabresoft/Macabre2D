@@ -269,6 +269,27 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         };
 
     /// <summary>
+    /// Gets the next sprite index. If the value ends up greater than the max index of this sprite sheet, it will wrap back around.
+    /// </summary>
+    /// <param name="spriteIndex">The sprite index.</param>
+    /// <returns>The next sprite index in this sheet.</returns>
+    public byte GetNextSpriteIndex(byte spriteIndex) {
+        var result = ++spriteIndex;
+        var maxIndex = this.MaxIndex;
+
+        if (maxIndex == 0) {
+            result = 0;
+        }
+        else {
+            while (result > maxIndex) {
+                result -= maxIndex;
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Gets the sprite index given a column and row. Normalized to exist on the sprite sheet.
     /// </summary>
     /// <param name="column">The column.</param>
