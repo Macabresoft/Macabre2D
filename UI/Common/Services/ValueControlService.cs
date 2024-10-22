@@ -235,6 +235,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private static bool HasAssetGuidReference(Type type) =>
         type.GetCustomAttribute<AssetGuidAttribute>() != null ||
         type.GetCustomAttribute<SceneGuidAttribute>() != null ||
+        type.GetCustomAttribute<SpriteSheetGuidAttribute>() != null ||
         type.GetCustomAttribute<PrefabGuidAttribute>() != null;
 
     private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member) {
