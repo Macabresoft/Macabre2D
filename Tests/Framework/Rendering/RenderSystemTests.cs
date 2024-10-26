@@ -123,13 +123,12 @@ public class RenderSystemTests {
         public Layers LayersToExcludeFromRender => (Layers)2;
         public OffsetOptions OffsetOptions { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
+        public BoundingArea SafeArea => this.BoundingArea;
         public float ViewWidth => 4f;
         public Layers LayersToRender { get; set; } = (Layers)1;
         public float ViewHeight { get; set; } = 4f;
 
-        public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
-            return Vector2.Zero;
-        }
+        public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) => Vector2.Zero;
 
         public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
             var entities = renderTree
@@ -147,7 +146,6 @@ public class RenderSystemTests {
         public event EventHandler BoundingAreaChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
         public PixelSnap PixelSnap => PixelSnap.Inherit;
-        public bool ShouldRender { get; set; } = true;
 
         public int RenderCount { get; private set; }
 
@@ -155,6 +153,8 @@ public class RenderSystemTests {
             get => true;
             set { }
         }
+
+        public bool ShouldRender { get; set; } = true;
 
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             this.RenderCount++;

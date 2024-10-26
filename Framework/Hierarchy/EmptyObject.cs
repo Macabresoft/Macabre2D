@@ -55,6 +55,9 @@ public class EmptyObject : IScene, ICamera {
     public PixelSnap PixelSnap => PixelSnap.No;
 
     /// <inheritdoc />
+    public BoundingArea SafeArea => BoundingArea.Empty;
+
+    /// <inheritdoc />
     public bool ShouldUpdate => false;
 
     /// <inheritdoc />

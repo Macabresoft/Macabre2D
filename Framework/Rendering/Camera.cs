@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -25,7 +24,7 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// </summary>
     /// <remarks>
     /// An entity will be excluded from the render if it includes any layer specified here,
-    /// regardless of whether or not one of the other layers it has it meant to be rendered.
+    /// regardless of whether one of the other layers it has it meant to be rendered.
     /// </remarks>
     Layers LayersToExcludeFromRender { get; }
 
@@ -40,6 +39,11 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// </summary>
     /// <value>The render order.</value>
     int RenderOrder => 0;
+
+    /// <summary>
+    /// Gets the safe area to render objects in this camera. By default, it does not differ from the <see cref="BoundingArea" />.
+    /// </summary>
+    BoundingArea SafeArea { get; }
 
     /// <summary>
     /// Gets the view width.
@@ -77,16 +81,17 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
 /// Represents a camera into the game world.
 /// </summary>
 public class Camera : Entity, ICamera {
+
+    /// <summary>
+    /// Gets an empty <see cref="ICamera" /> instance.
+    /// </summary>
+    public static readonly ICamera EmptyCamera = new EmptyObject();
+
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<float> _viewWidth;
     private bool _overrideCommonViewHeight = true;
     private int _renderOrder;
     private float _viewHeight = 10f;
-
-    /// <summary>
-    /// Gets an empty <see cref="ICamera"/> instance.
-    /// </summary>
-    public static readonly ICamera EmptyCamera = new EmptyObject();
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -111,6 +116,9 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     [DataMember(Name = "Offset Options")]
     public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
+
+    /// <inheritdoc />
+    public virtual BoundingArea SafeArea => this.BoundingArea;
 
     /// <summary>
     /// Gets the shader reference.
