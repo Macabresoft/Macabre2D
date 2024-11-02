@@ -95,12 +95,7 @@ public interface IGame {
     /// Gets the project.
     /// </summary>
     IGameProject Project { get; }
-
-    /// <summary>
-    /// Gets the save manager.
-    /// </summary>
-    SaveManager SaveManager { get; }
-
+    
     /// <summary>
     /// Gets the sprite batch.
     /// </summary>

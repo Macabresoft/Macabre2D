@@ -88,9 +88,6 @@ public class BaseGame : Game, IGame {
     public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
-    public SaveManager SaveManager { get; } = new();
-
-    /// <inheritdoc />
     public GameState State { get; } = new();
 
     /// <inheritdoc />
@@ -344,7 +341,7 @@ public class BaseGame : Game, IGame {
         }
         else {
             this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
-            this.SaveManager.Initialize(this.DataManager);
+            this.State.Initialize(this.DataManager);
 
             if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
@@ -564,7 +561,6 @@ public class BaseGame : Game, IGame {
         public IScene Overlay => Scene.Empty;
         public Point PixelRenderSize => default;
         public IGameProject Project => GameProject.Empty;
-        public SaveManager SaveManager { get; } = new();
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public UserSettings UserSettings { get; } = new();
