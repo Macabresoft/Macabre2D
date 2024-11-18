@@ -190,7 +190,7 @@ public class EmptyObject : IScene, ICamera {
     public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />
-    public Vector2 GetTilePosition(Point tile) => throw new NotSupportedException();
+    public Vector2 GetTilePosition(Point tile) => Vector2.Zero;
 
     /// <inheritdoc />
     public Vector2 GetWorldPosition(Vector2 originOffset) => this.WorldPosition;
