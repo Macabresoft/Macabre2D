@@ -141,10 +141,10 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     [DataMember(Name = "Layers to Render")]
-    public Layers LayersToRender { get; set; } = ~Layers.None;
+    public Layers LayersToRender { get; set; } = LayersHelpers.GetAll();
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not to override the common view height from <see cref="IGameProject" />.
+    /// Gets or sets a value indicating whether to override the common view height from <see cref="IGameProject" />.
     /// </summary>
     [DataMember(Name = "Override Common View Height", Order = 10)]
     public bool OverrideCommonViewHeight {

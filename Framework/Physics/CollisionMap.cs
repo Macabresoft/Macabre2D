@@ -28,7 +28,7 @@ public sealed class CollisionMap {
         this._layers.Remove(Layers.None);
 
         foreach (var layer in this._layers) {
-            this._layerToCollisionMask[layer] = ~Layers.None;
+            this._layerToCollisionMask[layer] = LayersHelpers.GetAll();
         }
     }
 
