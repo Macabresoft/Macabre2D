@@ -248,16 +248,17 @@
                             <Border Classes="DragDrop">
                                 <avaloniaEx:EditableSelectableItem Classes="Directory"
                                                                    Icon="{StaticResource ProjectIcon}"
+                                                                   IconForeground="{StaticResource PurpleBrush}"
                                                                    IsEditable="False"
                                                                    IsFileName="False"
-                                                                   Text="Project" />
+                                                                   Text="Project / Content" />
                             </Border>
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="framework:ScreenShaderCollection"
                                           ItemsSource="{Binding}">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource ScreenIcon}"
-                                                               IconForeground="{StaticResource YellowBrush}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
                                                                IsEditable="False"
                                                                IsFileName="False"
                                                                Text="{Binding Name, Mode=OneTime}" />
