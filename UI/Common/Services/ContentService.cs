@@ -30,7 +30,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Adds a scene to the selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
-    void AddScene(IContentDirectory parent);
+    IContentNode AddScene(IContentDirectory parent);
 
     /// <summary>
     /// Creates a prefab from the given entity.
@@ -126,7 +126,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public IContentDirectory AddDirectory(IContentDirectory parent) => parent != null ? this.CreateDirectory("New Directory", parent) : null;
 
     /// <inheritdoc />
-    public void AddScene(IContentDirectory parent) {
+    public IContentNode AddScene(IContentDirectory parent) {
+        ContentFile contentFile = null;
         if (parent != null) {
             var name = this.CreateSafeName("New Scene", parent);
             var scene = new Scene {
@@ -136,7 +137,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             var fileName = $"{name}{SceneAsset.FileExtension}";
             var fullPath = Path.Combine(parent.GetFullPath(), fileName);
             this._serializer.Serialize(scene, fullPath);
-            this.CreateContentFile(parent, fileName, out var contentFile);
+            this.CreateContentFile(parent, fileName, out contentFile);
 
             if (contentFile != null) {
                 this.CopyToEditorBin(parent, contentFile);
@@ -144,6 +145,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 this._settingsService.Settings.ShouldRebuildContent = true;
             }
         }
+
+        return contentFile;
     }
 
     /// <inheritdoc />

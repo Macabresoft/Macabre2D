@@ -74,8 +74,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             this.AssetSelectionService.WhenAny(x => x.Selected, x => !this.IsFiltered && CanAddNode(x.Value)));
 
         var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
-        this.AddDirectoryCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddDirectory(x as IContentDirectory), whenIsContentDirectory);
-        this.AddSceneCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddScene(x as IContentDirectory), whenIsContentDirectory);
+        this.AddDirectoryCommand = ReactiveCommand.Create<object>(this.AddDirectory, whenIsContentDirectory);
+        this.AddSceneCommand = ReactiveCommand.Create<object>(this.AddScene, whenIsContentDirectory);
 
         this.FindContentUsagesCommand = ReactiveCommand.CreateFromTask<IContentNode>(
             this.FindContentUsages,
@@ -223,24 +223,48 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this.AssetSelectionService.Selected = selected;
     }
 
+    private void AddDirectory(object parent) {
+        if (parent is IContentDirectory directory && this.ContentService.AddDirectory(directory) is { } newDirectory) {
+            this.SetActualSelected(newDirectory);
+        }
+    }
+
     private void AddNewProjectShader() {
         var newShader = new ScreenShader();
+        var originalSelected = this.GetActualSelected();
         this._undoService.Do(
-            () => { this.ProjectService.CurrentProject.ScreenShaders.Add(newShader); },
-            () => { this.ProjectService.CurrentProject.ScreenShaders.Remove(newShader); });
+            () =>
+            {
+                this.ProjectService.CurrentProject.ScreenShaders.Add(newShader);
+                this.AssetSelectionService.Selected = newShader;
+            },
+            () =>
+            {
+                this.ProjectService.CurrentProject.ScreenShaders.Remove(newShader);
+                this.AssetSelectionService.Selected = originalSelected;
+            });
     }
 
     private void AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
         var newMember = collection.CreateNewMember();
+        var originalSelected = this.GetActualSelected();
         this._undoService.Do(
-            () => { collection.AddMember(newMember); },
-            () => { collection.RemoveMember(newMember); });
+            () =>
+            {
+                collection.AddMember(newMember);
+                this.AssetSelectionService.Selected = newMember;
+            },
+            () =>
+            {
+                collection.RemoveMember(newMember);
+                this.AssetSelectionService.Selected = originalSelected;
+            });
     }
 
     private void AddNode(object parent) {
         switch (parent) {
             case IContentDirectory directory:
-                this.ContentService.AddDirectory(directory);
+                this.AddDirectory(directory);
                 break;
             case ISpriteSheetMemberCollection memberCollection:
                 this.AddNewSpriteSheetMember(memberCollection);
@@ -255,6 +279,12 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             case ScreenShaderCollection:
                 this.AddNewProjectShader();
                 break;
+        }
+    }
+
+    private void AddScene(object parent) {
+        if (parent is IContentDirectory directory && this.ContentService.AddScene(directory) is { } scene) {
+            this.SetActualSelected(scene);
         }
     }
 
@@ -545,7 +575,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                                 parent.RemoveChild(node);
                                 parent.AddChild(node);
                                 this.AssetSelectionService.Selected = node;
-                                
+
                                 await this._dialogService.ShowWarningDialog(
                                     "Close Current Scene",
                                     "Rename cannot be performed on an open scene. Please close the scene and try again.");
