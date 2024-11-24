@@ -67,8 +67,15 @@ public class ContentFile : ContentNode {
     }
 
     /// <inheritdoc />
+    public override void RefreshPath() {
+        this.Metadata.SetContentPath(this.GetContentPath());
+        this.HasChanges = true;
+    }
+
+    /// <inheritdoc />
     protected override void OnPathChanged(string originalPath) {
         this.Metadata.SetContentPath(this.GetContentPath());
+        this.HasChanges = true;
         base.OnPathChanged(originalPath);
     }
 

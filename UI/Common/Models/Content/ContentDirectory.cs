@@ -178,6 +178,13 @@ public class ContentDirectory : ContentNode, IContentDirectory {
     }
 
     /// <inheritdoc />
+    public override void RefreshPath() {
+        foreach (var child in this.Children) {
+            child.RefreshPath();
+        }
+    }
+
+    /// <inheritdoc />
     public bool RemoveChild(IContentNode node) {
         node.PathChanged -= this.Child_PathChanged;
         return this._children.Remove(node);
@@ -225,14 +232,10 @@ public class ContentDirectory : ContentNode, IContentDirectory {
     }
 
     /// <inheritdoc />
-    protected override string GetFileExtension() {
-        return string.Empty;
-    }
+    protected override string GetFileExtension() => string.Empty;
 
     /// <inheritdoc />
-    protected override string GetNameWithoutExtension() {
-        return this.Name;
-    }
+    protected override string GetNameWithoutExtension() => this.Name;
 
     /// <summary>
     /// Loads a directory.

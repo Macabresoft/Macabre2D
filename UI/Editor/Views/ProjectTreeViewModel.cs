@@ -204,7 +204,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                     $"Directory '{targetDirectory.Name}' already contains a folder named '{sourceNode.Name}'.");
             }
             else {
-                Dispatcher.UIThread.Post(() => this.ContentService.MoveContent(sourceNode, targetDirectory));
+                var originalParent = sourceNode.Parent;
+                this._undoService.Do(() => { Dispatcher.UIThread.Post(() => this.ContentService.MoveContent(sourceNode, targetDirectory)); }, () => { Dispatcher.UIThread.Post(() => this.ContentService.MoveContent(sourceNode, originalParent)); });
             }
         }
     }

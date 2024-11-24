@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
-using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
@@ -57,11 +56,16 @@ public interface IContentNode : INameable {
     string GetFullPath();
 
     /// <summary>
-    /// Checks whether or not this node is a descendent of the provided directory.
+    /// Checks whether this node is a descendent of the provided directory.
     /// </summary>
     /// <param name="directory">The directory.</param>
-    /// <returns>A value indicating whether or not this node is a descendent of the provided directory.</returns>
+    /// <returns>A value indicating whether this node is a descendent of the provided directory.</returns>
     bool IsDescendentOf(IContentDirectory directory);
+
+    /// <summary>
+    /// Refreshes the path of this and all of its children.
+    /// </summary>
+    void RefreshPath();
 }
 
 /// <summary>
@@ -106,6 +110,7 @@ public abstract class ContentNode : PropertyChangedNotifier, IContentNode {
     /// <inheritdoc />
     public IContentDirectory Parent { get; private set; }
 
+
     /// <inheritdoc />
     public void ChangeParent(IContentDirectory newParent) {
         var originalParent = this.Parent;
@@ -136,9 +141,7 @@ public abstract class ContentNode : PropertyChangedNotifier, IContentNode {
     }
 
     /// <inheritdoc />
-    public int GetDepth() {
-        return this.Parent?.GetDepth() + 1 ?? 0;
-    }
+    public int GetDepth() => this.Parent?.GetDepth() + 1 ?? 0;
 
     /// <inheritdoc />
     public virtual string GetFullPath() {
@@ -146,7 +149,7 @@ public abstract class ContentNode : PropertyChangedNotifier, IContentNode {
             return Path.Combine(this.Parent.GetFullPath(), this.Name);
         }
 
-        return this.Name ?? string.Empty;
+        return this.Name;
     }
 
     /// <inheritdoc />
@@ -158,6 +161,9 @@ public abstract class ContentNode : PropertyChangedNotifier, IContentNode {
 
         return isDescendent;
     }
+
+    /// <inheritdoc />
+    public abstract void RefreshPath();
 
     /// <summary>
     /// Gets the file extension.
@@ -189,6 +195,7 @@ public abstract class ContentNode : PropertyChangedNotifier, IContentNode {
         var eventArgs = new ValueChangedEventArgs<string>(originalPath, this.GetFullPath());
         if (eventArgs.HasChanged) {
             this.RaisePathChanged(this, eventArgs);
+            this.RefreshPath();
         }
     }
 
