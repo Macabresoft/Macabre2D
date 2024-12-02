@@ -87,7 +87,7 @@ public class AudioSettings {
     /// <param name="category">The category.</param>
     /// <param name="volume">The new volume.</param>
     public void SetCategoryVolume(VolumeCategory category, float volume) {
-        this._categoryToVolume[category] = volume;
+        this._categoryToVolume[category] = Math.Clamp(volume, 0f, 1f);
         this.VolumeChanged.SafeInvoke(this, category);
     }
 }
