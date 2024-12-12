@@ -1,55 +1,51 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Microsoft.Xna.Framework.Input;
 using ReactiveUI;
 using Unity;
 
 /// <summary>
-/// A view model for editing game pad icon sets.
+/// A view model for editing sprite sheet icons sets.
 /// </summary>
-public class GamePadIconSetEditorViewModel : BaseViewModel {
+public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
     private readonly IUndoService _undoService;
-    private GamePadIconIndexModel _selectedIcon;
+    private SpriteSheetIcon _selectedIcon;
     private SpriteDisplayModel _selectedSprite;
     private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetIconSetEditorViewModel" /> class.
     /// </summary>
-    public GamePadIconSetEditorViewModel() {
+    public SpriteSheetIconSetEditorViewModel() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GamePadIconSetEditorViewModel" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetIconSetEditorViewModel" /> class.
     /// </summary>
     /// <param name="undoService">The parent undo service.</param>
     /// <param name="iconSet">The icon set being edited.</param>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The content file.</param>
     [InjectionConstructor]
-    public GamePadIconSetEditorViewModel(
+    public SpriteSheetIconSetEditorViewModel(
         IUndoService undoService,
-        GamePadIconSet iconSet,
+        ISpriteSheetIconSet iconSet,
         SpriteSheet spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
-        this.SelectIconCommand = ReactiveCommand.Create<GamePadIconIndexModel>(this.SelectIcon);
+        this.SelectIconCommand = ReactiveCommand.Create<SpriteSheetIcon>(this.SelectIcon);
         this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
-        var buttons = Enum.GetValues<Buttons>().ToList();
-        buttons.Remove(Buttons.None);
-        var icons = buttons.Select(button => new GamePadIconIndexModel(iconSet, button)).ToList();
-        this.Icons = icons;
+        iconSet.RefreshIcons();
+        this.Icons = iconSet.Icons;
         this.SelectedIcon = this.Icons.First();
     }
 
@@ -61,7 +57,7 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     /// <summary>
     /// Gets the icons.
     /// </summary>
-    public IReadOnlyCollection<GamePadIconIndexModel> Icons { get; }
+    public IReadOnlyCollection<SpriteSheetIcon> Icons { get; }
 
     /// <summary>
     /// Gets the select icon command.
@@ -76,7 +72,7 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     /// <summary>
     /// Gets or sets the selected tile.
     /// </summary>
-    public GamePadIconIndexModel SelectedIcon {
+    public SpriteSheetIcon SelectedIcon {
         get => this._selectedIcon;
         private set {
             if (this._selectedIcon != value) {
@@ -93,16 +89,16 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
     public SpriteDisplayModel SelectedSprite {
         get => this._selectedSprite;
         set {
-            if (this._selectedIcon is { } selectedTile) {
+            if (this._selectedIcon is { } selectedIcon) {
                 var previousSprite = this._selectedSprite;
                 this._undoService.Do(() =>
                 {
                     this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
-                    selectedTile.SpriteIndex = this._selectedSprite?.Index;
+                    selectedIcon.SpriteIndex = this._selectedSprite?.Index;
                 }, () =>
                 {
                     this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
-                    selectedTile.SpriteIndex = this._selectedSprite?.Index;
+                    selectedIcon.SpriteIndex = this._selectedSprite?.Index;
                 });
             }
         }
@@ -122,7 +118,7 @@ public class GamePadIconSetEditorViewModel : BaseViewModel {
         }
     }
 
-    private void SelectIcon(GamePadIconIndexModel icon) {
+    private void SelectIcon(SpriteSheetIcon icon) {
         if (icon != null) {
             this.SelectedIcon = icon;
             // HACK: this makes things work well in the UI, just trust me.

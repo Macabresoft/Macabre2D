@@ -3,9 +3,9 @@
 using Avalonia.Controls;
 using Unity;
 
-public partial class KeyboardIconSetEditorView : UserControl {
+public partial class SpriteSheetIconSetEditorView : UserControl {
     [InjectionConstructor]
-    public KeyboardIconSetEditorView(KeyboardIconSetEditorViewModel viewModel) {
+    public SpriteSheetIconSetEditorView(SpriteSheetIconSetEditorViewModel viewModel) {
         this.DataContext = viewModel;
         this.InitializeComponent();
     }

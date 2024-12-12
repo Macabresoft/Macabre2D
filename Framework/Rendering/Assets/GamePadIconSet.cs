@@ -1,11 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// A set of icons corresponding to game pad <see cref="Buttons" />.
 /// </summary>
-public sealed class GamePadIconSet : BaseIconSet<Buttons> {
+public sealed class GamePadIconSet : SpriteSheetIconSet<Buttons> {
     /// <summary>
     /// The default name.
     /// </summary>
@@ -16,5 +18,15 @@ public sealed class GamePadIconSet : BaseIconSet<Buttons> {
     /// </summary>
     public GamePadIconSet() : base() {
         this.Name = DefaultName;
+    }
+
+    /// <inheritdoc />
+    public override void RefreshIcons() {
+        var keys = Enum.GetValues<Buttons>().ToList();
+        keys.Remove(Buttons.None);
+
+        foreach (var key in keys) {
+            this.RefreshIcon(key);
+        }
     }
 }

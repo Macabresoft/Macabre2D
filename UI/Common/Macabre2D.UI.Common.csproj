@@ -127,10 +127,6 @@
             <DependentUpon>VolumeCategoryEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\Assets\KeyboardIconSetEditorView.axaml.cs">
-            <DependentUpon>KeyboardIconSetEditorView.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\Dialogs\KeySelectDialog.axaml.cs">
             <DependentUpon>KeySelectDialog.axaml</DependentUpon>
             <SubType>Code</SubType>

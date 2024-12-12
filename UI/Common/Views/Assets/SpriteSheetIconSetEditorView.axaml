@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             x:Class="Macabresoft.Macabre2D.UI.Common.GamePadIconSetEditorView"
+             x:Class="Macabresoft.Macabre2D.UI.Common.SpriteSheetIconSetEditorView"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Top">
     <Design.DataContext>
-        <local:GamePadIconSetEditorViewModel />
+        <local:SpriteSheetIconSetEditorViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
@@ -30,9 +30,9 @@
               Grid.Column="2"
               ColumnDefinitions="*, Auto">
             <TextBlock Grid.Column="0"
-                       Text="{Binding SelectedIcon.Key}"
+                       Text="{Binding SelectedIcon.Name}"
                        VerticalAlignment="Center"
-                       ToolTip.Tip="{Binding SelectedIcon.Key}" />
+                       ToolTip.Tip="{Binding SelectedIcon.Name}" />
             
             <local:ThumbnailSizeToggle Grid.Column="1"
                                        SelectedSize="{Binding SelectedThumbnailSize}" />
@@ -56,7 +56,7 @@
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
-                                        <Binding Path="$parent[local:GamePadIconSetEditorView].DataContext.SpriteCollection" />
+                                        <Binding Path="$parent[local:SpriteSheetIconSetEditorView].DataContext.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
@@ -64,9 +64,9 @@
                             <TextBlock HorizontalAlignment="Left"
                                        VerticalAlignment="Top"
                                        TextWrapping="Wrap"
-                                       Text="{Binding Key}"
+                                       Text="{Binding Name}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       ToolTip.Tip="{Binding Key}"/>
+                                       ToolTip.Tip="{Binding Name}"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
