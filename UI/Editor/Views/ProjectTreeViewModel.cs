@@ -81,6 +81,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             this.FindContentUsages,
             this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null));
 
+        this.ForceSaveCommand = ReactiveCommand.Create<IContentNode>(
+            this.ForceSave,
+            this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
+
         this.ImportCommand = ReactiveCommand.CreateFromTask<object>(x => this.ContentService.ImportContent(x as IContentDirectory), whenIsContentDirectory);
 
         this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
@@ -147,6 +151,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets a command that finds usages of the selected content in the current scene.
     /// </summary>
     public ICommand FindContentUsagesCommand { get; }
+
+    /// <summary>
+    /// Forces the current asset to be saved.
+    /// </summary>
+    public ICommand ForceSaveCommand { get; }
 
     /// <summary>
     /// Gets the import command.
@@ -420,6 +429,13 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             else {
                 await this._dialogService.ShowWarningDialog("No Usages Found", "This content is not used in the current scene. It may still be used by unopened scenes.");
             }
+        }
+    }
+
+    private void ForceSave(IContentNode node) {
+        if (node is ContentFile { Metadata: not null } file) {
+            this.ContentService.SaveMetadata(file.Metadata);
+            file.HasChanges = false;
         }
     }
 

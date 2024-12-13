@@ -50,6 +50,13 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Delete the content" />
+            
+            <Separator />
+
+            <MenuItem Header="Force Save"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.ForceSaveCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Save the metadata for this asset immediately" />
         </ContextMenu>
 
         <ContextMenu x:Key="ContentDirectoryContextMenu">

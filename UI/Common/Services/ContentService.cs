@@ -70,6 +70,12 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Saves content with changes.
     /// </summary>
     void Save();
+
+    /// <summary>
+    /// Saves the metadata.
+    /// </summary>
+    /// <param name="metadata">The metadata.</param>
+    void SaveMetadata(ContentMetadata metadata);
 }
 
 /// <summary>
@@ -274,6 +280,13 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     /// <inheritdoc />
+    public void SaveMetadata(ContentMetadata metadata) {
+        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
+            this._serializer.Serialize(metadata, Path.Combine(this._pathService.MetadataDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
+        }
+    }
+
+    /// <inheritdoc />
     protected override bool ShouldLoadEditors() => this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
 
     private bool CheckForMetadataChanges() {
@@ -369,13 +382,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         var contentFiles = this._rootContentDirectory.GetAllContentFiles();
         foreach (var metadata in contentFiles.Select(x => x.Metadata).Where(x => x != null)) {
             this._assetManager.RegisterMetadata(metadata);
-        }
-    }
-
-
-    private void SaveMetadata(ContentMetadata metadata) {
-        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
-            this._serializer.Serialize(metadata, Path.Combine(this._pathService.MetadataDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
         }
     }
 }
