@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -27,42 +26,42 @@ public interface ISpriteSheetIconSet {
 /// </summary>
 /// <typeparam name="TKey">The key.</typeparam>
 public abstract class SpriteSheetIconSet<TKey> : SpriteSheetKeyedMember<TKey>, ISpriteSheetIconSet where TKey : struct {
-    [DataMember]
-    private readonly List<SpriteSheetIcon<TKey>> _icons = new();
+   
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<TKey, SpriteSheetIcon<TKey>> _keyToIcons = new();
 
     /// <inheritdoc />
-    public IReadOnlyCollection<SpriteSheetIcon> Icons => this._icons;
+    public IReadOnlyCollection<SpriteSheetIcon> Icons => this._keyToIcons.Values;
 
     /// <summary>
     /// Removes the sprite index assigned to a key.
     /// </summary>
     /// <param name="key">The key.</param>
     public override void ClearSprite(TKey key) {
-        if (this._icons.FirstOrDefault(x => x.Key.Equals(key)) is { } icon) {
+        if (this._keyToIcons.TryGetValue(key, out var icon)) {
             icon.SpriteIndex = null;
         }
         else {
-            icon = new SpriteSheetIcon<TKey>(key);
-            this._icons.Add(icon);
+            this._keyToIcons[key] = new SpriteSheetIcon<TKey>(key);
         }
     }
 
     /// <inheritdoc />
     public abstract void RefreshIcons();
-
+    
     /// <summary>
     /// Sets the sprite for a key.
     /// </summary>
     /// <param name="spriteIndex">The sprite index.</param>
     /// <param name="key">The key.</param>
     public override void SetSprite(byte spriteIndex, TKey key) {
-        if (this._icons.FirstOrDefault(x => x.Key.Equals(key)) is { } icon) {
+        if (this._keyToIcons.TryGetValue(key, out var icon)) {
             icon.SpriteIndex = spriteIndex;
         }
         else {
-            this._icons.Add(new SpriteSheetIcon<TKey>(key) {
+            this._keyToIcons[key] = new SpriteSheetIcon<TKey>(key) {
                 SpriteIndex = spriteIndex
-            });
+            };
         }
     }
 
@@ -73,7 +72,7 @@ public abstract class SpriteSheetIconSet<TKey> : SpriteSheetKeyedMember<TKey>, I
     /// <param name="index">The index.</param>
     /// <returns>A value indicating whether a sprite was found.</returns>
     public bool TryGetSpriteIndex(TKey key, [NotNullWhen(true)] out byte? index) {
-        index = this._icons.FirstOrDefault(x => x.Key.Equals(key))?.SpriteIndex;
+        index = this._keyToIcons.TryGetValue(key, out var icon) ? icon.SpriteIndex : null;
         return index != null;
     }
 
@@ -82,8 +81,8 @@ public abstract class SpriteSheetIconSet<TKey> : SpriteSheetKeyedMember<TKey>, I
     /// </summary>
     /// <param name="key">The key.</param>
     protected void RefreshIcon(TKey key) {
-        if (!this._icons.Any(x => x.Key.Equals(key))) {
-            this._icons.Add(new SpriteSheetIcon<TKey>(key));
+        if (!this._keyToIcons.ContainsKey(key)) {
+            this._keyToIcons[key] = new SpriteSheetIcon<TKey>(key);
         }
     }
 }
