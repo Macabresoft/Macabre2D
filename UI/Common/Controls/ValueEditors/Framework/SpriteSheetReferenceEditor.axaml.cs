@@ -1,12 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public partial class SpriteSheetFontReferenceEditor : BaseSpriteSheetAssetReferenceEditor<SpriteSheetFontReference, SpriteSheetFont> {
-    public SpriteSheetFontReferenceEditor() : this(
+public partial class SpriteSheetReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteSheetReference> {
+    public SpriteSheetReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ICommonDialogService>(),
@@ -16,7 +15,7 @@ public partial class SpriteSheetFontReferenceEditor : BaseSpriteSheetAssetRefere
     }
 
     [InjectionConstructor]
-    public SpriteSheetFontReferenceEditor(
+    public SpriteSheetReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ICommonDialogService dialogService,

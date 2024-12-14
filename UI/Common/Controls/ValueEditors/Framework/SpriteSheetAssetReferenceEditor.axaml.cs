@@ -1,20 +1,29 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabresoft.Macabre2D.UI.Common;
 
 using System.Threading.Tasks;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
+using Unity;
 
-public class BaseSpriteSheetAssetReferenceEditor<TAssetReference, TPackagedAsset> : BaseSpriteSheetReferenceEditor<TAssetReference>
-    where TAssetReference : Framework.SpriteSheetAssetReference<TPackagedAsset>, IAssetReference<SpriteSheet>
-    where TPackagedAsset : SpriteSheetMember {
-    public BaseSpriteSheetAssetReferenceEditor(
+public partial class SpriteSheetAssetReferenceEditor : BaseSpriteSheetReferenceEditor<ISpriteSheetAssetReference> {
+    public SpriteSheetAssetReferenceEditor() : this(
+        null,
+        Resolver.Resolve<IAssetManager>(),
+        Resolver.Resolve<ICommonDialogService>(),
+        Resolver.Resolve<IFileSystemService>(),
+        Resolver.Resolve<IPathService>(),
+        Resolver.Resolve<IUndoService>()) {
+    }
+
+    [InjectionConstructor]
+    public SpriteSheetAssetReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ICommonDialogService dialogService,
         IFileSystemService fileSystem,
         IPathService pathService,
         IUndoService undoService) : base(dependencies, assetManager, dialogService, fileSystem, pathService, undoService) {
+        this.InitializeComponent();
     }
 
     protected override void Clear() {
@@ -33,7 +42,7 @@ public class BaseSpriteSheetAssetReferenceEditor<TAssetReference, TPackagedAsset
     }
 
     protected override async Task Select() {
-        var (spriteSheet, packagedAssetId) = await this.DialogService.OpenSpriteSheetAssetSelectionDialog<TPackagedAsset>();
+        var (spriteSheet, packagedAssetId) = await this.DialogService.OpenSpriteSheetAssetSelectionDialog(this.Value.PackagedAssetType);
         if (spriteSheet != null) {
             var originalAsset = this.Value.Asset;
             var originalPackagedAssetId = this.Value.PackagedAssetId;

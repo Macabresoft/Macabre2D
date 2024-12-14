@@ -8,10 +8,7 @@ using Microsoft.Xna.Framework.Input;
 /// A set of icons corresponding to game pad <see cref="Buttons" />.
 /// </summary>
 public sealed class GamePadIconSet : SpriteSheetIconSet<Buttons> {
-    /// <summary>
-    /// The default name.
-    /// </summary>
-    public const string DefaultName = "Game Pad Icons";
+    private const string DefaultName = "Game Pad Icons";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GamePadIconSet" /> class.

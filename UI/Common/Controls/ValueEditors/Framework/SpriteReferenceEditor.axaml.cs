@@ -1,11 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabresoft.Macabre2D.UI.Common;
 
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
 public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteReference> {

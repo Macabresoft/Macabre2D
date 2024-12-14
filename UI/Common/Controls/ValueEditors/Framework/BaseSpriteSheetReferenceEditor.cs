@@ -1,12 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using System.IO;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 
 public class BaseSpriteSheetReferenceEditor<TAssetReference> : BaseAssetReferenceEditor<TAssetReference, SpriteSheet> where TAssetReference : class, IAssetReference<SpriteSheet> {
     public static readonly DirectProperty<BaseSpriteSheetReferenceEditor<TAssetReference>, Bitmap> BitmapProperty =

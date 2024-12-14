@@ -12,7 +12,7 @@ public partial class SpriteSheetAssetSelectionDialog : BaseDialog {
     }
 
     [InjectionConstructor]
-    public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) : base() {
+    public SpriteSheetAssetSelectionDialog(SpriteSheetAssetSelectionViewModel viewModel) : base() {
         this.DataContext = viewModel;
         this.InitializeComponent();
     }

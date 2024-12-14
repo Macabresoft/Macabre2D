@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,18 +14,18 @@ using Macabresoft.Macabre2D.Framework;
 /// Display collection for a <see cref="SpriteSheetMember" />.
 /// </summary>
 /// <typeparam name="TAsset">The type of asset.</typeparam>
-public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier, IReadOnlyCollection<TAsset> where TAsset : SpriteSheetMember {
+public class SpriteSheetAssetDisplayCollection : PropertyChangedNotifier, IReadOnlyCollection<SpriteSheetMember> {
     private readonly ContentFile _file;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteSheetAssetDisplayCollection{T}" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetAssetDisplayCollection" /> class.
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteSheetAssetDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
+    public SpriteSheetAssetDisplayCollection(SpriteSheet spriteSheet, ContentFile file, Type assetType) {
         this.SpriteSheet = spriteSheet;
         this._file = file;
-        this.Assets = this.SpriteSheet.GetAssets<TAsset>();
+        this.Assets = this.SpriteSheet.GetAssets(assetType);
 
         var fileInfo = new FileInfo(file.GetFullPath());
         if (fileInfo.Exists) {
@@ -35,7 +36,7 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier
     /// <summary>
     /// Gets the assets.
     /// </summary>
-    public IReadOnlyCollection<TAsset> Assets { get; }
+    public IReadOnlyCollection<SpriteSheetMember> Assets { get; }
 
     /// <inheritdoc />
     public int Count => this.Assets.Count;
@@ -61,12 +62,8 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : PropertyChangedNotifier
     public SpriteSheet SpriteSheet { get; }
 
     /// <inheritdoc />
-    public IEnumerator<TAsset> GetEnumerator() {
-        return this.Assets.GetEnumerator();
-    }
+    public IEnumerator<SpriteSheetMember> GetEnumerator() => this.Assets.GetEnumerator();
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() {
-        return this.Assets.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => this.Assets.GetEnumerator();
 }

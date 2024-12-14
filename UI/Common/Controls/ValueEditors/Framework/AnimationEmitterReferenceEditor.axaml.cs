@@ -1,12 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 using Unity;
 
-public partial class SpriteSheetReferenceEditor : BaseSpriteSheetReferenceEditor<SpriteSheetReference> {
-    public SpriteSheetReferenceEditor() : this(
+public partial class AnimationEmitterReferenceEditor : BaseSpriteSheetReferenceEditor<AnimationEmitterReference> {
+    public AnimationEmitterReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ICommonDialogService>(),
@@ -16,7 +15,7 @@ public partial class SpriteSheetReferenceEditor : BaseSpriteSheetReferenceEditor
     }
 
     [InjectionConstructor]
-    public SpriteSheetReferenceEditor(
+    public AnimationEmitterReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ICommonDialogService dialogService,

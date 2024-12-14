@@ -8,10 +8,7 @@ using Microsoft.Xna.Framework.Input;
 /// A set of icons corresponding to keyboard <see cref="Keys" />.
 /// </summary>
 public sealed class KeyboardIconSet : SpriteSheetIconSet<Keys> {
-    /// <summary>
-    /// The default name.
-    /// </summary>
-    public const string DefaultName = "Keyboard Icons";
+    private const string DefaultName = "Keyboard Icons";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="KeyboardIconSet" /> class.
@@ -19,7 +16,7 @@ public sealed class KeyboardIconSet : SpriteSheetIconSet<Keys> {
     public KeyboardIconSet() : base() {
         this.Name = DefaultName;
     }
-    
+
     /// <inheritdoc />
     public override void RefreshIcons() {
         var keys = Enum.GetValues<Keys>().ToList();

@@ -49,40 +49,8 @@
             <DependentUpon>SpriteSheetAssetSelectionDialog.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteAnimationEditor.axaml.cs">
-            <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteReferenceEditor.axaml.cs">
-            <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\AutoTileSetEditor.axaml.cs">
-            <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\ProjectEditorView.axaml.cs">
             <DependentUpon>ProjectEditorView.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteSheetFontReferenceEditor.axaml.cs">
-            <DependentUpon>SpriteSheetFontEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteSheetReferenceEditor.axaml.cs">
-            <DependentUpon>SpriteSheetReferenceEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\AnimationEmitterReferenceEditor.axaml.cs">
-            <DependentUpon>AnimationEmitterReferenceEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\GamePadIconSetReferenceEditor.axaml.cs">
-            <DependentUpon>GamePadIconSetReferenceEditor.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\KeyboardIconSetReferenceEditor.axaml.cs">
-            <DependentUpon>KeyboardIconSetReferenceEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
@@ -122,5 +90,8 @@
         <None Include="..\Common\icon.ico">
             <Link>icon.ico</Link>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Controls\ValueEditors\" />
     </ItemGroup>
 </Project>

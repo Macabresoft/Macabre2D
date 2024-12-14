@@ -164,6 +164,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType.IsAssignableTo(typeof(ISpriteSheetAssetReference))) {
+            var editor = this.CreateValueEditorFromType(typeof(SpriteSheetAssetReferenceEditor), owner, value, memberType, member, propertyPath);
+            if (editor != null) {
+                result.Add(editor);
+            }
+        }
         else if (memberType.IsAssignableTo(typeof(IAssetReferenceCollection))) {
             var editor = this.CreateValueEditorFromType(typeof(AssetReferenceCollectionEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {

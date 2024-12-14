@@ -6,12 +6,39 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
+/// Interface for a <see cref="IAssetReference{SpriteSheet}" />.
+/// </summary>
+public interface ISpriteSheetAssetReference : IAssetReference<SpriteSheet> {
+
+    /// <summary>
+    /// Gets the asset name.
+    /// </summary>
+    string AssetName { get; }
+
+    /// <summary>
+    /// Gets or sets the packaged asset type.
+    /// </summary>
+    Type PackagedAssetType { get; }
+
+    /// <summary>
+    /// Gets or sets the packaged asset identifier.
+    /// </summary>
+    Guid PackagedAssetId { get; set; }
+}
+
+/// <summary>
+/// An asset reference for an asset packaged inside a <see cref="SpriteSheet" />.
 /// </summary>
 /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
-public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet, Texture2D> where TPackagedAsset : SpriteSheetMember {
+public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet, Texture2D>, ISpriteSheetAssetReference where TPackagedAsset : SpriteSheetMember {
     private TPackagedAsset? _packagedAsset;
     private Guid _packagedAssetId;
+
+    /// <inheritdoc />
+    public string AssetName => this.PackagedAsset?.Name ?? string.Empty;
+
+    /// <inheritdoc />
+    public Type PackagedAssetType => typeof(TPackagedAsset);
 
     /// <summary>
     /// Gets the packaged asset.
@@ -33,9 +60,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
         }
     }
 
-    /// <summary>
-    /// Gets or sets the packaged asset identifier.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public Guid PackagedAssetId {
         get => this._packagedAssetId;

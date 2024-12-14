@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor;
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -12,27 +13,30 @@ using Unity;
 /// <summary>
 /// A view model for the sprite sheet asset selection dialog.
 /// </summary>
-public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewModel<FilteredContentWrapper> where TAsset : SpriteSheetMember {
-    private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
+public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<FilteredContentWrapper> {
+    private readonly Type _packagedAssetType;
+    private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection> _spriteSheets = new();
     private bool _isFinished;
-    private TAsset _selectedAsset;
+    private SpriteSheetMember _selectedAsset;
     private FilteredContentWrapper _selectedContentNode;
     private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel{T}" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel" /> class.
     /// </summary>
     public SpriteSheetAssetSelectionViewModel() : base() {
         this.IsOkEnabled = false;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel{T}" /> class.
+    /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel" /> class.
     /// </summary>
     /// <param name="contentService">The content service.</param>
+    /// <param name="packagedAssetType">The packaged asset type.</param>
     [InjectionConstructor]
-    public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false, file => ShouldDisplay(file, out _));
+    public SpriteSheetAssetSelectionViewModel(IContentService contentService, Type packagedAssetType) : this() {
+        this._packagedAssetType = packagedAssetType;
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false, file => this.ShouldDisplay(file, out _));
         this.SelectedContentNode = this.RootContentDirectory;
     }
 
@@ -42,14 +46,14 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewM
     public FilteredContentWrapper RootContentDirectory { get; }
 
     /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
+    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection" />.
     /// </summary>
-    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
+    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection> SpriteSheets => this._spriteSheets;
 
     /// <summary>
     /// Gets or sets the selected asset.
     /// </summary>
-    public TAsset SelectedAsset {
+    public SpriteSheetMember SelectedAsset {
         get => this._selectedAsset;
         set {
             this.RaiseAndSetIfChanged(ref this._selectedAsset, value);
@@ -105,10 +109,10 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewM
         if (this.SelectedContentNode != null) {
             switch (this.SelectedContentNode.Node) {
                 case ContentDirectory directory: {
-                    var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
+                    var spriteCollections = new List<SpriteSheetAssetDisplayCollection>();
                     foreach (var file in directory.GetAllContentFiles()) {
-                        if (ShouldDisplay(file, out var spriteSheet)) {
-                            spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
+                        if (this.ShouldDisplay(file, out var spriteSheet)) {
+                            spriteCollections.Add(new SpriteSheetAssetDisplayCollection(spriteSheet, file, this._packagedAssetType));
                         }
                     }
 
@@ -116,8 +120,8 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewM
                     break;
                 }
                 case ContentFile file: {
-                    if (ShouldDisplay(file, out var spriteSheet)) {
-                        var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
+                    if (this.ShouldDisplay(file, out var spriteSheet)) {
+                        var spriteCollection = new SpriteSheetAssetDisplayCollection(spriteSheet, file, this._packagedAssetType);
                         this._spriteSheets.Add(spriteCollection);
                     }
 
@@ -127,8 +131,8 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : FilterableViewM
         }
     }
 
-    private static bool ShouldDisplay(ContentFile file, [NotNullWhen(true)] out SpriteSheet spriteSheet) {
+    private bool ShouldDisplay(ContentFile file, [NotNullWhen(true)] out SpriteSheet spriteSheet) {
         spriteSheet = file.Asset as SpriteSheet;
-        return spriteSheet != null && spriteSheet.GetAssets<TAsset>().Any();
+        return spriteSheet != null && spriteSheet.GetAssets(this._packagedAssetType).Any();
     }
 }

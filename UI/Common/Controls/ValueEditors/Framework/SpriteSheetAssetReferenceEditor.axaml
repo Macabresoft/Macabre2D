@@ -1,15 +1,14 @@
 <local:BaseSpriteSheetReferenceEditor xmlns="https://github.com/avaloniaui"
                                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                      xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                                      xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                      x:TypeArguments="framework:SpriteSheetReference"
-                                      x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetReferenceEditor">
+                                      xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                      x:TypeArguments="framework:ISpriteSheetAssetReference"
+                                      x:Class="Macabresoft.Macabre2D.UI.Common.SpriteSheetAssetReferenceEditor">
     <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
-          DataContext="{Binding $parent[local:SpriteSheetReferenceEditor]}">
+          DataContext="{Binding $parent[local:SpriteSheetAssetReferenceEditor]}">
         <Design.DataContext>
-            <local:SpriteSheetReferenceEditor />
+            <local:SpriteSheetAssetReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
@@ -30,13 +29,14 @@
                    Classes="Caption"
                    HorizontalAlignment="Left"
                    Width="{Binding #_spriteBorder.Bounds.Width}"
-                   Text="{Binding Bitmap.Size, StringFormat=(\{0\}), FallbackValue=''}" />
+                   Text="{Binding Bitmap.Size, StringFormat=(\{0\})}" />
 
-        <common:AssetReferenceControl Grid.Column="1"
-                                      Grid.Row="1"
-                                      SearchIcon="{StaticResource ImageSearchIcon}"
-                                      PathText="{Binding PathText}"
-                                      SelectCommand="{Binding SelectCommand}"
-                                      ClearCommand="{Binding ClearCommand}" />
+        <local:AssetReferenceControl Grid.Column="1"
+                                     Grid.Row="1"
+                                     SearchIcon="{StaticResource ImageSearchIcon}"
+                                     PathText="{Binding PathText}"
+                                     SelectCommand="{Binding SelectCommand}"
+                                     ClearCommand="{Binding ClearCommand}"
+                                     AssetName="{Binding Value.AssetName}" />
     </Grid>
 </local:BaseSpriteSheetReferenceEditor>

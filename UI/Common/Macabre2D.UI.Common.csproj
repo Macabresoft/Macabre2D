@@ -167,6 +167,22 @@
           <DependentUpon>EntityReferenceCollectionEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\AnimationEmitterReferenceEditor.axaml.cs">
+          <DependentUpon>AnimationEmitterReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\SpriteReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\SpriteSheetAssetReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteSheetAssetReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\SpriteSheetReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteSheetReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>

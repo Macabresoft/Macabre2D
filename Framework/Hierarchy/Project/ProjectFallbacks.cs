@@ -42,6 +42,12 @@ public class ProjectFallbacks {
     public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <summary>
+    /// Gets the icon set reference for keyboards.
+    /// </summary>
+    [DataMember]
+    public MouseButtonIconSetReference MouseReference { get; } = new();
+
+    /// <summary>
     /// Gets or sets the color of the game background when there is no scene opened.
     /// </summary>
     [DataMember]

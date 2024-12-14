@@ -1,10 +1,9 @@
 <local:BaseSpriteSheetReferenceEditor xmlns="https://github.com/avaloniaui"
                                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                      xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                                      xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                                      xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                       x:TypeArguments="framework:AnimationEmitterReference"
-                                      x:Class="Macabresoft.Macabre2D.UI.Editor.AnimationEmitterReferenceEditor">
+                                      x:Class="Macabresoft.Macabre2D.UI.Common.AnimationEmitterReferenceEditor">
     <Grid ColumnDefinitions="Auto, *"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:AnimationEmitterReferenceEditor]}">
@@ -32,11 +31,11 @@
                    Width="{Binding #_spriteBorder.Bounds.Width}"
                    Text="{Binding Bitmap.Size, StringFormat=(\{0\}), FallbackValue=''}" />
 
-        <common:AssetReferenceControl Grid.Column="1"
-                                      Grid.Row="1"
-                                      SearchIcon="{StaticResource ImageSearchIcon}"
-                                      PathText="{Binding PathText}"
-                                      SelectCommand="{Binding SelectCommand}"
-                                      ClearCommand="{Binding ClearCommand}" />
+        <local:AssetReferenceControl Grid.Column="1"
+                                     Grid.Row="1"
+                                     SearchIcon="{StaticResource ImageSearchIcon}"
+                                     PathText="{Binding PathText}"
+                                     SelectCommand="{Binding SelectCommand}"
+                                     ClearCommand="{Binding ClearCommand}" />
     </Grid>
 </local:BaseSpriteSheetReferenceEditor>

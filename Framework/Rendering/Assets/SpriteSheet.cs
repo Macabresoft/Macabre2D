@@ -171,21 +171,46 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <returns>A collection of <see cref="SpriteSheetMember" />.</returns>
     public IReadOnlyCollection<TAsset> GetAssets<TAsset>() where TAsset : SpriteSheetMember {
         IReadOnlyCollection<TAsset> result;
-        var type = typeof(TAsset);
-        if (type == typeof(SpriteAnimation)) {
+        var memberType = typeof(TAsset);
+        if (memberType == typeof(SpriteAnimation)) {
             result = (IReadOnlyCollection<TAsset>)this._spriteAnimations;
         }
-        else if (type == typeof(AutoTileSet)) {
+        else if (memberType == typeof(AutoTileSet)) {
             result = (IReadOnlyCollection<TAsset>)this._autoTileSets;
         }
-        else if (type == typeof(SpriteSheetFont)) {
+        else if (memberType == typeof(SpriteSheetFont)) {
             result = (IReadOnlyCollection<TAsset>)this._fonts;
         }
-        else if (type.IsAssignableTo(typeof(SpriteSheetIconSet))) {
+        else if (memberType.IsAssignableTo(typeof(SpriteSheetIconSet))) {
             result = this._iconSets.OfType<TAsset>().ToList();
         }
         else {
             result = new List<TAsset>();
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="SpriteSheetMember" /> collection of the specified type.
+    /// </summary>
+    /// <returns>A collection of <see cref="SpriteSheetMember" />.</returns>
+    public IReadOnlyCollection<SpriteSheetMember> GetAssets(Type memberType) {
+        IReadOnlyCollection<SpriteSheetMember> result;
+        if (memberType == typeof(SpriteAnimation)) {
+            result = this._spriteAnimations;
+        }
+        else if (memberType == typeof(AutoTileSet)) {
+            result = this._autoTileSets;
+        }
+        else if (memberType == typeof(SpriteSheetFont)) {
+            result = this._fonts;
+        }
+        else if (memberType.IsAssignableTo(typeof(SpriteSheetIconSet))) {
+            result = this._iconSets.OfType<SpriteSheetMember>().Where(x => x.GetType().IsAssignableTo(memberType)).ToList();
+        }
+        else {
+            result = new List<SpriteSheetMember>();
         }
 
         return result;
