@@ -40,8 +40,7 @@ public class AssetToIconConverter : IValueConverter {
                     AutoTileSetCollection => application.TryFindResource("AutoLayoutIcon", out result),
                     SpriteAnimationCollection => application.TryFindResource("AnimationIcon", out result),
                     SpriteSheetFontCollection => application.TryFindResource("FontIcon", out result),
-                    GamePadIconSetCollection => application.TryGetResource("GamePadIcon", out result),
-                    KeyboardIconSetCollection => application.TryGetResource("KeyboardIcon", out result),
+                    SpriteSheetIconSetCollection => application.TryGetResource("IconSetIcon", out result),
                     _ => application.TryFindResource("UnknownIcon", out result)
                 },
                 _ => application.TryFindResource("UnknownIcon", out result)

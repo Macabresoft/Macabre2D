@@ -36,12 +36,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     private SpriteSheetFontCollection _fonts = new();
 
     [DataMember]
-    [Category("Game Pad Icon Sets")]
-    private GamePadIconSetCollection _gamePadIconSets = new();
-
-    [DataMember]
-    [Category("Keyboard Icon Sets")]
-    private KeyboardIconSetCollection _keyboardIconSets = new();
+    [Category("Icon Sets")]
+    private SpriteSheetIconSetCollection _iconSets = new();
 
     private byte _rows = 1;
 
@@ -61,10 +57,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
         this._fonts.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._fonts.PropertyChanged += this.RaisePropertyChanged;
-        this._gamePadIconSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
-        this._gamePadIconSets.PropertyChanged += this.RaisePropertyChanged;
-        this._keyboardIconSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
-        this._keyboardIconSets.PropertyChanged += this.RaisePropertyChanged;
+        this._iconSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
+        this._iconSets.PropertyChanged += this.RaisePropertyChanged;
     }
 
     /// <inheritdoc />
@@ -187,11 +181,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         else if (type == typeof(SpriteSheetFont)) {
             result = (IReadOnlyCollection<TAsset>)this._fonts;
         }
-        else if (type == typeof(GamePadIconSet)) {
-            result = (IReadOnlyCollection<TAsset>)this._gamePadIconSets;
-        }
-        else if (type == typeof(KeyboardIconSet)) {
-            result = (IReadOnlyCollection<TAsset>)this._keyboardIconSets;
+        else if (type.IsAssignableTo(typeof(SpriteSheetIconSet))) {
+            result = this._iconSets.OfType<TAsset>().ToList();
         }
         else {
             result = new List<TAsset>();
@@ -237,12 +228,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             return this._fonts;
         }
 
-        if (memberType == typeof(GamePadIconSet)) {
-            return this._gamePadIconSets;
-        }
-
-        if (memberType == typeof(KeyboardIconSet)) {
-            return this._keyboardIconSets;
+        if (memberType.IsAssignableTo(typeof(SpriteSheetIconSet))) {
+            return this._iconSets;
         }
 
         return null;
@@ -264,8 +251,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             this._autoTileSets,
             this._spriteAnimations,
             this._fonts,
-            this._gamePadIconSets,
-            this._keyboardIconSets
+            this._iconSets
         };
 
     /// <summary>
@@ -330,10 +316,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <param name="columns">The number of columns in the sprite sheet.</param>
     /// <param name="rows">The number of rows in the sprite sheet.</param>
     /// <returns>The sprite size.</returns>
-    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) =>
-        new(
-            GetColumnWidth(imageSize.X, columns),
-            GetRowHeight(imageSize.Y, rows));
+    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) => new(GetColumnWidth(imageSize.X, columns), GetRowHeight(imageSize.Y, rows));
 
     /// <summary>
     /// Gets the sprite size and location.
@@ -371,8 +354,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         packages.AddRange(this._autoTileSets);
         packages.AddRange(this._spriteAnimations);
         packages.AddRange(this._fonts);
-        packages.AddRange(this._gamePadIconSets);
-        packages.AddRange(this._keyboardIconSets);
+        packages.AddRange(this._iconSets);
         return packages;
     }
 

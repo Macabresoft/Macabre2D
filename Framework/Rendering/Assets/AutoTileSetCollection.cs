@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 /// <summary>
@@ -11,4 +12,10 @@ using System.Runtime.Serialization;
 public class AutoTileSetCollection : SpriteSheetMemberCollection<AutoTileSet> {
     /// <inheritdoc />
     public override string Name => "Auto Tile Sets";
+    
+    /// <inheritdoc />
+    public override bool TryCreateNewMember([NotNullWhen(true)] out SpriteSheetMember? member) {
+        member = new AutoTileSet();
+        return true;
+    }
 }

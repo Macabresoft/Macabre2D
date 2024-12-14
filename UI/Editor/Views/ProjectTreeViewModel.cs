@@ -20,6 +20,7 @@ using Unity;
 /// A view model for the content tree.
 /// </summary>
 public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
+    private readonly IAssemblyService _assemblyService;
     private readonly ICommonDialogService _dialogService;
     private readonly IEditorService _editorService;
     private readonly IFileSystemService _fileSystem;
@@ -37,6 +38,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
     /// </summary>
+    /// <param name="assemblyService">The assembly service.</param>
     /// <param name="assetSelectionService">The asset selection service.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
@@ -48,6 +50,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public ProjectTreeViewModel(
+        IAssemblyService assemblyService,
         IAssetSelectionService assetSelectionService,
         IContentService contentService,
         ICommonDialogService dialogService,
@@ -57,6 +60,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         ISaveService saveService,
         ISceneService sceneService,
         IUndoService undoService) : base() {
+        this._assemblyService = assemblyService;
         this.AssetSelectionService = assetSelectionService;
         this.ContentService = contentService;
         this._dialogService = dialogService;
@@ -69,7 +73,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
 
-        this.AddCommand = ReactiveCommand.Create<object>(
+        this.AddCommand = ReactiveCommand.CreateFromTask<object>(
             this.AddNode,
             this.AssetSelectionService.WhenAny(x => x.Selected, x => !this.IsFiltered && CanAddNode(x.Value)));
 
@@ -255,33 +259,44 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             });
     }
 
-    private void AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
-        var newMember = collection.CreateNewMember();
-        var originalSelected = this.GetActualSelected();
-        this._undoService.Do(
-            () =>
-            {
-                collection.AddMember(newMember);
-                this.AssetSelectionService.Selected = newMember;
-            },
-            () =>
-            {
-                collection.RemoveMember(newMember);
-                this.AssetSelectionService.Selected = originalSelected;
-            });
+    private async Task AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
+        if (!collection.TryCreateNewMember(out var newMember)) {
+            var types = this._assemblyService.LoadTypes(collection.MemberType).ToList();
+            if (types.Any()) {
+                var selectedType = await this._dialogService.OpenTypeSelectionDialog(types, types.First());
+                if (Activator.CreateInstance(selectedType) is SpriteSheetMember member) {
+                    newMember = member;
+                }
+            }
+        }
+
+        if (newMember != null) {
+            var originalSelected = this.GetActualSelected();
+            this._undoService.Do(
+                () =>
+                {
+                    collection.AddMember(newMember);
+                    this.AssetSelectionService.Selected = newMember;
+                },
+                () =>
+                {
+                    collection.RemoveMember(newMember);
+                    this.AssetSelectionService.Selected = originalSelected;
+                });
+        }
     }
 
-    private void AddNode(object parent) {
+    private async Task AddNode(object parent) {
         switch (parent) {
             case IContentDirectory directory:
                 this.AddDirectory(directory);
                 break;
             case ISpriteSheetMemberCollection memberCollection:
-                this.AddNewSpriteSheetMember(memberCollection);
+                await this.AddNewSpriteSheetMember(memberCollection);
                 break;
             case SpriteSheetMember { SpriteSheet: { } spriteSheet } member:
                 if (spriteSheet.GetMemberCollection(member.GetType()) is { } anotherMemberCollection) {
-                    this.AddNewSpriteSheetMember(anotherMemberCollection);
+                    await this.AddNewSpriteSheetMember(anotherMemberCollection);
                 }
 
                 break;
@@ -308,8 +323,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         AutoTileSetCollection or
         SpriteAnimationCollection or
         SpriteSheetFontCollection or
-        GamePadIconSetCollection or
-        KeyboardIconSetCollection or
+        SpriteSheetIconSetCollection or
         SpriteSheetMember or
         ScreenShader or
         ScreenShaderCollection;

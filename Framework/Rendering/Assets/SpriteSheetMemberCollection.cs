@@ -1,29 +1,25 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Interface for a collection of <see cref="SpriteSheetMember" />.
 /// </summary>
 public interface ISpriteSheetMemberCollection : INameableCollection, INotifyCollectionChanged, INotifyPropertyChanged {
+
+    /// <summary>
+    /// Gets the type of members in this collection.
+    /// </summary>
+    Type MemberType { get; }
+
     /// <summary>
     /// Adds the member if it is the correct type.
     /// </summary>
     /// <param name="member">The member.</param>
     void AddMember(SpriteSheetMember member);
-
-    /// <summary>
-    /// Adds a new member.
-    /// </summary>
-    /// <returns>The newly added member.</returns>
-    public SpriteSheetMember AddNewMember();
-
-    /// <summary>
-    /// Creates a new member without adding it to the collection.
-    /// </summary>
-    /// <returns>The member.</returns>
-    public SpriteSheetMember CreateNewMember();
 
     /// <summary>
     /// Inserts the member if it is the correct type.
@@ -36,32 +32,31 @@ public interface ISpriteSheetMemberCollection : INameableCollection, INotifyColl
     /// Removes a member if it is the correct type.
     /// </summary>
     /// <param name="member">The member.</param>
-    /// <returns>A value indicating whether or not the member was removed.</returns>
+    /// <returns>A value indicating whether the member was removed.</returns>
     public bool RemoveMember(SpriteSheetMember member);
+
+    /// <summary>
+    /// Creates a new member without adding it to the collection.
+    /// </summary>
+    /// <param name="member">The created member.</param>
+    /// <returns>A value indicating whether a new member could be created.</returns>
+    bool TryCreateNewMember([NotNullWhen(true)] out SpriteSheetMember? member);
 }
 
 /// <summary>
 /// A generic base class for a collection of <see cref="SpriteSheetMember" />.
 /// </summary>
 /// <typeparam name="TMember"></typeparam>
-public abstract class SpriteSheetMemberCollection<TMember> : NameableCollection<TMember>, ISpriteSheetMemberCollection where TMember : SpriteSheetMember, new() {
+public abstract class SpriteSheetMemberCollection<TMember> : NameableCollection<TMember>, ISpriteSheetMemberCollection where TMember : SpriteSheetMember {
+
+    /// <inheritdoc />
+    public Type MemberType => typeof(TMember);
+
     /// <inheritdoc />
     public void AddMember(SpriteSheetMember member) {
         if (member is TMember actualMember) {
             this.Add(actualMember);
         }
-    }
-
-    /// <inheritdoc />
-    public SpriteSheetMember AddNewMember() {
-        var member = new TMember();
-        this.Add(member);
-        return member;
-    }
-
-    /// <inheritdoc />
-    public SpriteSheetMember CreateNewMember() {
-        return new TMember();
     }
 
     /// <inheritdoc />
@@ -72,7 +67,8 @@ public abstract class SpriteSheetMemberCollection<TMember> : NameableCollection<
     }
 
     /// <inheritdoc />
-    public bool RemoveMember(SpriteSheetMember member) {
-        return member is TMember actualMember && this.Remove(actualMember);
-    }
+    public bool RemoveMember(SpriteSheetMember member) => member is TMember actualMember && this.Remove(actualMember);
+
+    /// <inheritdoc />
+    public abstract bool TryCreateNewMember([NotNullWhen(true)] out SpriteSheetMember? member);
 }

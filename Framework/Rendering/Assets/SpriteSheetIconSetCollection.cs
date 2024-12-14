@@ -5,17 +5,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// An observable collection of <see cref="SpriteAnimation" />.
+/// An observable collection of <see cref="ISpriteSheetIconSet" />.
 /// </summary>
 [DataContract]
-[Category("Animations")]
-public class SpriteAnimationCollection : SpriteSheetMemberCollection<SpriteAnimation> {
+[Category("Keyboard Icon Sets")]
+public class SpriteSheetIconSetCollection : SpriteSheetMemberCollection<SpriteSheetIconSet> {
     /// <inheritdoc />
-    public override string Name => "Sprite Animations";
+    public override string Name => "Icon Sets";
 
     /// <inheritdoc />
     public override bool TryCreateNewMember([NotNullWhen(true)] out SpriteSheetMember? member) {
-        member = new SpriteAnimation();
-        return true;
+        member = null;
+        return false;
     }
 }
