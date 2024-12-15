@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// The input state for this frame.
 /// </summary>
-public struct InputState {
+public struct InputState : IEquatable<InputState> {
     /// <summary>
     /// The current keyboard state.
     /// </summary>
@@ -57,24 +57,21 @@ public struct InputState {
     /// Checks whether any game pad buttons are being pressed.
     /// </summary>
     /// <returns>A value indicating whether or not any game pad buttons are being pressed.</returns>
-    public bool IsGamePadActive() {
-        return this.CurrentGamePadState.IsConnected &&
-               this.TryGetFirstActiveButton(out _);
-    }
+    public bool IsGamePadActive() =>
+        this.CurrentGamePadState.IsConnected &&
+        this.TryGetFirstActiveButton(out _);
 
     /// <summary>
     /// Checks whether any keyboard keys are being pressed.
     /// </summary>
     /// <returns>A value indicating whether or not any keyboard keys are being pressed.</returns>
-    public bool IsKeyboardActive() {
-        return this.CurrentKeyboardState.GetPressedKeyCount() > 0;
-    }
+    public bool IsKeyboardActive() => this.CurrentKeyboardState.GetPressedKeyCount() > 0;
 
     /// <summary>
     /// Tries to get the first active button.
     /// </summary>
     /// <param name="button">The found button.</param>
-    /// <returns>A value indicating whether or not a button was found.</returns>
+    /// <returns>A value indicating whether an active button was found.</returns>
     public bool TryGetFirstActiveButton(out Buttons button) {
         button = Buttons.None;
         var availableButtons = Enum.GetValues<Buttons>();
@@ -90,16 +87,33 @@ public struct InputState {
     }
 
     /// <summary>
+    /// Tries to get the first active mouse button.
+    /// </summary>
+    /// <param name="button">The mouse button.</param>
+    /// <returns>A value indicating whether an active button was found.</returns>
+    public bool TryGetFirstActiveMouseButton(out MouseButton button) {
+        button = MouseButton.None;
+
+        foreach (var availableButton in Enum.GetValues<MouseButton>()) {
+            if (this.IsMouseButtonNewlyPressed(availableButton)) {
+                button = availableButton;
+                break;
+            }
+        }
+
+        return button != MouseButton.None;
+    }
+
+    /// <summary>
     /// Tries to get the first active key.
     /// </summary>
     /// <param name="key">The found key.</param>
-    /// <returns>A value indicating whether or not a key was found.</returns>
+    /// <returns>A value indicating whether an active key was found.</returns>
     public bool TryGetFirstActiveKey(out Keys key) {
         key = Keys.None;
-        var availableKeys = Enum.GetValues<Keys>();
 
-        foreach (var availableKey in availableKeys) {
-            if (availableKey != Keys.None && this.IsKeyNewlyPressed(availableKey)) {
+        foreach (var availableKey in Enum.GetValues<Keys>()) {
+            if (this.IsKeyNewlyPressed(availableKey)) {
                 key = availableKey;
                 break;
             }
@@ -113,27 +127,21 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The game pad button.</param>
     /// <returns>The key's current state.</returns>
-    private ButtonState GetCurrentGamePadButtonState(Buttons button) {
-        return GetGamePadButtonState(button, this.CurrentGamePadState);
-    }
+    private ButtonState GetCurrentGamePadButtonState(Buttons button) => GetGamePadButtonState(button, this.CurrentGamePadState);
 
     /// <summary>
     /// Gets the button's state in the previous frame.
     /// </summary>
     /// <param name="button">The button.</param>
     /// <returns>The button's state in the previous frame.</returns>
-    public ButtonState GetPreviousGamePadButtonState(Buttons button) {
-        return GetGamePadButtonState(button, this.PreviousGamePadState);
-    }
+    public ButtonState GetPreviousGamePadButtonState(Buttons button) => GetGamePadButtonState(button, this.PreviousGamePadState);
 
     /// <summary>
     /// Gets a value indicating whether not the button is newly pressed as of the current frame.
     /// </summary>
     /// <param name="button">The button.</param>
     /// <returns>A value indicating whether not the button is newly pressed as of the current frame.</returns>
-    public bool IsGamePadButtonNewlyPressed(Buttons button) {
-        return button != Buttons.None && this.GetPreviousGamePadButtonState(button) == ButtonState.Released && this.GetCurrentGamePadButtonState(button) == ButtonState.Pressed;
-    }
+    public bool IsGamePadButtonNewlyPressed(Buttons button) => button != Buttons.None && this.GetPreviousGamePadButtonState(button) == ButtonState.Released && this.GetCurrentGamePadButtonState(button) == ButtonState.Pressed;
 
     /// <summary>
     /// Gets a value indicating whether not the button is being held. This includes the first frame of being pressed and
@@ -141,40 +149,30 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The button.</param>
     /// <returns>A value indicating whether not the button is being held.</returns>
-    public bool IsGamePadButtonHeld(Buttons button) {
-        return button != Buttons.None && this.GetCurrentGamePadButtonState(button) == ButtonState.Pressed;
-    }
+    public bool IsGamePadButtonHeld(Buttons button) => button != Buttons.None && this.GetCurrentGamePadButtonState(button) == ButtonState.Pressed;
 
     /// <summary>
     /// Gets a value indicating whether not the button is newly released as of the current frame.
     /// </summary>
     /// <param name="button">The button.</param>
     /// <returns>A value indicating whether not the button is newly released as of the current frame.</returns>
-    public bool IsGamePadButtonNewlyReleased(Buttons button) {
-        return button != Buttons.None && this.GetPreviousGamePadButtonState(button) == ButtonState.Pressed && this.GetCurrentGamePadButtonState(button) == ButtonState.Released;
-    }
+    public bool IsGamePadButtonNewlyReleased(Buttons button) => button != Buttons.None && this.GetPreviousGamePadButtonState(button) == ButtonState.Pressed && this.GetCurrentGamePadButtonState(button) == ButtonState.Released;
 
-    private static ButtonState GetGamePadButtonState(Buttons button, GamePadState state) {
-        return button != Buttons.None && state.IsButtonDown(button) ? ButtonState.Pressed : ButtonState.Released;
-    }
+    private static ButtonState GetGamePadButtonState(Buttons button, GamePadState state) => button != Buttons.None && state.IsButtonDown(button) ? ButtonState.Pressed : ButtonState.Released;
 
     /// <summary>
     /// Gets a value indicating whether not the mouse button is newly pressed as of the current frame.
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is newly pressed as of the current frame.</returns>
-    public bool IsMouseButtonNewlyPressed(MouseButton button) {
-        return button != MouseButton.None && this.GetPreviousMouseButtonState(button) == ButtonState.Released && this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
-    }
+    public bool IsMouseButtonNewlyPressed(MouseButton button) => button != MouseButton.None && this.GetPreviousMouseButtonState(button) == ButtonState.Released && this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
 
     /// <summary>
     /// Gets a value indicating whether not the key is newly pressed as of the current frame.
     /// </summary>
     /// <param name="key">The keyboard key.</param>
     /// <returns>A value indicating whether not the key is newly pressed as of the current frame.</returns>
-    public bool IsKeyNewlyPressed(Keys key) {
-        return key != Keys.None && this.GetPreviousKeyState(key) == KeyState.Up && this.GetCurrentKeyState(key) == KeyState.Down;
-    }
+    public bool IsKeyNewlyPressed(Keys key) => key != Keys.None && this.GetPreviousKeyState(key) == KeyState.Up && this.GetCurrentKeyState(key) == KeyState.Down;
 
     /// <summary>
     /// Gets a value indicating whether not the mouse button is being held. This includes the first frame of being pressed and
@@ -182,9 +180,7 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is being held.</returns>
-    public bool IsMouseButtonHeld(MouseButton button) {
-        return button != MouseButton.None && this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
-    }
+    public bool IsMouseButtonHeld(MouseButton button) => button != MouseButton.None && this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
 
     /// <summary>
     /// Gets a value indicating whether not the key is being held. This includes the first frame of being pressed and
@@ -192,63 +188,49 @@ public struct InputState {
     /// </summary>
     /// <param name="key">The keyboard key.</param>
     /// <returns>A value indicating whether not the key is being held.</returns>
-    public bool IsKeyHeld(Keys key) {
-        return key != Keys.None && this.GetCurrentKeyState(key) == KeyState.Down;
-    }
+    public bool IsKeyHeld(Keys key) => key != Keys.None && this.GetCurrentKeyState(key) == KeyState.Down;
 
     /// <summary>
     /// Gets a value indicating whether not the mouse button is newly released as of the current frame.
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is newly released as of the current frame.</returns>
-    public bool IsMouseButtonNewlyReleased(MouseButton button) {
-        return button != MouseButton.None && this.GetPreviousMouseButtonState(button) == ButtonState.Pressed && this.GetCurrentMouseButtonState(button) == ButtonState.Released;
-    }
+    public bool IsMouseButtonNewlyReleased(MouseButton button) => button != MouseButton.None && this.GetPreviousMouseButtonState(button) == ButtonState.Pressed && this.GetCurrentMouseButtonState(button) == ButtonState.Released;
 
     /// <summary>
     /// Gets a value indicating whether not the key is newly released as of the current frame.
     /// </summary>
     /// <param name="key">The keyboard key.</param>
     /// <returns>A value indicating whether not the key is newly released as of the current frame.</returns>
-    public bool IsKeyNewlyReleased(Keys key) {
-        return key != Keys.None && this.GetPreviousKeyState(key) == KeyState.Down && this.GetCurrentKeyState(key) == KeyState.Up;
-    }
+    public bool IsKeyNewlyReleased(Keys key) => key != Keys.None && this.GetPreviousKeyState(key) == KeyState.Down && this.GetCurrentKeyState(key) == KeyState.Up;
 
     /// <summary>
     /// Gets the mouse button's current state.
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>The mouse button's current state.</returns>
-    public ButtonState GetCurrentMouseButtonState(MouseButton button) {
-        return GetMouseButtonState(button, this.CurrentMouseState);
-    }
+    public ButtonState GetCurrentMouseButtonState(MouseButton button) => GetMouseButtonState(button, this.CurrentMouseState);
 
     /// <summary>
     /// Gets the key's current state.
     /// </summary>
     /// <param name="key">The keyboard key.</param>
     /// <returns>The key's current state.</returns>
-    private KeyState GetCurrentKeyState(Keys key) {
-        return GetKeyState(key, this.CurrentKeyboardState);
-    }
+    private KeyState GetCurrentKeyState(Keys key) => GetKeyState(key, this.CurrentKeyboardState);
 
     /// <summary>
     /// Gets the mouse button's state in the previous frame.
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>The mouse button's state in the previous frame.</returns>
-    public ButtonState GetPreviousMouseButtonState(MouseButton button) {
-        return GetMouseButtonState(button, this.PreviousMouseState);
-    }
+    public ButtonState GetPreviousMouseButtonState(MouseButton button) => GetMouseButtonState(button, this.PreviousMouseState);
 
     /// <summary>
     /// Gets the key's state in the previous frame.
     /// </summary>
     /// <param name="key">The keyboard key.</param>
     /// <returns>The key's state in the previous frame.</returns>
-    public KeyState GetPreviousKeyState(Keys key) {
-        return GetKeyState(key, this.PreviousKeyboardState);
-    }
+    public KeyState GetPreviousKeyState(Keys key) => GetKeyState(key, this.PreviousKeyboardState);
 
     private static ButtonState GetMouseButtonState(MouseButton button, MouseState state) {
         return button switch {
@@ -261,19 +243,13 @@ public struct InputState {
         };
     }
 
-    private static KeyState GetKeyState(Keys key, KeyboardState state) {
-        return key != Keys.None && state.IsKeyDown(key) ? KeyState.Down : KeyState.Up;
-    }
+    private static KeyState GetKeyState(Keys key, KeyboardState state) => key != Keys.None && state.IsKeyDown(key) ? KeyState.Down : KeyState.Up;
 
     /// <inheritdoc cref="object" />
-    public static bool operator !=(InputState left, InputState right) {
-        return !(left == right);
-    }
+    public static bool operator !=(InputState left, InputState right) => !(left == right);
 
     /// <inheritdoc cref="object" />
-    public static bool operator ==(InputState left, InputState right) {
-        return left.Equals(right);
-    }
+    public static bool operator ==(InputState left, InputState right) => left.Equals(right);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) {
@@ -287,7 +263,8 @@ public struct InputState {
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() {
-        return HashCode.Combine(this.CurrentKeyboardState, this.CurrentMouseState, this.PreviousKeyboardState, this.PreviousMouseState);
-    }
+    public override int GetHashCode() => HashCode.Combine(this.CurrentKeyboardState, this.CurrentMouseState, this.PreviousKeyboardState, this.PreviousMouseState);
+
+    /// <inheritdoc />
+    public bool Equals(InputState other) => this.CurrentKeyboardState.Equals(other.CurrentKeyboardState) && this.CurrentMouseState.Equals(other.CurrentMouseState) && this.PreviousKeyboardState.Equals(other.PreviousKeyboardState) && this.PreviousMouseState.Equals(other.PreviousMouseState) && this.PreviousGamePadState.Equals(other.PreviousGamePadState) && this.CurrentGamePadState.Equals(other.CurrentGamePadState);
 }

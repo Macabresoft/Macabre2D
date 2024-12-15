@@ -19,6 +19,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private InputDevice _inputDeviceToRender = InputDevice.Auto;
     private Keys _key = Keys.None;
+    private MouseButton _mouseButton = MouseButton.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
 
@@ -45,6 +46,12 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// </summary>
     [DataMember]
     public KeyboardIconSetReference KeyboardReference { get; } = new();
+
+    /// <summary>
+    /// Gets the icon set reference for the mouse.
+    /// </summary>
+    [DataMember]
+    public MouseButtonIconSetReference MouseReference { get; } = new();
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this._spriteIndex;
@@ -93,6 +100,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.GamePadSReference.AssetChanged -= this.IconSetReference_AssetChanged;
         this.GamePadXReference.AssetChanged -= this.IconSetReference_AssetChanged;
         this.KeyboardReference.AssetChanged -= this.IconSetReference_AssetChanged;
+        this.MouseReference.AssetChanged -= this.IconSetReference_AssetChanged;
     }
 
     /// <inheritdoc />
@@ -103,6 +111,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.GamePadSReference.AssetChanged += this.IconSetReference_AssetChanged;
         this.GamePadXReference.AssetChanged += this.IconSetReference_AssetChanged;
         this.KeyboardReference.AssetChanged += this.IconSetReference_AssetChanged;
+        this.MouseReference.AssetChanged += this.IconSetReference_AssetChanged;
 
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
@@ -123,6 +132,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         yield return this.GamePadSReference;
         yield return this.GamePadXReference;
         yield return this.KeyboardReference;
+        yield return this.MouseReference;
     }
 
     private void Game_InputDisplayChanged(object? sender, InputDevice e) {
@@ -154,15 +164,18 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private KeyboardIconSet? GetKeyboardIconSet() => this.KeyboardReference.PackagedAsset ?? this.Project.Fallbacks.KeyboardReference.PackagedAsset;
 
+    private MouseButtonIconSet? GetMouseButtonIconSet() => this.MouseReference.PackagedAsset ?? this.Project.Fallbacks.MouseReference.PackagedAsset;
+
     private void IconSetReference_AssetChanged(object? sender, bool hasAsset) {
         this.ResetSprite();
     }
 
     private void ResetBindings() {
         if (this.IsInitialized) {
-            if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out _)) {
+            if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out var mouseButton)) {
                 this._button = GetFirst(button);
                 this._key = key;
+                this._mouseButton = mouseButton;
             }
 
             this.ResetSprite();
@@ -177,13 +190,22 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
         if (inputDevice == InputDevice.KeyboardMouse) {
-            var iconSet = this.GetKeyboardIconSet();
-            if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
-                this._spriteIndex = index;
-                this._spriteSheet = iconSet.SpriteSheet;
+            if (this._key != Keys.None) {
+                var iconSet = this.GetKeyboardIconSet();
+                if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
+                    this._spriteIndex = index;
+                    this._spriteSheet = iconSet.SpriteSheet;
+                }
+            }
+            else if (this._mouseButton != MouseButton.None) {
+                var iconSet = this.GetMouseButtonIconSet();
+                if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
+                    this._spriteIndex = index;
+                    this._spriteSheet = iconSet.SpriteSheet;
+                }
             }
         }
-        else {
+        else if (this._button != Buttons.None) {
             var iconSet = this.GetGamePadIconSet();
 
             if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
