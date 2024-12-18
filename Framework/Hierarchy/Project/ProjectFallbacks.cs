@@ -42,7 +42,13 @@ public class ProjectFallbacks {
     public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <summary>
-    /// Gets the icon set reference for keyboards.
+    /// Gets the icon set reference for mouse cursors.
+    /// </summary>
+    [DataMember]
+    public MouseCursorIconSetReference MouseCursorReference { get; } = new();
+
+    /// <summary>
+    /// Gets the icon set reference for a mouse.
     /// </summary>
     [DataMember]
     public MouseButtonIconSetReference MouseReference { get; } = new();

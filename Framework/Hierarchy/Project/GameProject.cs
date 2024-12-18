@@ -245,6 +245,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         this.Fallbacks.GamePadXReference.Initialize(assets, game);
         this.Fallbacks.KeyboardReference.Initialize(assets, game);
         this.Fallbacks.MouseReference.Initialize(assets, game);
+        this.Fallbacks.MouseCursorReference.Initialize(assets, game);
         this.Fallbacks.Font.Initialize(assets, game);
     }
 }

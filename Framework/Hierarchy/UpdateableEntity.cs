@@ -23,6 +23,7 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     private bool _shouldUpdate = true;
     private int _updateOrder;
 
+    /// <inheritdoc />
     [DataMember]
     public bool ShouldUpdate {
         get => this._shouldUpdate && this.IsEnabled;
