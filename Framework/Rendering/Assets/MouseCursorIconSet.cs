@@ -9,7 +9,8 @@ using System.Linq;
 public enum MouseCursorAppearance {
     None,
     Standard,
-    LeftClickHeld
+    LeftClickHeld,
+    Activatable
 }
 
 /// <summary>

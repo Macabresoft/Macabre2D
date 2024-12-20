@@ -57,6 +57,11 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
         get => this._updateOrder;
         set => this.Set(ref this._updateOrder, value);
     }
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether this is hovering over an activatable element.
+    /// </summary>
+    protected bool IsHoveringOverActivatableElement { get; set; }
 
     /// <inheritdoc />
     protected override SpriteSheet? SpriteSheet => this._spriteSheet;
@@ -76,15 +81,20 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
         this.ResetSpriteIndex();
     }
 
-    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        base.Render(frameTime, viewBoundingArea);
-    }
-
     /// <inheritdoc />
     public virtual void Update(FrameTime frameTime, InputState inputState) {
         var camera = this.GetCamera();
         this.SetWorldPosition(camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
-        this.Appearance = inputState.IsMouseButtonHeld(MouseButton.Left) ? MouseCursorAppearance.LeftClickHeld : MouseCursorAppearance.Standard;
+
+        if (inputState.IsMouseButtonHeld(MouseButton.Left)) {
+            this.Appearance = MouseCursorAppearance.LeftClickHeld;
+        }
+        else if (this.IsHoveringOverActivatableElement) {
+            this.Appearance = MouseCursorAppearance.Activatable;
+        }
+        else {
+            this.Appearance = MouseCursorAppearance.Standard;
+        }
     }
 
     /// <inheritdoc />
