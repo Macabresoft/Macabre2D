@@ -356,23 +356,35 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public IEnumerable<T> GetDescendants<T>() {
-        var descendents = new List<T>(this.Children.OfType<T>());
-        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendants<T>()));
-        return descendents;
+        foreach (var child in this.Children.OfType<T>()) {
+            yield return child;
+        }
+
+        foreach (var child in this.Children.SelectMany(x => x.GetDescendants<T>())) {
+            yield return child;
+        }
     }
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetDescendants(Type type) {
-        var descendants = new List<IEntity>(this.Children.Where(type.IsInstanceOfType));
-        descendants.AddRange(this.Children.SelectMany(x => x.GetDescendants(type)));
-        return descendants;
+        foreach (var child in this.Children.Where(type.IsInstanceOfType)) {
+            yield return child;
+        }
+
+        foreach (var child in this.Children.SelectMany(x => x.GetDescendants(type))) {
+            yield return child;
+        }
     }
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) {
-        var descendents = new List<IEntity>(this.Children.Where(x => x.ReferencesContent(contentId)));
-        descendents.AddRange(this.Children.SelectMany(x => x.GetDescendentsWithContent(contentId)));
-        return descendents;
+        foreach (var child in this.Children.Where(x => x.ReferencesContent(contentId))) {
+            yield return child;
+        }
+
+        foreach (var child in this.Children.SelectMany(x => x.GetDescendentsWithContent(contentId))) {
+            yield return child;
+        }
     }
 
     /// <inheritdoc />
