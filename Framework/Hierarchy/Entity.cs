@@ -28,7 +28,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <summary>
     /// Gets the parent.
     /// </summary>
-    IEntity Parent => Framework.Scene.Empty;
+    IEntity Parent => GridContainer.Empty;
 
     /// <summary>
     /// Gets the game project.
@@ -38,7 +38,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    IScene Scene => Framework.Scene.Empty;
+    IScene Scene => EmptyObject.Scene;
 
     /// <summary>
     /// Gets the layers.
@@ -215,11 +215,6 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public IReadOnlyCollection<IEntity> Children => this._children;
 
-    /// <summary>
-    /// Gets the default empty <see cref="IEntity" /> that is present before initialization.
-    /// </summary>
-    public static IEntity Empty => EmptyObject.Instance;
-
     /// <inheritdoc />
     public virtual IGame Game => this.Scene.Game;
 
@@ -262,10 +257,10 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public IEntity Parent { get; private set; } = Empty;
+    public IEntity Parent { get; private set; } = EmptyObject.Entity;
 
     /// <inheritdoc />
-    public IScene Scene { get; private set; } = Framework.Scene.Empty;
+    public IScene Scene { get; private set; } = EmptyObject.Scene;
 
     /// <summary>
     /// Gets the sprite batch.
@@ -322,7 +317,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public IEntity FindChild(Guid id) {
-        var result = Empty;
+        var result = EmptyObject.Entity;
         foreach (var child in this.Children) {
             if (child.Id == id) {
                 result = child;
@@ -339,7 +334,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public IEntity FindChild(string name) {
-        var result = Empty;
+        var result = EmptyObject.Entity;
         foreach (var child in this.Children) {
             if (child.Name == name) {
                 result = child;
@@ -430,14 +425,14 @@ public class Entity : Transformable, IEntity {
     public bool IsDescendentOf(IEntity entity) => entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
 
     /// <summary>
-    /// Gets a value indicating whether or not the entity is null or empty.
+    /// Gets a value indicating whether the entity is null or empty.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <param name="notNullEntity">The entity if it is not null without its nullability.</param>
-    /// <returns>A value indicating whether or not the entity is null or empty.</returns>
+    /// <returns>A value indicating whether the entity is null or empty.</returns>
     public static bool IsNullOrEmpty(IEntity? entity, out IEntity notNullEntity) {
-        notNullEntity = entity ?? Empty;
-        return notNullEntity == Empty || notNullEntity == Framework.Scene.Empty;
+        notNullEntity = entity ?? EmptyObject.Entity;
+        return notNullEntity == EmptyObject.Entity || notNullEntity == GridContainer.Empty;
     }
 
     /// <inheritdoc />
@@ -455,8 +450,8 @@ public class Entity : Transformable, IEntity {
     public virtual void OnRemovedFromSceneTree() {
         this.Deinitialize();
         this.Scene.UnregisterEntity(this);
-        this.Scene = Framework.Scene.Empty;
-        this.Parent = Empty;
+        this.Scene = EmptyObject.Scene;
+        this.Parent = EmptyObject.Entity;
 
         foreach (var child in this._children) {
             child.OnRemovedFromSceneTree();

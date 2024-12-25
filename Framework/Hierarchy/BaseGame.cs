@@ -92,7 +92,7 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public IScene CurrentScene {
-        get => this._sceneStack.Any() ? this._sceneStack.Peek() : Scene.Empty;
+        get => this._sceneStack.Any() ? this._sceneStack.Peek() : EmptyObject.Scene;
         private set {
             if (this.CurrentScene != value) {
                 this.ClearSceneStack();
@@ -137,7 +137,7 @@ public class BaseGame : Game, IGame {
     public static bool IsDesignMode { get; private set; }
 
     /// <inheritdoc />
-    public IScene Overlay { get; private set; } = Scene.Empty;
+    public IScene Overlay { get; private set; } = EmptyObject.Scene;
 
     /// <inheritdoc />
     public Point PixelRenderSize { get; private set; }
@@ -276,7 +276,7 @@ public class BaseGame : Game, IGame {
             return true;
         }
 
-        scene = Scene.Empty;
+        scene = EmptyObject.Scene;
         return false;
     }
 
@@ -552,13 +552,13 @@ public class BaseGame : Game, IGame {
         public event EventHandler<Point>? ViewportSizeChanged;
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
-        public IScene CurrentScene => Scene.Empty;
+        public IScene CurrentScene => EmptyObject.Scene;
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
         public GraphicsDevice? GraphicsDevice => null;
         public InputBindings InputBindings => this.UserSettings.Input;
-        public IScene Overlay => Scene.Empty;
+        public IScene Overlay => EmptyObject.Scene;
         public Point PixelRenderSize => default;
         public IGameProject Project => GameProject.Empty;
         public SpriteBatch? SpriteBatch => null;
@@ -602,7 +602,7 @@ public class BaseGame : Game, IGame {
         }
 
         public bool TryPopScene(out IScene scene) {
-            scene = Scene.Empty;
+            scene = EmptyObject.Scene;
             return false;
         }
     }

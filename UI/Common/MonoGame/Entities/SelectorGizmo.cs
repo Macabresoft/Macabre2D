@@ -79,7 +79,7 @@ public class SelectorGizmo : Entity, IGizmo {
         var result = false;
         var potential = selected;
 
-        while (potential.Parent != Empty && potential.Parent != this._sceneService.CurrentScene) {
+        while (potential.Parent != EmptyObject.Entity && potential.Parent != this._sceneService.CurrentScene) {
             potential = potential.Parent;
 
             if (potential is PrefabContainer && !this.CheckForPrefab(potential, out finalSelected)) {

@@ -60,11 +60,11 @@ public abstract class EntityReference : PropertyChangedNotifier, IEntityReferenc
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    protected IScene Scene { get; private set; } = Framework.Scene.Empty;
+    protected IScene Scene { get; private set; } = EmptyObject.Scene;
 
     /// <inheritdoc />
     public virtual void Deinitialize() {
-        this.Scene = Framework.Scene.Empty;
+        this.Scene = EmptyObject.Scene;
     }
 
     /// <inheritdoc />

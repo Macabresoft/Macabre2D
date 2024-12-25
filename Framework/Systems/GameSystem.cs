@@ -70,7 +70,7 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     /// Gets the scene.
     /// </summary>
     /// <value>The scene.</value>
-    protected IScene Scene { get; private set; } = Framework.Scene.Empty;
+    protected IScene Scene { get; private set; } = EmptyObject.Scene;
 
     /// <inheritdoc />
     public virtual void Deinitialize() {

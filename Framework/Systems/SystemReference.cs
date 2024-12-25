@@ -36,7 +36,7 @@ public abstract class SystemReference : PropertyChangedNotifier {
     /// <summary>
     /// Gets the scene.
     /// </summary>
-    protected IScene Scene { get; private set; } = Framework.Scene.Empty;
+    protected IScene Scene { get; private set; } = EmptyObject.Scene;
 
     /// <summary>
     /// Initializes this instance.

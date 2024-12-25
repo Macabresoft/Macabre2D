@@ -39,6 +39,16 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
+    /// <summary>
+    /// Gets the singleton instance as <see cref="ICamera" />.
+    /// </summary>
+    public static ICamera Camera => Instance;
+
+    /// <summary>
+    /// Gets the singleton instance as <see cref="IEntity" />.
+    /// </summary>
+    public static IEntity Entity => Instance;
+
     /// <inheritdoc />
     public IGame Game => BaseGame.Empty;
 
@@ -56,6 +66,11 @@ public class EmptyObject : IScene, ICamera {
 
     /// <inheritdoc />
     public BoundingArea SafeArea => BoundingArea.Empty;
+
+    /// <summary>
+    /// Gets the singleton instance as <see cref="IScene" />.
+    /// </summary>
+    public static IScene Scene => Instance;
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;

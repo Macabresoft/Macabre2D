@@ -298,11 +298,6 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     public IReadOnlyCollection<ICamera> Cameras => this._cameras;
 
-    /// <summary>
-    /// Gets the default empty <see cref="IScene" /> that is present before initialization.
-    /// </summary>
-    public new static IScene Empty => EmptyObject.Instance;
-
     /// <inheritdoc />
     public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
 
