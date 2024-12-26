@@ -114,9 +114,41 @@ public class BoxTileMap : RenderableEntity {
         yield return this.TileSet;
     }
 
+
+    /// <summary>
+    /// Gets the sprite size in world units.
+    /// </summary>
+    /// <returns>The sprite size.</returns>
+    protected Vector2 GetSpriteUnitSize() {
+        var result = Vector2.Zero;
+
+        if (this.TileSet.Asset is { } spriteSheet) {
+            result = new Vector2(
+                spriteSheet.SpriteSize.X * this.Project.UnitsPerPixel,
+                spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel);
+        }
+
+        return result;
+    }
+
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
+        this.Reset();
+    }
+
+    /// <summary>
+    /// Sets the size of this <see cref="BoxTileMap" />.
+    /// </summary>
+    /// <remarks>
+    /// This is more efficient than setting <see cref="Height" /> and <see cref="Width" /> separately,
+    /// as it only needs to update the tiles a single time.
+    /// </remarks>
+    /// <param name="height">The height.</param>
+    /// <param name="width">The width.</param>
+    protected void SetSize(int height, int width) {
+        this._height = Math.Max(height, 1);
+        this._width = Math.Max(width, 1);
         this.Reset();
     }
 
@@ -161,9 +193,9 @@ public class BoxTileMap : RenderableEntity {
 
     private void ResetSprites() {
         this._spritePositionsAndTileIndex.Clear();
-        if (this.TileSet.Asset is { } spriteSheet) {
-            var spriteHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            var spriteWidth = spriteSheet.SpriteSize.X * this.Project.UnitsPerPixel;
+        var spriteSize = this.GetSpriteUnitSize();
+
+        if (spriteSize != Vector2.Zero) {
             var minimum = this.BoundingArea.Minimum;
             var (x, y) = minimum;
             if (this.Height == 1) {
@@ -172,11 +204,11 @@ public class BoxTileMap : RenderableEntity {
                 }
                 else {
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.East));
-                    x += spriteWidth;
+                    x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
                         this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West)));
-                        x += spriteWidth;
+                        x += spriteSize.X;
                     }
 
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.West));
@@ -184,48 +216,48 @@ public class BoxTileMap : RenderableEntity {
             }
             else if (this.Width == 1) {
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.North));
-                y += spriteWidth;
+                y += spriteSize.Y;
 
                 for (var row = 1; row < this.Height - 1; row++) {
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.North | CardinalDirections.South)));
-                    y += spriteWidth;
+                    y += spriteSize.Y;
                 }
 
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.South));
             }
             else {
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.North)));
-                x += spriteWidth;
+                x += spriteSize.X;
 
                 for (var column = 1; column < this.Width - 1; column++) {
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
-                    x += spriteWidth;
+                    x += spriteSize.X;
                 }
 
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.North)));
                 x = minimum.X;
-                y += spriteHeight;
+                y += spriteSize.Y;
 
                 for (var row = 1; row < this.Height - 1; row++) {
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
-                    x += spriteWidth;
+                    x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
                         this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
-                        x += spriteWidth;
+                        x += spriteSize.X;
                     }
 
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
-                    y += spriteHeight;
+                    y += spriteSize.Y;
                     x = minimum.X;
                 }
 
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.South)));
-                x += spriteWidth;
+                x += spriteSize.X;
 
                 for (var column = 1; column < this.Width - 1; column++) {
                     this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
-                    x += spriteWidth;
+                    x += spriteSize.X;
                 }
 
                 this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.South)));
