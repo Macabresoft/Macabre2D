@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// This is an axis aligned bounding box.
 /// </summary>
 [DataContract]
-public readonly struct BoundingArea {
+public readonly struct BoundingArea : IEquatable<BoundingArea> {
     /// <summary>
     /// The empty bounding area.
     /// </summary>
@@ -156,16 +156,16 @@ public readonly struct BoundingArea {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area contains the specified x value.
+    /// Gets a value indicating whether this bounding area contains the specified x value.
     /// </summary>
     /// <param name="x">The x value.</param>
-    /// <returns>A value indicating whether or not this bounding area contains the specified x value.</returns>
+    /// <returns>A value indicating whether this bounding area contains the specified x value.</returns>
     public bool ContainsHorizontally(float x) =>
         (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
         (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x));
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its horizontal bounds.
+    /// Gets a value indicating whether this bounding area contains the specified bounding area within its horizontal bounds.
     /// </summary>
     /// <param name="other">The other bounding area.</param>
     /// <returns><c>true</c>, if this bounding area contains the other bounding area within its horizontal bounds, <c>false</c> otherwise.</returns>
@@ -174,7 +174,7 @@ public readonly struct BoundingArea {
         (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X));
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its bounds.
+    /// Gets a value indicating whether this bounding area contains the specified bounding area within its bounds.
     /// </summary>
     /// <param name="other">The other bounding area.</param>
     /// <returns><c>true</c>, if this bounding area contains the other bounding area, <c>false</c> otherwise.</returns>
@@ -185,7 +185,7 @@ public readonly struct BoundingArea {
         (this.Maximum.Y >= other.Maximum.Y || this.Maximum.Y.HasMinimalDifference(other.Maximum.Y));
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area overlaps another specified
+    /// Gets a value indicating whether this bounding area overlaps another specified
     /// bounding area.
     /// </summary>
     /// <param name="other">The other bounding area.</param>
