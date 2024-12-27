@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 [Category("Animations")]
 public class SpriteAnimationCollection : SpriteSheetMemberCollection<SpriteAnimation> {
     /// <inheritdoc />
-    public override string Name => "Sprite Animations";
+    public override string Name => "Animations";
 
     /// <inheritdoc />
     public override bool TryCreateNewMember([NotNullWhen(true)] out SpriteSheetMember? member) {
