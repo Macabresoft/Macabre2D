@@ -53,8 +53,8 @@ public class BoxTileBoundableCover : BoxTileMap {
 
     private void ResetSize() {
         if (this.Parent is IBoundable { BoundingArea.IsEmpty: false } boundable) {
-            var width = this._margin.X * 2;
-            var height = this._margin.Y * 2;
+            var width = this._margin.X;
+            var height = this._margin.Y;
             var boundingArea = boundable.BoundingArea;
             var spriteSize = this.GetSpriteUnitSize();
 
@@ -73,7 +73,7 @@ public class BoxTileBoundableCover : BoxTileMap {
                 }
 
                 this.SetSize(height, width);
-                var desiredMinimum = boundingArea.Minimum - new Vector2(this._margin.X * spriteSize.X, this._margin.Y * spriteSize.X);
+                var desiredMinimum = boundingArea.Minimum - new Vector2(this._margin.X * spriteSize.X * 0.5f, this._margin.Y * spriteSize.X * 0.5f);
                 var difference = desiredMinimum - this.BoundingArea.Minimum;
                 this.Move(difference);
             }
