@@ -16,7 +16,6 @@ using Macabresoft.Macabre2D.Framework;
 public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollection<SpriteDisplayModel> {
     private readonly IImage _bitmap;
     private readonly ContentFile _file;
-
     private readonly ObservableCollectionExtended<SpriteDisplayModel> _sprites = new();
     private readonly SpriteSheet _spriteSheet;
 
@@ -25,14 +24,13 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
+    private SpriteDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
         this._spriteSheet = spriteSheet;
         this._file = file;
 
         var fileInfo = new FileInfo(file.GetFullPath());
         if (fileInfo.Exists) {
             this._bitmap = new Bitmap(fileInfo.FullName);
-            this.ResetSprites();
         }
 
         this._spriteSheet.PropertyChanged += this.SpriteSheet_PropertyChanged;
@@ -57,10 +55,32 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
     /// </summary>
     public IReadOnlyCollection<SpriteDisplayModel> Sprites => this._sprites;
 
-    /// <inheritdoc />
-    public IEnumerator<SpriteDisplayModel> GetEnumerator() {
-        return this._sprites.GetEnumerator();
+    /// <summary>
+    /// Creates a collection of displayable sprites with an entry for every index in a sprite sheet.
+    /// </summary>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="file">The file.</param>
+    /// <returns>A collection of sprites ready to be displayed.</returns>
+    public static SpriteDisplayCollection Create(SpriteSheet spriteSheet, ContentFile file) {
+        var collection = new SpriteDisplayCollection(spriteSheet, file);
+        collection.ResetSprites();
+        return collection;
     }
+
+    /// <summary>
+    /// Creates a collection of displayable sprites with an entry for every animation in a sprite sheet.
+    /// </summary>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="file">The file.</param>
+    /// <returns>A collection of sprites ready to be displayed.</returns>
+    public static SpriteDisplayCollection CreateFromAnimations(SpriteSheet spriteSheet, ContentFile file) {
+        var collection = new SpriteDisplayCollection(spriteSheet, file);
+        collection.ResetSpritesFromAnimations();
+        return collection;
+    }
+
+    /// <inheritdoc />
+    public IEnumerator<SpriteDisplayModel> GetEnumerator() => this._sprites.GetEnumerator();
 
     /// <inheritdoc />
     protected override void OnDisposing() {
@@ -78,9 +98,7 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
     }
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() {
-        return this.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void ResetSprites() {
         var sprites = new List<SpriteDisplayModel>();
@@ -91,6 +109,17 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
                     sprites.Add(new SpriteDisplayModel(this._bitmap, index, this._spriteSheet));
                     index++;
                 }
+            }
+        }
+
+        this._sprites.Reset(sprites);
+    }
+
+    private void ResetSpritesFromAnimations() {
+        var sprites = new List<SpriteDisplayModel>();
+        if (this._bitmap != null && this._spriteSheet.GetMemberCollection<SpriteAnimation>() is { } animations) {
+            foreach (var animation in animations) {
+                sprites.Add(new SpriteDisplayModel(this._bitmap, animation));
             }
         }
 

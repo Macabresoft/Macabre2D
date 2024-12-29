@@ -50,7 +50,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
             this.ClearSprite,
             this.WhenAny(x => x.SelectedCharacter, x => x.Value != null));
         this.ImportFontSettingsCommand = ReactiveCommand.CreateFromTask(this.ImportFontSettings);
-        this.SpriteCollection = new SpriteDisplayCollection(font.SpriteSheet, file);
+        this.SpriteCollection = SpriteDisplayCollection.Create(font.SpriteSheet, file);
         this._characters.Reset(this.CreateCharacterModels());
         this.SelectedCharacter = this.Characters.First();
     }

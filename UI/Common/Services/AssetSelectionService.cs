@@ -146,8 +146,12 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                     SpriteSheetFont font => this._container.Resolve<SpriteSheetFontEditorView>(
                         new ParameterOverride(typeof(SpriteSheetFont), font),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
-                    ISpriteSheetIconSet iconSet  => this._container.Resolve<SpriteSheetIconSetEditorView>(
-                        new ParameterOverride(typeof(ISpriteSheetIconSet), iconSet),
+                    SpriteSheetIconSet iconSet  => this._container.Resolve<SpriteSheetIconSetEditorView>(
+                        new ParameterOverride(typeof(SpriteSheetIconSet), iconSet),
+                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                        new ParameterOverride(typeof(ContentFile), contentFile)),
+                    SpriteAnimationSet animationSet  => this._container.Resolve<SpriteAnimationSetEditorView>(
+                        new ParameterOverride(typeof(SpriteAnimationSet), animationSet),
                         new ParameterOverride(typeof(SpriteSheet), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     _ => null

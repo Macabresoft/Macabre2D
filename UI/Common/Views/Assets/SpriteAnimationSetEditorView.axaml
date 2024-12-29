@@ -1,0 +1,93 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             x:Class="Macabresoft.Macabre2D.UI.Common.SpriteAnimationSetEditorView"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Top">
+    <Design.DataContext>
+        <local:SpriteAnimationSetEditorViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, *"
+          ColumnDefinitions="*, Auto, *"
+          Margin="{StaticResource StandardMarginAll}">
+
+        <StackPanel Grid.Row="0"
+                    Grid.Column="0"
+                    Orientation="Horizontal">
+            <Button Classes="Icon"
+                    Margin="{StaticResource StandardMarginAll}"
+                    Command="{Binding ClearSpriteCommand}"
+                    ToolTip.Tip="Clear the selected key's animation assignment">
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+            </Button>
+        </StackPanel>
+
+        <Grid Grid.Row="0"
+              Grid.Column="2"
+              ColumnDefinitions="*, Auto">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding SelectedKey.Name}"
+                       VerticalAlignment="Center"
+                       ToolTip.Tip="{Binding SelectedKey.Name}" />
+
+            <local:ThumbnailSizeToggle Grid.Column="1"
+                                       SelectedSize="{Binding SelectedThumbnailSize}" />
+        </Grid>
+
+        <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 MinWidth="512"
+                 ItemsSource="{Binding AnimationKeys}"
+                 SelectedItem="{Binding SelectedKey}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="64"
+                            Height="64"
+                            Classes="Preview"
+                            ToolTip.Tip="{Binding Key}">
+                        <Grid>
+                            <Image Stretch="Fill"
+                                   HorizontalAlignment="Right"
+                                   ToolTip.Tip="{Binding Key}">
+                                <Image.Source>
+                                    <MultiBinding Converter="{x:Static local:SpriteAnimationIdToBitmapConverter.Instance}">
+                                        <Binding Path="AnimationId" />
+                                        <Binding Path="$parent[local:SpriteAnimationSetEditorView].DataContext.SpriteCollection" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+
+                            <TextBlock HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       TextWrapping="Wrap"
+                                       Text="{Binding Name}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip.Tip="{Binding Name}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      Classes="CardSplitter" />
+
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="2"
+                      VerticalAlignment="Top"
+                      VerticalContentAlignment="Top"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible">
+            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                  SelectedSprite="{Binding SelectedSprite}"
+                                                  ThumbnailSize="{Binding SelectedThumbnailSize}" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

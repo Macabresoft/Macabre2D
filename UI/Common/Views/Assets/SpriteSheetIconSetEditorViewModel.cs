@@ -34,7 +34,7 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
     [InjectionConstructor]
     public SpriteSheetIconSetEditorViewModel(
         IUndoService undoService,
-        ISpriteSheetIconSet iconSet,
+        SpriteSheetIconSet iconSet,
         SpriteSheet spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
@@ -42,7 +42,7 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
         this.SelectIconCommand = ReactiveCommand.Create<SpriteSheetIcon>(this.SelectIcon);
-        this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
+        this.SpriteCollection = SpriteDisplayCollection.Create(spriteSheet, file);
 
         iconSet.RefreshIcons();
         this.Icons = iconSet.Icons;

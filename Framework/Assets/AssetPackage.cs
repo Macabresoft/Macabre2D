@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -47,7 +48,7 @@ public abstract class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
     }
 
     /// <inheritdoc />
-    public bool TryGetPackaged<TPackaged>(Guid id, out TPackaged? packaged) where TPackaged : class, IIdentifiable {
+    public bool TryGetPackaged<TPackaged>(Guid id, [NotNullWhen(true)] out TPackaged? packaged) where TPackaged : class, IIdentifiable {
         packaged = this.GetPackages().FirstOrDefault(x => x.Id == id) as TPackaged;
         return packaged != null;
     }

@@ -15,7 +15,7 @@ public class AssetToIconConverter : IValueConverter {
     /// Gets the instance.
     /// </summary>
     public static IValueConverter Instance { get; } = new AssetToIconConverter();
-    
+
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
         var result = AvaloniaProperty.UnsetValue;
@@ -26,7 +26,7 @@ public class AssetToIconConverter : IValueConverter {
             if (value is FilteredContentWrapper wrapper) {
                 actualValue = wrapper.Node;
             }
-            
+
             _ = actualValue switch {
                 ContentFile { Asset: { } asset } => asset switch {
                     AudioClip => application.TryFindResource("AudioClipIcon", out result),
@@ -41,6 +41,7 @@ public class AssetToIconConverter : IValueConverter {
                     SpriteAnimationCollection => application.TryFindResource("AnimationIcon", out result),
                     SpriteSheetFontCollection => application.TryFindResource("FontIcon", out result),
                     SpriteSheetIconSetCollection => application.TryGetResource("IconSetIcon", out result),
+                    SpriteAnimationSetCollection => application.TryFindResource("AnimationIcon", out result),
                     _ => application.TryFindResource("UnknownIcon", out result)
                 },
                 _ => application.TryFindResource("UnknownIcon", out result)
@@ -51,7 +52,5 @@ public class AssetToIconConverter : IValueConverter {
     }
 
     /// <inheritdoc />
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-        throw new NotImplementedException();
-    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
 }

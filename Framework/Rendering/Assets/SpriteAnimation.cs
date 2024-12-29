@@ -39,6 +39,9 @@ public sealed class SpriteAnimation : SpriteSheetMember {
         this._steps.AddRange(steps);
     }
 
+    /// <inheritdoc />
+    public override byte? InitialSpriteIndex => this._steps.FirstOrDefault()?.SpriteIndex;
+
     /// <summary>
     /// Gets the steps.
     /// </summary>
@@ -93,9 +96,7 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     /// </summary>
     /// <param name="step">The step.</param>
     /// <returns>A value indicating whether or not the step was removed.</returns>
-    public bool RemoveStep(SpriteAnimationStep step) {
-        return this._steps.Remove(step);
-    }
+    public bool RemoveStep(SpriteAnimationStep step) => this._steps.Remove(step);
 
     private void HandleAdd(IEnumerable? newItems) {
         if (newItems != null) {

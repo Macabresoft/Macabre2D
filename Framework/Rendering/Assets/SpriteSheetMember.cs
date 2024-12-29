@@ -22,4 +22,9 @@ public abstract class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable
     /// Gets the sprite sheet.
     /// </summary>
     public SpriteSheet? SpriteSheet { get; internal set; }
+
+    /// <summary>
+    /// Gets the initial sprite index.
+    /// </summary>
+    public virtual byte? InitialSpriteIndex => null;
 }

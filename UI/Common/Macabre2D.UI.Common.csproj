@@ -183,6 +183,10 @@
           <DependentUpon>SpriteSheetReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Assets\SpriteAnimationSetEditorView.axaml.cs">
+          <DependentUpon>SpriteAnimationSetEditorView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>

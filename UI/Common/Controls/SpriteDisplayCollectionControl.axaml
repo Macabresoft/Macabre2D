@@ -35,7 +35,14 @@
                             
                             <TextBlock VerticalAlignment="Top"
                                        HorizontalAlignment="Right"
+                                       IsVisible="{Binding Member, Converter={x:Static ObjectConverters.IsNull}}"
                                        Text="{Binding Index}" />
+                            
+                            <TextBlock VerticalAlignment="Top"
+                                       HorizontalAlignment="Right"
+                                       IsVisible="{Binding Member, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                       Text="{Binding Member.Name}"
+                                       ToolTip.Tip="{Binding Member.Name}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

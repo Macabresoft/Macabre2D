@@ -5,36 +5,24 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Interface for a sprite sheet icon set.
+/// Base class for icon sets as a sprite sheet member.
 /// </summary>
-public interface ISpriteSheetIconSet {
-
+public abstract class SpriteSheetIconSet : SpriteSheetMember {
     /// <summary>
     /// Gets the icons in this set.
     /// </summary>
-    IReadOnlyCollection<SpriteSheetIcon> Icons { get; }
+    public abstract IReadOnlyCollection<SpriteSheetIcon> Icons { get; }
 
     /// <summary>
     /// Refreshes the icons to update them with any new entries.
     /// </summary>
-    void RefreshIcons();
-}
-
-/// <summary>
-/// Base class for icon sets as a sprite sheet member.
-/// </summary>
-public abstract class SpriteSheetIconSet : SpriteSheetMember, ISpriteSheetIconSet {
-    /// <inheritdoc />
-    public abstract IReadOnlyCollection<SpriteSheetIcon> Icons { get; }
-
-    /// <inheritdoc />
     public abstract void RefreshIcons();
 }
 
 /// <summary>
 /// Base class for icon sets as a sprite sheet member.
 /// </summary>
-/// <typeparam name="TKey">The key.</typeparam>
+/// <typeparam name="TKey">The type of key.</typeparam>
 public abstract class SpriteSheetIconSet<TKey> : SpriteSheetIconSet where TKey : struct {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
