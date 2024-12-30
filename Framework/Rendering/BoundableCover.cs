@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// An entity which covers an entire <see cref="IBoundable" /> with a single color.
 /// </summary>
 public class BoundableCover : RenderableEntity {
-    private IBoundable _boundable = Boundable.Empty;
+    private IBoundable _boundable = EmptyObject.Boundable;
     private Color _color;
     private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
@@ -53,7 +53,7 @@ public class BoundableCover : RenderableEntity {
         base.Deinitialize();
 
         this._boundable.BoundingAreaChanged -= this.Boundable_BoundingAreaChanged;
-        this._boundable = Boundable.Empty;
+        this._boundable = EmptyObject.Boundable;
     }
 
     /// <inheritdoc />

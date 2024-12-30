@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : RenderableEntity {
+public class TextLineRenderer : RenderableEntity, ITextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _characterHeight;
     private SpriteSheetFont? _font;
@@ -19,7 +19,6 @@ public class TextLineRenderer : RenderableEntity {
     private SpriteSheetFontReference? _fontReference;
     private int _kerning;
     private string _resourceName = string.Empty;
-
     private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
@@ -38,22 +37,19 @@ public class TextLineRenderer : RenderableEntity {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
-    /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public SpriteSheetFontReference FontReference { get; } = new();
 
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    /// <value>The color.</value>
+    /// <inheritdoc />
+    [DataMember(Order = 4)]
+    public RenderOptions RenderOptions { get; } = new();
+
+    /// <inheritdoc />
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
-    /// <summary>
-    /// Gets or sets the font category.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
         get => this._fontCategory;
@@ -61,13 +57,12 @@ public class TextLineRenderer : RenderableEntity {
             if (value != this._fontCategory) {
                 this._fontCategory = value;
                 this.ReloadFontFromCategory();
+                this.RequestRefresh();
             }
         }
     }
 
-    /// <summary>
-    /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public int Kerning {
         get => this._kerning;
@@ -79,16 +74,7 @@ public class TextLineRenderer : RenderableEntity {
         }
     }
 
-    /// <summary>
-    /// Gets or sets the render options.
-    /// </summary>
-    /// <value>The render options.</value>
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; private set; } = new();
-
-    /// <summary>
-    /// Gets or sets the resource name.
-    /// </summary>
+    /// <inheritdoc />
     [ResourceName]
     [DataMember]
     public string ResourceName {
@@ -99,9 +85,7 @@ public class TextLineRenderer : RenderableEntity {
         }
     }
 
-    /// <summary>
-    /// Gets or sets the text.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember]
     public string Text {
         get => this._text;
@@ -224,8 +208,7 @@ public class TextLineRenderer : RenderableEntity {
 
     private void ReloadFontFromCategory() {
         if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
-            this.FontReference.ContentId = fontDefinition.SpriteSheetId;
-            this.FontReference.PackagedAssetId = fontDefinition.FontId;
+            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
         }
     }
 

@@ -85,6 +85,17 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     }
 
     /// <summary>
+    /// Loads the asset via <see cref="Guid" /> for the content and the packaged asset at once.
+    /// </summary>
+    /// <param name="spriteSheetId">The content identifier.</param>
+    /// <param name="packagedAssetId">The packaged asset identifier.</param>
+    public void LoadAsset(Guid spriteSheetId, Guid packagedAssetId) {
+        this.Clear();
+        this._packagedAssetId = packagedAssetId;
+        this.ContentId = spriteSheetId;
+    }
+
+    /// <summary>
     /// Resets this reference by clearing it out and initializing it with a new packaged asset.
     /// </summary>
     /// <param name="packagedAsset">The packaged asset.</param>

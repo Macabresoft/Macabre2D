@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : IScene, ICamera {
+public class EmptyObject : IScene, ICamera, ITextRenderer {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -36,6 +36,11 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public float ActualViewHeight => 1f;
 
+    /// <summary>
+    /// Gets the singleton instance as <see cref="IBoundable" />.
+    /// </summary>
+    public static IBoundable Boundable => Instance;
+
     /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
 
@@ -48,6 +53,9 @@ public class EmptyObject : IScene, ICamera {
     /// Gets the singleton instance as <see cref="IEntity" />.
     /// </summary>
     public static IEntity Entity => Instance;
+
+    /// <inheritdoc />
+    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     public IGame Game => BaseGame.Empty;
@@ -64,6 +72,14 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public PixelSnap PixelSnap => PixelSnap.No;
 
+    /// <summary>
+    /// Gets the singleton instance as <see cref="IRenderableEntity" />.
+    /// </summary>
+    public static IRenderableEntity Renderer => Instance;
+
+    /// <inheritdoc />
+    public RenderOptions RenderOptions { get; } = new();
+
     /// <inheritdoc />
     public BoundingArea SafeArea => BoundingArea.Empty;
 
@@ -78,6 +94,11 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public SceneState State { get; } = new();
 
+    /// <summary>
+    /// Gets the singleton instance as <see cref="ITextRenderer" />.
+    /// </summary>
+    public static ITextRenderer TextRenderer => Instance;
+
     /// <inheritdoc />
     public float ViewWidth => 1f;
 
@@ -91,6 +112,12 @@ public class EmptyObject : IScene, ICamera {
     }
 
     /// <inheritdoc />
+    public Color Color { get; set; }
+
+    /// <inheritdoc />
+    public FontCategory FontCategory { get; set; } = FontCategory.None;
+
+    /// <inheritdoc />
     public Guid Id {
         get => Guid.Empty;
         set { }
@@ -99,6 +126,12 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public bool IsEnabled {
         get => false;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public int Kerning {
+        get => 0;
         set { }
     }
 
@@ -123,6 +156,30 @@ public class EmptyObject : IScene, ICamera {
     /// <inheritdoc />
     public string Name {
         get => "Empty";
+        set { }
+    }
+
+    /// <inheritdoc />
+    public bool RenderOutOfBounds {
+        get => false;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public string ResourceName {
+        get => string.Empty;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public bool ShouldRender {
+        get => false;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public string Text {
+        get => string.Empty;
         set { }
     }
 
@@ -277,6 +334,14 @@ public class EmptyObject : IScene, ICamera {
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
+    }
+
+    /// <inheritdoc />
+    public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    }
+
+    /// <inheritdoc />
+    public void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
     }
 
     /// <inheritdoc />

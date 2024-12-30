@@ -5,19 +5,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Renders text over an area.
 /// </summary>
-public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
+public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<TextLine> _textLines = new();
     private SpriteSheetFont? _font;
+    private FontCategory _fontCategory = FontCategory.None;
     private float _height;
     private TextAlignment _horizontalAlignment;
     private int _kerning;
     private Vector2 _renderStartPosition;
+    private string _resourceName = string.Empty;
+    private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _text = string.Empty;
     private float _width;
@@ -52,6 +56,19 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     /// <value>The color.</value>
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
+
+    /// <inheritdoc />
+    [DataMember]
+    public FontCategory FontCategory {
+        get => this._fontCategory;
+        set {
+            if (value != this._fontCategory) {
+                this._fontCategory = value;
+                this.ReloadFontFromCategory();
+                this.RequestRefresh();
+            }
+        }
+    }
 
     /// <summary>
     /// Gets or sets the height.
@@ -103,6 +120,18 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
     [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
 
+    /// <inheritdoc />
+    [ResourceName]
+    [DataMember]
+    public string ResourceName {
+        get => this._resourceName;
+        set {
+            this._resourceName = value;
+            this.ResetResource();
+            this.RequestRefresh();
+        }
+    }
+
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
@@ -142,10 +171,14 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         }
     }
 
+    /// <summary>
+    /// Gets the actual text. This is defined first by <see cref="ResourceName" />, but falls back to <see cref="Text" /> if that resource doesn't exist.
+    /// </summary>
+    protected string ActualText => string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
         this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
     }
@@ -155,9 +188,12 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         base.Initialize(scene, parent);
 
         this.VerticalOffset = 0f;
-        this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.RenderOptions.Initialize(this.CreateSize);
+        this.ReloadFontFromCategory();
+        this.ResetResource();
         this.ResetLines();
+
+        this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
 
@@ -220,6 +256,12 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         this.RequestRefresh();
     }
 
+    private void ReloadFontFromCategory() {
+        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
+            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
+        }
+    }
+
     private void RequestRefresh() {
         if (this.IsInitialized) {
             this.ResetLines();
@@ -241,8 +283,16 @@ public class TextAreaRenderer : RenderableEntity, IRenderableEntity {
         if (this._font != null && this._spriteSheet != null) {
             this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             this.ResetStartPosition();
-            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.Text, this.BoundingArea.Width, this._font, this.Kerning, this.HorizontalAlignment));
+            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.ActualText, this.BoundingArea.Width, this._font, this.Kerning, this.HorizontalAlignment));
             this.TextHeight = this.CharacterHeight * this._textLines.Count;
+        }
+    }
+
+    private void ResetResource() {
+        if (!string.IsNullOrEmpty(this.ResourceName)) {
+            if (Resources.ResourceManager.TryGetString(this.ResourceName, out var resource)) {
+                this._resourceText = resource;
+            }
         }
     }
 

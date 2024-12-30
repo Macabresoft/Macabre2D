@@ -24,11 +24,6 @@ public interface IBoundable {
 /// </summary>
 public static class Boundable {
     /// <summary>
-    /// Gets an empty instance of <see cref="IBoundable" />
-    /// </summary>
-    public static IBoundable Empty { get; } = new EmptyBoundable();
-
-    /// <summary>
     /// Gets a value indicating whether the specified <see cref="IBoundable" /> has an empty <see cref="BoundingArea" />.
     /// </summary>
     /// <param name="boundable">The boundable.</param>
