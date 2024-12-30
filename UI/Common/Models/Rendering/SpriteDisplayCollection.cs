@@ -24,13 +24,14 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    private SpriteDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
+    public SpriteDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
         this._spriteSheet = spriteSheet;
         this._file = file;
 
         var fileInfo = new FileInfo(file.GetFullPath());
         if (fileInfo.Exists) {
             this._bitmap = new Bitmap(fileInfo.FullName);
+            this.ResetSprites();
         }
 
         this._spriteSheet.PropertyChanged += this.SpriteSheet_PropertyChanged;
@@ -54,30 +55,6 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
     /// Gets the sprites.
     /// </summary>
     public IReadOnlyCollection<SpriteDisplayModel> Sprites => this._sprites;
-
-    /// <summary>
-    /// Creates a collection of displayable sprites with an entry for every index in a sprite sheet.
-    /// </summary>
-    /// <param name="spriteSheet">The sprite sheet.</param>
-    /// <param name="file">The file.</param>
-    /// <returns>A collection of sprites ready to be displayed.</returns>
-    public static SpriteDisplayCollection Create(SpriteSheet spriteSheet, ContentFile file) {
-        var collection = new SpriteDisplayCollection(spriteSheet, file);
-        collection.ResetSprites();
-        return collection;
-    }
-
-    /// <summary>
-    /// Creates a collection of displayable sprites with an entry for every animation in a sprite sheet.
-    /// </summary>
-    /// <param name="spriteSheet">The sprite sheet.</param>
-    /// <param name="file">The file.</param>
-    /// <returns>A collection of sprites ready to be displayed.</returns>
-    public static SpriteDisplayCollection CreateFromAnimations(SpriteSheet spriteSheet, ContentFile file) {
-        var collection = new SpriteDisplayCollection(spriteSheet, file);
-        collection.ResetSpritesFromAnimations();
-        return collection;
-    }
 
     /// <inheritdoc />
     public IEnumerator<SpriteDisplayModel> GetEnumerator() => this._sprites.GetEnumerator();
@@ -109,17 +86,6 @@ public class SpriteDisplayCollection : PropertyChangedNotifier, IReadOnlyCollect
                     sprites.Add(new SpriteDisplayModel(this._bitmap, index, this._spriteSheet));
                     index++;
                 }
-            }
-        }
-
-        this._sprites.Reset(sprites);
-    }
-
-    private void ResetSpritesFromAnimations() {
-        var sprites = new List<SpriteDisplayModel>();
-        if (this._bitmap != null && this._spriteSheet.GetMemberCollection<SpriteAnimation>() is { } animations) {
-            foreach (var animation in animations) {
-                sprites.Add(new SpriteDisplayModel(this._bitmap, animation));
             }
         }
 

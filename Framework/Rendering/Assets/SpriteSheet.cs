@@ -21,13 +21,9 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <summary>
     /// The valid file extensions for a <see cref="Texture2D" />.
     /// </summary>
-    public static readonly string[] ValidFileExtensions = { ".jpg", ".png" };
+    public static readonly string[] ValidFileExtensions = [".jpg", ".png"];
 
     private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
-
-    [DataMember]
-    [Category("Animation Sets")]
-    private SpriteAnimationSetCollection _animationSets = new();
 
     [DataMember]
     [Category("Auto Tile Sets")]
@@ -55,8 +51,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// Initializes a new instance of the <see cref="SpriteSheet" /> class.
     /// </summary>
     public SpriteSheet() {
-        this._animationSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
-        this._animationSets.PropertyChanged += this.RaisePropertyChanged;
         this._autoTileSets.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
         this._autoTileSets.PropertyChanged += this.RaisePropertyChanged;
         this._fonts.CollectionChanged += this.SpriteSheetMember_CollectionChanged;
@@ -190,9 +184,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         else if (memberType.IsAssignableTo(typeof(SpriteSheetIconSet))) {
             result = this._iconSets.OfType<TAsset>().ToList();
         }
-        else if (memberType.IsAssignableTo(typeof(SpriteAnimationSet))) {
-            result = this._animationSets.OfType<TAsset>().ToList();
-        }
         else {
             result = new List<TAsset>();
         }
@@ -216,9 +207,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             result = this._fonts;
         }
         else if (memberType.IsAssignableTo(typeof(SpriteSheetIconSet))) {
-            result = this._iconSets.OfType<SpriteSheetMember>().Where(x => x.GetType().IsAssignableTo(memberType)).ToList();
-        }
-        else if (memberType.IsAssignableTo(typeof(SpriteAnimationSet))) {
             result = this._iconSets.OfType<SpriteSheetMember>().Where(x => x.GetType().IsAssignableTo(memberType)).ToList();
         }
         else {
@@ -269,10 +257,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             return this._iconSets;
         }
 
-        if (memberType.IsAssignableTo(typeof(SpriteAnimationSet))) {
-            return this._animationSets;
-        }
-
         return null;
     }
 
@@ -292,8 +276,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             this._autoTileSets,
             this._spriteAnimations,
             this._fonts,
-            this._iconSets,
-            this._animationSets
+            this._iconSets
         };
 
     /// <summary>
@@ -397,7 +380,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         packages.AddRange(this._spriteAnimations);
         packages.AddRange(this._fonts);
         packages.AddRange(this._iconSets);
-        packages.AddRange(this._animationSets);
         return packages;
     }
 

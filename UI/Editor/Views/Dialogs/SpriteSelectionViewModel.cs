@@ -94,14 +94,14 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
                 var spriteCollections = new List<SpriteDisplayCollection>();
                 foreach (var file in directory.GetAllContentFiles()) {
                     if (file.Asset is SpriteSheet spriteSheet) {
-                        spriteCollections.Add(SpriteDisplayCollection.Create(spriteSheet, file));
+                        spriteCollections.Add(new SpriteDisplayCollection(spriteSheet, file));
                     }
                 }
 
                 this._spriteSheets.Reset(spriteCollections);
             }
             else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheet spriteSheet } file) {
-                var spriteCollection = SpriteDisplayCollection.Create(spriteSheet, file);
+                var spriteCollection = new SpriteDisplayCollection(spriteSheet, file);
                 this._spriteSheets.Add(spriteCollection);
             }
         }

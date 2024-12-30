@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
@@ -41,8 +40,7 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
-        this.SelectIconCommand = ReactiveCommand.Create<SpriteSheetIcon>(this.SelectIcon);
-        this.SpriteCollection = SpriteDisplayCollection.Create(spriteSheet, file);
+        this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
         iconSet.RefreshIcons();
         this.Icons = iconSet.Icons;
@@ -58,11 +56,6 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
     /// Gets the icons.
     /// </summary>
     public IReadOnlyCollection<SpriteSheetIcon> Icons { get; }
-
-    /// <summary>
-    /// Gets the select icon command.
-    /// </summary>
-    public ICommand SelectIconCommand { get; }
 
     /// <summary>
     /// Gets the sprite collection.
@@ -115,14 +108,6 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
     private void ClearSprite() {
         if (this.SelectedIcon is { SpriteIndex: not null }) {
             this.SelectedSprite = null;
-        }
-    }
-
-    private void SelectIcon(SpriteSheetIcon icon) {
-        if (icon != null) {
-            this.SelectedIcon = icon;
-            // HACK: this makes things work well in the UI, just trust me.
-            Dispatcher.UIThread.Post(() => this.RaisePropertyChanged(nameof(this.SelectedIcon)), DispatcherPriority.ApplicationIdle);
         }
     }
 }

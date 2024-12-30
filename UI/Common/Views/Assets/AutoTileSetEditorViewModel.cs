@@ -76,7 +76,7 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
             this.ClearSprite,
             this.WhenAny(x => x.SelectedTile, x => x.Value != null));
         this.SelectTileCommand = ReactiveCommand.Create<AutoTileIndexModel>(this.SelectTile);
-        this.SpriteCollection = SpriteDisplayCollection.Create(spriteSheet, file);
+        this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
         var tiles = new AutoTileIndexModel[tileSet.Size];
         for (byte i = 0; i < tiles.Length; i++) {

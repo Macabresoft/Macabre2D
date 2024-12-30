@@ -324,7 +324,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         SpriteAnimationCollection or
         SpriteSheetFontCollection or
         SpriteSheetIconSetCollection or
-        SpriteAnimationSetCollection or
         SpriteSheetMember or
         ScreenShader or
         ScreenShaderCollection;

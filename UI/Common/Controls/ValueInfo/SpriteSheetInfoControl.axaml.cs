@@ -17,7 +17,7 @@ public partial class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
     [InjectionConstructor]
     public SpriteSheetInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
         if (this.Owner is ContentFile file) {
-            this.SpriteCollection = SpriteDisplayCollection.Create(this.Value, file);
+            this.SpriteCollection = new SpriteDisplayCollection(this.Value, file);
         }
 
         this.InitializeComponent();

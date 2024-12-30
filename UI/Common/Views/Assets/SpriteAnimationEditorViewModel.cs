@@ -63,7 +63,7 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         this.MoveDownCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveDown, notAtEnd);
         this.MoveToEndCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveToEnd, notAtEnd);
 
-        this.SpriteCollection = SpriteDisplayCollection.Create(spriteSheet, file);
+        this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
         this.SelectedStep = this.Steps.FirstOrDefault();
         this.StepSize = this.GetStepSize();
     }
