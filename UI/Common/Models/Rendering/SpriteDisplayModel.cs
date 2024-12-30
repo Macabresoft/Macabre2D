@@ -36,15 +36,6 @@ public sealed class SpriteDisplayModel {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SpriteDisplayModel" /> class.
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <param name="spriteSheetMember">The sprite sheet member.</param>
-    public SpriteDisplayModel(IImage image, SpriteSheetMember spriteSheetMember) : this(image, spriteSheetMember?.InitialSpriteIndex ?? 0, spriteSheetMember?.SpriteSheet) {
-        this.Member = spriteSheetMember;
-    }
-
-    /// <summary>
     /// Gets the bitmap.
     /// </summary>
     public IImage Bitmap { get; }
@@ -53,11 +44,6 @@ public sealed class SpriteDisplayModel {
     /// Gets the index of the sprite on its sprite sheet.
     /// </summary>
     public byte Index { get; }
-
-    /// <summary>
-    /// Gets the sprite sheet member.
-    /// </summary>
-    public SpriteSheetMember Member { get; }
 
     /// <summary>
     /// Gets the size of the sprite.
