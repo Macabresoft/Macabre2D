@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : IScene, ICamera, ITextRenderer {
+public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -79,6 +79,9 @@ public class EmptyObject : IScene, ICamera, ITextRenderer {
 
     /// <inheritdoc />
     public RenderOptions RenderOptions { get; } = new();
+
+    /// <inheritdoc />
+    public byte? SpriteIndex => null;
 
     /// <inheritdoc />
     public BoundingArea SafeArea => BoundingArea.Empty;

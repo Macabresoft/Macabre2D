@@ -7,10 +7,26 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// Interface for an entity that handles rendering from a single sprite sheet.
+/// </summary>
+public interface ISpriteEntity : IRenderableEntity {
+
+    /// <summary>
+    /// Gets or sets the render options.
+    /// </summary>
+    public RenderOptions RenderOptions { get; }
+
+    /// <summary>
+    /// Gets or sets the color.
+    /// </summary>
+    Color Color { get; set; }
+}
+
+/// <summary>
 /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
 /// </summary>
 [Category(CommonCategories.Rendering)]
-public abstract class BaseSpriteEntity : RenderableEntity {
+public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _offsetTransform;
     private readonly ResettableLazy<Vector2> _pixelTransform;
@@ -30,22 +46,14 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
-    /// <summary>
-    /// Gets the sprite index.
-    /// </summary>
+    /// <inheritdoc />
     public abstract byte? SpriteIndex { get; }
 
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    /// <value>The color.</value>
+    /// <inheritdoc />
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
-    /// <summary>
-    /// Gets or sets the render options.
-    /// </summary>
-    /// <value>The render options.</value>
+    /// <inheritdoc />
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
 
@@ -86,9 +94,7 @@ public abstract class BaseSpriteEntity : RenderableEntity {
     /// Gets the appropriate transform for rendering.
     /// </summary>
     /// <returns></returns>
-    protected Vector2 GetRenderTransform() {
-        return this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this._offsetTransform.Value;
-    }
+    protected Vector2 GetRenderTransform() => this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this._offsetTransform.Value;
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -113,17 +119,11 @@ public abstract class BaseSpriteEntity : RenderableEntity {
         this.ResetTransforms();
     }
 
-    private BoundingArea CreateBoundingArea() {
-        return this.RenderOptions.CreateBoundingArea(this);
-    }
+    private BoundingArea CreateBoundingArea() => this.RenderOptions.CreateBoundingArea(this);
 
-    private Vector2 CreateOffsetTransform() {
-        return this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
-    }
+    private Vector2 CreateOffsetTransform() => this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
 
-    private Vector2 CreatePixelPosition() {
-        return this._offsetTransform.Value.ToPixelSnappedValue(this.Project);
-    }
+    private Vector2 CreatePixelPosition() => this._offsetTransform.Value.ToPixelSnappedValue(this.Project);
 
     private Vector2 CreateSize() {
         var result = Vector2.Zero;

@@ -6,23 +6,11 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.
 /// </summary>
-public interface ITextRenderer : IRenderableEntity {
+public interface ITextRenderer : IRenderableEntity, ISpriteEntity {
     /// <summary>
     /// Gets the font asset reference.
     /// </summary>
     SpriteSheetFontReference FontReference { get; }
-
-    /// <summary>
-    /// Gets or sets the render options.
-    /// </summary>
-    /// <value>The render options.</value>
-    RenderOptions RenderOptions { get; }
-
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    /// <value>The color.</value>
-    Color Color { get; set; }
 
     /// <summary>
     /// Gets or sets the font category.

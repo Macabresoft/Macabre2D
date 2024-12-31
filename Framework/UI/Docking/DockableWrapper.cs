@@ -44,6 +44,11 @@ public class DockableWrapper : BaseDockable, IDockable {
         }
     }
 
+    /// <summary>
+    /// Gets the types to ignore by this boundable wrapper.
+    /// </summary>
+    protected virtual IEnumerable<Type> TypesToIgnore { get; } = [];
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -54,7 +59,7 @@ public class DockableWrapper : BaseDockable, IDockable {
 
         this._boundables.Clear();
 
-        foreach (var child in this.Children.OfType<IBoundable>()) {
+        foreach (var child in this.Children.OfType<IBoundable>().Where(x => !this.TypesToIgnore.Any(y => x.GetType().IsAssignableTo(y)))) {
             this._boundables.Add(child);
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
         }
