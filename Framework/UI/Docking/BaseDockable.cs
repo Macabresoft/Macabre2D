@@ -33,7 +33,7 @@ public abstract class BaseDockable : Entity, IDockable {
     /// <summary>
     /// Requests a refresh from its parent.
     /// </summary>
-    protected void RequestRearrangeFromParent() {
+    protected virtual void RequestRearrangeFromParent() {
         if (this.Parent is IDockingContainer container) {
             container.RequestRearrange(this);
         }

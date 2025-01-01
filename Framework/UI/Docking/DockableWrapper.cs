@@ -15,7 +15,6 @@ public class DockableWrapper : BaseDockable, IDockable {
     private readonly List<IBoundable> _boundables = new();
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private bool _isCollapsed;
-    private bool _isTransforming;
     private Vector2 _margin = Vector2.Zero;
 
     /// <inheritdoc />
@@ -58,9 +57,19 @@ public class DockableWrapper : BaseDockable, IDockable {
     }
 
     /// <summary>
+    /// Gets the boundable children contained within this wrapper.
+    /// </summary>
+    protected IReadOnlyCollection<IBoundable> BoundableChildren => this._boundables;
+
+    /// <summary>
     /// Gets the types to ignore by this boundable wrapper.
     /// </summary>
     protected virtual IEnumerable<Type> TypesToIgnore { get; } = [];
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this is transforming or not.
+    /// </summary>
+    protected bool IsTransforming { get; set; }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -80,29 +89,36 @@ public class DockableWrapper : BaseDockable, IDockable {
         this.Reset();
     }
 
+    /// <summary>
+    /// Aggregates the child bounding areas into one.
+    /// </summary>
+    /// <returns>The aggregated bounding area.</returns>
+    protected virtual BoundingArea AggregateBoundingAreas() {
+        return this._boundables.Aggregate(BoundingArea.Empty, (current, dockable) => current.Combine(dockable.BoundingArea));
+    }
+
+    /// <summary>
+    /// Called when a child <see cref="IBoundable" /> changes in size. Is not called if <see cref="IsTransforming" /> is currently set to true.
+    /// </summary>
+    protected virtual void OnChildBoundingAreaChanged() {
+        this.Reset();
+    }
+
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         try {
-            this._isTransforming = true;
+            this.IsTransforming = true;
             base.OnTransformChanged();
             this.Reset();
         }
         finally {
-            this._isTransforming = false;
+            this.IsTransforming = false;
         }
     }
 
-    /// <summary>
-    /// Resets the bounding area of this entity.
-    /// </summary>
-    private void Reset() {
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
-    }
-
     private void Child_BoundingAreaChanged(object? sender, EventArgs e) {
-        if (!this._isTransforming) {
-            this.Reset();
+        if (!this.IsTransforming) {
+            this.OnChildBoundingAreaChanged();
         }
     }
 
@@ -110,13 +126,18 @@ public class DockableWrapper : BaseDockable, IDockable {
         if (this.IsCollapsed) {
             return BoundingArea.Empty;
         }
-        
-        var boundingArea = this._boundables.Aggregate(BoundingArea.Empty, (current, dockable) => current.Combine(dockable.BoundingArea));
+
+        var boundingArea = this.AggregateBoundingAreas();
 
         if (!boundingArea.IsEmpty && this._margin != Vector2.Zero) {
             boundingArea = new BoundingArea(boundingArea.Minimum - this.Margin, boundingArea.Maximum + this.Margin);
         }
 
         return boundingArea;
+    }
+
+    private void Reset() {
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }
