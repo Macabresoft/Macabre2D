@@ -4,7 +4,7 @@ using System;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 
-public class TestableBoundable : Entity, IBoundable {
+public class TestableBoundable : Entity, IBoundableEntity {
     public event EventHandler BoundingAreaChanged;
     public BoundingArea BoundingArea { get; set; }
 

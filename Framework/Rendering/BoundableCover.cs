@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// An entity which covers an entire <see cref="IBoundable" /> with a single color.
+/// An entity which covers an entire <see cref="IBoundableEntity" /> with a single color.
 /// </summary>
 public class BoundableCover : RenderableEntity {
-    private IBoundable _boundable = EmptyObject.Boundable;
+    private IBoundableEntity _boundable = EmptyObject.Boundable;
     private Color _color;
     private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
@@ -37,7 +37,7 @@ public class BoundableCover : RenderableEntity {
     }
 
     /// <summary>
-    /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundable" />.
+    /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundableEntity" />.
     /// </summary>
     [DataMember]
     public Vector2 Padding {
@@ -60,9 +60,9 @@ public class BoundableCover : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        if (this.TryGetAncestor<IBoundable>(out var boundable)) {
+        if (this.TryGetAncestor<IBoundableEntity>(out var boundable)) {
             if (boundable is IPrefabContainer prefabContainer) {
-                if (prefabContainer.TryGetAncestor<IBoundable>(out var stepRemovedBoundable)) {
+                if (prefabContainer.TryGetAncestor<IBoundableEntity>(out var stepRemovedBoundable)) {
                     this._boundable = stepRemovedBoundable;
                     this._boundable.BoundingAreaChanged += this.Boundable_BoundingAreaChanged;
                 }

@@ -25,7 +25,7 @@ public class BoxTileBoundableCover : BoxTileMap {
 
     /// <inheritdoc />
     public override void Deinitialize() {
-        if (this.Parent is IBoundable boundable) {
+        if (this.Parent is IBoundableEntity boundable) {
             boundable.BoundingAreaChanged -= this.Parent_BoundingAreaChanged;
         }
 
@@ -42,7 +42,7 @@ public class BoxTileBoundableCover : BoxTileMap {
         this.Scene.Invoke(this.ResetSize);
 
         this.TileSet.AssetChanged += this.TileSet_AssetChanged;
-        if (this.Parent is IBoundable boundable) {
+        if (this.Parent is IBoundableEntity boundable) {
             boundable.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
         }
     }
@@ -52,7 +52,7 @@ public class BoxTileBoundableCover : BoxTileMap {
     }
 
     private void ResetSize() {
-        if (this.Parent is IBoundable { BoundingArea.IsEmpty: false } boundable) {
+        if (this.Parent is IBoundableEntity { BoundingArea.IsEmpty: false } boundable) {
             var width = this._margin.X;
             var height = this._margin.Y;
             var boundingArea = boundable.BoundingArea;

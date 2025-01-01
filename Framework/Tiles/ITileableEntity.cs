@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An interface for tileable entities.
 /// </summary>
-public interface ITileableEntity : IEntity, IBoundable {
+public interface ITileableEntity : IEntity, IBoundableEntity {
     /// <summary>
     /// Occurs when a tile is added or removed.
     /// </summary>

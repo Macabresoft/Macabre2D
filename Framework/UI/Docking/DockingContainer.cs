@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a container that holds <see cref="IDockable" /> entities.
 /// </summary>
-public interface IDockingContainer : IBoundable {
+public interface IDockingContainer : IBoundableEntity {
     /// <summary>
     /// Requests this container to rearrange the <see cref="IDockable" /> provided.
     /// </summary>
@@ -21,13 +21,13 @@ public interface IDockingContainer : IBoundable {
 /// A container for <see cref="IDockable" /> entities, which handles arranging them based on its own parent <see cref="BoundingArea" />.
 /// </summary>
 /// <remarks>
-/// This should have a <see cref="IBoundable" /> parent (maybe a <see cref="Camera" />).
+/// This should have a <see cref="IBoundableEntity" /> parent (maybe a <see cref="Camera" />).
 /// </remarks>
 public class DockingContainer : DockablePanel, IDockingContainer {
     private bool _inheritParentBoundingArea = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should inherit its parents <see cref="BoundingArea" />.
+    /// Gets or sets a value indicating whether this should inherit its parents <see cref="BoundingArea" />.
     /// </summary>
     [DataMember]
     [Category(DockingCategoryName)]
@@ -43,7 +43,7 @@ public class DockingContainer : DockablePanel, IDockingContainer {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
-        if (this.Parent is IBoundable oldBoundable) {
+        if (this.Parent is IBoundableEntity oldBoundable) {
             oldBoundable.BoundingAreaChanged -= this.Parent_BoundingAreaChanged;
         }
 
@@ -51,7 +51,7 @@ public class DockingContainer : DockablePanel, IDockingContainer {
 
         this.RearrangeAll();
 
-        if (this.Parent is IBoundable boundable) {
+        if (this.Parent is IBoundableEntity boundable) {
             boundable.BoundingAreaChanged += this.Parent_BoundingAreaChanged;
         }
     }
@@ -100,16 +100,14 @@ public class DockingContainer : DockablePanel, IDockingContainer {
     /// <inheritdoc />
     protected override BoundingArea CreateBoundingArea() {
         if (this.InheritParentBoundingArea) {
-            return this.Parent is IBoundable boundable ? boundable.BoundingArea : BoundingArea.Empty;
+            return this.Parent is IBoundableEntity boundable ? boundable.BoundingArea : BoundingArea.Empty;
         }
 
         return base.CreateBoundingArea();
     }
 
     /// <inheritdoc />
-    protected override Vector2 CreateSizeForOffset() {
-        return this.InheritParentBoundingArea ? Vector2.Zero : base.CreateSizeForOffset();
-    }
+    protected override Vector2 CreateSizeForOffset() => this.InheritParentBoundingArea ? Vector2.Zero : base.CreateSizeForOffset();
 
     /// <inheritdoc />
     protected override void OnAddChild(IEntity child) {
@@ -127,13 +125,9 @@ public class DockingContainer : DockablePanel, IDockingContainer {
         this.RearrangeAll();
     }
 
-    private float GetAmountToCenterX(IBoundable dockable) {
-        return this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
-    }
+    private float GetAmountToCenterX(IBoundableEntity dockable) => this.BoundingArea.Maximum.X - 0.5f * this.BoundingArea.Width - (dockable.BoundingArea.Maximum.X - 0.5f * dockable.BoundingArea.Width);
 
-    private float GetAmountToCenterY(IBoundable dockable) {
-        return this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
-    }
+    private float GetAmountToCenterY(IBoundableEntity dockable) => this.BoundingArea.Maximum.Y - 0.5f * this.BoundingArea.Height - (dockable.BoundingArea.Maximum.Y - 0.5f * dockable.BoundingArea.Height);
 
     private void Parent_BoundingAreaChanged(object? sender, EventArgs e) {
         if (this.InheritParentBoundingArea) {

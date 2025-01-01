@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 /// A dockable wrapper that wraps all of its direct children's bounding areas into one.
 /// </summary>
 public class DockableWrapper : BaseDockable, IDockable {
-    private readonly List<IBoundable> _boundables = new();
+    private readonly List<IBoundableEntity> _boundables = new();
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private bool _isCollapsed;
     private Vector2 _margin = Vector2.Zero;
@@ -59,7 +59,7 @@ public class DockableWrapper : BaseDockable, IDockable {
     /// <summary>
     /// Gets the boundable children contained within this wrapper.
     /// </summary>
-    protected IReadOnlyCollection<IBoundable> BoundableChildren => this._boundables;
+    protected IReadOnlyCollection<IBoundableEntity> BoundableChildren => this._boundables;
 
     /// <summary>
     /// Gets the types to ignore by this boundable wrapper.
@@ -81,7 +81,10 @@ public class DockableWrapper : BaseDockable, IDockable {
 
         this._boundables.Clear();
 
-        foreach (var child in this.Children.OfType<IBoundable>().Where(x => !this.TypesToIgnore.Any(y => x.GetType().IsAssignableTo(y)))) {
+        var boundableChildren = this.Children
+            .OfType<IBoundableEntity>()
+            .Where(x => x.TransformInheritance == TransformInheritance.Both && !this.TypesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
+        foreach (var child in boundableChildren) {
             this._boundables.Add(child);
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
         }
@@ -98,7 +101,7 @@ public class DockableWrapper : BaseDockable, IDockable {
     }
 
     /// <summary>
-    /// Called when a child <see cref="IBoundable" /> changes in size. Is not called if <see cref="IsTransforming" /> is currently set to true.
+    /// Called when a child <see cref="IBoundableEntity" /> changes in size. Is not called if <see cref="IsTransforming" /> is currently set to true.
     /// </summary>
     protected virtual void OnChildBoundingAreaChanged() {
         this.Reset();

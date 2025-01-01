@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// The direction a stack pan
@@ -11,10 +12,11 @@ public enum StackPanelOrientation {
 }
 
 /// <summary>
-/// A <see cref="DockableWrapper"/> that stacks entries horizontally or vertically.
+/// A <see cref="DockableWrapper" /> that stacks entries horizontally or vertically.
 /// </summary>
-public class DockableStackPanel : DockableWrapper {
-    private StackPanelOrientation _orientation;
+public class DockableStackPanel : DockableWrapper, IDockingContainer {
+    private StackPanelOrientation _orientation = StackPanelOrientation.Vertical;
+    private float _spacing;
 
     /// <summary>
     /// Gets or sets the orientation.
@@ -24,37 +26,83 @@ public class DockableStackPanel : DockableWrapper {
         get => this._orientation;
         set {
             if (this.Set(ref this._orientation, value) && !this.IsTransforming) {
-                this.OnChildBoundingAreaChanged();
+                this.Arrange();
             }
         }
     }
-    
+
+    /// <summary>
+    /// Gets or sets the spacing between elements.
+    /// </summary>
+    [DataMember]
+    public float Spacing {
+        get => this._spacing;
+        set {
+            if (this.Set(ref this._spacing, value)) {
+                this.Arrange();
+            }
+        }
+    }
+
+    // <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+        this.OnChildBoundingAreaChanged();
+    }
+
+    // <inheritdoc />
+    public void RequestRearrange(IDockable dockable) {
+        this.Arrange();
+    }
+
     // <inheritdoc />
     protected override void OnChildBoundingAreaChanged() {
+        // Arrange and then allow the bounding area to reconstruct.
+        this.Arrange();
+
         base.OnChildBoundingAreaChanged();
-        
-        // TODO: arrange boundable children
-        try {
-            this.IsTransforming = true;
-            
+    }
+
+    private void Arrange() {
+        if (!this.IsTransforming && this.IsInitialized) {
+            try {
+                this.IsTransforming = true;
+                if (this.Orientation == StackPanelOrientation.Horizontal) {
+                    this.ArrangeHorizontally();
+                }
+                else {
+                    this.ArrangeVertically();
+                }
+            }
+            finally {
+                this.IsTransforming = false;
+            }
+
             this.RequestRearrangeFromParent();
         }
-        finally {
-            this.IsTransforming = false;
+    }
+
+    private void ArrangeHorizontally() {
+        var currentXPosition = 0f;
+
+        foreach (var boundable in this.BoundableChildren) {
+            boundable.LocalPosition = new Vector2(currentXPosition, boundable.LocalPosition.Y);
+
+            if (!boundable.IsEmpty()) {
+                currentXPosition += boundable.BoundingArea.Width + this.Spacing;
+            }
         }
     }
 
-    private void PlaceBoundablesHorizontally() {
-        
-    }
+    private void ArrangeVertically() {
+        var currentYPosition = 0f;
 
-    private void PlaceBoundablesVertically() {
-        
-    }
+        foreach (var boundable in this.BoundableChildren) {
+            boundable.LocalPosition = new Vector2(boundable.LocalPosition.X, currentYPosition);
 
-    // <inheritdoc />
-    protected override BoundingArea AggregateBoundingAreas() {
-        // TODO: combine them
-        return BoundingArea.Empty;
+            if (!boundable.IsEmpty()) {
+                currentYPosition -= boundable.BoundingArea.Height - this.Spacing;
+            }
+        }
     }
 }

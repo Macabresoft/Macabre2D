@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
 /// </summary>
-public interface ICamera : IEntity, IBoundable, IPixelSnappable {
+public interface ICamera : IEntity, IBoundableEntity, IPixelSnappable {
     /// <summary>
     /// Gets the actual view height.
     /// </summary>
@@ -266,7 +266,7 @@ public class Camera : Entity, ICamera {
     /// Zooms to a boundable entity, fitting it into frame.
     /// </summary>
     /// <param name="boundable">The boundable.</param>
-    public void ZoomTo(IBoundable boundable) {
+    public void ZoomTo(IBoundableEntity boundable) {
         var area = boundable.BoundingArea;
         var difference = area.Maximum - area.Minimum;
         var origin = area.Minimum + difference * 0.5f;

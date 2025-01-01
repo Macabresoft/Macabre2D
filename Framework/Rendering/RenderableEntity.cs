@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an entity which can be rendered.
 /// </summary>
-public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
+public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable {
 
     /// <summary>
     /// Gets the render order.

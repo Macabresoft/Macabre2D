@@ -37,9 +37,9 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     public float ActualViewHeight => 1f;
 
     /// <summary>
-    /// Gets the singleton instance as <see cref="IBoundable" />.
+    /// Gets the singleton instance as <see cref="IBoundableEntity" />.
     /// </summary>
-    public static IBoundable Boundable => Instance;
+    public static IBoundableEntity Boundable => Instance;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
@@ -81,9 +81,6 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     public RenderOptions RenderOptions { get; } = new();
 
     /// <inheritdoc />
-    public byte? SpriteIndex => null;
-
-    /// <inheritdoc />
     public BoundingArea SafeArea => BoundingArea.Empty;
 
     /// <summary>
@@ -93,6 +90,9 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;
+
+    /// <inheritdoc />
+    public byte? SpriteIndex => null;
 
     /// <inheritdoc />
     public SceneState State { get; } = new();
@@ -189,6 +189,12 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     /// <inheritdoc />
     public Vector2 TileSize {
         get => Vector2.One;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public TransformInheritance TransformInheritance {
+        get => TransformInheritance.None;
         set { }
     }
 

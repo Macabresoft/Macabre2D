@@ -13,12 +13,12 @@ using Microsoft.Xna.Framework.Graphics;
 /// A component which displays the currently selected <see cref="IEntity" />.
 /// </summary>
 public class SelectionDisplay : BaseDrawer {
-    private readonly List<IBoundable> _boundables = new();
+    private readonly List<IBoundableEntity> _boundables = new();
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
     private readonly ISystemService _systemService;
     private BoundingArea _boundingArea = BoundingArea.Empty;
-    private IBoundable _selectedBoundable;
+    private IBoundableEntity _selectedBoundable;
 
     /// <inheritdoc />
     public override event EventHandler BoundingAreaChanged;
@@ -149,8 +149,8 @@ public class SelectionDisplay : BaseDrawer {
             this._boundables.Clear();
 
             if (!IsNullOrEmpty(this._entityService.Selected, out var selected)) {
-                this._selectedBoundable = selected as IBoundable;
-                this._boundables.AddRange(selected.GetDescendants<IBoundable>());
+                this._selectedBoundable = selected as IBoundableEntity;
+                this._boundables.AddRange(selected.GetDescendants<IBoundableEntity>());
 
                 if (this._selectedBoundable != null) {
                     this._boundables.Add(this._selectedBoundable);
@@ -173,7 +173,7 @@ public class SelectionDisplay : BaseDrawer {
     private void SystemServicePropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(ISystemService.Selected)) {
             this._boundables.Clear();
-            this._selectedBoundable = this._systemService.Selected as IBoundable;
+            this._selectedBoundable = this._systemService.Selected as IBoundableEntity;
         }
     }
 }

@@ -7,7 +7,7 @@ using Macabresoft.Macabre2D.Framework;
 /// </summary>
 public enum GizmoKind {
     /// <summary>
-    /// Used in selecting <see cref="IBoundable" /> in the scene editor.
+    /// Used in selecting <see cref="IBoundableEntity" /> in the scene editor.
     /// </summary>
     Selector = 0,
 

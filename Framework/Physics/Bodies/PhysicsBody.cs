@@ -10,7 +10,7 @@ using Macabresoft.Core;
 /// <summary>
 /// Represents a physics body that handles interactions with <see cref="Collider" />.
 /// </summary>
-public interface IPhysicsBody : IEntity, IBoundable {
+public interface IPhysicsBody : IEntity, IBoundableEntity {
     /// <summary>
     /// Occurs when a collision occurs involving this body.
     /// </summary>

@@ -51,7 +51,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Parent is IBoundable boundable) {
+        if (this.Parent is IBoundableEntity boundable) {
             if (boundable.BoundingArea != this._boundingArea) {
                 this._boundingArea = boundable.BoundingArea;
                 this.BoundingAreaChanged.SafeInvoke(this);

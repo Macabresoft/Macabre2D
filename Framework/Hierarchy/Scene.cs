@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 /// Interface for a combination of <see cref="IGameSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
-public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
+public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntity {
     /// <summary>
     /// Occurs when the scene is activated and made the current scene on <see cref="IGame" />.
     /// </summary>

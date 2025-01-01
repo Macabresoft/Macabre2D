@@ -239,9 +239,7 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// </summary>
     /// <param name="other">The other collider.</param>
     /// <returns></returns>
-    public bool IsCandidateForCollision(Collider other) {
-        return this.BoundingArea.Overlaps(other.BoundingArea);
-    }
+    public bool IsCandidateForCollision(Collider other) => this.BoundingArea.Overlaps(other.BoundingArea);
 
     /// <summary>
     /// Determines whether this collider is hit by the specified ray.

@@ -16,7 +16,7 @@ public interface ITransformable {
     event EventHandler TransformChanged;
 
     /// <summary>
-    /// Gets the world position position.
+    /// Gets the world position.
     /// </summary>
     Vector2 WorldPosition { get; }
 
@@ -25,6 +25,11 @@ public interface ITransformable {
     /// </summary>
     /// <value>The local position.</value>
     Vector2 LocalPosition { get; set; }
+
+    /// <summary>
+    /// Gets or sets the way this inherits its parent's position.
+    /// </summary>
+    TransformInheritance TransformInheritance { get; set; }
 
     /// <summary>
     /// Gets the world position with an offset.
@@ -67,7 +72,7 @@ public abstract class Transformable : PropertyChangedNotifier, ITransformable {
     }
 
     /// <summary>
-    /// Gets the world position position.
+    /// Gets the world position.
     /// </summary>
     public Vector2 WorldPosition => this._worldPosition.Value;
 
@@ -89,16 +94,12 @@ public abstract class Transformable : PropertyChangedNotifier, ITransformable {
         }
     }
 
-    /// <summary>
-    /// Gets or sets the way this inherits its parent's position.
-    /// </summary>
+    /// <inheritdoc />
     [DataMember(Name = "Inheritance")]
     public TransformInheritance TransformInheritance { get; set; } = TransformInheritance.Both;
 
     /// <inheritdoc />
-    public Vector2 GetWorldPosition(Vector2 originOffset) {
-        return this.WorldPosition + originOffset;
-    }
+    public Vector2 GetWorldPosition(Vector2 originOffset) => this.WorldPosition + originOffset;
 
     /// <inheritdoc />
     public void Move(Vector2 amount) {
