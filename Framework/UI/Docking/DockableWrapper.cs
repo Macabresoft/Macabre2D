@@ -14,8 +14,8 @@ using Microsoft.Xna.Framework;
 public class DockableWrapper : BaseDockable, IDockable {
     private readonly List<IBoundable> _boundables = new();
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private bool _isCollapsed;
     private bool _isTransforming;
-
     private Vector2 _margin = Vector2.Zero;
 
     /// <inheritdoc />
@@ -30,6 +30,19 @@ public class DockableWrapper : BaseDockable, IDockable {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this wrapper is collapsed and should not be considered when stacking elements.
+    /// </summary>
+    [DataMember]
+    public bool IsCollapsed {
+        get => this._isCollapsed;
+        set {
+            if (this.Set(ref this._isCollapsed, value)) {
+                this.Reset();
+            }
+        }
+    }
 
     /// <summary>
     /// A margin to apply to the bounding area.
@@ -82,7 +95,7 @@ public class DockableWrapper : BaseDockable, IDockable {
     /// <summary>
     /// Resets the bounding area of this entity.
     /// </summary>
-    protected void Reset() {
+    private void Reset() {
         this._boundingArea.Reset();
         this.BoundingAreaChanged.SafeInvoke(this);
     }
@@ -94,6 +107,10 @@ public class DockableWrapper : BaseDockable, IDockable {
     }
 
     private BoundingArea CreateBoundingArea() {
+        if (this.IsCollapsed) {
+            return BoundingArea.Empty;
+        }
+        
         var boundingArea = this._boundables.Aggregate(BoundingArea.Empty, (current, dockable) => current.Combine(dockable.BoundingArea));
 
         if (!boundingArea.IsEmpty && this._margin != Vector2.Zero) {
