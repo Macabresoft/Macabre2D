@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
 /// </summary>
-public interface ICamera : IEntity, IBoundableEntity, IPixelSnappable {
+public interface ICamera : IBoundableEntity, IPixelSnappable {
     /// <summary>
     /// Gets the actual view height.
     /// </summary>
@@ -131,7 +131,7 @@ public class Camera : Entity, ICamera {
     public float ViewWidth => this._viewWidth.Value;
 
     /// <summary>
-    /// Gets the actual view height for this camera. Will only be different than <see cref="ViewHeight" /> if pixel snapping is enabled.
+    /// Gets the actual view height for this camera. Will only be different from <see cref="ViewHeight" /> if pixel snapping is enabled.
     /// </summary>
     public float ActualViewHeight { get; private set; }
 
@@ -350,33 +350,30 @@ public class Camera : Entity, ICamera {
         Effect? shader) {
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-            .OrderBy(x => x.RenderOrder)
-            .ToList();
+            .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+            .OrderBy(x => x.RenderOrder);
 
-        if (entities.Any()) {
-            spriteBatch?.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                this.Sampler.ToSamplerState(),
-                null,
-                RasterizerState.CullNone,
-                shader,
-                viewMatrix);
+        spriteBatch?.Begin(
+            SpriteSortMode.Deferred,
+            BlendState.AlphaBlend,
+            this.Sampler.ToSamplerState(),
+            null,
+            RasterizerState.CullNone,
+            shader,
+            viewMatrix);
 
-            if (colorOverride.IsEnabled) {
-                foreach (var entity in entities) {
-                    entity.Render(frameTime, viewBoundingArea, colorOverride.Value);
-                }
+        if (colorOverride.IsEnabled) {
+            foreach (var entity in entities) {
+                entity.Render(frameTime, viewBoundingArea, colorOverride.Value);
             }
-            else {
-                foreach (var entity in entities) {
-                    entity.Render(frameTime, viewBoundingArea);
-                }
-            }
-
-            spriteBatch?.End();
         }
+        else {
+            foreach (var entity in entities) {
+                entity.Render(frameTime, viewBoundingArea);
+            }
+        }
+
+        spriteBatch?.End();
     }
 
     private void CalculateActualViewHeight() {
