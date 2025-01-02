@@ -12,8 +12,9 @@ using Microsoft.Xna.Framework;
 /// A dockable wrapper that wraps all of its direct children's bounding areas into one.
 /// </summary>
 public class DockableWrapper : BaseDockable, IDockable {
-    private readonly List<IBoundableEntity> _boundables = new();
+    private readonly List<IBoundableEntity> _boundables = [];
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private readonly IReadOnlyCollection<Type> _typesToIgnore = [typeof(BoundableCover), typeof(BoxTileBoundableCover)];
     private bool _isCollapsed;
     private Vector2 _margin = Vector2.Zero;
 
@@ -62,11 +63,6 @@ public class DockableWrapper : BaseDockable, IDockable {
     protected IReadOnlyCollection<IBoundableEntity> BoundableChildren => this._boundables;
 
     /// <summary>
-    /// Gets the types to ignore by this boundable wrapper.
-    /// </summary>
-    protected virtual IEnumerable<Type> TypesToIgnore { get; } = [typeof(BoundableCover), typeof(BoxTileBoundableCover)];
-
-    /// <summary>
     /// Gets or sets a value indicating whether this is transforming or not.
     /// </summary>
     protected bool IsTransforming { get; set; }
@@ -83,7 +79,7 @@ public class DockableWrapper : BaseDockable, IDockable {
 
         var boundableChildren = this.Children
             .OfType<IBoundableEntity>()
-            .Where(x => x.TransformInheritance == TransformInheritance.Both && !this.TypesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
+            .Where(x => x.TransformInheritance == TransformInheritance.Both && !this._typesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
         foreach (var child in boundableChildren) {
             this._boundables.Add(child);
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
