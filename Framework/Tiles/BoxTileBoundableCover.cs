@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class BoxTileBoundableCover : BoxTileMap {
     private Point _margin;
+    private Point _minimumSize;
 
     /// <summary>
     /// Gets or sets the margin.
@@ -18,6 +19,19 @@ public class BoxTileBoundableCover : BoxTileMap {
         get => this._margin;
         set {
             if (this.Set(ref this._margin, value)) {
+                this.ResetSize();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the minimum size.
+    /// </summary>
+    [DataMember]
+    public Point MinimumSize {
+        get => this._minimumSize;
+        set {
+            if (this.Set(ref this._minimumSize, value)) {
                 this.ResetSize();
             }
         }
@@ -72,7 +86,7 @@ public class BoxTileBoundableCover : BoxTileMap {
                     boundingHeight -= spriteSize.Y;
                 }
 
-                this.SetSize(height, width);
+                this.SetSizeWithMinimum(width, height);
                 var desiredMinimum = boundingArea.Minimum - new Vector2(this._margin.X * spriteSize.X * 0.5f, this._margin.Y * spriteSize.X * 0.5f);
                 var difference = desiredMinimum - this.BoundingArea.Minimum;
                 this.Move(difference);
@@ -84,6 +98,10 @@ public class BoxTileBoundableCover : BoxTileMap {
         else {
             this.SetSize(0, 0);
         }
+    }
+
+    private void SetSizeWithMinimum(int width, int height) {
+        this.SetSize(Math.Max(width, this.MinimumSize.X), Math.Max(height, this.MinimumSize.Y));
     }
 
     private void TileSet_AssetChanged(object? sender, bool e) {

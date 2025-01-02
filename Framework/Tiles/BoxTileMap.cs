@@ -144,11 +144,11 @@ public class BoxTileMap : RenderableEntity {
     /// This is more efficient than setting <see cref="Height" /> and <see cref="Width" /> separately,
     /// as it only needs to update the tiles a single time.
     /// </remarks>
-    /// <param name="height">The height.</param>
     /// <param name="width">The width.</param>
-    protected void SetSize(int height, int width) {
-        this._height = Math.Max(height, 1);
+    /// <param name="height">The height.</param>
+    protected void SetSize(int width, int height) {
         this._width = Math.Max(width, 1);
+        this._height = Math.Max(height, 1);
         this.Reset();
     }
 

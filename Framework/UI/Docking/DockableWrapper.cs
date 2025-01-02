@@ -64,7 +64,7 @@ public class DockableWrapper : BaseDockable, IDockable {
     /// <summary>
     /// Gets the types to ignore by this boundable wrapper.
     /// </summary>
-    protected virtual IEnumerable<Type> TypesToIgnore { get; } = [];
+    protected virtual IEnumerable<Type> TypesToIgnore { get; } = [typeof(BoundableCover), typeof(BoxTileBoundableCover)];
 
     /// <summary>
     /// Gets or sets a value indicating whether this is transforming or not.
