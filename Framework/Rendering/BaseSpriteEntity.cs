@@ -46,7 +46,9 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the sprite index.
+    /// </summary>
     public abstract byte? SpriteIndex { get; }
 
     /// <inheritdoc />
@@ -91,9 +93,22 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     }
 
     /// <summary>
-    /// Gets the appropriate transform for rendering.
+    /// Creates the size of this sprite in pixels for the <see cref="RenderOptions" />.
     /// </summary>
     /// <returns></returns>
+    protected virtual Vector2 CreateSize() {
+        var result = Vector2.Zero;
+        if (this.SpriteSheet is { } spriteSheet) {
+            return new Vector2(spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the appropriate transform for rendering.
+    /// </summary>
+    /// <returns>The render transform.</returns>
     protected Vector2 GetRenderTransform() => this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this._offsetTransform.Value;
 
     /// <inheritdoc />
@@ -124,15 +139,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     private Vector2 CreateOffsetTransform() => this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
 
     private Vector2 CreatePixelPosition() => this._offsetTransform.Value.ToPixelSnappedValue(this.Project);
-
-    private Vector2 CreateSize() {
-        var result = Vector2.Zero;
-        if (this.SpriteSheet is { } spriteSheet) {
-            return new Vector2(spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
-        }
-
-        return result;
-    }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {

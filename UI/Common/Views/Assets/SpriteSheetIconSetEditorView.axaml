@@ -24,8 +24,11 @@
                     ToolTip.Tip="Clear the selected icon's sprite assignment">
                 <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
             </Button>
+
+            <local:IntEditor Title="Kerning"
+                             Value="{Binding Kerning}" />
         </StackPanel>
-        
+
         <Grid Grid.Row="0"
               Grid.Column="2"
               ColumnDefinitions="*, Auto">
@@ -33,11 +36,11 @@
                        Text="{Binding SelectedIcon.Name}"
                        VerticalAlignment="Center"
                        ToolTip.Tip="{Binding SelectedIcon.Name}" />
-            
+
             <local:ThumbnailSizeToggle Grid.Column="1"
                                        SelectedSize="{Binding SelectedThumbnailSize}" />
         </Grid>
-        
+
         <ListBox Grid.Row="1"
                  Grid.Column="0"
                  MinWidth="512"
@@ -48,7 +51,7 @@
                     <Border Width="64"
                             Height="64"
                             Classes="Preview"
-                          ToolTip.Tip="{Binding Key}">
+                            ToolTip.Tip="{Binding Key}">
                         <Grid>
                             <Image Stretch="Fill"
                                    HorizontalAlignment="Right"
@@ -60,13 +63,13 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            
+
                             <TextBlock HorizontalAlignment="Left"
                                        VerticalAlignment="Top"
                                        TextWrapping="Wrap"
                                        Text="{Binding Name}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       ToolTip.Tip="{Binding Name}"/>
+                                       ToolTip.Tip="{Binding Name}" />
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -82,15 +85,23 @@
                       Grid.Column="1"
                       Classes="CardSplitter" />
 
-        <ScrollViewer Grid.Row="1"
-                      Grid.Column="2"
-                      VerticalAlignment="Top"
-                      VerticalContentAlignment="Top"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Visible">
-            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                  SelectedSprite="{Binding SelectedSprite}"
-                                                  ThumbnailSize="{Binding SelectedThumbnailSize}" />
-        </ScrollViewer>
+        <Grid Grid.Row="1"
+              Grid.Column="2"
+              RowDefinitions="Auto, *">
+
+            <local:IntEditor Grid.Row="0"
+                             Title="Kerning"
+                             Value="{Binding SelectedKerning}" />
+
+            <ScrollViewer Grid.Row="1"
+                          VerticalAlignment="Top"
+                          VerticalContentAlignment="Top"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Visible">
+                <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                      SelectedSprite="{Binding SelectedSprite}"
+                                                      ThumbnailSize="{Binding SelectedThumbnailSize}" />
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

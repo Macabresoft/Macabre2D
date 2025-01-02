@@ -15,9 +15,10 @@ using Microsoft.Xna.Framework.Input;
 public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
     private Buttons _button = Buttons.None;
+    private int _currentKerning;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
-
     private InputDevice _inputDeviceToRender = InputDevice.Auto;
+    private int _kerning;
     private Keys _key = Keys.None;
     private MouseButton _mouseButton = MouseButton.None;
     private byte? _spriteIndex;
@@ -79,10 +80,21 @@ public class InputActionRenderer : BaseSpriteEntity {
         set {
             if (value != this._inputDeviceToRender) {
                 this._inputDeviceToRender = value;
+                this.RequestRefresh();
+            }
+        }
+    }
 
-                if (this.IsInitialized) {
-                    this.ResetSprite();
-                }
+    /// <summary>
+    /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
+    /// </summary>
+    [DataMember]
+    public int Kerning {
+        get => this._kerning;
+        set {
+            if (value != this._kerning) {
+                this._kerning = value;
+                this.RequestRefresh();
             }
         }
     }
@@ -124,6 +136,14 @@ public class InputActionRenderer : BaseSpriteEntity {
         }
 
         base.Render(frameTime, viewBoundingArea, colorOverride);
+    }
+
+    protected override Vector2 CreateSize() {
+        if (this.SpriteSheet is { } spriteSheet) {
+            return new Vector2(spriteSheet.SpriteSize.X + this._currentKerning, spriteSheet.SpriteSize.Y);
+        }
+
+        return base.CreateSize();
     }
 
     /// <inheritdoc />
@@ -170,6 +190,12 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.ResetSprite();
     }
 
+    private void RequestRefresh() {
+        if (this.IsInitialized) {
+            this.ResetSprite();
+        }
+    }
+
     private void ResetBindings() {
         if (this.IsInitialized) {
             if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out var mouseButton)) {
@@ -183,6 +209,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
+        this._currentKerning = this.Kerning;
         this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
 
         this._spriteIndex = null;
@@ -195,6 +222,7 @@ public class InputActionRenderer : BaseSpriteEntity {
                 if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
                     this._spriteIndex = index;
                     this._spriteSheet = iconSet.SpriteSheet;
+                    this._currentKerning += iconSet.GetKerning(this._key);
                 }
             }
             else if (this._mouseButton != MouseButton.None) {
@@ -202,6 +230,7 @@ public class InputActionRenderer : BaseSpriteEntity {
                 if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
                     this._spriteIndex = index;
                     this._spriteSheet = iconSet.SpriteSheet;
+                    this._currentKerning += iconSet.GetKerning(this._mouseButton);
                 }
             }
         }
@@ -211,6 +240,7 @@ public class InputActionRenderer : BaseSpriteEntity {
             if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
                 this._spriteIndex = index;
                 this._spriteSheet = iconSet.SpriteSheet;
+                this._currentKerning += iconSet.GetKerning(this._button);
             }
         }
 
