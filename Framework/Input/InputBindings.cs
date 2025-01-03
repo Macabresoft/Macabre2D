@@ -155,7 +155,7 @@ public class InputBindings {
     /// <param name="gamePadButtons">The game pad buttons binding.</param>
     /// <param name="key">The key binding.</param>
     /// <param name="mouseButton">The mouse binding.</param>
-    /// <returns>A value indicating whether or not any of the bindings exist.</returns>
+    /// <returns>A value indicating whether any of the bindings exist.</returns>
     public bool TryGetBindings(InputAction action, out Buttons gamePadButtons, out Keys key, out MouseButton mouseButton) {
         var result = this._gamePadBindings.TryGetValue(action, out gamePadButtons);
         result = this._keyBindings.TryGetValue(action, out key) || result;
