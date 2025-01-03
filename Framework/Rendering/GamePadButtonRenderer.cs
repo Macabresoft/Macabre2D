@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 public class GamePadButtonRenderer : BaseSpriteEntity {
     private Buttons _button = Buttons.A;
+    private int _currentKerning;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
@@ -71,12 +72,22 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
         this.ResetSprite();
     }
 
+    /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this._gamePadDisplay != this.Game.InputBindings.DesiredGamePad) {
             this.ResetSprite();
         }
 
         base.Render(frameTime, viewBoundingArea, colorOverride);
+    }
+
+    /// <inheritdoc />
+    protected override Vector2 CreateSize() {
+        if (this.SpriteSheet is { } spriteSheet) {
+            return new Vector2(spriteSheet.SpriteSize.X + this._currentKerning, spriteSheet.SpriteSize.Y);
+        }
+
+        return base.CreateSize();
     }
 
     /// <inheritdoc />
@@ -103,6 +114,7 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
         if (iconSet != null && iconSet.TryGetSpriteIndex(this.Button, out var index)) {
             this._spriteIndex = index;
             this._spriteSheet = iconSet.SpriteSheet;
+            this._currentKerning += iconSet.GetKerning(this.Button);
         }
         else {
             this._spriteIndex = null;
