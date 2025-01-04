@@ -256,10 +256,10 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     }
 
     private bool CouldBeVisible() =>
-        !string.IsNullOrEmpty(this.Text) &&
-        this._height > 0f &&
+        !string.IsNullOrEmpty(this.ActualText) &&
         this._width > 0f &&
-        this.FontReference.Asset != null;
+        (this._height > 0f || !this._constrainHeight) &&
+        this._font != null;
 
     private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 

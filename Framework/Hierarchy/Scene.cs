@@ -423,6 +423,11 @@ public sealed class Scene : GridContainer, IScene {
 
             this.InvokePendingActions();
         }
+        else {
+            foreach (var system in this.Systems) {
+                system.Initialize(this);
+            }
+        }
     }
 
     /// <inheritdoc />
