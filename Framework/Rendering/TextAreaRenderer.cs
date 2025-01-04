@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<TextLine> _textLines = new();
+    private bool _constrainHeight = true;
     private SpriteSheetFont? _font;
     private FontCategory _fontCategory = FontCategory.None;
     private float _height;
@@ -57,6 +58,22 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this should constrain height vertically.
+    /// </summary>
+    /// <remarks>
+    /// If this is set to false, the <see cref="Height" /> will not be used at all.
+    /// </remarks>
+    [DataMember]
+    public bool ConstrainHeight {
+        get => this._constrainHeight;
+        set {
+            if (this.Set(ref this._constrainHeight, value)) {
+                this.OnSizeChanged();
+            }
+        }
+    }
+
     /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
@@ -78,10 +95,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         get => this._height;
         set {
             this._height = value;
-            if (this.IsInitialized) {
-                this.ResetSize();
-                this.ResetLines();
-            }
+            this.OnSizeChanged();
         }
     }
 
@@ -164,10 +178,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         get => this._width;
         set {
             this._width = value;
-            if (this.IsInitialized) {
-                this.ResetSize();
-                this.ResetLines();
-            }
+            this.OnSizeChanged();
         }
     }
 
@@ -192,6 +203,12 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         this.ReloadFontFromCategory();
         this.ResetResource();
         this.ResetLines();
+        this.ResetStartPosition();
+
+        if (!this._constrainHeight) {
+            // Size will be based off of the lines added above, because height is not constrained.
+            this.ResetSize();
+        }
 
         this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
@@ -246,7 +263,17 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
     private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
-    private Vector2 CreateSize() => new(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
+    private Vector2 CreateSize() {
+        if (this._constrainHeight) {
+            return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
+        }
+
+        if (this._spriteSheet is { } spriteSheet) {
+            return new Vector2(this.Width * this.Project.PixelsPerUnit, this._textLines.Count * spriteSheet.SpriteSize.Y);
+        }
+
+        return Vector2.Zero;
+    }
 
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.RequestRefresh();
@@ -254,6 +281,21 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
     private void FontReferenceAssetChanged(object? sender, bool hasAsset) {
         this.RequestRefresh();
+    }
+
+    private void OnSizeChanged() {
+        if (this.IsInitialized) {
+            if (this._constrainHeight) {
+                this.ResetSize();
+                this.ResetLines();
+            }
+            else {
+                this.ResetLines();
+                this.ResetSize();
+            }
+
+            this.ResetStartPosition();
+        }
     }
 
     private void ReloadFontFromCategory() {
@@ -265,6 +307,11 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     private void RequestRefresh() {
         if (this.IsInitialized) {
             this.ResetLines();
+
+            if (!this._constrainHeight) {
+                this.ResetSize();
+                this.ResetStartPosition();
+            }
         }
     }
 
@@ -282,8 +329,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
         if (this._font != null && this._spriteSheet != null) {
             this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            this.ResetStartPosition();
-            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.ActualText, this.BoundingArea.Width, this._font, this.Kerning, this.HorizontalAlignment));
+            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.ActualText, this.Width, this._font, this.Kerning, this.HorizontalAlignment));
             this.TextHeight = this.CharacterHeight * this._textLines.Count;
         }
     }
