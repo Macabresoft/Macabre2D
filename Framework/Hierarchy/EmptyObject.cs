@@ -121,6 +121,12 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     public FontCategory FontCategory { get; set; } = FontCategory.None;
 
     /// <inheritdoc />
+    public string Format {
+        get => string.Empty;
+        set { }
+    }
+
+    /// <inheritdoc />
     public Guid Id {
         get => Guid.Empty;
         set { }
@@ -185,6 +191,9 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
         get => string.Empty;
         set { }
     }
+
+    /// <inheritdoc />
+    public string GetFullText() => string.Empty;
 
     /// <inheritdoc />
     public Vector2 TileSize {

@@ -39,7 +39,7 @@ public class DockableWrapper : BaseDockable, IDockable {
         get => this._isCollapsed;
         set {
             if (this.Set(ref this._isCollapsed, value)) {
-                this.Reset();
+                this.RaiseBoundingAreaChanged();
             }
         }
     }
@@ -85,7 +85,7 @@ public class DockableWrapper : BaseDockable, IDockable {
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
         }
 
-        this.Reset();
+        this.RaiseBoundingAreaChanged();
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class DockableWrapper : BaseDockable, IDockable {
     /// Called when a child <see cref="IBoundableEntity" /> changes in size. Is not called if <see cref="IsTransforming" /> is currently set to true.
     /// </summary>
     protected virtual void OnChildBoundingAreaChanged() {
-        this.Reset();
+        this.RaiseBoundingAreaChanged();
     }
 
     /// <inheritdoc />
@@ -108,11 +108,19 @@ public class DockableWrapper : BaseDockable, IDockable {
         try {
             this.IsTransforming = true;
             base.OnTransformChanged();
-            this.Reset();
+            this.RaiseBoundingAreaChanged();
         }
         finally {
             this.IsTransforming = false;
         }
+    }
+
+    /// <summary>
+    /// Raises the <see cref="BoundingAreaChanged" /> event.
+    /// </summary>
+    protected void RaiseBoundingAreaChanged() {
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void Child_BoundingAreaChanged(object? sender, EventArgs e) {
@@ -133,10 +141,5 @@ public class DockableWrapper : BaseDockable, IDockable {
         }
 
         return boundingArea;
-    }
-
-    private void Reset() {
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }

@@ -24,6 +24,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
+    private string _stringFormat = string.Empty;
     private string _text = string.Empty;
     private float _width;
 
@@ -82,6 +83,18 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
             if (value != this._fontCategory) {
                 this._fontCategory = value;
                 this.ReloadFontFromCategory();
+                this.RequestRefresh();
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string Format {
+        get => this._stringFormat;
+        set {
+            if (value != this._stringFormat) {
+                this._stringFormat = value;
                 this.RequestRefresh();
             }
         }
@@ -182,16 +195,17 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         }
     }
 
-    /// <summary>
-    /// Gets the actual text. This is defined first by <see cref="ResourceName" />, but falls back to <see cref="Text" /> if that resource doesn't exist.
-    /// </summary>
-    protected string ActualText => string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
         this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    public string GetFullText() {
+        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
     }
 
     /// <inheritdoc />
@@ -256,10 +270,10 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     }
 
     private bool CouldBeVisible() =>
-        !string.IsNullOrEmpty(this.ActualText) &&
         this._width > 0f &&
         (this._height > 0f || !this._constrainHeight) &&
-        this._font != null;
+        this._font != null &&
+        !string.IsNullOrEmpty(this.GetFullText());
 
     private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
@@ -329,7 +343,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
         if (this._font != null && this._spriteSheet != null) {
             this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.ActualText, this.Width, this._font, this.Kerning, this.HorizontalAlignment));
+            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.GetFullText(), this.Width, this._font, this.Kerning, this.HorizontalAlignment));
             this.TextHeight = this.CharacterHeight * this._textLines.Count;
         }
     }

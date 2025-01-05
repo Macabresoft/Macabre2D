@@ -21,6 +21,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
+    private string _stringFormat = string.Empty;
     private string _text = string.Empty;
     private TextLine _textLine = TextLine.Empty;
 
@@ -64,6 +65,18 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
 
     /// <inheritdoc />
     [DataMember]
+    public string Format {
+        get => this._stringFormat;
+        set {
+            if (value != this._stringFormat) {
+                this._stringFormat = value;
+                this.RequestRefresh();
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    [DataMember]
     public int Kerning {
         get => this._kerning;
         set {
@@ -97,11 +110,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         }
     }
 
-    /// <summary>
-    /// Gets the actual text. This is defined first by <see cref="ResourceName" />, but falls back to <see cref="Text" /> if that resource doesn't exist.
-    /// </summary>
-    protected string ActualText => string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
@@ -110,6 +118,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
         this.Game.CultureChanged -= this.Game_CultureChanged;
+    }
+
+    /// <inheritdoc />
+    public string GetFullText() {
+        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
     }
 
     /// <inheritdoc />
@@ -178,9 +192,9 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     }
 
     private bool CouldBeVisible() =>
-        !string.IsNullOrEmpty(this.ActualText) &&
         this._characterHeight > 0f &&
-        this._font != null;
+        this._font != null &&
+        !string.IsNullOrEmpty(this.GetFullText());
 
     private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
 
@@ -241,7 +255,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         }
 
         if (this._font != null) {
-            var actualText = this.ActualText;
+            var actualText = this.GetFullText();
             this._textLine = TextLine.CreateTextLine(this.Project, actualText, this._font, this.Kerning);
         }
     }
