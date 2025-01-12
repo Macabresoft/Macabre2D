@@ -46,7 +46,7 @@ public class InputBindings {
     public InputDevice DesiredInputDevice { get; set; } = InputDevice.Auto;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not the mouse is enabled.
+    /// Gets or sets a value indicating whether the mouse is enabled.
     /// </summary>
     [DataMember]
     public bool IsMouseEnabled { get; set; } = true;
