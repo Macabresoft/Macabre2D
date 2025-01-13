@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
 using ReactiveUI;
 using Unity;
 
@@ -45,6 +47,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         this._dialogService = dialogService;
         this._undoService = undoService;
         this._font = font;
+        this.AutoApplyKerningCommand = ReactiveCommand.Create(this.ApplyAutomaticKerning);
         this.AutoLayoutCommand = ReactiveCommand.CreateFromTask(this.PerformAutoLayout);
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
@@ -54,6 +57,11 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
         this._characters.Reset(this.CreateCharacterModels());
         this.SelectedCharacter = this.Characters.First();
     }
+
+    /// <summary>
+    /// Gets a command to automatically apply kerning to each character based on whitespace.
+    /// </summary>
+    public ICommand AutoApplyKerningCommand { get; }
 
     /// <summary>
     /// Gets a command to automatically create a new character layout.
@@ -162,6 +170,68 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     public ThumbnailSize SelectedThumbnailSize {
         get => this._selectedThumbnailSize;
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+    }
+
+    private void ApplyAutomaticKerning() {
+        if (this._font.SpriteSheet is { Content: { } texture } spriteSheet) {
+            var originalKerning = this.Kerning;
+            var originalCharacterToKerning = this._characters.ToFrozenDictionary(x => x.Key, x => x.Kerning);
+            var updatedCharacterToKerning = new Dictionary<char, int>();
+
+            foreach (var character in this._characters) {
+                if (character.SpriteIndex != null) {
+                    var rectangle = new Rectangle(spriteSheet.GetSpriteLocation(character.SpriteIndex.Value), spriteSheet.SpriteSize);
+                    var data = new Color[spriteSheet.SpriteSize.X * spriteSheet.SpriteSize.Y];
+                    texture.GetData(0, rectangle, data, 0, data.Length);
+                    var kerning = 0;
+
+                    // Data starts at top left of sprite and goes horizontal before dropping down to the next row
+                    for (var x = spriteSheet.SpriteSize.X - 1; x >= 0; x--) {
+                        var isTransparent = true;
+                        for (var y = 0; y < spriteSheet.SpriteSize.Y; y++) {
+                            isTransparent &= data[spriteSheet.SpriteSize.X * y + x].A == 0;
+
+                            if (!isTransparent) {
+                                break;
+                            }
+                        }
+
+                        if (isTransparent) {
+                            kerning--;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    updatedCharacterToKerning[character.Key] = kerning;
+                }
+            }
+
+            this._undoService.Do(() =>
+            {
+                this.Kerning = 0;
+
+                foreach (var (character, kerning) in updatedCharacterToKerning) {
+                    if (this._characters.FirstOrDefault(x => x.Key == character) is { } member) {
+                        member.Kerning = kerning;
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(this.SelectedKerning));
+            }, () =>
+            {
+                this.Kerning = originalKerning;
+
+                foreach (var (character, kerning) in originalCharacterToKerning) {
+                    if (this._characters.FirstOrDefault(x => x.Key == character) is { } member) {
+                        member.Kerning = kerning;
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(this.SelectedKerning));
+            });
+        }
     }
 
     private void ClearSprite() {

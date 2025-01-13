@@ -41,6 +41,9 @@
             
             <local:IntEditor Title="Kerning"
                              Value="{Binding Kerning}" />
+            
+            <Button Content="Apply Auto Kerning"
+                    Command="{Binding AutoApplyKerningCommand}"/>
         </StackPanel>
 
         <local:ThumbnailSizeToggle Grid.Row="0"
