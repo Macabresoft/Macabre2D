@@ -24,6 +24,15 @@
                     ToolTip.Tip="Clear the selected icon's sprite assignment">
                 <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
             </Button>
+            
+            <Border Classes="VerticalSeparator" />
+            
+            <Button Classes="Icon"
+                    Margin="{StaticResource StandardMarginAll}"
+                    Command="{Binding AutoApplyKerningCommand}"
+                    ToolTip.Tip="Automatically determine the kerning for each icon and apply it">
+                <avaloniaEx:Icon Content="{StaticResource AutoWidthIcon}" />
+            </Button>
 
             <local:IntEditor Title="Kerning"
                              Value="{Binding Kerning}" />
@@ -87,7 +96,8 @@
 
         <Grid Grid.Row="1"
               Grid.Column="2"
-              RowDefinitions="Auto, *">
+              RowDefinitions="Auto, *"
+              IsVisible="{Binding SelectedSprite, Converter={x:Static ObjectConverters.IsNotNull}}">
 
             <local:IntEditor Grid.Row="0"
                              Title="Kerning"

@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -39,6 +40,7 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
         ContentFile file) : base() {
         this._undoService = undoService;
         this._iconSet = iconSet;
+        this.AutoApplyKerningCommand = ReactiveCommand.Create(this.ApplyAutomaticKerning);
         this.ClearSpriteCommand = ReactiveCommand.Create(
             this.ClearSprite,
             this.WhenAny(x => x.SelectedIcon, x => x.Value != null));
@@ -48,6 +50,11 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
         this.Icons = iconSet.Icons;
         this.SelectedIcon = this.Icons.First();
     }
+
+    /// <summary>
+    /// Gets a command to automatically apply kerning to each character based on whitespace.
+    /// </summary>
+    public ICommand AutoApplyKerningCommand { get; }
 
     /// <summary>
     /// Clears the selected sprite from the selected icon.
@@ -146,6 +153,45 @@ public class SpriteSheetIconSetEditorViewModel : BaseViewModel {
     public ThumbnailSize SelectedThumbnailSize {
         get => this._selectedThumbnailSize;
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+    }
+
+    private void ApplyAutomaticKerning() {
+        if (this._iconSet.SpriteSheet is { Content: { } texture } spriteSheet) {
+            var originalKerning = this.Kerning;
+            var originalCharacterToKerning = this.Icons.ToFrozenDictionary(x => x.Name, x => x.Kerning);
+            var updatedCharacterToKerning = new Dictionary<string, int>();
+
+            foreach (var icon in this.Icons) {
+                if (icon.SpriteIndex is { } spriteIndex) {
+                    var kerning = -spriteSheet.GetNumberOfEmptyPixelsFromRightEdge(spriteIndex);
+                    updatedCharacterToKerning[icon.Name] = kerning;
+                }
+            }
+
+            this._undoService.Do(() =>
+            {
+                this.Kerning = 0;
+
+                foreach (var (character, kerning) in updatedCharacterToKerning) {
+                    if (this.Icons.FirstOrDefault(x => x.Name == character) is { } member) {
+                        member.Kerning = kerning;
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(this.SelectedKerning));
+            }, () =>
+            {
+                this.Kerning = originalKerning;
+
+                foreach (var (character, kerning) in originalCharacterToKerning) {
+                    if (this.Icons.FirstOrDefault(x => x.Name == character) is { } member) {
+                        member.Kerning = kerning;
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(this.SelectedKerning));
+            });
+        }
     }
 
     private void ClearSprite() {
