@@ -9,7 +9,6 @@ using System.Windows.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
-using Microsoft.Xna.Framework;
 using ReactiveUI;
 using Unity;
 
@@ -179,31 +178,8 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
             var updatedCharacterToKerning = new Dictionary<char, int>();
 
             foreach (var character in this._characters) {
-                if (character.SpriteIndex != null) {
-                    var rectangle = new Rectangle(spriteSheet.GetSpriteLocation(character.SpriteIndex.Value), spriteSheet.SpriteSize);
-                    var data = new Color[spriteSheet.SpriteSize.X * spriteSheet.SpriteSize.Y];
-                    texture.GetData(0, rectangle, data, 0, data.Length);
-                    var kerning = 0;
-
-                    // Data starts at top left of sprite and goes horizontal before dropping down to the next row
-                    for (var x = spriteSheet.SpriteSize.X - 1; x >= 0; x--) {
-                        var isTransparent = true;
-                        for (var y = 0; y < spriteSheet.SpriteSize.Y; y++) {
-                            isTransparent &= data[spriteSheet.SpriteSize.X * y + x].A == 0;
-
-                            if (!isTransparent) {
-                                break;
-                            }
-                        }
-
-                        if (isTransparent) {
-                            kerning--;
-                        }
-                        else {
-                            break;
-                        }
-                    }
-
+                if (character.SpriteIndex is { } spriteIndex) {
+                    var kerning = -spriteSheet.GetNumberOfEmptyPixelsFromRightEdge(spriteIndex);
                     updatedCharacterToKerning[character.Key] = kerning;
                 }
             }
@@ -294,6 +270,10 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
                 }
 
                 this._characters.Reset(this.CreateCharacterModels());
+
+                if (result.AutomaticallyApplyKerning) {
+                    this.ApplyAutomaticKerning();
+                }
             }, () =>
             {
                 foreach (var character in this._font.CharacterLayout) {

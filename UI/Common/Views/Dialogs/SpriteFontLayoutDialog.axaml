@@ -13,7 +13,7 @@
         <local:SpriteFontLayoutViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
-          RowDefinitions="Auto, Auto, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto">
 
         <local:StringEditor Grid.Row="0"
                             Value="{Binding Result.CharacterLayout}"
@@ -22,10 +22,14 @@
         <CheckBox Grid.Row="1"
                   IsChecked="{Binding Result.PerformAutoLayout}"
                   Content="Perform Auto Layout" />
+        
+        <CheckBox Grid.Row="2"
+                  IsChecked="{Binding Result.AutomaticallyApplyKerning}"
+                  Content="Automatically Apply Kerning" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"

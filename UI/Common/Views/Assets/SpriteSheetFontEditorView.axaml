@@ -39,11 +39,17 @@
                 <avaloniaEx:Icon Content="{StaticResource ArrowDownload}" />
             </Button>
             
+            <Border Classes="VerticalSeparator" />
+            
+            <Button Classes="Icon"
+                    Margin="{StaticResource StandardMarginAll}"
+                    Command="{Binding AutoApplyKerningCommand}"
+                    ToolTip.Tip="Automatically determine the kerning for each character and apply it">
+                <avaloniaEx:Icon Content="{StaticResource AutoWidthIcon}" />
+            </Button>
+            
             <local:IntEditor Title="Kerning"
                              Value="{Binding Kerning}" />
-            
-            <Button Content="Apply Auto Kerning"
-                    Command="{Binding AutoApplyKerningCommand}"/>
         </StackPanel>
 
         <local:ThumbnailSizeToggle Grid.Row="0"
@@ -92,7 +98,8 @@
         
         <Grid Grid.Row="1"
               Grid.Column="2"
-              RowDefinitions="Auto, *">
+              RowDefinitions="Auto, *"
+              IsVisible="{Binding SelectedSprite, Converter={x:Static ObjectConverters.IsNotNull}}">
             
             <local:IntEditor Grid.Row="0"
                              Title="Kerning"
@@ -105,7 +112,7 @@
                           VerticalScrollBarVisibility="Visible">
                 <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
                                                       SelectedSprite="{Binding SelectedSprite}"
-                                                      ThumbnailSize="{Binding SelectedThumbnailSize}" />
+                                                      ThumbnailSize="{Binding SelectedThumbnailSize}"/>
             </ScrollViewer>
         </Grid>
     </Grid>

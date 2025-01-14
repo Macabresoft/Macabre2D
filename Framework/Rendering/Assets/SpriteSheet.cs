@@ -301,6 +301,48 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     }
 
     /// <summary>
+    /// Gets the number of empty columns of pixels on the right side of this specific sprite.
+    /// </summary>
+    /// <param name="spriteIndex"></param>
+    /// <remarks>
+    /// This will return 0 if the sprite sheet's <see cref="Texture" /> has not been loaded. This is
+    /// also inefficient and should not be called during runtime. The most likely reason to use this
+    /// method is for determining the automatic kerning value.
+    /// for a <see cref="SpriteSheetFont" />.
+    /// </remarks>
+    /// <returns>The number of empty pixels from right edge.</returns>
+    public int GetNumberOfEmptyPixelsFromRightEdge(byte spriteIndex) {
+        var result = 0;
+
+        if (this.Content is { } texture) {
+            var rectangle = new Rectangle(this.GetSpriteLocation(spriteIndex), this.SpriteSize);
+            var data = new Color[this.SpriteSize.X * this.SpriteSize.Y];
+            texture.GetData(0, rectangle, data, 0, data.Length);
+
+            // Data starts at top left of sprite and goes horizontal before dropping down to the next row
+            for (var x = this.SpriteSize.X - 1; x >= 0; x--) {
+                var isTransparent = true;
+                for (var y = 0; y < this.SpriteSize.Y; y++) {
+                    isTransparent &= data[this.SpriteSize.X * y + x].A == 0;
+
+                    if (!isTransparent) {
+                        break;
+                    }
+                }
+
+                if (isTransparent) {
+                    result++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Gets the sprite index given a column and row. Normalized to exist on the sprite sheet.
     /// </summary>
     /// <param name="column">The column.</param>
