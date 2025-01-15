@@ -14,7 +14,8 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
-    private Buttons _button = Buttons.None;
+    private Buttons _primaryButton = Buttons.None;
+    private Buttons _secondaryButton = Buttons.None;
     private int _currentKerning;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private InputDevice _inputDeviceToRender = InputDevice.Auto;
@@ -23,6 +24,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     private MouseButton _mouseButton = MouseButton.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
+    private bool _showSecondary;
 
     /// <summary>
     /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
@@ -67,6 +69,27 @@ public class InputActionRenderer : BaseSpriteEntity {
             if (value != this._action) {
                 this._action = value;
                 this.ResetBindings();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this should show the secondary button. 
+    /// </summary>
+    /// <remarks>
+    /// When this is <c>true</c> and <see cref="InputDeviceToRender"/> is set to <see cref="InputDevice.GamePad"/>,
+    /// this will display the secondary game pad binding. When this is <c>true</c> and  <see cref="InputDeviceToRender"/>
+    /// is set to <see cref="InputDevice.KeyboardMouse"/>, this will display the mouse binding.
+    /// </remarks>
+    public bool ShowSecondary {
+        get => this._showSecondary;
+        set {
+            if (value != this._showSecondary) {
+                this._showSecondary = value;
+
+                if (this.IsInitialized) {
+                    this.ResetSprite();
+                }
             }
         }
     }
@@ -198,8 +221,9 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private void ResetBindings() {
         if (this.IsInitialized) {
-            if (this.Game.InputBindings.TryGetBindings(this._action, out var button, out var key, out var mouseButton)) {
-                this._button = GetFirst(button);
+            if (this.Game.InputBindings.TryGetBindings(this._action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton)) {
+                this._primaryButton = GetFirst(primaryButton);
+                this._secondaryButton = GetFirst(secondaryButton);
                 this._key = key;
                 this._mouseButton = mouseButton;
             }
@@ -217,7 +241,17 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
         if (inputDevice == InputDevice.KeyboardMouse) {
-            if (this._key != Keys.None) {
+            if (this.ShowSecondary) {
+                if (this._mouseButton != MouseButton.None) {
+                    var iconSet = this.GetMouseButtonIconSet();
+                    if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
+                        this._spriteIndex = index;
+                        this._spriteSheet = iconSet.SpriteSheet;
+                        this._currentKerning += iconSet.GetKerning(this._mouseButton);
+                    }
+                }
+            }
+            else if (this._key != Keys.None) {
                 var iconSet = this.GetKeyboardIconSet();
                 if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
                     this._spriteIndex = index;
@@ -225,22 +259,25 @@ public class InputActionRenderer : BaseSpriteEntity {
                     this._currentKerning += iconSet.GetKerning(this._key);
                 }
             }
-            else if (this._mouseButton != MouseButton.None) {
-                var iconSet = this.GetMouseButtonIconSet();
-                if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
+        }
+        else if (this.ShowSecondary) {
+            if (this._secondaryButton != Buttons.None) {
+                var iconSet = this.GetGamePadIconSet();
+
+                if (iconSet != null && iconSet.TryGetSpriteIndex(this._secondaryButton, out var index)) {
                     this._spriteIndex = index;
                     this._spriteSheet = iconSet.SpriteSheet;
-                    this._currentKerning += iconSet.GetKerning(this._mouseButton);
+                    this._currentKerning += iconSet.GetKerning(this._secondaryButton);
                 }
             }
         }
-        else if (this._button != Buttons.None) {
+        else if (this._primaryButton != Buttons.None) {
             var iconSet = this.GetGamePadIconSet();
 
-            if (iconSet != null && iconSet.TryGetSpriteIndex(this._button, out var index)) {
+            if (iconSet != null && iconSet.TryGetSpriteIndex(this._primaryButton, out var index)) {
                 this._spriteIndex = index;
                 this._spriteSheet = iconSet.SpriteSheet;
-                this._currentKerning += iconSet.GetKerning(this._button);
+                this._currentKerning += iconSet.GetKerning(this._primaryButton);
             }
         }
 

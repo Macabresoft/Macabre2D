@@ -109,7 +109,7 @@ public class BaseGame : Game, IGame {
     public InputDevice DesiredInputDevice {
         get => this._desiredInputDevice;
         protected set {
-            if (value != this._desiredInputDevice) {
+            if (value != this._desiredInputDevice && value != InputDevice.Auto) {
                 this._desiredInputDevice = value;
                 this.InputDeviceChanged.SafeInvoke(this, this._desiredInputDevice);
             }

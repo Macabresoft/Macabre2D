@@ -1,8 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 
@@ -81,15 +79,11 @@ public class InputSystem : GameSystem, IInputSystem {
     /// <inheritdoc />
     public InputActionState GetInputActionState(InputAction action) {
         if (!this._actionToButtonState.TryGetValue(action, out var result)) {
-            this.Game.InputBindings.TryGetBindings(action, out var buttons, out var key, out var mouseButton);
-            result = this.ResolveState(action, buttons, key, mouseButton);
+            this.Game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton);
+            result = this.ResolveState(action, primaryButton, secondaryButton, key, mouseButton);
         }
 
         return result;
-    }
-
-    public override void Initialize(IScene scene) {
-        base.Initialize(scene);
     }
 
     /// <inheritdoc />
@@ -149,55 +143,77 @@ public class InputSystem : GameSystem, IInputSystem {
         }
     }
 
-    private bool IsAnyGamePadButtonHeld(Buttons gamePadButtons) {
-        if (gamePadButtons == Buttons.None) {
-            return false;
-        }
+    private bool IsHeld(Buttons primaryButton, Buttons secondaryButton, Keys key, MouseButton mouseButton) =>
+        this.IsHeld(primaryButton, secondaryButton) ||
+        this.IsHeld(key, mouseButton);
 
-        var values = Enum.GetValues<Buttons>().Where(x => gamePadButtons.HasFlag(x)).ToList();
-        return values.Any(this._inputState.IsGamePadButtonHeld);
-    }
-
-    private bool IsAnyGamePadButtonNewlyPressed(Buttons gamePadButtons) {
-        if (gamePadButtons == Buttons.None) {
-            return false;
-        }
-
-        var values = Enum.GetValues<Buttons>().Where(x => gamePadButtons.HasFlag(x)).ToList();
-        return values.Any(this._inputState.IsGamePadButtonNewlyPressed);
-    }
-
-    private bool IsAnyGamePadButtonNewlyReleased(Buttons gamePadButtons) {
-        if (gamePadButtons == Buttons.None) {
-            return false;
-        }
-
-        var values = Enum.GetValues<Buttons>().Where(x => gamePadButtons.HasFlag(x)).ToList();
-        return values.Any(this._inputState.IsGamePadButtonNewlyReleased);
-    }
-
-    private bool IsHeld(Buttons gamePadButtons, Keys key, MouseButton mouseButton) =>
-        this._inputState.IsKeyHeld(key) || this.IsAnyGamePadButtonHeld(gamePadButtons) ||
+    private bool IsHeld(Keys key, MouseButton mouseButton) =>
+        this._inputState.IsKeyHeld(key) ||
         this._inputState.IsMouseButtonHeld(mouseButton);
 
-    private bool IsNewlyPressed(Buttons gamePadButtons, Keys key, MouseButton mouseButton) =>
-        this._inputState.IsKeyNewlyPressed(key) || this.IsAnyGamePadButtonNewlyPressed(gamePadButtons) ||
+    private bool IsHeld(Buttons primaryButton, Buttons secondaryButton) =>
+        this._inputState.IsGamePadButtonHeld(primaryButton) ||
+        this._inputState.IsGamePadButtonHeld(secondaryButton);
+
+    private bool IsNewlyPressed(Buttons primaryButton, Buttons secondaryButton, Keys key, MouseButton mouseButton) =>
+        this.IsNewlyPressed(primaryButton, secondaryButton) ||
+        this.IsNewlyPressed(key, mouseButton);
+
+    private bool IsNewlyPressed(Keys key, MouseButton mouseButton) =>
+        this._inputState.IsKeyNewlyPressed(key) ||
         this._inputState.IsMouseButtonNewlyPressed(mouseButton);
 
-    private bool IsNewlyReleased(Buttons gamePadButtons, Keys key, MouseButton mouseButton) =>
-        this._inputState.IsKeyNewlyReleased(key) || this.IsAnyGamePadButtonNewlyReleased(gamePadButtons) ||
+    private bool IsNewlyPressed(Buttons primaryButton, Buttons secondaryButton) =>
+        this._inputState.IsGamePadButtonNewlyPressed(primaryButton) ||
+        this._inputState.IsGamePadButtonNewlyPressed(secondaryButton);
+
+    private bool IsNewlyReleased(Buttons primaryButton, Buttons secondaryButton, Keys key, MouseButton mouseButton) =>
+        this.IsNewlyReleased(primaryButton, secondaryButton) ||
+        this.IsNewlyReleased(key, mouseButton);
+
+    private bool IsNewlyReleased(Keys key, MouseButton mouseButton) =>
+        this._inputState.IsKeyNewlyReleased(key) ||
         this._inputState.IsMouseButtonNewlyReleased(mouseButton);
 
-    private InputActionState ResolveState(InputAction action, Buttons buttons, Keys key, MouseButton mouseButton) {
+    private bool IsNewlyReleased(Buttons primaryButton, Buttons secondaryButton) =>
+        this._inputState.IsGamePadButtonNewlyReleased(primaryButton) ||
+        this._inputState.IsGamePadButtonNewlyReleased(secondaryButton);
+
+    private InputActionState ResolveState(InputAction action, Buttons primaryButton, Buttons secondaryButton, Keys key, MouseButton mouseButton) {
         var result = InputActionState.None;
-        if (this.IsNewlyPressed(buttons, key, mouseButton)) {
-            result = InputActionState.Pressed;
+
+        if (this.Game.InputBindings.DesiredInputDevice == InputDevice.GamePad) {
+            if (this.IsNewlyPressed(primaryButton, secondaryButton)) {
+                result = InputActionState.Pressed;
+            }
+            else if (this.IsHeld(primaryButton, secondaryButton)) {
+                result = InputActionState.Held;
+            }
+            else if (this.IsNewlyReleased(primaryButton, secondaryButton)) {
+                result = InputActionState.Released;
+            }
         }
-        else if (this.IsHeld(buttons, key, mouseButton)) {
-            result = InputActionState.Held;
+        else if (this.Game.InputBindings.DesiredInputDevice == InputDevice.KeyboardMouse) {
+            if (this.IsNewlyPressed(key, mouseButton)) {
+                result = InputActionState.Pressed;
+            }
+            else if (this.IsHeld(key, mouseButton)) {
+                result = InputActionState.Held;
+            }
+            else if (this.IsNewlyReleased(key, mouseButton)) {
+                result = InputActionState.Released;
+            }
         }
-        else if (this.IsNewlyReleased(buttons, key, mouseButton)) {
-            result = InputActionState.Released;
+        else {
+            if (this.IsNewlyPressed(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Pressed;
+            }
+            else if (this.IsHeld(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Held;
+            }
+            else if (this.IsNewlyReleased(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Released;
+            }
         }
 
         this._actionToButtonState[action] = result;

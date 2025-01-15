@@ -12,8 +12,6 @@ using Newtonsoft.Json;
 /// </summary>
 [DataContract]
 public class InputBindings {
-    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<InputAction, Buttons> _gamePadBindings = new();
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Keys> _keyBindings = new();
@@ -21,16 +19,29 @@ public class InputBindings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, MouseButton> _mouseBindings = new();
 
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<InputAction, Buttons> _primaryGamePadBindings = new();
+
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<InputAction, Buttons> _secondaryGamePadBindings = new();
+
     /// <summary>
     /// Initializes a new instance of <see cref="InputBindings" />.
     /// </summary>
     public InputBindings() {
     }
 
-    private InputBindings(Dictionary<InputAction, Buttons> gamePadBindings, Dictionary<InputAction, Keys> keyBindings, Dictionary<InputAction, MouseButton> mouseBindings) {
-        this._gamePadBindings = new Dictionary<InputAction, Buttons>(gamePadBindings);
+    private InputBindings(
+        Dictionary<InputAction, Buttons> primaryGamePadBindings,
+        Dictionary<InputAction, Buttons> secondaryGamePadBindings,
+        Dictionary<InputAction, Keys> keyBindings,
+        Dictionary<InputAction, MouseButton> mouseBindings,
+        bool isMouseEnabled) {
+        this._primaryGamePadBindings = new Dictionary<InputAction, Buttons>(primaryGamePadBindings);
+        this._secondaryGamePadBindings = new Dictionary<InputAction, Buttons>(secondaryGamePadBindings);
         this._keyBindings = new Dictionary<InputAction, Keys>(keyBindings);
         this._mouseBindings = new Dictionary<InputAction, MouseButton>(mouseBindings);
+        this.IsMouseEnabled = isMouseEnabled;
     }
 
     /// <summary>
@@ -56,7 +67,8 @@ public class InputBindings {
     /// </summary>
     /// <param name="action">The action.</param>
     public void ClearBindings(InputAction action) {
-        this.RemoveGamePadBinding(action);
+        this.RemovePrimaryGamePadBinding(action);
+        this.RemoveSecondaryGamePadBinding(action);
         this.RemoveKeyBinding(action);
         this.RemoveMouseBinding(action);
     }
@@ -65,25 +77,28 @@ public class InputBindings {
     /// Clones this instance.
     /// </summary>
     /// <returns>A clone of this instance.</returns>
-    public InputBindings Clone() {
-        var inputBindings = new InputBindings(this._gamePadBindings, this._keyBindings, this._mouseBindings) {
-            IsMouseEnabled = this.IsMouseEnabled
-        };
-
-        return inputBindings;
-    }
+    public InputBindings Clone() => new(
+        this._primaryGamePadBindings,
+        this._secondaryGamePadBindings,
+        this._keyBindings,
+        this._mouseBindings,
+        this.IsMouseEnabled);
 
     /// <summary>
     /// Copies settings to another instance.
     /// </summary>
     /// <param name="other">The other instance.</param>
     public void CopyTo(InputBindings other) {
-        other._gamePadBindings.Clear();
+        other._primaryGamePadBindings.Clear();
         other._keyBindings.Clear();
         other._mouseBindings.Clear();
 
-        foreach (var (gamePadAction, gamePadButton) in this._gamePadBindings) {
-            other._gamePadBindings.Add(gamePadAction, gamePadButton);
+        foreach (var (gamePadAction, gamePadButton) in this._primaryGamePadBindings) {
+            other._primaryGamePadBindings.Add(gamePadAction, gamePadButton);
+        }
+        
+        foreach (var (gamePadAction, gamePadButton) in this._secondaryGamePadBindings) {
+            other._secondaryGamePadBindings.Add(gamePadAction, gamePadButton);
         }
 
         foreach (var (keyAction, key) in this._keyBindings) {
@@ -98,11 +113,19 @@ public class InputBindings {
     }
 
     /// <summary>
-    /// Removes a game pad binding.
+    /// Removes a primary game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
-    public void RemoveGamePadBinding(InputAction action) {
-        this._gamePadBindings.Remove(action);
+    public void RemovePrimaryGamePadBinding(InputAction action) {
+        this._primaryGamePadBindings.Remove(action);
+    }
+
+    /// <summary>
+    /// Removes a secpmdary game pad binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public void RemoveSecondaryGamePadBinding(InputAction action) {
+        this._secondaryGamePadBindings.Remove(action);
     }
 
     /// <summary>
@@ -122,12 +145,21 @@ public class InputBindings {
     }
 
     /// <summary>
-    /// Sets a game pad binding.
+    /// Sets a primary game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="buttons">The buttons.</param>
-    public void SetGamePadBinding(InputAction action, Buttons buttons) {
-        this._gamePadBindings[action] = buttons;
+    public void SetPrimaryGamePadBinding(InputAction action, Buttons buttons) {
+        this._primaryGamePadBindings[action] = buttons;
+    }
+    
+    /// <summary>
+    /// Sets a secondary game pad binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="buttons">The buttons.</param>
+    public void SetSecondaryGamePadBinding(InputAction action, Buttons buttons) {
+        this._secondaryGamePadBindings[action] = buttons;
     }
 
     /// <summary>
@@ -152,12 +184,14 @@ public class InputBindings {
     /// Gets all possible bindings for an action.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="gamePadButtons">The game pad buttons binding.</param>
+    /// <param name="primaryGamePadButton">The primary game pad button binding.</param>
+    /// <param name="secondaryGamePadButton">The secondary game pad button binding.</param>
     /// <param name="key">The key binding.</param>
     /// <param name="mouseButton">The mouse binding.</param>
     /// <returns>A value indicating whether any of the bindings exist.</returns>
-    public bool TryGetBindings(InputAction action, out Buttons gamePadButtons, out Keys key, out MouseButton mouseButton) {
-        var result = this._gamePadBindings.TryGetValue(action, out gamePadButtons);
+    public bool TryGetBindings(InputAction action, out Buttons primaryGamePadButton, out Buttons secondaryGamePadButton, out Keys key, out MouseButton mouseButton) {
+        var result = this._primaryGamePadBindings.TryGetValue(action, out primaryGamePadButton);
+        result = this._secondaryGamePadBindings.TryGetValue(action, out secondaryGamePadButton) || result;
         result = this._keyBindings.TryGetValue(action, out key) || result;
         result = this._mouseBindings.TryGetValue(action, out mouseButton) || result;
         return result;

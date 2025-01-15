@@ -23,11 +23,18 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
             defaultBindingMode: BindingMode.OneTime);
 
 
-    public static readonly DirectProperty<InputActionControl, Buttons> SelectedGamePadButtonsProperty =
+    public static readonly DirectProperty<InputActionControl, Buttons> SelectedPrimaryButtonProperty =
         AvaloniaProperty.RegisterDirect<InputActionControl, Buttons>(
-            nameof(SelectedGamePadButtons),
-            editor => editor.SelectedGamePadButtons,
-            (editor, value) => editor.SelectedGamePadButtons = value,
+            nameof(SelectedPrimaryButton),
+            editor => editor.SelectedPrimaryButton,
+            (editor, value) => editor.SelectedPrimaryButton = value,
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly DirectProperty<InputActionControl, Buttons> SelectedSecondaryButtonProperty =
+        AvaloniaProperty.RegisterDirect<InputActionControl, Buttons>(
+            nameof(SelectedSecondaryButton),
+            editor => editor.SelectedSecondaryButton,
+            (editor, value) => editor.SelectedSecondaryButton = value,
             defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly DirectProperty<InputActionControl, Keys> SelectedKeyProperty =
@@ -45,7 +52,8 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
             defaultBindingMode: BindingMode.TwoWay);
 
     private readonly IUndoService _undoService;
-    private Buttons _selectedGamePadButtons;
+    private Buttons _selectedPrimaryButton;
+    private Buttons _selectedSecondaryButton;
     private Keys _selectedKey;
     private MouseButton _selectedMouseButton;
 
@@ -83,20 +91,39 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         set => this.SetValue(InputBindingsProperty, value);
     }
 
-    public Buttons SelectedGamePadButtons {
-        get => this._selectedGamePadButtons;
+    public Buttons SelectedPrimaryButton {
+        get => this._selectedPrimaryButton;
         set {
-            if (value != this._selectedGamePadButtons && this.InputBindings is { } inputBindings) {
-                inputBindings.TryGetBindings(this.Action, out var originalValue, out _, out _);
+            if (value != this._selectedPrimaryButton && this.InputBindings is { } inputBindings) {
+                inputBindings.TryGetBindings(this.Action, out var originalValue, out _, out _, out _);
                 this._undoService.Do(() =>
                     {
-                        this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, value);
-                        inputBindings.SetGamePadBinding(this.Action, value);
+                        this.SetAndRaise(SelectedPrimaryButtonProperty, ref this._selectedPrimaryButton, value);
+                        inputBindings.SetPrimaryGamePadBinding(this.Action, value);
                     },
                     () =>
                     {
-                        this.SetAndRaise(SelectedGamePadButtonsProperty, ref this._selectedGamePadButtons, originalValue);
-                        inputBindings.SetGamePadBinding(this.Action, originalValue);
+                        this.SetAndRaise(SelectedPrimaryButtonProperty, ref this._selectedPrimaryButton, originalValue);
+                        inputBindings.SetPrimaryGamePadBinding(this.Action, originalValue);
+                    });
+            }
+        }
+    }
+    
+    public Buttons SelectedSecondaryButton {
+        get => this._selectedSecondaryButton;
+        set {
+            if (value != this._selectedSecondaryButton && this.InputBindings is { } inputBindings) {
+                inputBindings.TryGetBindings(this.Action, out _, out var originalValue, out _, out _);
+                this._undoService.Do(() =>
+                    {
+                        this.SetAndRaise(SelectedSecondaryButtonProperty, ref this._selectedSecondaryButton, value);
+                        inputBindings.SetSecondaryGamePadBinding(this.Action, value);
+                    },
+                    () =>
+                    {
+                        this.SetAndRaise(SelectedSecondaryButtonProperty, ref this._selectedSecondaryButton, originalValue);
+                        inputBindings.SetSecondaryGamePadBinding(this.Action, originalValue);
                     });
             }
         }
@@ -106,7 +133,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         get => this._selectedKey;
         set {
             if (value != this._selectedKey && this.InputBindings is { } inputBindings) {
-                inputBindings.TryGetBindings(this.Action, out _, out var originalValue, out _);
+                inputBindings.TryGetBindings(this.Action, out _, out _, out var originalValue, out _);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedKeyProperty, ref this._selectedKey, value);
@@ -125,7 +152,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
         get => this._selectedMouseButton;
         set {
             if (value != this._selectedMouseButton && this.InputBindings is { } inputBindings) {
-                inputBindings.TryGetBindings(this.Action, out _, out _, out var originalValue);
+                inputBindings.TryGetBindings(this.Action, out _, out _, out _, out var originalValue);
                 this._undoService.Do(() =>
                     {
                         this.SetAndRaise(SelectedMouseButtonProperty, ref this._selectedMouseButton, value);
@@ -160,9 +187,10 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
 
     private void Reset() {
         if (this.InputBindings is { } inputBindings && this.Action != InputAction.None) {
-            inputBindings.TryGetBindings(this.Action, out this._selectedGamePadButtons, out this._selectedKey, out this._selectedMouseButton);
+            inputBindings.TryGetBindings(this.Action, out this._selectedPrimaryButton, out this._selectedSecondaryButton, out this._selectedKey, out this._selectedMouseButton);
 
-            this.RaisePropertyChanged(SelectedGamePadButtonsProperty, this._selectedGamePadButtons);
+            this.RaisePropertyChanged(SelectedPrimaryButtonProperty, this._selectedPrimaryButton);
+            this.RaisePropertyChanged(SelectedSecondaryButtonProperty, this._selectedPrimaryButton);
             this.RaisePropertyChanged(SelectedKeyProperty, this._selectedKey);
             this.RaisePropertyChanged(SelectedMouseButtonProperty, this._selectedMouseButton);
         }
