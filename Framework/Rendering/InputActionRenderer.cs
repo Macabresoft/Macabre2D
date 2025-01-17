@@ -9,22 +9,31 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
+/// Defines how to display the input action based on defined bindings.
+/// </summary>
+public enum InputActionDisplayMode {
+    Primary,
+    SecondaryThenPrimary,
+    SecondaryOnly
+}
+
+/// <summary>
 /// A renderer that combines <see cref="InputAction" /> with <see cref="GamePadIconSet" /> and <see cref="KeyboardIconSet" />
 /// to render <see cref="Buttons" />,  <see cref="Keys" />, and <see cref="MouseButton" /> associated with actions.
 /// </summary>
 public class InputActionRenderer : BaseSpriteEntity {
     private InputAction _action;
-    private Buttons _primaryButton = Buttons.None;
-    private Buttons _secondaryButton = Buttons.None;
     private int _currentKerning;
+    private InputActionDisplayMode _displayMode;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private InputDevice _inputDeviceToRender = InputDevice.Auto;
     private int _kerning;
     private Keys _key = Keys.None;
     private MouseButton _mouseButton = MouseButton.None;
+    private Buttons _primaryButton = Buttons.None;
+    private Buttons _secondaryButton = Buttons.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
-    private bool _showSecondary;
 
     /// <summary>
     /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
@@ -74,19 +83,14 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     /// <summary>
-    /// Gets a value indicating whether this should show the secondary button. 
+    /// Gets or sets a value indicating whether to display the primary or secondary binding for this input.
     /// </summary>
-    /// <remarks>
-    /// When this is <c>true</c> and <see cref="InputDeviceToRender"/> is set to <see cref="InputDevice.GamePad"/>,
-    /// this will display the secondary game pad binding. When this is <c>true</c> and  <see cref="InputDeviceToRender"/>
-    /// is set to <see cref="InputDevice.KeyboardMouse"/>, this will display the mouse binding.
-    /// </remarks>
-    public bool ShowSecondary {
-        get => this._showSecondary;
+    [DataMember]
+    public InputActionDisplayMode DisplayMode {
+        get => this._displayMode;
         set {
-            if (value != this._showSecondary) {
-                this._showSecondary = value;
-
+            if (this._displayMode != value) {
+                this._displayMode = value;
                 if (this.IsInitialized) {
                     this.ResetSprite();
                 }
@@ -241,14 +245,12 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
         if (inputDevice == InputDevice.KeyboardMouse) {
-            if (this.ShowSecondary) {
-                if (this._mouseButton != MouseButton.None) {
-                    var iconSet = this.GetMouseButtonIconSet();
-                    if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
-                        this._spriteIndex = index;
-                        this._spriteSheet = iconSet.SpriteSheet;
-                        this._currentKerning += iconSet.GetKerning(this._mouseButton);
-                    }
+            if (this.DisplayMode == InputActionDisplayMode.SecondaryOnly || this.DisplayMode == InputActionDisplayMode.SecondaryThenPrimary && this._mouseButton != MouseButton.None) {
+                var iconSet = this.GetMouseButtonIconSet();
+                if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
+                    this._spriteIndex = index;
+                    this._spriteSheet = iconSet.SpriteSheet;
+                    this._currentKerning += iconSet.GetKerning(this._mouseButton);
                 }
             }
             else if (this._key != Keys.None) {
@@ -260,15 +262,13 @@ public class InputActionRenderer : BaseSpriteEntity {
                 }
             }
         }
-        else if (this.ShowSecondary) {
-            if (this._secondaryButton != Buttons.None) {
-                var iconSet = this.GetGamePadIconSet();
+        else if (this.DisplayMode == InputActionDisplayMode.SecondaryOnly || this.DisplayMode == InputActionDisplayMode.SecondaryThenPrimary && this._secondaryButton != Buttons.None) {
+            var iconSet = this.GetGamePadIconSet();
 
-                if (iconSet != null && iconSet.TryGetSpriteIndex(this._secondaryButton, out var index)) {
-                    this._spriteIndex = index;
-                    this._spriteSheet = iconSet.SpriteSheet;
-                    this._currentKerning += iconSet.GetKerning(this._secondaryButton);
-                }
+            if (iconSet != null && iconSet.TryGetSpriteIndex(this._secondaryButton, out var index)) {
+                this._spriteIndex = index;
+                this._spriteSheet = iconSet.SpriteSheet;
+                this._currentKerning += iconSet.GetKerning(this._secondaryButton);
             }
         }
         else if (this._primaryButton != Buttons.None) {
