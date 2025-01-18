@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
@@ -24,6 +26,11 @@ public class InputBindings {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Buttons> _secondaryGamePadBindings = new();
+
+    /// <summary>
+    /// Called when a binding changes for a specific <see cref="InputAction" />.
+    /// </summary>
+    public event EventHandler<InputAction>? BindingChanged;
 
     /// <summary>
     /// Initializes a new instance of <see cref="InputBindings" />.
@@ -71,6 +78,7 @@ public class InputBindings {
         this.RemoveSecondaryGamePadBinding(action);
         this.RemoveKeyBinding(action);
         this.RemoveMouseBinding(action);
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>
@@ -96,7 +104,7 @@ public class InputBindings {
         foreach (var (gamePadAction, gamePadButton) in this._primaryGamePadBindings) {
             other._primaryGamePadBindings.Add(gamePadAction, gamePadButton);
         }
-        
+
         foreach (var (gamePadAction, gamePadButton) in this._secondaryGamePadBindings) {
             other._secondaryGamePadBindings.Add(gamePadAction, gamePadButton);
         }
@@ -113,27 +121,12 @@ public class InputBindings {
     }
 
     /// <summary>
-    /// Removes a primary game pad binding.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void RemovePrimaryGamePadBinding(InputAction action) {
-        this._primaryGamePadBindings.Remove(action);
-    }
-
-    /// <summary>
-    /// Removes a secpmdary game pad binding.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void RemoveSecondaryGamePadBinding(InputAction action) {
-        this._secondaryGamePadBindings.Remove(action);
-    }
-
-    /// <summary>
     /// Removes a key binding.
     /// </summary>
     /// <param name="action">The action.</param>
     public void RemoveKeyBinding(InputAction action) {
         this._keyBindings.Remove(action);
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>
@@ -142,24 +135,25 @@ public class InputBindings {
     /// <param name="action">The action.</param>
     public void RemoveMouseBinding(InputAction action) {
         this._mouseBindings.Remove(action);
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>
-    /// Sets a primary game pad binding.
+    /// Removes a primary game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="buttons">The buttons.</param>
-    public void SetPrimaryGamePadBinding(InputAction action, Buttons buttons) {
-        this._primaryGamePadBindings[action] = buttons;
+    public void RemovePrimaryGamePadBinding(InputAction action) {
+        this._primaryGamePadBindings.Remove(action);
+        this.BindingChanged.SafeInvoke(this, action);
     }
-    
+
     /// <summary>
-    /// Sets a secondary game pad binding.
+    /// Removes a secpmdary game pad binding.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="buttons">The buttons.</param>
-    public void SetSecondaryGamePadBinding(InputAction action, Buttons buttons) {
-        this._secondaryGamePadBindings[action] = buttons;
+    public void RemoveSecondaryGamePadBinding(InputAction action) {
+        this._secondaryGamePadBindings.Remove(action);
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>
@@ -169,6 +163,7 @@ public class InputBindings {
     /// <param name="key">The key.</param>
     public void SetKeyBinding(InputAction action, Keys key) {
         this._keyBindings[action] = key;
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>
@@ -178,6 +173,27 @@ public class InputBindings {
     /// <param name="button">The button.</param>
     public void SetMouseBinding(InputAction action, MouseButton button) {
         this._mouseBindings[action] = button;
+        this.BindingChanged.SafeInvoke(this, action);
+    }
+
+    /// <summary>
+    /// Sets a primary game pad binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="buttons">The buttons.</param>
+    public void SetPrimaryGamePadBinding(InputAction action, Buttons buttons) {
+        this._primaryGamePadBindings[action] = buttons;
+        this.BindingChanged.SafeInvoke(this, action);
+    }
+
+    /// <summary>
+    /// Sets a secondary game pad binding.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="buttons">The buttons.</param>
+    public void SetSecondaryGamePadBinding(InputAction action, Buttons buttons) {
+        this._secondaryGamePadBindings[action] = buttons;
+        this.BindingChanged.SafeInvoke(this, action);
     }
 
     /// <summary>

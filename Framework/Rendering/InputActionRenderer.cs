@@ -154,6 +154,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
+        this.Game.InputBindings.BindingChanged += this.InputBindings_BindingChanged;
         this.ResetBindings();
     }
 
@@ -215,6 +216,10 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private void IconSetReference_AssetChanged(object? sender, bool hasAsset) {
         this.ResetSprite();
+    }
+
+    private void InputBindings_BindingChanged(object? sender, InputAction e) {
+        this.ResetBindings();
     }
 
     private void RequestRefresh() {
