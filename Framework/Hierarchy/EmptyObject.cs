@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IScene, ITextRenderer {
+public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
