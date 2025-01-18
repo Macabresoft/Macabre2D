@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
+public class EmptyObject : ICamera, IScene, ITextRenderer {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -90,9 +90,6 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;
-
-    /// <inheritdoc />
-    public byte? SpriteIndex => null;
 
     /// <inheritdoc />
     public SceneState State { get; } = new();
@@ -193,9 +190,6 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
     }
 
     /// <inheritdoc />
-    public string GetFullText() => string.Empty;
-
-    /// <inheritdoc />
     public Vector2 TileSize {
         get => Vector2.One;
         set { }
@@ -269,6 +263,9 @@ public class EmptyObject : IScene, ICamera, ISpriteEntity, ITextRenderer {
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) => [];
+
+    /// <inheritdoc />
+    public string GetFullText() => string.Empty;
 
     /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
