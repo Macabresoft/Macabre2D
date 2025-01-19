@@ -17,7 +17,7 @@ public class MouseButtonIconSet : SpriteSheetIconSet<MouseButton> {
     }
 
     /// <inheritdoc />
-    public override void RefreshIcons() {
+    protected override void RequestIconRefresh() {
         var keys = Enum.GetValues<MouseButton>().ToList();
         keys.Remove(MouseButton.None);
 

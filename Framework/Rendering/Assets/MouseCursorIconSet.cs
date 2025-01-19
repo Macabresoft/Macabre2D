@@ -26,7 +26,7 @@ public class MouseCursorIconSet : SpriteSheetIconSet<MouseCursorAppearance> {
     }
 
     /// <inheritdoc />
-    public override void RefreshIcons() {
+    protected override void RequestIconRefresh() {
         var keys = Enum.GetValues<MouseCursorAppearance>().ToList();
         keys.Remove(MouseCursorAppearance.None);
 

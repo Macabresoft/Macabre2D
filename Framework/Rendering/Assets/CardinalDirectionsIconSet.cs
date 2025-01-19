@@ -17,7 +17,7 @@ public sealed class CardinalDirectionsIconSet : SpriteSheetIconSet<CardinalDirec
     }
 
     /// <inheritdoc />
-    public override void RefreshIcons() {
+    protected override void RequestIconRefresh() {
         var keys = Enum.GetValues<CardinalDirections>().ToList();
         keys.Remove(CardinalDirections.None);
         keys.Remove(CardinalDirections.All);

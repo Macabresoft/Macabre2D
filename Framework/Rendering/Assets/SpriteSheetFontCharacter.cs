@@ -7,7 +7,7 @@ using Macabresoft.Core;
 /// Represents a character in a <see cref="SpriteSheetFont"/>.
 /// </summary>
 [DataContract]
-public class SpriteSheetFontCharacter {
+public sealed class SpriteSheetFontCharacter : PropertyChangedNotifier {
     /// <summary>
     /// Gets or sets the sprite index.
     /// </summary>

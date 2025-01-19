@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -22,7 +23,26 @@ public abstract class SpriteSheetIconSet : SpriteSheetMember {
     /// <summary>
     /// Refreshes the icons to update them with any new entries.
     /// </summary>
-    public abstract void RefreshIcons();
+    public void RefreshIcons() {
+        foreach (var icon in this.Icons) {
+            icon.PropertyChanged -= this.Icon_PropertyChanged;
+        }
+
+        this.RequestIconRefresh();
+
+        foreach (var icon in this.Icons) {
+            icon.PropertyChanged += this.Icon_PropertyChanged;
+        }
+    }
+
+    /// <summary>
+    /// Requests the specific <see cref="SpriteSheetIconSet{TKey}" /> to refresh its icons.
+    /// </summary>
+    protected abstract void RequestIconRefresh();
+
+    private void Icon_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.RaisePropertyChanged(nameof(SpriteSheetIcon));
+    }
 }
 
 /// <summary>

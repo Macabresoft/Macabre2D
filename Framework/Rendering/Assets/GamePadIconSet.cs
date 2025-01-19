@@ -18,7 +18,7 @@ public sealed class GamePadIconSet : SpriteSheetIconSet<Buttons> {
     }
 
     /// <inheritdoc />
-    public override void RefreshIcons() {
+    protected override void RequestIconRefresh() {
         var keys = Enum.GetValues<Buttons>().ToList();
         keys.Remove(Buttons.None);
 

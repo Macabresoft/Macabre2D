@@ -18,7 +18,7 @@ public sealed class KeyboardIconSet : SpriteSheetIconSet<Keys> {
     }
 
     /// <inheritdoc />
-    public override void RefreshIcons() {
+    protected override void RequestIconRefresh() {
         var keys = Enum.GetValues<Keys>().ToList();
         keys.Remove(Keys.None);
 
