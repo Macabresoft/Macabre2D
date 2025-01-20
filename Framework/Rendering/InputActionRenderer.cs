@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -34,6 +35,11 @@ public class InputActionRenderer : BaseSpriteEntity {
     private Buttons _secondaryButton = Buttons.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
+
+    /// <summary>
+    /// Indicates that the size of this element has changed.
+    /// </summary>
+    public event EventHandler? SizeChanged;
 
     /// <summary>
     /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
@@ -287,5 +293,6 @@ public class InputActionRenderer : BaseSpriteEntity {
         }
 
         this.Reset();
+        this.SizeChanged.SafeInvoke(this);
     }
 }

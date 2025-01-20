@@ -102,19 +102,19 @@ public class InputBindings {
         other._mouseBindings.Clear();
 
         foreach (var (gamePadAction, gamePadButton) in this._primaryGamePadBindings) {
-            other._primaryGamePadBindings.Add(gamePadAction, gamePadButton);
+            other._primaryGamePadBindings[gamePadAction] = gamePadButton;
         }
 
         foreach (var (gamePadAction, gamePadButton) in this._secondaryGamePadBindings) {
-            other._secondaryGamePadBindings.Add(gamePadAction, gamePadButton);
+            other._secondaryGamePadBindings[gamePadAction] = gamePadButton;
         }
 
         foreach (var (keyAction, key) in this._keyBindings) {
-            other._keyBindings.Add(keyAction, key);
+            other._keyBindings[keyAction] = key;
         }
 
         foreach (var (mouseAction, mouseButton) in this._mouseBindings) {
-            other._mouseBindings.Add(mouseAction, mouseButton);
+            other._mouseBindings[mouseAction] = mouseButton;
         }
 
         other.IsMouseEnabled = this.IsMouseEnabled;
