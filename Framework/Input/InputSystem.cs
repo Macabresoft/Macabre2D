@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
@@ -12,6 +13,17 @@ public enum InputActionState {
     Held,
     Released,
     None
+}
+
+/// <summary>
+/// The kind of input.
+/// </summary>
+[Flags]
+public enum InputKind : byte {
+    None,
+    GamePad = 1 << 0,
+    Keyboard = 1 << 1,
+    Mouse = 1 << 2
 }
 
 /// <summary>
@@ -37,6 +49,14 @@ public interface IInputSystem {
     InputActionState GetInputActionState(InputAction action);
 
     /// <summary>
+    /// Gets the input action's state for the current frame.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="inputKind">A value indicating which inputs to check.</param>
+    /// <returns>The input action's state.</returns>
+    InputActionState GetInputActionState(InputAction action, InputKind inputKind);
+
+    /// <summary>
     /// Gets a value indicating whether a given action is being held.
     /// </summary>
     /// <param name="action">The action.</param>
@@ -49,6 +69,14 @@ public interface IInputSystem {
     /// <param name="action">The action.</param>
     /// <returns>A value indicating whether the action is being newly pressed.</returns>
     bool IsPressed(InputAction action);
+
+    /// <summary>
+    /// Gets a value indicating whether a given action is being newly pressed.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="inputKind">A value indicating which inputs to check.</param>
+    /// <returns>A value indicating whether the action is being newly pressed.</returns>
+    bool IsPressed(InputAction action, InputKind inputKind);
 
     /// <summary>
     /// Gets a value indicating whether a given action is being newly released.
@@ -80,7 +108,28 @@ public class InputSystem : GameSystem, IInputSystem {
     public InputActionState GetInputActionState(InputAction action) {
         if (!this._actionToButtonState.TryGetValue(action, out var result)) {
             this.Game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton);
-            result = this.ResolveState(action, primaryButton, secondaryButton, key, mouseButton);
+            result = this.ResolveState(action, primaryButton, secondaryButton, key, mouseButton, true);
+        }
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public InputActionState GetInputActionState(InputAction action, InputKind inputKind) {
+        var result = InputActionState.None;
+        if (inputKind.HasFlag(InputKind.GamePad)) {
+            this.Game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton);
+            result = this.ResolveState(action, primaryButton, secondaryButton, Keys.None, MouseButton.None, false);
+        }
+
+        if (result == InputActionState.None && inputKind.HasFlag(InputKind.Keyboard)) {
+            this.Game.InputBindings.TryGetBindings(action, out Keys key);
+            result = this.ResolveState(action, Buttons.None, Buttons.None, key, MouseButton.None, false);
+        }
+
+        if (result == InputActionState.None && inputKind.HasFlag(InputKind.Mouse)) {
+            this.Game.InputBindings.TryGetBindings(action, out MouseButton button);
+            result = this.ResolveState(action, Buttons.None, Buttons.None, Keys.None, button, false);
         }
 
         return result;
@@ -91,6 +140,9 @@ public class InputSystem : GameSystem, IInputSystem {
 
     /// <inheritdoc />
     public bool IsPressed(InputAction action) => this.GetInputActionState(action) is InputActionState.Pressed;
+
+    /// <inheritdoc />
+    public bool IsPressed(InputAction action, InputKind inputKind) => this.GetInputActionState(action, inputKind) is InputActionState.Pressed;
 
     /// <inheritdoc />
     public bool IsReleased(InputAction action) => this.GetInputActionState(action) is InputActionState.Released;
@@ -179,7 +231,13 @@ public class InputSystem : GameSystem, IInputSystem {
         this._inputState.IsGamePadButtonNewlyReleased(primaryButton) ||
         this._inputState.IsGamePadButtonNewlyReleased(secondaryButton);
 
-    private InputActionState ResolveState(InputAction action, Buttons primaryButton, Buttons secondaryButton, Keys key, MouseButton mouseButton) {
+    private InputActionState ResolveState(
+        InputAction action,
+        Buttons primaryButton,
+        Buttons secondaryButton,
+        Keys key,
+        MouseButton mouseButton,
+        bool cacheResult) {
         var result = InputActionState.None;
 
         if (this.Game.InputBindings.DesiredInputDevice == InputDevice.GamePad) {
@@ -216,7 +274,10 @@ public class InputSystem : GameSystem, IInputSystem {
             }
         }
 
-        this._actionToButtonState[action] = result;
+        if (cacheResult) {
+            this._actionToButtonState[action] = result;
+        }
+
         return result;
     }
 
@@ -224,8 +285,10 @@ public class InputSystem : GameSystem, IInputSystem {
         public float HorizontalAxis => 0f;
         public float VerticalAxis => 0f;
         public InputActionState GetInputActionState(InputAction action) => InputActionState.None;
+        public InputActionState GetInputActionState(InputAction action, InputKind inputKind) => InputActionState.None;
         public bool IsHeld(InputAction action) => false;
         public bool IsPressed(InputAction action) => false;
+        public bool IsPressed(InputAction action, InputKind inputKind) => false;
         public bool IsReleased(InputAction action) => false;
     }
 }

@@ -212,4 +212,33 @@ public class InputBindings {
         result = this._mouseBindings.TryGetValue(action, out mouseButton) || result;
         return result;
     }
+
+    /// <summary>
+    /// Gets all possible bindings for an action.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="mouseButton">The mouse binding.</param>
+    /// <returns>A value indicating whether any of the bindings exist.</returns>
+    public bool TryGetBindings(InputAction action, out MouseButton mouseButton) => this._mouseBindings.TryGetValue(action, out mouseButton);
+
+    /// <summary>
+    /// Gets all possible bindings for an action.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="key">The key binding.</param>
+    /// <returns>A value indicating whether any of the bindings exist.</returns>
+    public bool TryGetBindings(InputAction action, out Keys key) => this._keyBindings.TryGetValue(action, out key);
+
+    /// <summary>
+    /// Gets all possible bindings for an action.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    /// <param name="primaryGamePadButton">The primary game pad button binding.</param>
+    /// <param name="secondaryGamePadButton">The secondary game pad button binding.</param>
+    /// <returns>A value indicating whether any of the bindings exist.</returns>
+    public bool TryGetBindings(InputAction action, out Buttons primaryGamePadButton, out Buttons secondaryGamePadButton) {
+        var result = this._primaryGamePadBindings.TryGetValue(action, out primaryGamePadButton);
+        result = this._secondaryGamePadBindings.TryGetValue(action, out secondaryGamePadButton) || result;
+        return result;
+    }
 }
