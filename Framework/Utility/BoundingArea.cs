@@ -55,33 +55,6 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     }
 
     /// <summary>
-    /// Combines the two bounding areas by taking the minimum and maximum values of both into account.
-    /// </summary>
-    /// <param name="other">The other bounding area.</param>
-    /// <returns>The combined bounding area.</returns>
-    public BoundingArea Combine(BoundingArea other) {
-        if (this.IsEmpty) {
-            return other;
-        }
-
-        if (other.IsEmpty) {
-            return this;
-        }
-
-        return new BoundingArea(
-            Math.Min(this.Minimum.X, other.Minimum.X),
-            Math.Max(this.Maximum.X, other.Maximum.X),
-            Math.Min(this.Minimum.Y, other.Minimum.Y),
-            Math.Max(this.Maximum.Y, other.Maximum.Y));
-    }
-
-    /// <summary>
-    /// Creates a <see cref="Vector2" /> that represents the size of this instance.
-    /// </summary>
-    /// <returns>The size.</returns>
-    public Vector2 ToSize() => new(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
     /// <param name="minimum">The minimum.</param>
@@ -115,6 +88,43 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     public bool IsEmpty => this.Minimum == this.Maximum;
 
     /// <summary>
+    /// Combines the two bounding areas by taking the minimum and maximum values of both into account.
+    /// </summary>
+    /// <param name="other">The other bounding area.</param>
+    /// <returns>The combined bounding area.</returns>
+    public BoundingArea Combine(BoundingArea other) {
+        if (this.IsEmpty) {
+            return other;
+        }
+
+        if (other.IsEmpty) {
+            return this;
+        }
+
+        return new BoundingArea(
+            Math.Min(this.Minimum.X, other.Minimum.X),
+            Math.Max(this.Maximum.X, other.Maximum.X),
+            Math.Min(this.Minimum.Y, other.Minimum.Y),
+            Math.Max(this.Maximum.Y, other.Maximum.Y));
+    }
+
+    /// <summary>
+    /// Checks equality.
+    /// </summary>
+    /// <param name="first">The first.</param>
+    /// <param name="second">The second.</param>
+    /// <returns>A value indicating equality.</returns>
+    public static bool operator ==(BoundingArea first, BoundingArea second) => first.Equals(second);
+
+    /// <summary>
+    /// Checks non-equality.
+    /// </summary>
+    /// <param name="first">The first.</param>
+    /// <param name="second">The second.</param>
+    /// <returns>A value indicating non-equality.</returns>
+    public static bool operator !=(BoundingArea first, BoundingArea second) => !first.Equals(second);
+
+    /// <summary>
     /// Combines the specified bounding areas.
     /// </summary>
     /// <param name="boundingAreas">The bounding areas.</param>
@@ -143,7 +153,7 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area contains the specified position.
+    /// Gets a value indicating whether this bounding area contains the specified position.
     /// </summary>
     /// <param name="position">The position.</param>
     /// <returns><c>true</c>, if this bounding area contains the position, <c>false</c> otherwise.</returns>
@@ -185,6 +195,25 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
         (this.Maximum.Y >= other.Maximum.Y || this.Maximum.Y.HasMinimalDifference(other.Maximum.Y));
 
     /// <summary>
+    /// Determines if this <see cref="BoundingArea" /> equals the other <see cref="BoundingArea" />.
+    /// </summary>
+    /// <param name="other">The other.</param>
+    /// <returns>A value indicating equality.</returns>
+    public bool Equals(BoundingArea other) => this.Minimum == other.Minimum && this.Maximum == other.Maximum;
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) {
+        if (obj is BoundingArea boundingArea) {
+            return this.Equals(boundingArea);
+        }
+
+        return false;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(this.Maximum, this.Minimum);
+
+    /// <summary>
     /// Gets a value indicating whether this bounding area overlaps another specified
     /// bounding area.
     /// </summary>
@@ -220,38 +249,12 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
         return true;
     }
 
-    /// <inheritdoc />
-    public override bool Equals(object? obj) {
-        if (obj is BoundingArea boundingArea) {
-            return this.Equals(boundingArea);
-        }
-
-        return false;
-    }
-
     /// <summary>
-    /// Checks equality.
+    /// Creates a <see cref="Vector2" /> that represents the size of this instance.
     /// </summary>
-    /// <param name="first">The first.</param>
-    /// <param name="second">The second.</param>
-    /// <returns>A value indicating equality.</returns>
-    public static bool operator ==(BoundingArea first, BoundingArea second) => first.Equals(second);
-
-    /// <summary>
-    /// Checks non-equality.
-    /// </summary>
-    /// <param name="first">The first.</param>
-    /// <param name="second">The second.</param>
-    /// <returns>A value indicating non-equality.</returns>
-    public static bool operator !=(BoundingArea first, BoundingArea second) => !first.Equals(second);
+    /// <returns>The size.</returns>
+    public Vector2 ToSize() => new(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(this.Maximum, this.Minimum);
-
-    /// <summary>
-    /// Determines if this <see cref="BoundingArea" /> equals the other <see cref="BoundingArea" />.
-    /// </summary>
-    /// <param name="other">The other.</param>
-    /// <returns>A value indicating equality.</returns>
-    public bool Equals(BoundingArea other) => this.Minimum == other.Minimum && this.Maximum == other.Maximum;
+    public override string ToString() => $"Minimum: {this.Minimum}, Maximum: {this.Maximum}, IsEmpty: {this.IsEmpty}";
 }

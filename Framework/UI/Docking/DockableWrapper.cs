@@ -79,7 +79,8 @@ public class DockableWrapper : BaseDockable, IDockable {
 
         var boundableChildren = this.Children
             .OfType<IBoundableEntity>()
-            .Where(x => x.TransformInheritance == TransformInheritance.Both && !this._typesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
+            .Where(x => !this._typesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
+        
         foreach (var child in boundableChildren) {
             this._boundables.Add(child);
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
