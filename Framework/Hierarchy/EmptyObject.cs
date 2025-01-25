@@ -274,6 +274,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     public T GetOrAddChild<T>() where T : class, IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
 
     /// <inheritdoc />
+    public IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new() => [];
+
+    /// <inheritdoc />
     public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />

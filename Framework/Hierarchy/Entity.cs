@@ -119,6 +119,18 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     T GetOrAddChild<T>() where T : class, IEntity, new();
 
     /// <summary>
+    /// Gets children of the specified type up to a certain amount.
+    /// </summary>
+    /// <remarks>
+    /// If there are not enough children, more will be added automatically.  If this entity
+    /// has more children than requested, it will not delete the additional children.
+    /// </remarks>
+    /// <param name="amountOfChildren">The amount of children to get.</param>
+    /// <typeparam name="T">The type of child to find.</typeparam>
+    /// <returns>The entity that was found or added.</returns>
+    IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new();
+
+    /// <summary>
     /// Initializes this entity as a descendent of <paramref name="scene" /> and
     /// <paramref name="parent" />.
     /// </summary>
@@ -384,6 +396,25 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public T GetOrAddChild<T>() where T : class, IEntity, new() => this.TryGetChild<T>(out var entity) ? entity : this.AddChild<T>();
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new() {
+        if (amountOfChildren <= 0) {
+            return [];
+        }
+
+        var children = this.Children.OfType<T>().ToList();
+
+        if (children.Count > amountOfChildren) {
+            return children.Take(amountOfChildren).ToList();
+        }
+
+        while (children.Count < amountOfChildren) {
+            children.Add(this.AddChild<T>());
+        }
+
+        return children;
+    }
 
     /// <inheritdoc />
     public virtual void Initialize(IScene scene, IEntity parent) {
