@@ -56,7 +56,7 @@ public struct InputState : IEquatable<InputState> {
     /// <summary>
     /// Checks whether any game pad buttons are being pressed.
     /// </summary>
-    /// <returns>A value indicating whether or not any game pad buttons are being pressed.</returns>
+    /// <returns>A value indicating whether any game pad buttons are being pressed.</returns>
     public bool IsGamePadActive() =>
         this.CurrentGamePadState.IsConnected &&
         this.TryGetFirstActiveButton(out _);
@@ -64,8 +64,22 @@ public struct InputState : IEquatable<InputState> {
     /// <summary>
     /// Checks whether any keyboard keys are being pressed.
     /// </summary>
-    /// <returns>A value indicating whether or not any keyboard keys are being pressed.</returns>
+    /// <returns>A value indicating whether any keyboard keys are being pressed.</returns>
     public bool IsKeyboardActive() => this.CurrentKeyboardState.GetPressedKeyCount() > 0;
+
+    /// <summary>
+    /// Checks whether any mouse buttons are being pressed or if
+    /// </summary>
+    /// <returns>A value indicating whether the mouse is active.</returns>
+    public bool IsMouseActive() =>
+        this.CurrentMouseState.LeftButton is ButtonState.Pressed ||
+        this.CurrentMouseState.MiddleButton is ButtonState.Pressed ||
+        this.CurrentMouseState.RightButton is ButtonState.Pressed ||
+        this.CurrentMouseState.XButton1 is ButtonState.Pressed ||
+        this.CurrentMouseState.XButton2 is ButtonState.Pressed ||
+        Math.Abs(this.CurrentMouseState.Position.X - this.PreviousMouseState.Position.X) > 2 ||
+        Math.Abs(this.CurrentMouseState.Position.Y - this.PreviousMouseState.Position.Y) > 2 ||
+        Math.Abs(this.CurrentMouseState.ScrollWheelValue - this.PreviousMouseState.ScrollWheelValue) > 2;
 
     /// <summary>
     /// Tries to get the first active button.

@@ -459,7 +459,7 @@ public class BaseGame : Game, IGame {
                 if (this.DesiredInputDevice != InputDevice.GamePad && this.InputState.IsGamePadActive()) {
                     this.DesiredInputDevice = InputDevice.GamePad;
                 }
-                else if (this.DesiredInputDevice != InputDevice.KeyboardMouse && this.InputState.IsKeyboardActive()) {
+                else if (this.DesiredInputDevice != InputDevice.KeyboardMouse && (this.InputState.IsKeyboardActive() || this.InputState.IsMouseActive())) {
                     this.DesiredInputDevice = InputDevice.KeyboardMouse;
                 }
             }
