@@ -101,15 +101,33 @@ public struct InputState : IEquatable<InputState> {
     }
 
     /// <summary>
-    /// Tries to get the first active mouse button.
+    /// Tries to get the first pressed mouse button.
     /// </summary>
     /// <param name="button">The mouse button.</param>
-    /// <returns>A value indicating whether an active button was found.</returns>
-    public bool TryGetFirstActiveMouseButton(out MouseButton button) {
+    /// <returns>A value indicating whether an pressed button was found.</returns>
+    public bool TryGetFirstPressedMouseButton(out MouseButton button) {
         button = MouseButton.None;
 
         foreach (var availableButton in Enum.GetValues<MouseButton>()) {
             if (this.IsMouseButtonNewlyPressed(availableButton)) {
+                button = availableButton;
+                break;
+            }
+        }
+
+        return button != MouseButton.None;
+    }
+
+    /// <summary>
+    /// Tries to get the first released mouse button.
+    /// </summary>
+    /// <param name="button">The mouse button.</param>
+    /// <returns>A value indicating whether an released button was found.</returns>
+    public bool TryGetFirstReleasedMouseButton(out MouseButton button) {
+        button = MouseButton.None;
+
+        foreach (var availableButton in Enum.GetValues<MouseButton>()) {
+            if (this.IsMouseButtonNewlyReleased(availableButton)) {
                 button = availableButton;
                 break;
             }
