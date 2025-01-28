@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -36,9 +35,8 @@ public sealed class LineCollider : PolygonCollider {
     public Vector2 End {
         get => this.Vertices[1];
         set {
-            if (this.TrySetVertex(1, value)) {
-                this.RaisePropertyChanged();
-            }
+            this.ResetVertices([this.Start, value], this.Body != null);
+            this.RaisePropertyChanged();
         }
     }
 
@@ -51,21 +49,16 @@ public sealed class LineCollider : PolygonCollider {
     public Vector2 Start {
         get => this.Vertices[0];
         set {
-            if (this.TrySetVertex(0, value)) {
-                this.RaisePropertyChanged();
-            }
+            this.ResetVertices([value, this.End], this.Body != null);
+            this.RaisePropertyChanged();
         }
     }
 
     /// <inheritdoc />
-    public override bool Contains(Collider other) {
-        return false;
-    }
+    public override bool Contains(Collider other) => false;
 
     /// <inheritdoc />
-    public override bool Contains(Vector2 point) {
-        return false;
-    }
+    public override bool Contains(Vector2 point) => false;
 
     /// <inheritdoc />
     protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
@@ -87,11 +80,10 @@ public sealed class LineCollider : PolygonCollider {
     }
 
     /// <inheritdoc />
-    protected override List<Vector2> GetNormals() {
-        return new List<Vector2> {
+    protected override List<Vector2> GetNormals() =>
+        new() {
             this.GetNormal(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1))
         };
-    }
 
     /// <inheritdoc />
     protected override bool TryHit(LineSegment ray, out RaycastHit result) {

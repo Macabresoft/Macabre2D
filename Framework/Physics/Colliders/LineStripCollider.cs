@@ -79,7 +79,7 @@ public class LineStripCollider : PolygonCollider {
     /// </summary>
     /// <param name="point">The point.</param>
     /// <param name="foundLineSegment">The found line segment.</param>
-    /// <returns>A value indicating whether or not a matching line segment was found.</returns>
+    /// <returns>A value indicating whether a matching line segment was found.</returns>
     public bool TryGetLineSegmentContainingPoint(Vector2 point, out LineSegment foundLineSegment) {
         foundLineSegment = LineSegment.Empty;
 

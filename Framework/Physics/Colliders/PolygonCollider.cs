@@ -69,7 +69,7 @@ public abstract class PolygonCollider : Collider {
     public override ColliderType ColliderType => ColliderType.Polygon;
 
     /// <summary>
-    /// Gets a value indicating whether or not the first and final vertex should be connected.
+    /// Gets a value indicating whether the first and final vertex should be connected.
     /// </summary>
     public virtual bool ConnectFirstAndFinalVertex => true;
 
@@ -288,7 +288,7 @@ public abstract class PolygonCollider : Collider {
     /// Clears the vertex collection and adds the newly provided vertices.
     /// </summary>
     /// <param name="vertices">The new vertices.</param>
-    /// <param name="performFullReset">A value indicating whether or not a full reset should be performed. Mark this false if calling ResetVertices from the Reset method.</param>
+    /// <param name="performFullReset">A value indicating whether a full reset should be performed. Mark this false if calling ResetVertices from the Reset method.</param>
     protected void ResetVertices(IEnumerable<Vector2> vertices, bool performFullReset) {
         this._vertices.Clear();
         this._vertices.AddRange(vertices);
@@ -324,24 +324,7 @@ public abstract class PolygonCollider : Collider {
         result = hasIntersection ? new RaycastHit(this, contactPoint, normal) : RaycastHit.Empty;
         return hasIntersection;
     }
-
-    /// <summary>
-    /// Tries to set the vertex at the specified index.
-    /// </summary>
-    /// <param name="index">The index.</param>
-    /// <param name="vertex">The vertex.</param>
-    /// <returns>A value indicating whether or not the vertex was set at the index.</returns>
-    protected bool TrySetVertex(int index, Vector2 vertex) {
-        var result = false;
-        if (index >= 0 && index < this._vertices.Count) {
-            this._vertices[index] = vertex;
-            this.Reset();
-            result = true;
-        }
-
-        return result;
-    }
-
+    
     private List<Vector2> CreateWorldPoints() {
         var worldPoints = new List<Vector2>();
         if (this.Body != null) {
