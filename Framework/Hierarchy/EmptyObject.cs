@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
+public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity, IQueueableSpriteAnimator {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -26,6 +26,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
 
     /// <inheritdoc />
     public event EventHandler? Deactivated;
+
+    /// <inheritdoc />
+    public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -49,6 +52,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     /// </summary>
     public static ICamera Camera => Instance;
 
+    /// <inheritdoc />
+    public SpriteAnimation? CurrentAnimation => null;
+
     /// <summary>
     /// Gets the singleton instance as <see cref="IEntity" />.
     /// </summary>
@@ -58,10 +64,19 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
+    public ByteOverride FrameRateOverride { get; } = new();
+
+    /// <inheritdoc />
     public IGame Game => BaseGame.Empty;
 
     /// <inheritdoc />
     public bool IsActive => false;
+
+    /// <inheritdoc />
+    public bool IsLooping => false;
+
+    /// <inheritdoc />
+    public bool IsPlaying => false;
 
     /// <inheritdoc />
     public Layers LayersToExcludeFromRender => default;
@@ -71,6 +86,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
 
     /// <inheritdoc />
     public PixelSnap PixelSnap => PixelSnap.No;
+
+    /// <inheritdoc />
+    public QueueableSpriteAnimation? QueuedAnimation => null;
 
     /// <summary>
     /// Gets the singleton instance as <see cref="IRenderableEntity" />.
@@ -87,6 +105,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     /// Gets the singleton instance as <see cref="IScene" />.
     /// </summary>
     public static IScene Scene => Instance;
+
+    /// <inheritdoc />
+    public bool ShouldAnimate => false;
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;
@@ -244,6 +265,14 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     }
 
     /// <inheritdoc />
+    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+    }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
+    }
+
+    /// <inheritdoc />
     public IEntity FindChild(Guid id) => this;
 
     /// <inheritdoc />
@@ -277,6 +306,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     public IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new() => [];
 
     /// <inheritdoc />
+    public float GetPercentageComplete() => 0f;
+
+    /// <inheritdoc />
     public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />
@@ -284,6 +316,10 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
 
     /// <inheritdoc />
     public Vector2 GetWorldPosition(Vector2 originOffset) => this.WorldPosition;
+
+    /// <inheritdoc />
+    public void IncrementTime(FrameTime frameTime) {
+    }
 
 
     /// <inheritdoc />
@@ -320,8 +356,28 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
     }
 
     /// <inheritdoc />
+    public void NextFrame() {
+    }
+
+    /// <inheritdoc />
     public void OnRemovedFromSceneTree() {
         throw new NotSupportedException("An empty entity should never be added to a scene tree, much less removed.");
+    }
+
+    /// <inheritdoc />
+    public void Pause() {
+    }
+
+    /// <inheritdoc />
+    public void Play() {
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimation animation, bool shouldLoop) {
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
     }
 
     /// <inheritdoc />
@@ -379,6 +435,14 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity {
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
+    }
+
+    /// <inheritdoc />
+    public void Stop() {
+    }
+
+    /// <inheritdoc />
+    public void Stop(bool eraseQueue) {
     }
 
     /// <inheritdoc />

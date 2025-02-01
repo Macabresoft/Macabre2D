@@ -3,26 +3,22 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Macabresoft.Core;
 
 /// <summary>
-/// A sprite animator that can have animations queued up.
+/// Interface for a <see cref="ISpriteAnimator" /> which can queue up animations.
 /// </summary>
-[Category(CommonCategories.Animation)]
-public class QueueableSpriteAnimator : BaseSpriteAnimator {
-    private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
-
+public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// <summary>
     /// An event for when an animation finishes.
     /// </summary>
-    public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
+    event EventHandler<SpriteAnimation?>? OnAnimationFinished;
 
     /// <summary>
     /// Gets the currently queued animation if it exists.
     /// </summary>
-    public QueueableSpriteAnimation? QueuedAnimation { get; private set; }
+    QueueableSpriteAnimation? QueuedAnimation { get; }
 
     /// <summary>
     /// Enqueues the specified animation.
@@ -32,11 +28,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
     /// animation has been queued.
     /// </param>
-    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
-        if (animation.SpriteSheet != null) {
-            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
-        }
-    }
+    void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely);
 
     /// <summary>
     /// Enqueues the specified animation.
@@ -46,11 +38,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
     /// animation has been queued.
     /// </param>
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
-        if (animationReference.PackagedAsset is { } animation) {
-            this.Enqueue(animation, shouldLoopIndefinitely);
-        }
-    }
+    void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely);
 
     /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
@@ -59,7 +47,54 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
     /// pause on the final frame.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
+    /// <param name="shouldLoop">A value indicating whether the animation should loop.</param>
+    void Play(SpriteAnimation animation, bool shouldLoop);
+
+    /// <summary>
+    /// Plays the specified animation, which clears out the current queue and replaces the
+    /// previous animation. If the animation is a looping animation, it will continue to play
+    /// until a new animation is queued. If the animation is not a looping animation, it will
+    /// pause on the final frame.
+    /// </summary>
+    /// <param name="animationReference">The animation reference.</param>
+    /// <param name="shouldLoop">A value indicating whether the animation should loop.</param>
+    void Play(SpriteAnimationReference animationReference, bool shouldLoop);
+
+    /// <summary>
+    /// Stops this instance.
+    /// </summary>
+    /// <param name="eraseQueue">A value indicating whether the queue should be erased.</param>
+    void Stop(bool eraseQueue);
+}
+
+/// <summary>
+/// A sprite animator that can have animations queued up.
+/// </summary>
+[Category(CommonCategories.Animation)]
+public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnimator {
+    private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
+
+    /// <inheritdoc />
+    public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
+
+    /// <inheritdoc />
+    public QueueableSpriteAnimation? QueuedAnimation { get; private set; }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+        if (animation.SpriteSheet != null) {
+            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
+        }
+    }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
+        if (animationReference.PackagedAsset is { } animation) {
+            this.Enqueue(animation, shouldLoopIndefinitely);
+        }
+    }
+
+    /// <inheritdoc />
     public void Play(SpriteAnimation animation, bool shouldLoop) {
         if (this.QueuedAnimation != null) {
             this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation.Animation);
@@ -71,31 +106,19 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator {
         this.IsPlaying = true;
     }
 
-    /// <summary>
-    /// Plays the specified animation, which clears out the current queue and replaces the
-    /// previous animation. If the animation is a looping animation, it will continue to play
-    /// until a new animation is queued. If the animation is not a looping animation, it will
-    /// pause on the final frame.
-    /// </summary>
-    /// <param name="animationReference">The animation reference.</param>
-    /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
+    /// <inheritdoc />
     public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
         if (animationReference.PackagedAsset is { } animation) {
             this.Play(animation, shouldLoop);
         }
     }
 
-    /// <summary>
-    /// Stops this instance.
-    /// </summary>
+    /// <inheritdoc />
     public override void Stop() {
         this.Stop(true);
     }
 
-    /// <summary>
-    /// Stops this instance.
-    /// </summary>
-    /// <param name="eraseQueue">A value indicating whether or not the queue should be erased.</param>
+    /// <inheritdoc />
     public void Stop(bool eraseQueue) {
         this.IsEnabled = false;
         this.IsPlaying = false;

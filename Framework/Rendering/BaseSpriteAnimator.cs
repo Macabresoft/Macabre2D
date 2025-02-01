@@ -5,23 +5,60 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A base class for sprite animators.
+/// Interface for sprite animators.
 /// </summary>
-public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
-    private bool _isPlaying;
-
+public interface ISpriteAnimator : IAnimatableEntity, ISpriteEntity {
     /// <summary>
     /// Gets the current animation.
     /// </summary>
+    SpriteAnimation? CurrentAnimation { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this is looping.
+    /// </summary>
+    bool IsLooping { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this is playing.
+    /// </summary>
+    bool IsPlaying { get; }
+
+    /// <summary>
+    /// Gets the animation percentage complete as a value between 0 and 1.
+    /// </summary>
+    /// <returns>The percentage completed.</returns>
+    float GetPercentageComplete();
+
+    /// <summary>
+    /// Pauses this instance.
+    /// </summary>
+    void Pause();
+
+    /// <summary>
+    /// Plays this instance.
+    /// </summary>
+    void Play();
+
+    /// <summary>
+    /// Stops this instance.
+    /// </summary>
+    void Stop();
+}
+
+/// <summary>
+/// A base class for sprite animators.
+/// </summary>
+public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
+    private bool _isPlaying;
+
+    /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => this.GetCurrentAnimation()?.Animation;
 
     /// <inheritdoc />
     [DataMember(Order = 11, Name = "Frame Rate")]
     public ByteOverride FrameRateOverride { get; } = new();
 
-    /// <summary>
-    /// Gets a value indicating whether this is looping.
-    /// </summary>
+    /// <inheritdoc />
     public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
 
     /// <inheritdoc />
@@ -30,9 +67,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
     /// <inheritdoc />
     public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
 
-    /// <summary>
-    /// Gets a value indicating whether this is playing.
-    /// </summary>
+    /// <inheritdoc />
     public bool IsPlaying {
         get => this._isPlaying;
         protected set {
@@ -56,10 +91,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
         this.FrameRateOverride.PropertyChanged -= this.FrameRateOverride_PropertyChanged;
     }
 
-    /// <summary>
-    /// Gets the animation percentage complete as a value between 0 and 1.
-    /// </summary>
-    /// <returns>The percentage completed.</returns>
+    /// <inheritdoc />
     public float GetPercentageComplete() {
         var result = 0f;
 
@@ -98,24 +130,18 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IAnimatableEntity {
         }
     }
 
-    /// <summary>
-    /// Pauses this instance.
-    /// </summary>
+    /// <inheritdoc />
     public void Pause() {
         this.IsPlaying = false;
     }
 
-    /// <summary>
-    /// Plays this instance.
-    /// </summary>
+    /// <inheritdoc />
     public void Play() {
         this.IsPlaying = true;
         this.Reset();
     }
 
-    /// <summary>
-    /// Stops this instance.
-    /// </summary>
+    /// <inheritdoc />
     public virtual void Stop() {
         this.IsPlaying = false;
         this.ResetAnimation();
