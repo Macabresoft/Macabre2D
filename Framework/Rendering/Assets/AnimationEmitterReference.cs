@@ -77,11 +77,12 @@ public class AnimationEmitterReference : SpriteSheetReference {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="timeMultiplier">A time multiplier for incrementing <see cref="TimeBetweenEmissions" />.</param>
-    /// <param name="trySpawn">A value indicating whether or not this update should attempt a new spawn if ready.</param>
+    /// <param name="trySpawn">A value indicating whether this update should attempt a new spawn if ready.</param>
     /// <param name="spawnWorldPosition">The new spawn position.</param>
     /// <param name="velocity">The velocity.</param>
     /// <param name="orientation">The orientation.</param>
     /// <param name="project">The project.</param>
+    /// <param name="spawnCallback">A callback for when a new animation is spawned.</param>
     public void UpdateEmissions(
         FrameTime frameTime,
         float timeMultiplier,
@@ -89,24 +90,44 @@ public class AnimationEmitterReference : SpriteSheetReference {
         Vector2 spawnWorldPosition,
         Vector2 velocity,
         SpriteEffects orientation,
-        IGameProject project) {
-        this.TimeBetweenEmissions.Increment(frameTime, timeMultiplier);
-
-        if (this.TimeBetweenEmissions.State == TimerState.Finished && trySpawn && this.TryGetAvailableAnimation(out var newAnimation)) {
-            var x = spawnWorldPosition.X + this.EmissionOffset.X + (-this.SpawnVariation.X * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.X);
-            var y = spawnWorldPosition.Y + this.EmissionOffset.Y + (-this.SpawnVariation.Y * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.Y);
-            newAnimation.Position = new Vector2(x, y).ToPixelSnappedValue(project);
-            newAnimation.Velocity = velocity;
-            newAnimation.Orientation = orientation;
-            newAnimation.Reset();
-            this._runningAnimations.Add(newAnimation);
-            this.TimeBetweenEmissions.Restart();
+        IGameProject project,
+        Action<PositionalSpriteAnimation>? spawnCallback) {
+        if (this.TryGetAvailableAnimation(frameTime, timeMultiplier, trySpawn, out var newAnimation)) {
+            this.UpdateEmissions(newAnimation, spawnWorldPosition, velocity, orientation, project);
+            spawnCallback?.Invoke(newAnimation);
         }
     }
 
+    /// <summary>
+    /// Updates emissions without animating. This will simply create new emissions according to <see cref="TimeBetweenEmissions" />.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="timeMultiplier">A time multiplier for incrementing <see cref="TimeBetweenEmissions" />.</param>
+    /// <param name="trySpawn">A value indicating whether this update should attempt a new spawn if ready.</param>
+    /// <param name="spawnWorldPositionCallback">The callback to get a world position if there is a new animation.</param>
+    /// <param name="velocity">The velocity.</param>
+    /// <param name="orientation">The orientation.</param>
+    /// <param name="project">The project.</param>
+    /// <param name="spawnCallback">A callback for when a new animation is spawned.</param>
+    public void UpdateEmissions(
+        FrameTime frameTime,
+        float timeMultiplier,
+        bool trySpawn,
+        Func<Vector2> spawnWorldPositionCallback,
+        Vector2 velocity,
+        SpriteEffects orientation,
+        IGameProject project,
+        Action<PositionalSpriteAnimation>? spawnCallback) {
+        if (this.TryGetAvailableAnimation(frameTime, timeMultiplier, trySpawn, out var newAnimation)) {
+            this.UpdateEmissions(newAnimation, spawnWorldPositionCallback.Invoke(), velocity, orientation, project);
+            spawnCallback?.Invoke(newAnimation);
+        }
+    }
 
-    private bool TryGetAvailableAnimation([NotNullWhen(true)] out PositionalSpriteAnimation? animation) {
-        if (this._availableAnimations.Any()) {
+    private bool TryGetAvailableAnimation(FrameTime frameTime, float timeMultiplier, bool trySpawn, [NotNullWhen(true)] out PositionalSpriteAnimation? animation) {
+        this.TimeBetweenEmissions.Increment(frameTime, timeMultiplier);
+
+        if (trySpawn && this.TimeBetweenEmissions.State == TimerState.Finished && this._availableAnimations.Any()) {
             var index = this._randomizer.Next(0, this._availableAnimations.Count - 1);
             animation = this._availableAnimations[index];
         }
@@ -115,5 +136,21 @@ public class AnimationEmitterReference : SpriteSheetReference {
         }
 
         return animation != null;
+    }
+
+    private void UpdateEmissions(
+        PositionalSpriteAnimation newAnimation,
+        Vector2 spawnWorldPosition,
+        Vector2 velocity,
+        SpriteEffects orientation,
+        IGameProject project) {
+        var x = spawnWorldPosition.X + this.EmissionOffset.X + (-this.SpawnVariation.X * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.X);
+        var y = spawnWorldPosition.Y + this.EmissionOffset.Y + (-this.SpawnVariation.Y * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.Y);
+        newAnimation.Position = new Vector2(x, y).ToPixelSnappedValue(project);
+        newAnimation.Velocity = velocity;
+        newAnimation.Orientation = orientation;
+        newAnimation.Reset();
+        this._runningAnimations.Add(newAnimation);
+        this.TimeBetweenEmissions.Restart();
     }
 }
