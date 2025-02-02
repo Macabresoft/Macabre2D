@@ -42,7 +42,7 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     /// <summary>
     /// The width of this instance.
     /// </summary>
-    public readonly float Width => this.Maximum.X - this.Minimum.X;
+    public float Width => this.Maximum.X - this.Minimum.X;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
@@ -209,6 +209,13 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
 
         return false;
     }
+
+    /// <summary>
+    /// Returns a new <see cref="BoundingArea" /> with the same size, but offset by a specified amount.
+    /// </summary>
+    /// <param name="offset">The offset.</param>
+    /// <returns>The new bounding area.</returns>
+    public BoundingArea WithOffset(Vector2 offset) => new(this.Minimum + offset, this.Maximum + offset);
 
     /// <inheritdoc />
     public override int GetHashCode() => HashCode.Combine(this.Maximum, this.Minimum);
