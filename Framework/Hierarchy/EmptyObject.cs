@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity, IQueueableSpriteAnimator {
+public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQueueableSpriteAnimator {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -111,6 +111,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, IRenderableEntity, IQ
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;
+
+    /// <inheritdoc />
+    public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
     public SceneState State { get; } = new();
