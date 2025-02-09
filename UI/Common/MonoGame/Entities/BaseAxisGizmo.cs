@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using Avalonia.Input;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -82,6 +83,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
+        this.CurrentAxis = GizmoAxis.None;
         this.LineThickness = 3f;
 
         if (this.TryGetAncestor(out this._camera)) {

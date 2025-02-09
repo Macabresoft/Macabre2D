@@ -37,6 +37,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
+        
         if (this.Game.GraphicsDevice is { } graphicsDevice) {
             this._xAxisArrowSprite = PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, GizmoPointSize);
             this._yAxisArrowSprite = PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, GizmoPointSize);
