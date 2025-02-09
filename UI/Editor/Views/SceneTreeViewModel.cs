@@ -497,7 +497,13 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     }
 
     private void Reinitialize(IEntity entity) {
-        entity?.Initialize(entity.Scene, entity.Parent);
+        if (entity != null) {
+            var scene = entity.Scene;
+            var parent = entity.Parent;
+            entity.Deinitialize();
+            entity.LoadAssets(scene.Assets, scene.Game);
+            entity.Initialize(scene, parent);
+        }
     }
 
     private void RemoveChild(object child) {

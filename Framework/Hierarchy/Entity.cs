@@ -316,14 +316,22 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public virtual void Deinitialize() {
-        this.Parent.TransformChanged -= this.Parent_TransformChanged;
+        if (this.IsInitialized) {
+            this.Parent.TransformChanged -= this.Parent_TransformChanged;
 
-        foreach (var assetReference in this.GetAssetReferences()) {
-            assetReference.Deinitialize();
-        }
+            foreach (var assetReference in this.GetAssetReferences()) {
+                assetReference.Deinitialize();
+            }
 
-        foreach (var entityReference in this.GetEntityReferences()) {
-            entityReference.Deinitialize();
+            foreach (var entityReference in this.GetEntityReferences()) {
+                entityReference.Deinitialize();
+            }
+
+            foreach (var child in this.Children) {
+                child.Deinitialize();
+            }
+
+            this.IsInitialized = false;
         }
     }
 

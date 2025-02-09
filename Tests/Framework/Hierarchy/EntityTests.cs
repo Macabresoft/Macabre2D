@@ -5,10 +5,27 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
+using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
 public static class EntityTests {
+
+    [Test]
+    public static void Deinitialize_DeinitializesChildren() {
+        var parent = new Entity();
+        var deinitializeCount = 0;
+        var child = Substitute.For<IEntity>();
+        child.When(x => x.Deinitialize()).Do(x => deinitializeCount++);
+
+        parent.AddChild(child);
+
+        for (var i = 1; i <= 10; i++) {
+            parent.Deinitialize();
+            Assert.That(deinitializeCount == i);
+        }
+    }
+
     [Test]
     [Category("Unit Tests")]
     public static void Entity_RegistersChild_WhenMoved() {

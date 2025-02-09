@@ -1,15 +1,54 @@
 namespace Macabresoft.Macabre2D.Tests.Framework.Hierarchy;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
+using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
 public sealed class SceneTests {
+
+    [Test]
+    public static void Deinitialize_DeinitializesAllChildren() {
+        var scene = new Scene();
+        var idToCount = new Dictionary<Guid, int>();
+
+        for (var i = 0; i < 10; i++) {
+            var child = new Entity();
+            child.Id = Guid.NewGuid();
+            scene.AddChild(child);
+            
+            for (var j = 0; j < 10; j++) {
+                var secondaryChild = Substitute.For<IEntity>();
+                secondaryChild.Id = Guid.NewGuid();
+                
+                secondaryChild.Id = Guid.NewGuid();
+                idToCount[secondaryChild.Id] = 0;
+                secondaryChild.When(x => x.Deinitialize()).Do(
+                    x => {
+                        idToCount[secondaryChild.Id] += 1;
+                    });
+
+                child.AddChild(secondaryChild);
+            }
+        }
+        
+        for (var i = 1; i <= 10; i++) {
+            scene.Deinitialize();
+
+            foreach (var value in idToCount.Values) {
+                Assert.That(value == i);
+            }
+        }
+    }
+    
+    
     [Test]
     [Category("Unit Tests")]
     public static void FindEntity_ShouldFindChild() {
