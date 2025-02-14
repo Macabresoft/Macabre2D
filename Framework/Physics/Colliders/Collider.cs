@@ -208,11 +208,11 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     }
 
     /// <summary>
-    /// Determines whether or not a bounding area intersects with this collider.
+    /// Determines whether a bounding area intersects with this collider.
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
     /// <param name="hits">The hits.</param>
-    /// <returns>A value indicating whether or not an intersection occured.</returns>
+    /// <returns>A value indicating whether an intersection occured.</returns>
     public virtual bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
         if (this.BoundingArea.Overlaps(boundingArea)) {
             var actualHits = new List<RaycastHit>();
@@ -328,6 +328,6 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// </summary>
     /// <param name="ray">The ray.</param>
     /// <param name="result">The result.</param>
-    /// <returns>A value indicating whether or not a hit occurred.</returns>
+    /// <returns>A value indicating whether a hit occurred.</returns>
     protected abstract bool TryHit(LineSegment ray, out RaycastHit result);
 }
