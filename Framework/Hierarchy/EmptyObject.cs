@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQueueableSpriteAnimator {
+public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -23,6 +23,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
+    public event EventHandler<CollisionEventArgs>? CollisionOccured;
 
     /// <inheritdoc />
     public event EventHandler? Deactivated;
@@ -70,6 +73,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
     public IGame Game => BaseGame.Empty;
 
     /// <inheritdoc />
+    public bool HasCollider => false;
+
+    /// <inheritdoc />
     public bool IsActive => false;
 
     /// <inheritdoc />
@@ -79,10 +85,16 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
     public bool IsPlaying => false;
 
     /// <inheritdoc />
+    public bool IsTrigger => false;
+
+    /// <inheritdoc />
     public Layers LayersToExcludeFromRender => default;
 
     /// <inheritdoc />
     public OffsetOptions OffsetOptions { get; } = new();
+
+    /// <inheritdoc />
+    public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
 
     /// <inheritdoc />
     public PixelSnap PixelSnap => PixelSnap.No;
@@ -122,6 +134,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
     /// Gets the singleton instance as <see cref="ITextRenderer" />.
     /// </summary>
     public static ITextRenderer TextRenderer => Instance;
+
+    /// <inheritdoc />
+    public int UpdateOrder => 0;
 
     /// <inheritdoc />
     public float ViewWidth => 1f;
@@ -288,6 +303,9 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
     public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem => null;
 
     /// <inheritdoc />
+    public IEnumerable<Collider> GetColliders() => [];
+
+    /// <inheritdoc />
     public IEnumerable<T> GetDescendants<T>() => [];
 
     /// <inheritdoc />
@@ -360,6 +378,10 @@ public class EmptyObject : ICamera, IScene, ITextRenderer, ISpriteRenderer, IQue
 
     /// <inheritdoc />
     public void NextFrame() {
+    }
+
+    /// <inheritdoc />
+    public void NotifyCollisionOccured(CollisionEventArgs eventArgs) {
     }
 
     /// <inheritdoc />
