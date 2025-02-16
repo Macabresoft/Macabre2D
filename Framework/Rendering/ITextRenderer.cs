@@ -5,16 +5,17 @@ using Macabresoft.Macabre2D.Project.Common;
 /// <summary>
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.
 /// </summary>
-public interface ITextRenderer : IRenderableEntity, ISpriteEntity {
-    /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
-    SpriteSheetFontReference FontReference { get; }
+public interface ITextRenderer : ISpriteEntity {
 
     /// <summary>
     /// Gets or sets the font category.
     /// </summary>
     FontCategory FontCategory { get; set; }
+
+    /// <summary>
+    /// Gets the font asset reference.
+    /// </summary>
+    SpriteSheetFontReference FontReference { get; }
 
     /// <summary>
     /// Gets or sets the format of the <see cref="Text" /> or the text based on the <see cref="ResourceName" />.
@@ -38,10 +39,4 @@ public interface ITextRenderer : IRenderableEntity, ISpriteEntity {
     /// Gets or sets the text.
     /// </summary>
     string Text { get; set; }
-
-    /// <summary>
-    /// Gets the full text to be rendered, including any formatting.
-    /// </summary>
-    /// <returns>The full text.</returns>
-    string GetFullText();
 }

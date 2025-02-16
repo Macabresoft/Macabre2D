@@ -39,14 +39,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; } = new();
-
-    /// <inheritdoc />
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
@@ -62,6 +54,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -86,6 +82,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
+
+    /// <inheritdoc />
+    [DataMember(Order = 4)]
+    public RenderOptions RenderOptions { get; } = new();
 
     /// <inheritdoc />
     [ResourceName]
@@ -121,12 +121,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     }
 
     /// <inheritdoc />
-    public string GetFullText() {
-        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
-    }
-
-    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
@@ -159,27 +153,19 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         yield return this.FontReference;
     }
 
+    /// <summary>
+    /// Gets the full text to be displayed by this renderer.
+    /// </summary>
+    /// <returns>The full text.</returns>
+    protected virtual string GetFullText() {
+        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
+    }
+
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.RequestRefresh();
-    }
-
-    /// <summary>
-    /// Renders the text with the specified font.
-    /// </summary>
-    /// <param name="fontReference">The font reference.</param>
-    /// <param name="color">The color.</param>
-    protected void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
-        if (!this.BoundingArea.IsEmpty && fontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
-            this._textLine.Render(
-                spriteBatch,
-                spriteSheet,
-                color,
-                this.BoundingArea.Minimum,
-                this.Project.PixelsPerUnit,
-                this.RenderOptions.Orientation);
-        }
     }
 
     /// <summary>
@@ -229,6 +215,18 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this._boundingArea.Reset();
+        }
+    }
+
+    private void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
+        if (!this.BoundingArea.IsEmpty && fontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
+            this._textLine.Render(
+                spriteBatch,
+                spriteSheet,
+                color,
+                this.BoundingArea.Minimum,
+                this.Project.PixelsPerUnit,
+                this.RenderOptions.Orientation);
         }
     }
 
