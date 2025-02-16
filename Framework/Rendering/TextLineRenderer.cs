@@ -39,6 +39,14 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
+    [DataMember]
+    public SpriteSheetFontReference FontReference { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember(Order = 4)]
+    public RenderOptions RenderOptions { get; } = new();
+
+    /// <inheritdoc />
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
@@ -54,10 +62,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
-
-    /// <inheritdoc />
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -82,10 +86,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
-
-    /// <inheritdoc />
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; } = new();
 
     /// <inheritdoc />
     [ResourceName]
@@ -121,6 +121,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     }
 
     /// <inheritdoc />
+    public virtual string GetFullText() {
+        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
+        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
@@ -151,15 +157,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.FontReference;
-    }
-
-    /// <summary>
-    /// Gets the full text to be displayed by this renderer.
-    /// </summary>
-    /// <returns>The full text.</returns>
-    protected virtual string GetFullText() {
-        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
     }
 
     /// <inheritdoc />
