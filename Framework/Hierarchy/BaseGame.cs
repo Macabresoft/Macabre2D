@@ -341,7 +341,6 @@ public class BaseGame : Game, IGame {
         }
         else {
             this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
-            this.State.Initialize(this.DataManager);
 
             if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
                 this.UserSettings = userSettings;
@@ -349,6 +348,8 @@ public class BaseGame : Game, IGame {
             else {
                 this.UserSettings = new UserSettings(this.Project);
             }
+            
+            this.State.Initialize(this.DataManager, this.UserSettings.Custom);
 
             if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
