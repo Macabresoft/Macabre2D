@@ -79,18 +79,6 @@ public class BaseGame : Game, IGame {
     public AudioSettings AudioSettings => this.UserSettings.Audio;
 
     /// <inheritdoc />
-    public IDataManager DataManager { get; } = new WindowsDataManager();
-
-    /// <inheritdoc />
-    public DisplaySettings DisplaySettings => this.UserSettings.Display;
-
-    /// <inheritdoc />
-    public InputBindings InputBindings => this.UserSettings.Input;
-
-    /// <inheritdoc />
-    public GameState State { get; } = new();
-
-    /// <inheritdoc />
     public IScene CurrentScene {
         get => this._sceneStack.Any() ? this._sceneStack.Peek() : EmptyObject.Scene;
         private set {
@@ -106,6 +94,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public IDataManager DataManager { get; } = new WindowsDataManager();
+
+    /// <inheritdoc />
     public InputDevice DesiredInputDevice {
         get => this._desiredInputDevice;
         protected set {
@@ -115,6 +106,9 @@ public class BaseGame : Game, IGame {
             }
         }
     }
+
+    /// <inheritdoc />
+    public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
     public double GameSpeed {
@@ -127,6 +121,9 @@ public class BaseGame : Game, IGame {
             }
         }
     }
+
+    /// <inheritdoc />
+    public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
     public InputState InputState { get; protected set; }
@@ -155,6 +152,9 @@ public class BaseGame : Game, IGame {
     public SpriteBatch? SpriteBatch { get; private set; }
 
     /// <inheritdoc />
+    public GameState State { get; } = new();
+
+    /// <inheritdoc />
     public UserSettings UserSettings {
         get => this._userSettings;
         private set {
@@ -167,15 +167,15 @@ public class BaseGame : Game, IGame {
     public Point ViewportSize { get; private set; }
 
     /// <summary>
-    /// Gets the graphics device manager.
-    /// </summary>
-    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
-
-    /// <summary>
     /// Gets the frame time.
     /// </summary>
     /// <value>The frame time.</value>
     protected FrameTime FrameTime { get; private set; }
+
+    /// <summary>
+    /// Gets the graphics device manager.
+    /// </summary>
+    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is initialized.
@@ -348,8 +348,10 @@ public class BaseGame : Game, IGame {
             else {
                 this.UserSettings = new UserSettings(this.Project);
             }
-            
+
+            this.State.ActionRequested -= this.OnActionRequested;
             this.State.Initialize(this.DataManager, this.UserSettings.Custom);
+            this.State.ActionRequested += this.OnActionRequested;
 
             if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -505,6 +507,22 @@ public class BaseGame : Game, IGame {
         return renderTarget;
     }
 
+    private void OnActionRequested(object? sender, GameAction e) {
+        switch (e) {
+            case GameAction.Shutdown:
+                this.Exit();
+                break;
+            case GameAction.SaveSettings:
+                this.SaveUserSettings();
+                break;
+            case GameAction.SaveAndApplySettings:
+                this.SaveAndApplyUserSettings();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(e), e, null);
+        }
+    }
+
     private void RenderScenes() {
         foreach (var scene in this._sceneStack.Reverse()) {
             scene.Render(this.FrameTime, this.InputState);
@@ -557,6 +575,15 @@ public class BaseGame : Game, IGame {
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
+
+        public double GameSpeed {
+            get => 1f;
+            set {
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
+        }
+
         public GraphicsDevice? GraphicsDevice => null;
         public InputBindings InputBindings => this.UserSettings.Input;
         public IScene Overlay => EmptyObject.Scene;
@@ -566,14 +593,6 @@ public class BaseGame : Game, IGame {
         public GameState State { get; } = new();
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
-
-        public double GameSpeed {
-            get => 1f;
-            set {
-                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
-                this.GameSpeedChanged.SafeInvoke(this, 1f);
-            }
-        }
 
         public void ApplyDisplaySettings() {
         }
