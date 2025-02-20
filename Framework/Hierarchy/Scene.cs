@@ -40,6 +40,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IAssetManager Assets => AssetManager.Empty;
 
     /// <summary>
+    /// Gets or sets the color of the background.
+    /// </summary>
+    Color BackgroundColor { get; set; }
+
+    /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
     IReadOnlyCollection<ICamera> Cameras => Array.Empty<ICamera>();
@@ -83,11 +88,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
-
-    /// <summary>
-    /// Gets or sets the color of the background.
-    /// </summary>
-    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Gets or sets the version of this scene.
@@ -296,6 +296,25 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => this._animatableEntities;
 
     /// <inheritdoc />
+    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
+    public Color BackgroundColor { get; set; } = Color.Black;
+
+    /// <inheritdoc />
+    [DataMember]
+    public BoundingArea BoundingArea {
+        get => this._boundingArea;
+        set {
+            this._boundingArea = value;
+            if (this.IsInitialized) {
+                this.BoundingAreaChanged.SafeInvoke(this);
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public IReadOnlyCollection<ICamera> Cameras => this._cameras;
 
     /// <inheritdoc />
@@ -303,6 +322,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc cref="IScene" />
     public override IGame Game => this._game;
+
+    /// <inheritdoc />
+    public bool IsActive { get; private set; }
 
     /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
@@ -327,28 +349,6 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
     /// <inheritdoc />
-    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
-
-    /// <inheritdoc />
-    [DataMember]
-    public Color BackgroundColor { get; set; } = Color.Black;
-
-    /// <inheritdoc />
-    [DataMember]
-    public BoundingArea BoundingArea {
-        get => this._boundingArea;
-        set {
-            this._boundingArea = value;
-            if (this.IsInitialized) {
-                this.BoundingAreaChanged.SafeInvoke(this);
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public bool IsActive { get; private set; }
-
-    /// <inheritdoc />
     [DataMember]
     public Version Version { get; set; } = new(0, 0, 0, 0);
 
@@ -371,11 +371,19 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     public bool ContainsEntity(Guid id) => this._registeredEntities.Contains(id);
 
+    /// <inheritdoc />
     public override void Deinitialize() {
-        base.Deinitialize();
+        if (this._isInitialized) {
+            try {
+                base.Deinitialize();
 
-        foreach (var system in this._systems) {
-            system.Deinitialize();
+                foreach (var system in this._systems) {
+                    system.Deinitialize();
+                }
+            }
+            finally {
+                this._isInitialized = false;
+            }
         }
     }
 
