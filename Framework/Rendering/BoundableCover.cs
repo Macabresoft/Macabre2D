@@ -105,6 +105,6 @@ public class BoundableCover : RenderableEntity {
     }
 
     private void ResetColor() {
-        this._texture?.SetData(new[] { this._color });
+        this._texture?.SetData([this._color]);
     }
 }
