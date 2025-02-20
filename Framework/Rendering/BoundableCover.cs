@@ -52,6 +52,8 @@ public class BoundableCover : RenderableEntity {
     public override void Deinitialize() {
         base.Deinitialize();
 
+        this._texture?.Dispose();
+        this._texture = null;
         this._boundable.BoundingAreaChanged -= this.Boundable_BoundingAreaChanged;
         this._boundable = EmptyObject.Boundable;
     }
@@ -73,7 +75,6 @@ public class BoundableCover : RenderableEntity {
             }
         }
 
-        this._texture?.Dispose();
         this._texture = new Texture2D(this.Game.GraphicsDevice, 1, 1);
         this.ResetColor();
     }
