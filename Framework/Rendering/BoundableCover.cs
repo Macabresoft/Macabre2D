@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class BoundableCover : RenderableEntity {
     private IBoundableEntity _boundable = EmptyObject.Boundable;
-    private Color _color;
     private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
     private Texture2D? _texture;
@@ -26,15 +25,7 @@ public class BoundableCover : RenderableEntity {
     /// Gets or sets the color of this cover.
     /// </summary>
     [DataMember]
-    public Color Color {
-        get => this._color;
-        set {
-            if (value != this._color) {
-                this._color = value;
-                this.ResetColor();
-            }
-        }
-    }
+    public Color Color { get; set; }
 
     /// <summary>
     /// Gets or sets this padding. This applies additional cover beyond the bounds of the <see cref="IBoundableEntity" />.
@@ -73,13 +64,15 @@ public class BoundableCover : RenderableEntity {
             }
         }
 
-        this._texture ??= new Texture2D(this.Game.GraphicsDevice, 1, 1);
-        this.ResetColor();
+        if (this._texture == null) {
+            this._texture = new Texture2D(this.Game.GraphicsDevice, 1, 1);
+            this._texture?.SetData([Color.White]);
+        }
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, Color.White);
+        this.Render(frameTime, viewBoundingArea, this.Color);
     }
 
     /// <inheritdoc />
@@ -108,9 +101,5 @@ public class BoundableCover : RenderableEntity {
 
     private void Boundable_BoundingAreaChanged(object? sender, EventArgs e) {
         this.BoundingAreaChanged?.SafeInvoke(this);
-    }
-
-    private void ResetColor() {
-        this._texture?.SetData([this._color]);
     }
 }

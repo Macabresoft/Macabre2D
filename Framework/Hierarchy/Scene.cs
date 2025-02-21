@@ -380,6 +380,8 @@ public sealed class Scene : GridContainer, IScene {
                 foreach (var system in this._systems) {
                     system.Deinitialize();
                 }
+
+                this.ClearFilterCaches();
             }
             finally {
                 this._isInitialized = false;
@@ -599,6 +601,15 @@ public sealed class Scene : GridContainer, IScene {
     protected override void OnDisposing() {
         base.OnDisposing();
         this.Assets.Dispose();
+    }
+
+    private void ClearFilterCaches() {
+        this._animatableEntities.Clear();
+        this._cameras.Clear();
+        this._physicsBodies.Clear();
+        this._renderableEntities.Clear();
+        this._updateableEntities.Clear();
+        this._fixedUpdateableEntities.Clear();
     }
 
     private void InvokePendingActions() {
