@@ -15,7 +15,7 @@ public abstract class ValueOverride<T> : PropertyChangedNotifier where T : notnu
     /// Initializes a new instance of <see cref="ValueOverride{T}" />
     /// </summary>
     /// <param name="value">The value.</param>
-    /// <param name="isEnabled">A value indicating whether or not this is enabled.</param>
+    /// <param name="isEnabled">A value indicating whether this is enabled.</param>
     protected ValueOverride(T value, bool isEnabled) {
         this._value = value;
         this._isEnabled = isEnabled;
@@ -29,7 +29,7 @@ public abstract class ValueOverride<T> : PropertyChangedNotifier where T : notnu
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this is enabled.
+    /// Gets or sets a value indicating whether this is enabled.
     /// </summary>
     [DataMember]
     public bool IsEnabled {

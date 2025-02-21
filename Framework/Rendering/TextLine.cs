@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// Represents the alignment of text in a <see cref="TextLine"/>
+/// Represents the alignment of text in a <see cref="TextLine" />
 /// </summary>
 public enum TextAlignment {
     Left,
@@ -24,7 +24,7 @@ public class TextLine {
     /// Gets an empty text line.
     /// </summary>
     public static readonly TextLine Empty = new(TextAlignment.Left, 0f, 0f, []);
-    
+
     private readonly List<(TextWord Word, float XPosition)> _words = [];
 
     private TextLine(
@@ -62,7 +62,6 @@ public class TextLine {
                 var width = word.Width + spaceWidth;
                 currentPosition += width;
                 this.Width += width;
-
             }
         }
         else if (textAlignment == TextAlignment.Justified) {
@@ -78,7 +77,6 @@ public class TextLine {
                 var width = word.Width + spaceWidth;
                 currentPosition += width;
                 this.Width += width;
-
             }
         }
         else {
@@ -87,12 +85,12 @@ public class TextLine {
 
         this.IsEmpty = this._words.Count == 0;
     }
-    
+
     /// <summary>
     /// Gets a value indicating whether this is empty.
     /// </summary>
     public bool IsEmpty { get; }
-    
+
     /// <summary>
     /// Gets the width of this text line. This represents the words and spaces.
     /// </summary>
@@ -181,6 +179,59 @@ public class TextLine {
                     orientation);
 
                 currentPosition = new Vector2(currentPosition.X + character.Width, position.Y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Renders this text line given a start position.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="colorOverride">The color override.</param>
+    /// <param name="position">The start position.</param>
+    /// <param name="pixelsPerUnit">The pixels per unit.</param>
+    /// <param name="orientation">The orientation.</param>
+    /// <param name="width">The width.</param>
+    /// <param name="offset">The offset.</param>
+    public void Render(
+        SpriteBatch spriteBatch,
+        SpriteSheet spriteSheet,
+        Color colorOverride,
+        Vector2 position,
+        ushort pixelsPerUnit,
+        SpriteEffects orientation,
+        float width,
+        float offset) {
+        var xAdjustment = 0f;
+        foreach (var (word, xPosition) in this._words) {
+            var shouldBreak = false;
+            var currentPosition = new Vector2(position.X + xPosition, position.Y);
+
+            foreach (var character in word.Characters) {
+                if (xPosition + character.Width > width + offset) {
+                    shouldBreak = true;
+                    break;
+                }
+
+                if (xPosition >= offset) {
+                    spriteSheet.Draw(
+                        spriteBatch,
+                        pixelsPerUnit,
+                        character.SpriteIndex,
+                        new Vector2(currentPosition.X + xAdjustment, currentPosition.Y),
+                        colorOverride,
+                        orientation);
+                }
+                else {
+                    xAdjustment -= character.Width;
+                }
+
+                currentPosition = new Vector2(currentPosition.X + character.Width, position.Y);
+            }
+
+            if (shouldBreak) {
+                break;
             }
         }
     }

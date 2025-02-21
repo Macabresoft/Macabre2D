@@ -11,19 +11,23 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : RenderableEntity, ITextRenderer {
+public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _characterHeight;
     private SpriteSheetFont? _font;
     private FontCategory _fontCategory = FontCategory.None;
     private SpriteSheetFontReference? _fontReference;
+    private bool _isScrollingRight = true;
     private int _kerning;
+    private float _offset;
     private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
+    private bool _shouldScroll;
     private SpriteSheet? _spriteSheet;
     private string _stringFormat = string.Empty;
     private string _text = string.Empty;
     private TextLine _textLine = TextLine.Empty;
+    private float _totalWidth;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -37,14 +41,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <inheritdoc />
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; } = new();
 
     /// <inheritdoc />
     [DataMember(Order = 1)]
@@ -62,6 +58,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -88,6 +88,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     }
 
     /// <inheritdoc />
+    [DataMember(Order = 4)]
+    public RenderOptions RenderOptions { get; } = new();
+
+    /// <inheritdoc />
     [ResourceName]
     [DataMember]
     public string ResourceName {
@@ -97,6 +101,40 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             this.RequestRefresh();
         }
     }
+
+    /// <summary>
+    /// Gets a timer that determines how long it takes to scroll the entire text.
+    /// </summary>
+    [DataMember]
+    public GameTimer ScrollTime { get; } = new(1f);
+
+    /// <summary>
+    /// Gets a timer that determines how long this waits on each end of the scrolled text.
+    /// </summary>
+    [DataMember]
+    public GameTimer ScrollWaitTime { get; } = new(1f);
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this scrolls.
+    /// </summary>
+    [DataMember(Order = 1)]
+    public bool ShouldScroll {
+        get => this._shouldScroll;
+        set {
+            if (this._shouldScroll != value) {
+                this._shouldScroll = value;
+                this.RaisePropertyChanged(nameof(this.ShouldUpdate));
+
+                if (this.ShouldScroll) {
+                    this.ScrollWaitTime.Restart();
+                    this.ScrollTime.Restart();
+                }
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this._totalWidth > this.WidthOverride.Value;
 
     /// <inheritdoc />
     [DataMember]
@@ -109,6 +147,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
+
+    /// <summary>
+    /// Gets a an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
+    /// </summary>
+    [DataMember]
+    public FloatOverride WidthOverride { get; } = new();
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -136,10 +180,16 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
 
+        if (this.ShouldScroll) {
+            this.ScrollTime.Restart();
+            this.ScrollWaitTime.Restart();
+        }
+
         this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
         this.Game.CultureChanged += this.Game_CultureChanged;
+        this.WidthOverride.PropertyChanged += this.WidthOverride_PropertyChanged;
     }
 
     /// <inheritdoc />
@@ -151,6 +201,16 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this._fontReference != null) {
             this.RenderWithFont(this._fontReference, colorOverride);
+        }
+    }
+
+    /// <inheritdoc />
+    public void Update(FrameTime frameTime, InputState inputState) {
+        if (this.ScrollWaitTime.State == TimerState.Running) {
+            this.HandleWaiting(frameTime);
+        }
+        else {
+            this.HandleScrolling(frameTime);
         }
     }
 
@@ -172,6 +232,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
         this.BoundingAreaChanged.SafeInvoke(this);
+        this.RaisePropertyChanged(nameof(this.ShouldUpdate));
     }
 
     private bool CouldBeVisible() =>
@@ -179,7 +240,22 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         this._font != null &&
         !string.IsNullOrEmpty(this.GetFullText());
 
-    private BoundingArea CreateBoundingArea() => this.CouldBeVisible() ? this.RenderOptions.CreateBoundingArea(this) : BoundingArea.Empty;
+    private BoundingArea CreateBoundingArea() {
+        var boundingArea = BoundingArea.Empty;
+        if (this.CouldBeVisible()) {
+            boundingArea = this.RenderOptions.CreateBoundingArea(this);
+            this._totalWidth = boundingArea.Width;
+
+            if (this.WidthOverride.IsEnabled) {
+                boundingArea = new BoundingArea(boundingArea.Minimum, this.WidthOverride.Value, boundingArea.Height);
+            }
+        }
+        else {
+            this._totalWidth = 0f;
+        }
+
+        return boundingArea;
+    }
 
     private Vector2 CreateSize() {
         if (this._font != null && this._spriteSheet != null) {
@@ -203,6 +279,31 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
         this.RequestRefresh();
     }
 
+    private void HandleScrolling(FrameTime frameTime) {
+        this.ScrollTime.Increment(frameTime);
+
+        var distance = this._totalWidth - this.WidthOverride.Value;
+        if (this._isScrollingRight) {
+            this._offset = this.ScrollTime.PercentComplete * distance;
+        }
+        else {
+            this._offset = (1f - this.ScrollTime.PercentComplete) * distance;
+        }
+
+        if (this.ScrollTime.State != TimerState.Running) {
+            this.ScrollWaitTime.Restart();
+            this._isScrollingRight = !this._isScrollingRight;
+        }
+    }
+
+    private void HandleWaiting(FrameTime frameTime) {
+        this.ScrollWaitTime.Increment(frameTime);
+
+        if (this.ScrollWaitTime.State == TimerState.Finished) {
+            this.ScrollTime.Restart();
+        }
+    }
+
     private void ReloadFontFromCategory() {
         if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
@@ -217,13 +318,26 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
 
     private void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
         if (!this.BoundingArea.IsEmpty && fontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
-            this._textLine.Render(
-                spriteBatch,
-                spriteSheet,
-                color,
-                this.BoundingArea.Minimum,
-                this.Project.PixelsPerUnit,
-                this.RenderOptions.Orientation);
+            if (this.ShouldScroll && this.WidthOverride.IsEnabled) {
+                this._textLine.Render(
+                    spriteBatch,
+                    spriteSheet,
+                    color,
+                    this.BoundingArea.Minimum,
+                    this.Project.PixelsPerUnit,
+                    this.RenderOptions.Orientation,
+                    this.WidthOverride.Value,
+                    this._offset);
+            }
+            else {
+                this._textLine.Render(
+                    spriteBatch,
+                    spriteSheet,
+                    color,
+                    this.BoundingArea.Minimum,
+                    this.Project.PixelsPerUnit,
+                    this.RenderOptions.Orientation);
+            }
         }
     }
 
@@ -232,6 +346,11 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
             this.ResetResource();
             this.ResetIndexes();
             this.ResetSize();
+
+            if (this.ShouldScroll) {
+                this.ScrollTime.Restart();
+                this.ScrollWaitTime.Restart();
+            }
         }
     }
 
@@ -261,5 +380,9 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer {
                 this._resourceText = resource;
             }
         }
+    }
+
+    private void WidthOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.RequestRefresh();
     }
 }
