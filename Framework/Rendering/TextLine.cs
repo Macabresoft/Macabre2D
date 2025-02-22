@@ -207,14 +207,15 @@ public class TextLine {
         foreach (var (word, xPosition) in this._words) {
             var shouldBreak = false;
             var currentPosition = new Vector2(position.X + xPosition, position.Y);
+            var characterPosition = xPosition;
 
             foreach (var character in word.Characters) {
-                if (xPosition + character.Width > width + offset) {
+                if (characterPosition + character.Width > width + offset) {
                     shouldBreak = true;
                     break;
                 }
 
-                if (xPosition >= offset) {
+                if (characterPosition >= offset) {
                     spriteSheet.Draw(
                         spriteBatch,
                         pixelsPerUnit,
@@ -227,6 +228,7 @@ public class TextLine {
                     xAdjustment -= character.Width;
                 }
 
+                characterPosition += character.Width;
                 currentPosition = new Vector2(currentPosition.X + character.Width, position.Y);
             }
 
