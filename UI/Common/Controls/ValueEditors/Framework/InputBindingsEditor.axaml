@@ -5,12 +5,28 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:InputBindings"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.InputBindingsEditor">
-    <Grid DataContext="{Binding $parent[local:InputBindingsEditor]}">
+    <Grid DataContext="{Binding $parent[local:InputBindingsEditor]}"
+          RowDefinitions="Auto, Auto, Auto, *">
         <Design.DataContext>
             <local:InputBindingsEditor />
         </Design.DataContext>
 
-        <ItemsControl ItemsSource="{Binding Actions}">
+        <local:EnumEditor Grid.Row="0"
+                          Title="Input Device"
+                          EnumType="{x:Type framework:InputDevice}"
+                          Value="{Binding DesiredInputDevice}" />
+
+        <local:EnumEditor Grid.Row="1"
+                          Title="Game Pad"
+                          EnumType="{x:Type framework:GamePadDisplay}"
+                          Value="{Binding DesiredGamePad}" />
+
+        <local:BoolEditor Grid.Row="2"
+                          Title="Is Mouse Enabled"
+                          Value="{Binding IsMouseEnabled}"/>
+
+        <ItemsControl Grid.Row="3"
+                      ItemsSource="{Binding Actions}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <local:InputActionControl InputBindings="{Binding $parent[local:InputBindingsEditor].Value}"
