@@ -96,10 +96,10 @@ public class InputSystem : GameSystem, IInputSystem {
     public static IInputSystem Empty { get; } = new EmptyInputSystem();
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.PreUpdate;
+    public float HorizontalAxis { get; private set; }
 
     /// <inheritdoc />
-    public float HorizontalAxis { get; private set; }
+    public override GameSystemKind Kind => GameSystemKind.PreUpdate;
 
     /// <inheritdoc />
     public float VerticalAxis { get; private set; }
@@ -239,8 +239,18 @@ public class InputSystem : GameSystem, IInputSystem {
         MouseButton mouseButton,
         bool cacheResult) {
         var result = InputActionState.None;
-
-        if (this.Game.InputBindings.DesiredInputDevice == InputDevice.GamePad) {
+        if (this.Game.InputBindings.DesiredInputDevice == InputDevice.Auto || this.Game.Project.AllowInputRegardlessOfDevice) {
+            if (this.IsNewlyPressed(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Pressed;
+            }
+            else if (this.IsHeld(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Held;
+            }
+            else if (this.IsNewlyReleased(primaryButton, secondaryButton, key, mouseButton)) {
+                result = InputActionState.Released;
+            }
+        }
+        else if (this.Game.InputBindings.DesiredInputDevice == InputDevice.GamePad) {
             if (this.IsNewlyPressed(primaryButton, secondaryButton)) {
                 result = InputActionState.Pressed;
             }
@@ -259,17 +269,6 @@ public class InputSystem : GameSystem, IInputSystem {
                 result = InputActionState.Held;
             }
             else if (this.IsNewlyReleased(key, mouseButton)) {
-                result = InputActionState.Released;
-            }
-        }
-        else {
-            if (this.IsNewlyPressed(primaryButton, secondaryButton, key, mouseButton)) {
-                result = InputActionState.Pressed;
-            }
-            else if (this.IsHeld(primaryButton, secondaryButton, key, mouseButton)) {
-                result = InputActionState.Held;
-            }
-            else if (this.IsNewlyReleased(primaryButton, secondaryButton, key, mouseButton)) {
                 result = InputActionState.Released;
             }
         }

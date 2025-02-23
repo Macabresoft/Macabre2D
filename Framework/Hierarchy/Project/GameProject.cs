@@ -92,6 +92,12 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort PixelsPerUnit { get; set; }
+    
+    /// <summary>
+    /// Gets a value indicating whether input is allowed regardless of device. If this is set to <c>true</c>, the
+    /// desired input device in <see cref="InputBindings"/> is purely for display and all inputs will be available.
+    /// </summary>
+    bool AllowInputRegardlessOfDevice { get; }
 
     /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -195,6 +201,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// <inheritdoc />
     [DataMember]
     public string Name { get; set; }
+    
+    /// <inheritdoc />
+    [DataMember]
+    public bool AllowInputRegardlessOfDevice { get; set; }
 
     /// <inheritdoc />
     [DataMember(Name = "Persistent Overlay")]
