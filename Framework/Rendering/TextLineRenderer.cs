@@ -146,7 +146,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     /// <summary>
-    /// Gets a an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
+    /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
     /// </summary>
     [DataMember]
     public FloatOverride WidthOverride { get; } = new();
@@ -272,6 +272,9 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <returns>The position to start rendering text.</returns>
     protected virtual Vector2 GetTextStartPosition() => this.BoundingArea.Minimum;
 
+    /// <summary>
+    /// Called when the font changes.
+    /// </summary>
     protected virtual void OnFontChanged() {
         this.RequestRefresh();
     }
