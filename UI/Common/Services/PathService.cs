@@ -109,7 +109,7 @@ public class PathService : IPathService {
     public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) : this(
         editorBinDirectoryPath,
         platformsDirectoryPath,
-        new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ProjectDirectoryName, ContentDirectoryName)).FullName) {
+        new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ContentDirectoryName)).FullName) {
     }
 
     /// <summary>
@@ -126,12 +126,12 @@ public class PathService : IPathService {
         this.EditorMetadataDirectoryPath = Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
-        this.ProjectDirectoryPath = new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ProjectDirectoryName)).FullName;
+        this.ProjectDirectoryPath = new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..")).FullName;
     }
 
     private PathService(string editorBinDirectoryPath) : this(
         editorBinDirectoryPath,
-        new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", "Platforms")).FullName) {
+        new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", ProjectDirectoryName, "Platforms")).FullName) {
     }
 
     /// <inheritdoc />
