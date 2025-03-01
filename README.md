@@ -53,3 +53,6 @@ Your game's code must be directly integrated with Macabre2D, giving you full con
 * Run the `Macabre2D.UI.Editor` project once to generate default content
 * Add custom scripts to the Macabre2D.Scripts project (inside the Scripts folder, which is a link to inside `/Content`)
 
+## Icon Troubleshooting
+
+MonoGame expects both an Icon.bmp and an Icon.ico in the project folder. Make sure the BMP is 256 x 256 and contains an alpha channel. The easiest way to create a bmp with an alpha channel that MonoGame understands is by loading the image into GIMP, making sure the `Image -> Mode` is set to RGB, and exporting it as BMP. When exporting, open up `Advanced Options` and select `32 bits - A8 R8 G8 B8`.
