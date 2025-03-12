@@ -24,7 +24,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     private bool _shouldScroll;
     private string _stringFormat = string.Empty;
     private string _text = string.Empty;
-    private float _totalWidth;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -131,7 +130,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     /// <inheritdoc />
-    public bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this._totalWidth > this.WidthOverride.Value;
+    public bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
 
     /// <inheritdoc />
     [DataMember]
@@ -234,14 +233,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         var boundingArea = BoundingArea.Empty;
         if (this.CouldBeVisible()) {
             boundingArea = this.RenderOptions.CreateBoundingArea(this);
-            this._totalWidth = boundingArea.Width;
 
             if (this.WidthOverride.IsEnabled) {
                 boundingArea = new BoundingArea(boundingArea.Minimum, this.WidthOverride.Value, boundingArea.Height);
             }
-        }
-        else {
-            this._totalWidth = 0f;
         }
 
         return boundingArea;
@@ -253,7 +248,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSize() {
         if (this.Font != null && this.SpriteSheet != null) {
-            var unitWidth = this.TextLine.Width;
+            var unitWidth = this.WidthOverride.IsEnabled ? this.WidthOverride.Value : this.TextLine.Width;
             this._characterHeight = this.SpriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             return new Vector2(unitWidth * this.Project.PixelsPerUnit, this.SpriteSheet.SpriteSize.Y);
         }
@@ -331,7 +326,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     private void HandleScrolling(FrameTime frameTime) {
         this.ScrollTime.Increment(frameTime);
 
-        var distance = this._totalWidth - this.WidthOverride.Value;
+        var distance = this.TextLine.Width - this.WidthOverride.Value;
         if (this._isScrollingRight) {
             this._offset = this.ScrollTime.PercentComplete * distance;
         }
