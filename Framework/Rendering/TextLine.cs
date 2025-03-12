@@ -210,7 +210,7 @@ public class TextLine {
             var characterPosition = xPosition;
 
             foreach (var character in word.Characters) {
-                if (characterPosition + character.Width > width + offset) {
+                if (characterPosition + character.Width + xAdjustment > width) {
                     shouldBreak = true;
                     break;
                 }
@@ -225,7 +225,7 @@ public class TextLine {
                         orientation);
                 }
                 else {
-                    xAdjustment -= character.Width;
+                    xAdjustment = -characterPosition - character.Width;
                 }
 
                 characterPosition += character.Width;
