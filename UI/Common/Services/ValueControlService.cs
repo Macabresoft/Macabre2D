@@ -212,7 +212,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         string propertyPath) {
         var dependencies = new ValueControlDependencies(value, typeRestriction, GetPropertyName(propertyPath), GetTitle(member), owner);
         var editor = this._container.Resolve<TypeEditor>(new DependencyOverride(typeof(ValueControlDependencies), dependencies));
-        this.SetCategoryForEditor(editor, owner, member);
+        this.SetCategoryForEditor(editor, owner, member, propertyPath);
         return editor;
     }
 
@@ -227,7 +227,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         var dependencies = new ValueControlDependencies(value, memberType, GetPropertyName(propertyPath), GetTitle(member), owner);
         var actualOverrides = overrides.Concat(new[] { new DependencyOverride(typeof(ValueControlDependencies), dependencies) }).ToArray();
         if (this._container.Resolve(editorType, actualOverrides) is IValueEditor editor) {
-            this.SetCategoryForEditor(editor, owner, member);
+            this.SetCategoryForEditor(editor, owner, member, propertyPath);
             return editor;
         }
 
@@ -244,7 +244,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         type.GetCustomAttribute<SpriteSheetGuidAttribute>() != null ||
         type.GetCustomAttribute<PrefabGuidAttribute>() != null;
 
-    private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member) {
+    private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member, string propertyPath) {
         editor.Category = DefaultCategoryName;
 
         if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
@@ -253,6 +253,9 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         else if (member.MemberInfo.DeclaringType != null) {
             if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
                 editor.Category = classCategory.Category;
+            }
+            else if (GetPropertyName(propertyPath) is {} propertyName && !string.Equals(propertyName, propertyPath)) {
+                editor.Category = propertyPath.Replace(propertyName, string.Empty).TrimEnd('.');
             }
             else {
                 editor.Category = owner.GetType().Name;
