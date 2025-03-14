@@ -203,14 +203,13 @@ public class TextLine {
         SpriteEffects orientation,
         float width,
         float offset) {
-        var xAdjustment = 0f;
         foreach (var (word, xPosition) in this._words) {
             var shouldBreak = false;
             var currentPosition = new Vector2(position.X + xPosition, position.Y);
             var characterPosition = xPosition;
 
             foreach (var character in word.Characters) {
-                if (characterPosition + character.Width + xAdjustment > width) {
+                if (characterPosition + character.Width > width + offset) {
                     shouldBreak = true;
                     break;
                 }
@@ -220,12 +219,9 @@ public class TextLine {
                         spriteBatch,
                         pixelsPerUnit,
                         character.SpriteIndex,
-                        new Vector2(currentPosition.X + xAdjustment, currentPosition.Y),
+                        new Vector2(position.X + characterPosition - offset, currentPosition.Y),
                         colorOverride,
                         orientation);
-                }
-                else {
-                    xAdjustment = -characterPosition - character.Width;
                 }
 
                 characterPosition += character.Width;
