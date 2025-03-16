@@ -21,6 +21,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     private float _offset;
     private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
+    private float _scrollVelocity = 3f;
     private bool _shouldScroll;
     private string _stringFormat = string.Empty;
     private string _text = string.Empty;
@@ -99,10 +100,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     /// <summary>
-    /// Gets a timer that determines how long it takes to scroll the entire text.
+    /// Gets or sets the velocity of the text scrolling.
     /// </summary>
-    [DataMember]
-    public GameTimer ScrollTime { get; } = new(1f);
+    public float ScrollVelocity {
+        get => this._scrollVelocity;
+        set => this._scrollVelocity = Math.Abs(value);
+    }
 
     /// <summary>
     /// Gets a timer that determines how long this waits on each end of the scrolled text.
@@ -123,7 +126,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
                 if (this.ShouldScroll) {
                     this.ScrollWaitTime.Restart();
-                    this.ScrollTime.Restart();
                 }
             }
         }
@@ -192,7 +194,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this._boundingArea.Reset();
 
         if (this.ShouldScroll) {
-            this.ScrollTime.Restart();
             this.ScrollWaitTime.Restart();
         }
 
@@ -218,7 +219,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     public void Update(FrameTime frameTime, InputState inputState) {
         if (this.ScrollWaitTime.State == TimerState.Running) {
-            this.HandleWaiting(frameTime);
+            this.ScrollWaitTime.Increment(frameTime);
         }
         else {
             this.HandleScrolling(frameTime);
@@ -290,7 +291,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
             this.ResetSize();
 
             if (this.ShouldScroll) {
-                this.ScrollTime.Restart();
                 this.ScrollWaitTime.Restart();
             }
         }
@@ -324,27 +324,20 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     private void HandleScrolling(FrameTime frameTime) {
-        this.ScrollTime.Increment(frameTime);
-
-        var distance = this.TextLine.Width - this.WidthOverride.Value;
         if (this._isScrollingRight) {
-            this._offset = this.ScrollTime.PercentComplete * distance;
+            var distance = this.TextLine.Width - this.WidthOverride.Value;
+            this._offset += (float)frameTime.SecondsPassed * this.ScrollVelocity;
+            if (this._offset >= distance) {
+                this.ScrollWaitTime.Restart();
+                this._isScrollingRight = false;
+            }
         }
         else {
-            this._offset = (1f - this.ScrollTime.PercentComplete) * distance;
-        }
-
-        if (this.ScrollTime.State != TimerState.Running) {
-            this.ScrollWaitTime.Restart();
-            this._isScrollingRight = !this._isScrollingRight;
-        }
-    }
-
-    private void HandleWaiting(FrameTime frameTime) {
-        this.ScrollWaitTime.Increment(frameTime);
-
-        if (this.ScrollWaitTime.State == TimerState.Finished) {
-            this.ScrollTime.Restart();
+            this._offset -= (float)frameTime.SecondsPassed * this.ScrollVelocity;
+            if (this._offset <= 0f) {
+                this.ScrollWaitTime.Restart();
+                this._isScrollingRight = true;
+            }
         }
     }
 
