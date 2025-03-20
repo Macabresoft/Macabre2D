@@ -204,9 +204,9 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     /// <summary>
     /// A check that gets called when the selected gizmo, selected entity, or selected component changes.
     /// </summary>
-    /// <returns>A value indicating whether or not this should be enabled.</returns>
+    /// <returns>A value indicating whether this should be enabled.</returns>
     protected virtual bool ShouldBeEnabled() {
-        return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.EntityService.Selected is IScene);
+        return this.GizmoKind == this.EditorService.SelectedGizmo && this.EntityService.Selected is not IScene;
     }
 
     private void Camera_BoundingAreaChanged(object sender, EventArgs e) {
