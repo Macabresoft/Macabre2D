@@ -1,8 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
@@ -12,23 +10,21 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheetAssetGuidReference> {
-    public static readonly DirectProperty<SpriteSheetAssetGuidEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<SpriteSheetAssetGuidEditor, ICommand>(
+public partial class SpriteSheetSpriteIndexReferenceEditor : ValueEditorControl<SpriteSheetSpriteIndexReference> {
+    public static readonly DirectProperty<SpriteSheetSpriteIndexReferenceEditor, ICommand> ClearCommandProperty =
+        AvaloniaProperty.RegisterDirect<SpriteSheetSpriteIndexReferenceEditor, ICommand>(
             nameof(ClearCommand),
             editor => editor.ClearCommand);
 
-    public static readonly DirectProperty<SpriteSheetAssetGuidEditor, string> PathTextProperty =
-        AvaloniaProperty.RegisterDirect<SpriteSheetAssetGuidEditor, string>(
+    public static readonly DirectProperty<SpriteSheetSpriteIndexReferenceEditor, string> PathTextProperty =
+        AvaloniaProperty.RegisterDirect<SpriteSheetSpriteIndexReferenceEditor, string>(
             nameof(PathText),
             editor => editor.PathText);
 
-    public static readonly DirectProperty<SpriteSheetAssetGuidEditor, ICommand> SelectCommandProperty =
-        AvaloniaProperty.RegisterDirect<SpriteSheetAssetGuidEditor, ICommand>(
+    public static readonly DirectProperty<SpriteSheetSpriteIndexReferenceEditor, ICommand> SelectCommandProperty =
+        AvaloniaProperty.RegisterDirect<SpriteSheetSpriteIndexReferenceEditor, ICommand>(
             nameof(SelectCommand),
             editor => editor.SelectCommand);
-
-    private readonly SpriteSheetAssetKind _assetKind;
 
     private readonly IAssetManager _assetManager;
     private readonly ICommonDialogService _dialogService;
@@ -36,7 +32,7 @@ public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheet
 
     private string _pathText;
 
-    public SpriteSheetAssetGuidEditor() : this(
+    public SpriteSheetSpriteIndexReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ICommonDialogService>(),
@@ -44,7 +40,7 @@ public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheet
     }
 
     [InjectionConstructor]
-    public SpriteSheetAssetGuidEditor(
+    public SpriteSheetSpriteIndexReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ICommonDialogService dialogService,
@@ -58,29 +54,20 @@ public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheet
             this.WhenAny(x => x.Value, y => y.Value.SpriteSheetId != Guid.Empty));
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
 
-
-        this._assetKind = SpriteSheetAssetKind.Animation;
-        if (dependencies?.Owner?.GetType() is { } ownerType) {
-            var members = ownerType.GetMember(dependencies.ValuePropertyName);
-            if (members.FirstOrDefault() is { } info && info.GetCustomAttribute<SpriteSheetAssetGuidAttribute>() is { } attribute) {
-                this._assetKind = attribute.AssetKind;
-            }
-        }
-
         this.ResetPath();
         this.InitializeComponent();
     }
 
     public ICommand ClearCommand { get; }
 
-    public ICommand SelectCommand { get; }
-
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SpriteSheetAssetGuidReference> args) {
+    public ICommand SelectCommand { get; }
+
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SpriteSheetSpriteIndexReference> args) {
         base.OnValueChanged(args);
         this.ResetPath();
     }
@@ -90,7 +77,7 @@ public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheet
 
         if (originalValue.SpriteSheetId != Guid.Empty) {
             this._undoService.Do(
-                () => this.Value = new SpriteSheetAssetGuidReference(),
+                () => this.Value = SpriteSheetSpriteIndexReference.Empty,
                 () => this.Value = originalValue);
         }
     }
@@ -111,27 +98,18 @@ public partial class SpriteSheetAssetGuidEditor : ValueEditorControl<SpriteSheet
 
         if (this._assetManager != null &&
             this.Value.SpriteSheetId != Guid.Empty &&
-            this.Value.AssetId != Guid.Empty &&
             this._assetManager.TryGetMetadata(this.Value.SpriteSheetId, out var metadata)) {
             this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
     }
 
     private async Task Select() {
-        var (spriteSheet, packagedAssetId) = this._assetKind switch {
-            SpriteSheetAssetKind.Animation => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteAnimation>(),
-            SpriteSheetAssetKind.AutoTileSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>(),
-            SpriteSheetAssetKind.Font => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>(),
-            SpriteSheetAssetKind.GamePadIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<GamePadIconSet>(),
-            SpriteSheetAssetKind.KeyboardIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<KeyboardIconSet>(),
-            _ => (null, Guid.Empty)
-        };
+        var (spriteSheet, spriteIndex) = await this._dialogService.OpenSpriteSelectionDialog();
 
-
-        if (spriteSheet != null && packagedAssetId != Guid.Empty) {
+        if (spriteSheet != null) {
             var originalValue = this.Value;
 
-            this._undoService.Do(() => { this.Value = new SpriteSheetAssetGuidReference(spriteSheet.ContentId, packagedAssetId); }, () => { this.Value = originalValue; });
+            this._undoService.Do(() => { this.Value = new SpriteSheetSpriteIndexReference(spriteSheet.ContentId, spriteIndex); }, () => { this.Value = originalValue; });
         }
     }
 }

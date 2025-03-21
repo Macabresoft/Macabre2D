@@ -5,11 +5,11 @@
                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
                           xmlns:frameworkCommon="clr-namespace:Macabresoft.Macabre2D.Common.Attributes;assembly=Macabre2D.Common"
                           x:TypeArguments="frameworkCommon:SpriteSheetAssetGuidReference"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.SpriteSheetAssetGuidEditor">
+                          x:Class="Macabresoft.Macabre2D.UI.Common.SpriteSheetAssetGuidReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-          DataContext="{Binding $parent[local:SpriteSheetAssetGuidEditor]}">
+          DataContext="{Binding $parent[local:SpriteSheetAssetGuidReferenceEditor]}">
         <Design.DataContext>
-            <local:SpriteSheetAssetGuidEditor />
+            <local:SpriteSheetAssetGuidReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"

@@ -159,7 +159,7 @@
           <DependentUpon>ResourceSelectionDialog.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\SpriteSheetAssetGuidEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\Framework\SpriteSheetAssetGuidReferenceEditor.axaml.cs">
           <DependentUpon>SpriteSheetAssetGuidEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
@@ -181,6 +181,10 @@
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\SpriteSheetReferenceEditor.axaml.cs">
           <DependentUpon>SpriteSheetReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\SpriteSheetSpriteIndexReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteSheetSpriteIndexReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
