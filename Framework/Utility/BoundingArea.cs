@@ -260,7 +260,7 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     /// Creates a <see cref="Vector2" /> that represents the size of this instance.
     /// </summary>
     /// <returns>The size.</returns>
-    public Vector2 ToSize() => new(this.Maximum.X - this.Minimum.X, this.Maximum.Y - this.Minimum.Y);
+    public Vector2 ToSize() => new(this.Width, this.Height);
 
     /// <inheritdoc />
     public override string ToString() => $"Minimum: {this.Minimum}, Maximum: {this.Maximum}, IsEmpty: {this.IsEmpty}";
