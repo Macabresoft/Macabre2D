@@ -349,9 +349,7 @@ public class BaseGame : Game, IGame {
                 this.UserSettings = new UserSettings(this.Project);
             }
 
-            this.State.ActionRequested -= this.OnActionRequested;
             this.State.Initialize(this.DataManager, this.UserSettings.Custom);
-            this.State.ActionRequested += this.OnActionRequested;
 
             if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -505,22 +503,6 @@ public class BaseGame : Game, IGame {
         }
 
         return renderTarget;
-    }
-
-    private void OnActionRequested(object? sender, GameAction e) {
-        switch (e) {
-            case GameAction.Shutdown:
-                this.Exit();
-                break;
-            case GameAction.SaveSettings:
-                this.SaveUserSettings();
-                break;
-            case GameAction.SaveAndApplySettings:
-                this.SaveAndApplyUserSettings();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(e), e, null);
-        }
     }
 
     private void RenderScenes() {
