@@ -385,8 +385,8 @@ public class BaseGame : Game, IGame {
             startupSceneId = this.Project.StartupDebugSceneId;
         }
 
-        if (assetManager.TryLoadContent<Scene>(startupSceneId, out var scene)) {
-            this.LoadScene(scene);
+        if (assetManager.TryLoadContent<Scene>(startupSceneId, out var scene) && scene.TryClone(out var clone)) {
+            this.LoadScene(clone);
         }
 
         if (assetManager.TryLoadContent<Scene>(this.Project.PersistentOverlaySceneId, out var overlay)) {
