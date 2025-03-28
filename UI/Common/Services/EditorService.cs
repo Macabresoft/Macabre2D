@@ -109,14 +109,19 @@ public interface IEditorService : INotifyPropertyChanged {
     /// Gets or sets a value indicating whether to show the editor grid.
     /// </summary>
     bool ShowGrid { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether to show all bounding areas and colliders.
+    /// </summary>
+    bool ShowBoundingAreasAndColliders { get; set; }
 
     /// <summary>
-    /// Gets or sets the color of the x axis.
+    /// Gets or sets the color of the x-axis.
     /// </summary>
     Color XAxisColor { get; set; }
 
     /// <summary>
-    /// Gets or sets the color of the y axis.
+    /// Gets or sets the color of the y-axis.
     /// </summary>
     Color YAxisColor { get; set; }
 }
@@ -134,6 +139,7 @@ public class EditorService : ReactiveObject, IEditorService {
     private Color _selectionColor = new(200, 171, 55);
     private bool _showActiveTiles = true;
     private bool _showGrid = true;
+    private bool _showBoundingAreasAndColliders;
     private StandardCursorType _standardCursorType = StandardCursorType.None;
     private Color _xAxisColor = new(113, 237, 100);
     private Color _yAxisColor = new(130, 38, 38);
@@ -259,6 +265,12 @@ public class EditorService : ReactiveObject, IEditorService {
     public bool ShowGrid {
         get => this._showGrid;
         set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
+    }
+
+    /// <inheritdoc />
+    public bool ShowBoundingAreasAndColliders {
+        get => this._showBoundingAreasAndColliders;
+        set => this.RaiseAndSetIfChanged(ref this._showBoundingAreasAndColliders, value);
     }
 
     /// <inheritdoc />

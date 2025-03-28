@@ -75,6 +75,11 @@
                     <avaloniaEx:Icon Content="{StaticResource GridIcon}" />
                 </ToggleButton>
                 <ToggleButton Classes="Icon"
+                              IsChecked="{Binding EditorService.ShowBoundingAreasAndColliders}"
+                              ToolTip.Tip="Show all bounding areas and colliders">
+                    <avaloniaEx:Icon Content="{StaticResource EyeIcon}" />
+                </ToggleButton>
+                <ToggleButton Classes="Icon"
                               IsChecked="{Binding EditorService.ShowActiveTiles}"
                               IsVisible="{Binding IsTileable}"
                               ToolTip.Tip="Highlight active tiles">
