@@ -18,6 +18,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     /// </summary>
     public static readonly EmptyObject Instance = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmptyObject"/> class.
+    /// </summary>
+    protected EmptyObject() {
+    }
+
     /// <inheritdoc />
     public event EventHandler? Activated;
 

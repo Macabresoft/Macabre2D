@@ -106,7 +106,7 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
     /// Gets the camera to which this mouse cursor is related.
     /// </summary>
     /// <returns>The camera.</returns>
-    protected ICamera GetCamera() => this.CameraReference.Entity ?? Camera.EmptyCamera;
+    protected ICamera GetCamera() => this.CameraReference.Entity ?? EmptyObject.Instance;
 
     /// <inheritdoc />
     protected override IEnumerable<IEntityReference> GetEntityReferences() {

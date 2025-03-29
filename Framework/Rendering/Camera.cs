@@ -81,12 +81,6 @@ public interface ICamera : IBoundableEntity, IPixelSnappable {
 /// Represents a camera into the game world.
 /// </summary>
 public class Camera : Entity, ICamera {
-
-    /// <summary>
-    /// Gets an empty <see cref="ICamera" /> instance.
-    /// </summary>
-    public static readonly ICamera EmptyCamera = new EmptyObject();
-
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<float> _viewWidth;
     private bool _overrideCommonViewHeight = true;
