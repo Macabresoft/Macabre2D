@@ -38,6 +38,9 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     }
 
     /// <inheritdoc />
+    public BoundingArea BoundingArea { get; private set; } = BoundingArea.Empty;
+
+    /// <inheritdoc />
     public PixelSnap PixelSnap { get; } = PixelSnap.No;
 
     /// <summary>
@@ -47,16 +50,16 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     public PrefabReference PrefabReference { get; } = new();
 
     /// <inheritdoc />
-    public BoundingArea BoundingArea { get; private set; } = BoundingArea.Empty;
+    public int RenderOrder { get; set; }
+
+    /// <inheritdoc />
+    public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
     public bool ShouldRender {
         get => BaseGame.IsDesignMode && this.IsEnabled;
         set { }
     }
-
-    /// <inheritdoc />
-    public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -71,7 +74,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
         this.Reset();
         this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
     }
-    
+
     /// <inheritdoc />
     public bool IsPartOfPrefab(IEntity otherEntity) => this._prefabChild != null && (otherEntity.Id == this._prefabChild.Id || otherEntity.IsDescendentOf(this._prefabChild));
 

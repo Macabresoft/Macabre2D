@@ -14,7 +14,7 @@ public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable 
     /// <summary>
     /// Gets the render order.
     /// </summary>
-    int RenderOrder => 0;
+    int RenderOrder { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this should be rendered when out of bounds.

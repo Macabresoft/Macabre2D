@@ -121,12 +121,12 @@ public class RenderSystemTests {
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => (Layers)2;
+        public Layers LayersToRender { get; set; } = (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
         public BoundingArea SafeArea => this.BoundingArea;
-        public float ViewWidth => 4f;
-        public Layers LayersToRender { get; set; } = (Layers)1;
         public float ViewHeight { get; set; } = 4f;
+        public float ViewWidth => 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) => Vector2.Zero;
 
@@ -148,6 +148,8 @@ public class RenderSystemTests {
         public PixelSnap PixelSnap => PixelSnap.Inherit;
 
         public int RenderCount { get; private set; }
+
+        public int RenderOrder { get; set; }
 
         public bool RenderOutOfBounds {
             get => true;

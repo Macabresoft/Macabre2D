@@ -33,6 +33,9 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     }
 
     /// <inheritdoc />
+    public int RenderOrder { get; set; }
+
+    /// <inheritdoc />
     public bool RenderOutOfBounds { get; set; } = true;
 
     /// <inheritdoc />
