@@ -68,7 +68,16 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public SpriteAnimation? CurrentAnimation => null;
 
     /// <inheritdoc />
+    public GameTimer DelayTimer { get; } = new();
+
+    /// <inheritdoc />
     public GameTimer DisappearTimer { get; } = new();
+
+    /// <inheritdoc />
+    public bool EndImmediately {
+        get => true;
+        set { }
+    }
 
     /// <summary>
     /// Gets the singleton instance as <see cref="IEntity" />.
