@@ -224,6 +224,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public GameTimer ShowTimer { get; } = new();
 
     /// <inheritdoc />
+    public float SpeedMultiplier {
+        get => 1f;
+        set { }
+    }
+
+    /// <inheritdoc />
     public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
@@ -366,7 +372,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     /// <inheritdoc />
     public void IncrementTime(FrameTime frameTime) {
     }
-
 
     /// <inheritdoc />
     public void Initialize(IScene scene, IEntity parent) {

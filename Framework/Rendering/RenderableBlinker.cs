@@ -30,6 +30,11 @@ public interface IRenderableBlinker : IUpdateableEntity {
     GameTimer ShowTimer { get; }
 
     /// <summary>
+    /// Gets or sets a multiplier to speed up or slowdown the blinking.
+    /// </summary>
+    float SpeedMultiplier { get; set; }
+
+    /// <summary>
     /// Begins blinking the parent <see cref="IRenderableEntity" /> if it exists.
     /// </summary>
     /// <param name="numberOfBlinks">The number of blinks before finishing.</param>
@@ -68,6 +73,10 @@ public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
     public GameTimer ShowTimer { get; } = new(0.5f);
 
     /// <inheritdoc />
+    [DataMember]
+    public float SpeedMultiplier { get; set; } = 1f;
+
+    /// <inheritdoc />
     public void BeginBlink(byte numberOfBlinks, Action? finishedCallback) {
         if (numberOfBlinks > 0 && this.Parent is IRenderableEntity renderable) {
             this._totalNumberOfBlinks = numberOfBlinks;
@@ -75,6 +84,7 @@ public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
             this._finishedCallback = finishedCallback;
 
             this.DisappearTimer.Restart();
+            this.ShowTimer.Restart();
 
             if (this.DelayTimer.TimeLimit > 0f) {
                 this.DelayTimer.Restart();
@@ -108,10 +118,14 @@ public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Parent is IRenderableEntity renderable) {
             if (this.DelayTimer.State == TimerState.Running) {
-                this.DelayTimer.Increment(frameTime);
+                this.DelayTimer.Increment(frameTime, this.SpeedMultiplier);
+
+                if (this.DelayTimer.State == TimerState.Finished) {
+                    this.DisappearTimer.Restart();
+                }
             }
             else if (this.DisappearTimer.State == TimerState.Running) {
-                this.DisappearTimer.Increment(frameTime);
+                this.DisappearTimer.Increment(frameTime, this.SpeedMultiplier);
 
                 if (this.DisappearTimer.State == TimerState.Finished) {
                     renderable.ShouldRender = true;
@@ -123,7 +137,7 @@ public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
                 }
             }
             else if (this.ShowTimer.State == TimerState.Running) {
-                this.ShowTimer.Increment(frameTime);
+                this.ShowTimer.Increment(frameTime, this.SpeedMultiplier);
 
                 if (this.ShowTimer.State == TimerState.Finished) {
                     renderable.ShouldRender = false;
