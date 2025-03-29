@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer {
+public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -66,6 +66,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => null;
+
+    /// <inheritdoc />
+    public GameTimer DisappearTimer { get; } = new();
 
     /// <summary>
     /// Gets the singleton instance as <see cref="IEntity" />.
@@ -209,6 +212,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public bool ShouldUpdate => false;
 
     /// <inheritdoc />
+    public GameTimer ShowTimer { get; } = new();
+
+    /// <inheritdoc />
     public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
@@ -272,6 +278,10 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public void AddSystem(IGameSystem system) {
+    }
+
+    /// <inheritdoc />
+    public void BeginBlink(byte numberOfBlinks, Action? finishedCallback) {
     }
 
     /// <inheritdoc />
@@ -472,7 +482,7 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public void Stop() {
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IQueueableSpriteAnimator.Stop(bool)" />
     public void Stop(bool eraseQueue) {
     }
 

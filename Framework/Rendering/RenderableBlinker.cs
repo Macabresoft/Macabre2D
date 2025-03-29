@@ -4,30 +4,50 @@ using System;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// As the child of a <see cref="IRenderableEntity" />, can blink that entity like a retro video game.
+/// Interface for an entity which can control <see cref="IRenderableEntity"/> visibility in a blinking pattern.
 /// </summary>
-public class RenderableBlinker : UpdateableEntity {
-    private byte _currentNumberOfBlinks;
-    private Action? _finishedCallback;
-    private byte _totalNumberOfBlinks;
-
-    /// <summary>
-    /// Gets the timer for the amount of time that the <see cref="IRenderableEntity" /> will disappear while blinking.
-    /// </summary>
-    [DataMember]
-    public GameTimer DisappearTimer { get; } = new(0.5f);
-
-    /// <summary>
-    /// Gets the timer for the amount of time that the <see cref="IRenderableEntity" /> will show between blinks.
-    /// </summary>
-    [DataMember]
-    public GameTimer ShowTimer { get; } = new(0.5f);
-
+public interface IRenderableBlinker : IUpdateableEntity {
     /// <summary>
     /// Begins blinking the parent <see cref="IRenderableEntity" /> if it exists.
     /// </summary>
     /// <param name="numberOfBlinks">The number of blinks before finishing.</param>
     /// <param name="finishedCallback">The finished callback.</param>
+    void BeginBlink(byte numberOfBlinks, Action? finishedCallback);
+
+    /// <summary>
+    /// Stops the blinking immediately.
+    /// </summary>
+    /// <param name="shouldRender">A value indicating whether this should stop blinking.</param>
+    void Stop(bool shouldRender);
+    
+    /// <summary>
+    /// Gets the timer for the amount of time that the <see cref="IRenderableEntity" /> will disappear while blinking.
+    /// </summary>
+    GameTimer DisappearTimer { get; }
+
+    /// <summary>
+    /// Gets the timer for the amount of time that the <see cref="IRenderableEntity" /> will show between blinks.
+    /// </summary>
+    GameTimer ShowTimer { get; }
+}
+
+/// <summary>
+/// As the child of a <see cref="IRenderableEntity" />, can blink that entity like a retro video game.
+/// </summary>
+public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
+    private byte _currentNumberOfBlinks;
+    private Action? _finishedCallback;
+    private byte _totalNumberOfBlinks;
+
+    /// <inheritdoc />
+    [DataMember]
+    public GameTimer DisappearTimer { get; } = new(0.5f);
+
+    /// <inheritdoc />
+    [DataMember]
+    public GameTimer ShowTimer { get; } = new(0.5f);
+
+    /// <inheritdoc />
     public void BeginBlink(byte numberOfBlinks, Action? finishedCallback) {
         if (numberOfBlinks > 0 && this.Parent is IRenderableEntity renderable) {
             this._totalNumberOfBlinks = numberOfBlinks;
@@ -45,10 +65,7 @@ public class RenderableBlinker : UpdateableEntity {
         base.Initialize(scene, parent);
     }
 
-    /// <summary>
-    /// Stops the blinking immediately.
-    /// </summary>
-    /// <param name="shouldRender">A value indicating whether this should stop blinking.</param>
+    /// <inheritdoc />
     public void Stop(bool shouldRender) {
         this._finishedCallback = null;
         this.OnFinished();
