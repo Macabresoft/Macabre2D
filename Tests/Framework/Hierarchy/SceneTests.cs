@@ -8,6 +8,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -16,6 +17,9 @@ public sealed class SceneTests {
 
     [Test]
     public static void Deinitialize_DeinitializesAllChildren() {
+        var game = Substitute.For<IGame>();
+        game.State.Returns(x => new GameState());
+        var assetManager = Substitute.For<IAssetManager>();
         var scene = new Scene();
         var idToCount = new Dictionary<Guid, int>();
 
@@ -40,6 +44,7 @@ public sealed class SceneTests {
         }
         
         for (var i = 1; i <= 10; i++) {
+            scene.Initialize(game, assetManager);
             scene.Deinitialize();
 
             foreach (var value in idToCount.Values) {

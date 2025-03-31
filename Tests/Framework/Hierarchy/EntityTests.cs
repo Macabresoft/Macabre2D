@@ -12,8 +12,9 @@ using NUnit.Framework;
 public static class EntityTests {
 
     [Test]
-    public static void Deinitialize_DeinitializesChildren() {
+    public static void Deinitialize_DeinitializesChildren_Once() {
         var parent = new Entity();
+        parent.Initialize(Substitute.For<IScene>(), Substitute.For<IScene>());
         var deinitializeCount = 0;
         var child = Substitute.For<IEntity>();
         child.When(x => x.Deinitialize()).Do(x => deinitializeCount++);
@@ -21,6 +22,23 @@ public static class EntityTests {
         parent.AddChild(child);
 
         for (var i = 1; i <= 10; i++) {
+            parent.Deinitialize();
+            Assert.That(deinitializeCount == 1);
+        }
+    }
+    
+    [Test]
+    public static void Deinitialize_DeinitializesChildren_OncePerInitialize() {
+        var parent = new Entity();
+        var scene = Substitute.For<IScene>();
+        var deinitializeCount = 0;
+        var child = Substitute.For<IEntity>();
+        child.When(x => x.Deinitialize()).Do(x => deinitializeCount++);
+
+        parent.AddChild(child);
+
+        for (var i = 1; i <= 10; i++) {
+            parent.Initialize(scene, scene);
             parent.Deinitialize();
             Assert.That(deinitializeCount == i);
         }
