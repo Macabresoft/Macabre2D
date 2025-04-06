@@ -21,7 +21,5 @@ public class SystemCollection : ObservableCollection<IGameSystem>, INameableColl
     }
 
     /// <inheritdoc />
-    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() {
-        return this.Items.GetEnumerator();
-    }
+    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => this.Items.GetEnumerator();
 }

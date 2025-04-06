@@ -43,11 +43,6 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     public IReadOnlyCollection<TFiltered> FilteredNodes => this._filteredNodes;
 
     /// <summary>
-    /// Gets a value indicating whether or not this is filtered.
-    /// </summary>
-    public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
-
-    /// <summary>
     /// Gets or sets the filtered selection;
     /// </summary>
     public TFiltered FilteredSelection {
@@ -78,9 +73,15 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
                 this.PerformFilter();
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged(nameof(this.IsFiltered));
+                this.OnFilterChanged();
             }
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is filtered.
+    /// </summary>
+    public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
 
     /// <summary>
     /// Gets the object that is selected outside of the filter.
@@ -93,6 +94,12 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     /// </summary>
     /// <returns>The nodes available to filter.</returns>
     protected abstract IEnumerable<TFiltered> GetNodesAvailableToFilter();
+
+    /// <summary>
+    /// Called when the filter changes.
+    /// </summary>
+    protected virtual void OnFilterChanged() {
+    }
 
     /// <summary>
     /// Sets the selection outside of the filter context.

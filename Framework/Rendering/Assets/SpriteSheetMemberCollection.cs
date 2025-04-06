@@ -29,6 +29,13 @@ public interface ISpriteSheetMemberCollection : INameableCollection, INotifyColl
     void InsertMember(int index, SpriteSheetMember member);
 
     /// <summary>
+    /// Moves the specified item to the new index.
+    /// </summary>
+    /// <param name="originalIndex">The original index.</param>
+    /// <param name="newIndex">The new index.</param>
+    void Move(int originalIndex, int newIndex);
+
+    /// <summary>
     /// Removes a member if it is the correct type.
     /// </summary>
     /// <param name="member">The member.</param>

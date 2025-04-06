@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -105,12 +106,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
 
-        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.AssetSelectionService.WhenAny(
-            x => x.Selected,
-            x => !this.IsFiltered && this.CanMoveDown(x.Value)));
-        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.AssetSelectionService.WhenAny(
-            x => x.Selected,
-            x => !this.IsFiltered && this.CanMoveUp(x.Value)));
+        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.WhenAny(x => x.IsMoveDownEnabled, x => x.Value));
+
+        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.WhenAny(x => x.IsMoveUpEnabled, x => x.Value));
+
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
             x => x.Selected,
             x => !this.IsFiltered && CanClone(x.Value)));
@@ -165,6 +164,16 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the import command.
     /// </summary>
     public ICommand ImportCommand { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether move up is enabled.
+    /// </summary>
+    public bool IsMoveDownEnabled => !this.IsFiltered && this.AssetSelectionService.Selected is { } selected && this.CanMoveDown(selected);
+
+    /// <summary>
+    /// Gets a value indicating whether move up is enabled.
+    /// </summary>
+    public bool IsMoveUpEnabled => !this.IsFiltered && this.AssetSelectionService.Selected is { } selected && this.CanMoveUp(selected);
 
     /// <summary>
     /// Gets a command to move a child down.
@@ -230,6 +239,12 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     protected override IEnumerable<IContentNode> GetNodesAvailableToFilter() {
         this.AssetSelectionService.Selected = null;
         return this.ContentService.RootContentDirectory != null ? this.ContentService.RootContentDirectory.GetAllContentFiles() : Enumerable.Empty<IContentNode>();
+    }
+
+    protected override void OnFilterChanged() {
+        base.OnFilterChanged();
+        this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+        this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
     }
 
     /// <inheritdoc />
@@ -316,6 +331,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.AssetSelectionService.Selected)) {
             this.RaisePropertyChanged(nameof(this.CanMoveOrClone));
+            this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+            this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
         }
     }
 
@@ -455,35 +472,37 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private void MoveDown(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            var index = collection.IndexOf(member);
-            if (index < collection.Count - 1 && index >= 0) {
+            var originalIndex = collection.IndexOf(member);
+            if (originalIndex < collection.Count - 1 && originalIndex >= 0) {
+                var newIndex = originalIndex + 1;
                 this._undoService.Do(() =>
                 {
-                    collection.RemoveMember(member);
-                    collection.InsertMember(index + 1, member);
-                    this.AssetSelectionService.Selected = member;
+                    collection.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    collection.RemoveMember(member);
-                    collection.InsertMember(index, member);
-                    this.AssetSelectionService.Selected = member;
+                    collection.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
             }
         }
         else if (selected is ScreenShader shader) {
             var shaders = this.ProjectService.CurrentProject.ScreenShaders;
-            var index = shaders.IndexOf(shader);
-            if (index < shaders.Count - 1 && index >= 0) {
+            var originalIndex = shaders.IndexOf(shader);
+            if (originalIndex < shaders.Count - 1 && originalIndex >= 0) {
+                var newIndex = originalIndex + 1;
                 this._undoService.Do(() =>
                 {
-                    shaders.Remove(shader);
-                    shaders.Insert(index + 1, shader);
-                    this.AssetSelectionService.Selected = shader;
+                    shaders.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    shaders.Remove(shader);
-                    shaders.Insert(index, shader);
-                    this.AssetSelectionService.Selected = shader;
+                    shaders.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
             }
         }
@@ -491,35 +510,37 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private void MoveUp(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            var index = collection.IndexOf(member);
-            if (index > 0) {
+            var originalIndex = collection.IndexOf(member);
+            if (originalIndex > 0) {
+                var newIndex = originalIndex - 1;
                 this._undoService.Do(() =>
                 {
-                    collection.RemoveMember(member);
-                    collection.InsertMember(index - 1, member);
-                    this.AssetSelectionService.Selected = member;
+                    collection.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    collection.RemoveMember(member);
-                    collection.InsertMember(index, member);
-                    this.AssetSelectionService.Selected = member;
+                    collection.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
             }
         }
         else if (selected is ScreenShader shader) {
             var shaders = this.ProjectService.CurrentProject.ScreenShaders;
-            var index = shaders.IndexOf(shader);
-            if (index > 0) {
+            var originalIndex = shaders.IndexOf(shader);
+            if (originalIndex > 0) {
+                var newIndex = originalIndex - 1;
                 this._undoService.Do(() =>
                 {
-                    shaders.Remove(shader);
-                    shaders.Insert(index - 1, shader);
-                    this.AssetSelectionService.Selected = shader;
+                    shaders.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    shaders.Remove(shader);
-                    shaders.Insert(index, shader);
-                    this.AssetSelectionService.Selected = shader;
+                    shaders.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
             }
         }

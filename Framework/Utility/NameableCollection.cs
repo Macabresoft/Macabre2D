@@ -55,11 +55,8 @@ public abstract class NameableCollection<TNameable> : ObservableCollectionExtend
         this.RaiseItemsChanged();
     }
 
-
     /// <inheritdoc />
-    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() {
-        return (IEnumerator<INameable>)this.Items.GetEnumerator();
-    }
+    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => (IEnumerator<INameable>)this.Items.GetEnumerator();
 
     private void HandleAdd(IEnumerable? newItems) {
         if (newItems != null) {

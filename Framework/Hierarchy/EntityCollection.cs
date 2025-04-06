@@ -11,7 +11,5 @@ public class EntityCollection : ObservableCollection<IEntity>, INameableCollecti
     public string Name => "Entities";
 
     /// <inheritdoc />
-    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() {
-        return this.Items.GetEnumerator();
-    }
+    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => this.Items.GetEnumerator();
 }
