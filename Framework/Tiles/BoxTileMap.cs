@@ -37,12 +37,6 @@ public class BoxTileMap : RenderableEntity {
     public AutoTileSetReference TileSet { get; } = new();
 
     /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    [DataMember]
-    public Color Color { get; set; } = Color.White;
-
-    /// <summary>
     /// Gets or sets the height in tiles.
     /// </summary>
     [DataMember]
@@ -95,7 +89,7 @@ public class BoxTileMap : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />

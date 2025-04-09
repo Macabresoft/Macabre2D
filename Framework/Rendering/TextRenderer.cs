@@ -37,14 +37,7 @@ public class TextRenderer : RenderableEntity {
     /// </summary>
     [DataMember(Order = 0)]
     public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
-
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    /// <value>The color.</value>
-    [DataMember(Order = 1)]
-    public Color Color { get; set; } = Color.Black;
-
+    
     /// <summary>
     /// Gets the render options.
     /// </summary>
@@ -79,7 +72,7 @@ public class TextRenderer : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
     
     /// <inheritdoc />

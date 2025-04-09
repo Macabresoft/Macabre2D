@@ -15,11 +15,6 @@ public interface ISpriteEntity : IRenderableEntity {
     /// Gets or sets the render options.
     /// </summary>
     public RenderOptions RenderOptions { get; }
-
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    Color Color { get; set; }
 }
 
 /// <summary>
@@ -52,10 +47,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     public abstract byte? SpriteIndex { get; }
 
     /// <inheritdoc />
-    [DataMember(Order = 1)]
-    public Color Color { get; set; } = Color.White;
-
-    /// <inheritdoc />
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
 
@@ -76,7 +67,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />

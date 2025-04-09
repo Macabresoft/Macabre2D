@@ -45,6 +45,12 @@ public sealed class RenderOptions : OffsetOptions {
     }
 
     /// <summary>
+    /// Gets or sets the color.
+    /// </summary>
+    [DataMember]
+    public Color Color { get; set; } = Color.White;
+
+    /// <summary>
     /// Gets or sets a value indicating whether the render should be flipped horizontally.
     /// </summary>
     /// <value><c>true</c> if the render should be flipped horizontally; otherwise, <c>false</c>.</value>

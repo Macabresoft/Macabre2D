@@ -40,10 +40,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
-    [DataMember(Order = 1)]
-    public Color Color { get; set; } = Color.White;
-
-    /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
         get => this._fontCategory;
@@ -206,7 +202,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />

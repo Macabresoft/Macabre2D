@@ -52,12 +52,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// </summary>
     public float CharacterHeight { get; private set; }
 
-    /// <summary>
-    /// Gets or sets the color.
-    /// </summary>
-    /// <value>The color.</value>
-    [DataMember(Order = 1)]
-    public Color Color { get; set; } = Color.White;
+
 
     /// <summary>
     /// Gets or sets a value indicating whether this should constrain height vertically.
@@ -230,7 +225,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.Render(frameTime, viewBoundingArea, this.Color);
+        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />

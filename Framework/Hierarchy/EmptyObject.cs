@@ -18,12 +18,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     /// </summary>
     public static readonly EmptyObject Instance = new();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmptyObject"/> class.
-    /// </summary>
-    protected EmptyObject() {
-    }
-
     /// <inheritdoc />
     public event EventHandler? Activated;
 
@@ -44,6 +38,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public event EventHandler? TransformChanged;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmptyObject" /> class.
+    /// </summary>
+    protected EmptyObject() {
+    }
 
     /// <inheritdoc />
     public float ActualViewHeight => 1f;
@@ -66,9 +66,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     /// Gets the singleton instance as <see cref="ICamera" />.
     /// </summary>
     public static ICamera Camera => Instance;
-
-    /// <inheritdoc />
-    public Color Color { get; set; }
 
     /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => null;
@@ -264,7 +261,7 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
         set { }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
     public int UpdateOrder => 0;
 
     /// <inheritdoc />
