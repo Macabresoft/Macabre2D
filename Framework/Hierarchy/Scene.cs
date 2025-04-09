@@ -30,7 +30,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     event EventHandler Deactivated;
 
     /// <summary>
-    /// Gets thje animatable entities.
+    /// Gets the animatable entities.
     /// </summary>
     IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => Array.Empty<IAnimatableEntity>();
 
@@ -55,7 +55,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this is active.
+    /// Gets or sets a value indicating whether this is active.
     /// </summary>
     bool IsActive { get; }
 
@@ -253,7 +253,7 @@ public sealed class Scene : GridContainer, IScene {
         (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
         nameof(IPhysicsBody.UpdateOrder));
 
-    private readonly HashSet<Guid> _registeredEntities = new();
+    private readonly HashSet<Guid> _registeredEntities = [];
 
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
         c => c.ShouldRender,
