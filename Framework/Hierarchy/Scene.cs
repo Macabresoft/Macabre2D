@@ -90,11 +90,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
 
     /// <summary>
-    /// Gets or sets the version of this scene.
-    /// </summary>
-    Version Version { get; set; }
-
-    /// <summary>
     /// Adds the system.
     /// </summary>
     /// <typeparam name="T">
@@ -347,10 +342,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
-
-    /// <inheritdoc />
-    [DataMember]
-    public Version Version { get; set; } = new(0, 0, 0, 0);
 
     /// <inheritdoc />
     public T AddSystem<T>() where T : IGameSystem, new() {
