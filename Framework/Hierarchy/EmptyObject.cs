@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -61,11 +60,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
-
-    /// <summary>
-    /// Gets the singleton instance as <see cref="ICamera" />.
-    /// </summary>
-    public static ICamera Camera => Instance;
 
     /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => null;
@@ -263,9 +257,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
     public int UpdateOrder => 0;
-
-    /// <inheritdoc />
-    public Version Version { get; set; } = new();
 
     /// <inheritdoc />
     public float ViewHeight {
@@ -483,13 +474,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     /// <inheritdoc />
     public void ReorderSystem(IGameSystem system, int newIndex) {
     }
-
-    /// <inheritdoc />
-    public T ResolveDependency<T>() where T : new() => new();
-
-
-    /// <inheritdoc />
-    public T ResolveDependency<T>(Func<T> objectFactory) where T : class => objectFactory.SafeInvoke();
 
     /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {

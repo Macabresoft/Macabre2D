@@ -11,15 +11,16 @@ using Microsoft.Xna.Framework.Graphics;
 /// Draws primitive objects.
 /// </summary>
 public sealed class PrimitiveDrawer {
+    private static PrimitiveDrawer? _instance;
     private readonly Texture2D _pixel;
-
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="PrimitiveDrawer" /> class.
     /// </summary>
     /// <param name="spriteBatch">The sprite batch.</param>
-    public PrimitiveDrawer(SpriteBatch spriteBatch) {
+    private PrimitiveDrawer(SpriteBatch spriteBatch) {
         this._pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-        this._pixel.SetData(new[] { Color.White });
+        this._pixel.SetData([Color.White]);
     }
 
     /// <summary>
@@ -28,9 +29,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="graphicsDevice">The graphics device.</param>
     /// <param name="size">The size.</param>
     /// <returns>A filled circle sprite.</returns>
-    public static Texture2D CreateCircleSprite(GraphicsDevice graphicsDevice, int size) {
-        return CreateCircleSprite(graphicsDevice, size, Color.White);
-    }
+    public static Texture2D CreateCircleSprite(GraphicsDevice graphicsDevice, int size) => CreateCircleSprite(graphicsDevice, size, Color.White);
 
     /// <summary>
     /// Creates the circle sprite.
@@ -69,9 +68,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="graphicsDevice">The graphics device.</param>
     /// <param name="size">The size.</param>
     /// <returns>The arrow sprite.</returns>
-    public static Texture2D CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) {
-        return CreateForwardArrowSprite(graphicsDevice, size, Color.White);
-    }
+    public static Texture2D CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) => CreateForwardArrowSprite(graphicsDevice, size, Color.White);
 
     /// <summary>
     /// Creates the arrow sprite. This will be pointing forwards (to the right by default).
@@ -111,9 +108,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="graphicsDevice">The graphics device.</param>
     /// <param name="size">The size.</param>
     /// <returns>The quad sprite.</returns>
-    public static Texture2D CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) {
-        return CreateQuadSprite(graphicsDevice, size, Color.White);
-    }
+    public static Texture2D CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) => CreateQuadSprite(graphicsDevice, size, Color.White);
 
     /// <summary>
     /// Creates the quad sprite.
@@ -136,9 +131,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="graphicsDevice">The graphics device.</param>
     /// <param name="size">The size.</param>
     /// <returns>The right triangle sprite.</returns>
-    public static Texture2D CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
-        return CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
-    }
+    public static Texture2D CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) => CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
 
     /// <summary>
     /// Creates the right triangle sprite. The right angle will be in the top left corner of the sprite.
@@ -177,9 +170,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="graphicsDevice">The graphics device.</param>
     /// <param name="size">The size.</param>
     /// <returns>The arrow sprite.</returns>
-    public static Texture2D CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) {
-        return CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
-    }
+    public static Texture2D CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) => CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
 
     /// <summary>
     /// Creates the arrow sprite. This will be pointing upwards.
@@ -356,7 +347,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="color">The color.</param>
     /// <param name="thickness">The thickness.</param>
-    /// <param name="connectFirstAndLastPoint">A value indicating whether or not to connect the first and last points.</param>
+    /// <param name="connectFirstAndLastPoint">A value indicating whether to connect the first and last points.</param>
     /// <param name="points">The points.</param>
     public void DrawPolygon(
         SpriteBatch spriteBatch,
@@ -380,5 +371,14 @@ public sealed class PrimitiveDrawer {
             this.DrawLine(spriteBatch, pixelsPerUnit, previousPoint, point, color, thickness);
             previousPoint = point;
         }
+    }
+
+    /// <summary>
+    /// Gets the default instance of the <see cref="PrimitiveDrawer" /> or creates it if it does not exist.
+    /// </summary>
+    /// <param name="spriteBatch"></param>
+    /// <returns>The instance.</returns>
+    public static PrimitiveDrawer GetInstance(SpriteBatch spriteBatch) {
+        return _instance ??= new PrimitiveDrawer(spriteBatch);
     }
 }

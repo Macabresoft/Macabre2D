@@ -192,23 +192,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     void ReorderSystem(IGameSystem system, int newIndex);
 
     /// <summary>
-    /// Resolves the dependency.
-    /// </summary>
-    /// <typeparam name="T">The type of the dependency.</typeparam>
-    /// <returns>The dependency if it already exists or a newly created dependency.</returns>
-    T ResolveDependency<T>() where T : new();
-
-    /// <summary>
-    /// Resolves the dependency.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="objectFactory">The object factory.</param>
-    /// <returns>
-    /// The dependency if it already exists or a dependency created from the provided factory.
-    /// </returns>
-    T ResolveDependency<T>(Func<T> objectFactory) where T : class;
-
-    /// <summary>
     /// Unregisters the entity from services.
     /// </summary>
     /// <param name="entity">The entity.</param>
@@ -230,8 +213,6 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IEnableable.IsEnabled),
         (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
         nameof(ICamera.RenderOrder));
-
-    private readonly Dictionary<Type, object> _dependencies = new();
 
     private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
         c => c.ShouldUpdate,
@@ -523,28 +504,6 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     public void ReorderSystem(IGameSystem system, int newIndex) {
         this._systems.Reorder(system, newIndex);
-    }
-
-    /// <inheritdoc />
-    public T ResolveDependency<T>() where T : new() {
-        if (this._dependencies.TryGetValue(typeof(T), out var dependency)) {
-            return (T)dependency;
-        }
-
-        dependency = new T();
-        this._dependencies.Add(typeof(T), dependency);
-        return (T)dependency;
-    }
-
-    /// <inheritdoc />
-    public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
-        if (this._dependencies.TryGetValue(typeof(T), out var found) && found is T dependency) {
-            return dependency;
-        }
-
-        dependency = objectFactory.SafeInvoke();
-        this._dependencies.Add(typeof(T), dependency);
-        return dependency;
     }
 
     /// <inheritdoc />

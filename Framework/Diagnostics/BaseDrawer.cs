@@ -38,8 +38,7 @@ public abstract class BaseDrawer : RenderableEntity {
         base.Initialize(scene, parent);
 
         if (this.SpriteBatch != null) {
-            this.PrimitiveDrawer = this.Scene.ResolveDependency(
-                () => new PrimitiveDrawer(this.SpriteBatch));
+            this.PrimitiveDrawer = PrimitiveDrawer.GetInstance(this.SpriteBatch);
         }
     }
 
