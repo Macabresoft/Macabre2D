@@ -14,8 +14,6 @@ using Macabresoft.Core;
 /// all over the place.
 /// </summary>
 public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
-    private static readonly Comparison<int> RemoveJournalSortComparison =
-        (x, y) => Comparer<int>.Default.Compare(y, x);
 
     private readonly List<AddJournalEntry> _addJournal = new();
     private readonly Comparison<AddJournalEntry> _addJournalSortComparison;
@@ -25,6 +23,10 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     private readonly List<T> _items = new();
     private readonly object _lock = new();
     private readonly List<int> _removeJournal = new();
+
+    private readonly Comparison<int> _removeJournalSortComparison =
+        (x, y) => Comparer<int>.Default.Compare(y, x);
+
     private readonly Comparison<T> _sort;
     private readonly string _sortPropertyName;
     private bool _shouldRebuildCache = true;
@@ -98,7 +100,7 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     /// Adds the items.
     /// </summary>
     /// <param name="items">The items.</param>
-    public void AddRange(IEnumerable<T> items) {
+    public void AddRange(IReadOnlyCollection<T> items) {
         lock (this._lock) {
             foreach (var item in items) {
                 this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
@@ -126,16 +128,15 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     /// </summary>
     public void Clear() {
         lock (this._lock) {
-            for (var i = 0; i < this._items.Count; ++i) {
-                this.UnsubscribeFromItemEvents(this._items[i]);
+            foreach (var t in this._items) {
+                this.UnsubscribeFromItemEvents(t);
             }
 
-            var items = this._items;
             this._addJournal.Clear();
             this._removeJournal.Clear();
             this._items.Clear();
             this.InvalidateCache();
-            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, items));
+            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, this._items));
         }
     }
 
@@ -173,58 +174,6 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     }
 
     /// <summary>
-    /// Iterates through each filtered item.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public void ForEachFilteredItem(Action<T> action) {
-        for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
-            action(this._cachedFilteredItems[i]);
-        }
-
-        // If the cache was invalidated as a result of processing items, now is a good time to
-        // clear it and give the GC (more of) a chance to do its thing.
-        if (this._shouldRebuildCache) {
-            this._cachedFilteredItems.Clear();
-        }
-    }
-
-    /// <summary>
-    /// Iterates through each filtered item.
-    /// </summary>
-    /// <typeparam name="TUserData">The type of the user data.</typeparam>
-    /// <param name="action">The action.</param>
-    /// <param name="userData">The user data.</param>
-    public void ForEachFilteredItem<TUserData>(Action<T, TUserData> action, TUserData userData) {
-        for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
-            action(this._cachedFilteredItems[i], userData);
-        }
-
-        // If the cache was invalidated as a result of processing items, now is a good time to
-        // clear it and give the GC (more of) a chance to do its thing.
-        if (this._shouldRebuildCache) {
-            this._cachedFilteredItems.Clear();
-        }
-    }
-
-    /// <summary>
-    /// Iterates through each filtered item.
-    /// </summary>
-    /// <typeparam name="TUserData">The type of the user data.</typeparam>
-    /// <param name="action">The action.</param>
-    /// <param name="userData">The user data.</param>
-    public void ForEachFilteredItem<TUserData1, TUserData2>(Action<T, TUserData1, TUserData2> action, TUserData1 userData1, TUserData2 userData2) {
-        for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
-            action(this._cachedFilteredItems[i], userData1, userData2);
-        }
-
-        // If the cache was invalidated as a result of processing items, now is a good time to
-        // clear it and give the GC (more of) a chance to do its thing.
-        if (this._shouldRebuildCache) {
-            this._cachedFilteredItems.Clear();
-        }
-    }
-
-    /// <summary>
     /// Returns an enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
@@ -237,22 +186,20 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     /// Rebuilds the cache.
     /// </summary>
     public void RebuildCache() {
-        if (this._shouldRebuildCache) {
-            lock (this._lock) {
-                if (this._shouldRebuildCache) {
-                    this.ProcessRemoveJournal();
-                    this.ProcessAddJournal();
+        lock (this._lock) {
+            if (this._shouldRebuildCache) {
+                this.ProcessRemoveJournal();
+                this.ProcessAddJournal();
 
-                    // Rebuild the cache
-                    this._cachedFilteredItems.Clear();
-                    foreach (var item in this._items) {
-                        if (this._filter(item)) {
-                            this._cachedFilteredItems.Add(item);
-                        }
+                // Rebuild the cache
+                this._cachedFilteredItems.Clear();
+                foreach (var item in this._items) {
+                    if (this._filter(item)) {
+                        this._cachedFilteredItems.Add(item);
                     }
-
-                    this._shouldRebuildCache = false;
                 }
+
+                this._shouldRebuildCache = false;
             }
         }
     }
@@ -390,11 +337,11 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
 
         // Remove items in reverse. (Technically there exist faster ways to bulk-remove from a
         // variable-length array, but List<T> does not provide such a method.)
-        this._removeJournal.Sort(RemoveJournalSortComparison);
-        for (var i = 0; i < this._removeJournal.Count; i++) {
-            var index = this._removeJournal[i];
+        this._removeJournal.Sort(this._removeJournalSortComparison);
+        foreach (var t in this._removeJournal) {
+            var index = t;
             if (index < this._items.Count) {
-                this._items.RemoveAt(this._removeJournal[i]);
+                this._items.RemoveAt(t);
             }
         }
 
@@ -412,26 +359,7 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
     /// <summary>
     /// Add journal entry.
     /// </summary>
-    private struct AddJournalEntry {
-        /// <summary>
-        /// The item.
-        /// </summary>
-        public readonly T Item;
-
-        /// <summary>
-        /// The order.
-        /// </summary>
-        public readonly int Order;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddJournalEntry" /> struct.
-        /// </summary>
-        /// <param name="order">Order.</param>
-        /// <param name="item">Item.</param>
-        public AddJournalEntry(int order, T item) {
-            this.Order = order;
-            this.Item = item;
-        }
+    private record AddJournalEntry(int Order, T Item) {
 
         /// <summary>
         /// Creates the key.
@@ -439,15 +367,6 @@ public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollectio
         /// <returns>The key.</returns>
         /// <param name="item">Item.</param>
         public static AddJournalEntry CreateKey(T item) => new(-1, item);
-
-        /// <inheritdoc />
-        public override bool Equals(object? obj) {
-            if (!(obj is AddJournalEntry)) {
-                return false;
-            }
-
-            return Equals(this.Item, ((AddJournalEntry)obj).Item);
-        }
 
         /// <inheritdoc />
         public override int GetHashCode() => this.Item.GetHashCode();
