@@ -21,7 +21,6 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
-    private readonly LaunchArguments _launchArguments;
     private readonly List<GameTransition> _runningTransitions = new();
     private readonly Stack<IScene> _sceneStack = new();
     private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
@@ -71,7 +70,7 @@ public class BaseGame : Game, IGame {
     /// Initializes a new instance of the <see cref="BaseGame" /> class.
     /// </summary>
     protected BaseGame(LaunchArguments launchArguments) : this() {
-        this._launchArguments = launchArguments;
+        this.LaunchArguments = launchArguments;
         IsDesignMode = launchArguments.HasFlag(LaunchArguments.EditorMode);
     }
 
@@ -132,6 +131,9 @@ public class BaseGame : Game, IGame {
     /// Gets or sets a value which indicates whether the game is running in design mode.
     /// </summary>
     public static bool IsDesignMode { get; private set; }
+
+    /// <inheritdoc />
+    public LaunchArguments LaunchArguments { get; }
 
     /// <inheritdoc />
     public IScene Overlay { get; private set; } = EmptyObject.Scene;
@@ -381,7 +383,7 @@ public class BaseGame : Game, IGame {
         }
 
         var startupSceneId = this.Project.StartupSceneId;
-        if (this._launchArguments.HasFlag(LaunchArguments.DebugMode) && this.Project.StartupDebugSceneId != Guid.Empty) {
+        if (this.LaunchArguments.HasFlag(LaunchArguments.DebugMode) && this.Project.StartupDebugSceneId != Guid.Empty) {
             startupSceneId = this.Project.StartupDebugSceneId;
         }
 
@@ -568,6 +570,7 @@ public class BaseGame : Game, IGame {
 
         public GraphicsDevice? GraphicsDevice => null;
         public InputBindings InputBindings => this.UserSettings.Input;
+        public LaunchArguments LaunchArguments => LaunchArguments.None;
         public IScene Overlay => EmptyObject.Scene;
         public Point PixelRenderSize => default;
         public IGameProject Project => GameProject.Empty;

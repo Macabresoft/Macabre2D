@@ -67,6 +67,11 @@ public interface IGame {
     DisplaySettings DisplaySettings { get; }
 
     /// <summary>
+    /// Gets or sets the game speed.
+    /// </summary>
+    double GameSpeed { get; set; }
+
+    /// <summary>
     /// Gets the graphics device.
     /// </summary>
     GraphicsDevice? GraphicsDevice { get; }
@@ -82,6 +87,11 @@ public interface IGame {
     InputState InputState => new();
 
     /// <summary>
+    /// Gets the launch arguments.
+    /// </summary>
+    LaunchArguments LaunchArguments { get; }
+
+    /// <summary>
     /// Gets the overlay.
     /// </summary>
     IScene Overlay { get; }
@@ -95,7 +105,7 @@ public interface IGame {
     /// Gets the project.
     /// </summary>
     IGameProject Project { get; }
-    
+
     /// <summary>
     /// Gets the sprite batch.
     /// </summary>
@@ -115,11 +125,6 @@ public interface IGame {
     /// Gets the size of the viewport.
     /// </summary>
     Point ViewportSize { get; }
-
-    /// <summary>
-    /// Gets or sets the game speed.
-    /// </summary>
-    double GameSpeed { get; set; }
 
     /// <summary>
     /// Applies the display settings.
