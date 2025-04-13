@@ -11,16 +11,12 @@ using Macabresoft.Core;
 /// The FilterCollection class provides efficient, reusable filtering based on a filter
 /// predicate, and associate change events.
 /// </summary>
-public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
-    private readonly List<AddJournalEntry> _addJournal = [];
+public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
     private readonly List<T> _cachedFilteredItems = [];
     private readonly Predicate<T> _filter;
     private readonly string _filterPropertyName;
-    private readonly List<T> _items = [];
     private readonly object _lock = new();
-    private readonly List<int> _removeJournal = [];
     private readonly Comparison<int> _removeJournalSortComparison = (x, y) => Comparer<int>.Default.Compare(y, x);
-    private bool _shouldRebuildCache = true;
 
     /// <summary>
     /// Occurs when [collection changed].
@@ -52,6 +48,26 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     public bool IsReadOnly => false;
 
     /// <summary>
+    /// Gets the temporary journal of items to add the next time the cache is rebuilt.
+    /// </summary>
+    protected List<AddJournalEntry> AddJournal { get; } = [];
+
+    /// <summary>
+    /// Gets the items in this collection, including items that have been filtered.
+    /// </summary>
+    protected List<T> Items { get; } = [];
+
+    /// <summary>
+    /// Gets the temporary journal of items to remove the next time the cache is rebuilt.
+    /// </summary>
+    protected List<int> RemoveJournal { get; } = [];
+
+    /// <summary>
+    /// Gets a value indicating whether the cache should be rebuilt.
+    /// </summary>
+    protected bool ShouldRebuildCache { get; set; } = true;
+
+    /// <summary>
     /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
     /// </summary>
     /// <param name="item">
@@ -59,8 +75,9 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// </param>
     public void Add(T item) {
         lock (this._lock) {
-            this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
-            this.InvalidateCache();
+            this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
+            this.ShouldRebuildCache = true;
+            this.SubscribeToItemEvents(item);
             this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, item));
         }
     }
@@ -82,10 +99,10 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     public void AddRange(IReadOnlyCollection<T> items) {
         lock (this._lock) {
             foreach (var item in items) {
-                this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
+                this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
             }
 
-            this.InvalidateCache();
+            this.ShouldRebuildCache = true;
             this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, items));
         }
     }
@@ -107,16 +124,15 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// </summary>
     public void Clear() {
         lock (this._lock) {
-            foreach (var t in this._items) {
+            foreach (var t in this.Items) {
                 this.UnsubscribeFromItemEvents(t);
             }
 
-            var items = this._items;
-            this._addJournal.Clear();
-            this._removeJournal.Clear();
-            this._items.Clear();
-            this.InvalidateCache();
-            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, items));
+            this.AddJournal.Clear();
+            this.RemoveJournal.Clear();
+            this.Items.Clear();
+            this.ShouldRebuildCache = true;
+            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, this.Items));
         }
     }
 
@@ -133,7 +149,7 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     ///     cref="T:System.Collections.Generic.ICollection`1" />
     /// ; otherwise, false.
     /// </returns>
-    public bool Contains(T item) => this._items.Contains(item);
+    public bool Contains(T item) => this.Items.Contains(item);
 
     /// <summary>
     /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to
@@ -148,7 +164,7 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// The zero-based index in <paramref name="array" /> at which copying begins.
     /// </param>
     public void CopyTo(T[] array, int arrayIndex) {
-        this._items.CopyTo(array, arrayIndex);
+        this.Items.CopyTo(array, arrayIndex);
     }
 
     /// <summary>
@@ -165,19 +181,19 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// </summary>
     public void RebuildCache() {
         lock (this._lock) {
-            if (this._shouldRebuildCache) {
+            if (this.ShouldRebuildCache) {
                 this.ProcessRemoveJournal();
                 this.ProcessAddJournal();
 
                 // Rebuild the cache
                 this._cachedFilteredItems.Clear();
-                foreach (var item in this._items) {
+                foreach (var item in this.Items) {
                     if (this._filter(item)) {
                         this._cachedFilteredItems.Add(item);
                     }
                 }
 
-                this._shouldRebuildCache = false;
+                this.ShouldRebuildCache = false;
             }
         }
     }
@@ -203,16 +219,16 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// </returns>
     public bool Remove(T item) {
         lock (this._lock) {
-            if (this._addJournal.Remove(AddJournalEntry.CreateKey(item))) {
+            if (this.AddJournal.Remove(AddJournalEntry.CreateKey(item))) {
                 this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
                 return true;
             }
 
-            var index = this._items.IndexOf(item);
+            var index = this.Items.IndexOf(item);
             if (index >= 0) {
                 this.UnsubscribeFromItemEvents(item);
-                this._removeJournal.Add(index);
-                this.InvalidateCache();
+                this.RemoveJournal.Add(index);
+                this.ShouldRebuildCache = true;
                 this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
                 return true;
             }
@@ -235,61 +251,84 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     }
 
     /// <summary>
-    /// Gets the enumerator.
+    /// Called when an item's property changes.
     /// </summary>
-    /// <returns>The enumerator.</returns>
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this._items).GetEnumerator();
-
-    private void InvalidateCache() {
-        this._shouldRebuildCache = true;
-    }
-
-    private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == this._filterPropertyName) {
-            this.InvalidateCache();
+    /// <param name="item">The item.</param>
+    /// <param name="propertyName">The property name.</param>
+    protected virtual void OnItemPropertyChanged(T item, string propertyName) {
+        if (propertyName == this._filterPropertyName) {
+            this.ShouldRebuildCache = true;
         }
     }
 
-    private void ProcessAddJournal() {
-        if (this._addJournal.Count == 0) {
+    /// <summary>
+    /// Processes the added entries since the last time the cache has been rebuilt.
+    /// </summary>
+    protected virtual void ProcessAddJournal() {
+        if (this.AddJournal.Count == 0) {
             return;
         }
 
-        foreach (var journal in this._addJournal) {
-            this._items.Add(journal.Item);
+        foreach (var journal in this.AddJournal) {
+            this.Items.Add(journal.Item);
             this.SubscribeToItemEvents(journal.Item);
         }
 
-        this._addJournal.Clear();
+        this.AddJournal.Clear();
     }
 
-    private void ProcessRemoveJournal() {
-        if (this._removeJournal.Count == 0) {
+    /// <summary>
+    /// Processes the removed entries since the last time the cache has been rebuilt.
+    /// </summary>
+    protected virtual void ProcessRemoveJournal() {
+        if (this.RemoveJournal.Count == 0) {
             return;
         }
 
         // Remove items in reverse. (Technically there exist faster ways to bulk-remove from a
         // variable-length array, but List<T> does not provide such a method.)
-        this._removeJournal.Sort(this._removeJournalSortComparison);
-        foreach (var t in this._removeJournal) {
-            this._items.RemoveAt(t);
+        this.RemoveJournal.Sort(this._removeJournalSortComparison);
+        foreach (var t in this.RemoveJournal) {
+            this.Items.RemoveAt(t);
         }
 
-        this._removeJournal.Clear();
+        this.RemoveJournal.Clear();
     }
 
-    private void SubscribeToItemEvents(T item) {
+    /// <summary>
+    /// Subscribes to property changed events.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    protected void SubscribeToItemEvents(T item) {
         item.PropertyChanged += this.Item_PropertyChanged;
     }
 
-    private void UnsubscribeFromItemEvents(T item) {
+    /// <summary>
+    /// Unsubscribes from property changed events.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    protected void UnsubscribeFromItemEvents(T item) {
         item.PropertyChanged -= this.Item_PropertyChanged;
+    }
+
+    /// <summary>
+    /// Gets the enumerator.
+    /// </summary>
+    /// <returns>The enumerator.</returns>
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.Items).GetEnumerator();
+
+    private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (sender is T item && !string.IsNullOrEmpty(e.PropertyName)) {
+            lock (this._lock) {
+                this.OnItemPropertyChanged(item, e.PropertyName);
+            }
+        }
     }
 
     /// <summary>
     /// Add journal entry.
     /// </summary>
-    private record AddJournalEntry(int Order, T Item) {
+    protected record AddJournalEntry(int Order, T Item) {
 
         /// <summary>
         /// Creates the key.
