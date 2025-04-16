@@ -35,6 +35,9 @@ public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
 public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     private bool _shouldUpdate = true;
 
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GameSystem" /> class.
     /// </summary>
@@ -43,12 +46,12 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     }
 
     /// <inheritdoc />
-    public abstract GameSystemKind Kind { get; }
-
-    /// <inheritdoc />
     [DataMember]
     [Browsable(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <inheritdoc />
+    public abstract GameSystemKind Kind { get; }
 
     /// <inheritdoc />
     [DataMember]
@@ -58,7 +61,11 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     [DataMember]
     public bool ShouldUpdate {
         get => this._shouldUpdate;
-        set => this.Set(ref this._shouldUpdate, value);
+        set {
+            if (this.Set(ref this._shouldUpdate, value)) {
+                this.ShouldUpdateChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <summary>

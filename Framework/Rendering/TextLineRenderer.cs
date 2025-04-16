@@ -29,6 +29,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
 
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
     /// </summary>
@@ -118,7 +124,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         set {
             if (this._shouldScroll != value) {
                 this._shouldScroll = value;
-                this.RaisePropertyChanged(nameof(this.ShouldUpdate));
+                this.ShouldUpdateChanged.SafeInvoke(this);
 
                 if (this.ShouldScroll) {
                     this.ScrollWaitTime.Restart();
@@ -299,7 +305,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this.RenderOptions.InvalidateSize();
         this._boundingArea.Reset();
         this.BoundingAreaChanged.SafeInvoke(this);
-        this.RaisePropertyChanged(nameof(this.ShouldUpdate));
+
+        if (this.ShouldScroll) {
+            this.ShouldUpdateChanged.SafeInvoke(this);
+        }
     }
 
     private bool CouldBeVisible() =>

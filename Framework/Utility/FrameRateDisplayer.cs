@@ -1,6 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
-using System.ComponentModel.DataAnnotations;
+using System;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -10,6 +10,12 @@ using Microsoft.Xna.Framework;
 public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
     private readonly RollingMeanFloat _rollingAverage = new(10);
     private Camera? _camera;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
 
     /// <summary>
     /// Gets the average frame rate over the course of 30 frames.
@@ -24,14 +30,14 @@ public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
     public float CurrentFrameRate { get; private set; }
 
     /// <inheritdoc />
+    public bool ShouldUpdate => this.IsEnabled;
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
         this.TryGetAncestor(out this._camera);
         this.RenderOptions.OffsetType = PixelOffsetType.TopRight;
     }
-
-    /// <inheritdoc />
-    public bool ShouldUpdate => this.IsEnabled;
 
     /// <inheritdoc />
     public void Update(FrameTime frameTime, InputState inputState) {
@@ -41,6 +47,12 @@ public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
             this.Text = $"FPS: {this.AverageFrameRate:F2}";
             this.AdjustPosition();
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+        this.ShouldUpdateChanged.SafeInvoke(this);
     }
 
     private void AdjustPosition() {

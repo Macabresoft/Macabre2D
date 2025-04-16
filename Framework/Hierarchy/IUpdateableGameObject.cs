@@ -1,11 +1,17 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 
 /// <summary>
 /// Interface for an updateable object in the game loop.
 /// </summary>
 public interface IUpdateableGameObject : INotifyPropertyChanged {
+    /// <summary>
+    /// Called when <see cref="ShouldUpdate" /> changes.
+    /// </summary>
+    event EventHandler? ShouldUpdateChanged;
+
     /// <summary>
     /// Gets or sets a value indicating whether this instance should update.
     /// </summary>

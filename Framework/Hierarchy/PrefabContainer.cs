@@ -31,6 +31,9 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PrefabContainer" /> class.
     /// </summary>
@@ -97,6 +100,14 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.PrefabReference;
+    }
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+        if (BaseGame.IsDesignMode) {
+            this.ShouldRenderChanged.SafeInvoke(this);
+        }
     }
 
     /// <inheritdoc />

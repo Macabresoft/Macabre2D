@@ -30,6 +30,8 @@ public static class FixedUpdateSystemTests {
 
     private class FixedUpdateTestEntity : Entity, IFixedUpdateableEntity {
 
+        public event EventHandler ShouldUpdateChanged;
+        public event EventHandler UpdateOrderChanged;
         public bool ShouldUpdate => this.IsEnabled;
         public int UpdateCount { get; private set; }
 

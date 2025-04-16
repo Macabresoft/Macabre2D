@@ -205,44 +205,54 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
 public sealed class Scene : GridContainer, IScene {
 
     private readonly FilterCollection<IAnimatableEntity> _animatableEntities = new(
-        c => c.ShouldAnimate,
-        nameof(IAnimatableEntity.ShouldAnimate));
+        a => a.ShouldAnimate,
+        (a, handler) => a.ShouldAnimateChanged += handler,
+        (a, handler) => a.ShouldAnimateChanged -= handler);
 
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,
-        nameof(IEnableable.IsEnabled),
+        (c, handler) => c.IsEnabledChanged += handler,
+        (c, handler) => c.IsEnabledChanged -= handler,
         (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-        nameof(ICamera.RenderOrder));
+        (c, handler) => c.RenderOrderChanged += handler,
+        (c, handler) => c.RenderOrderChanged -= handler);
 
     private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
-        c => c.ShouldUpdate,
-        nameof(IFixedUpdateableEntity.ShouldUpdate),
-        (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-        nameof(IFixedUpdateableEntity.UpdateOrder));
+        u => u.ShouldUpdate,
+        (u, handler) => u.ShouldUpdateChanged += handler,
+        (u, handler) => u.ShouldUpdateChanged -= handler,
+        (p1, p2) => Comparer<int>.Default.Compare(p1.UpdateOrder, p2.UpdateOrder),
+        (u, handler) => u.UpdateOrderChanged += handler,
+        (u, handler) => u.UpdateOrderChanged -= handler);
 
     private readonly List<INameableCollection> _namedChildren = new();
     private readonly List<Action> _pendingActions = new();
 
     private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new(
-        r => r.IsEnabled,
-        nameof(IEnableable.IsEnabled),
-        (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-        nameof(IPhysicsBody.UpdateOrder));
+        p => p.IsEnabled,
+        (p, handler) => p.IsEnabledChanged += handler,
+        (p, handler) => p.IsEnabledChanged -= handler,
+        (p1, p2) => Comparer<int>.Default.Compare(p1.UpdateOrder, p2.UpdateOrder),
+        (p, handler) => p.UpdateOrderChanged += handler,
+        (p, handler) => p.UpdateOrderChanged -= handler);
 
     private readonly HashSet<Guid> _registeredEntities = [];
 
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
-        c => c.ShouldRender,
-        nameof(IRenderableEntity.ShouldRender));
+        r => r.ShouldRender,
+        (r, handler) => r.ShouldRenderChanged += handler,
+        (r, handler) => r.ShouldRenderChanged -= handler);
 
     [DataMember]
     private readonly SystemCollection _systems = new();
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
-        c => c.ShouldUpdate,
-        nameof(IUpdateableEntity.ShouldUpdate),
-        (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-        nameof(IUpdateableEntity.UpdateOrder));
+        u => u.ShouldUpdate,
+        (u, handler) => u.ShouldUpdateChanged += handler,
+        (u, handler) => u.ShouldUpdateChanged -= handler,
+        (p1, p2) => Comparer<int>.Default.Compare(p1.UpdateOrder, p2.UpdateOrder),
+        (u, handler) => u.UpdateOrderChanged += handler,
+        (u, handler) => u.UpdateOrderChanged -= handler);
 
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IGame _game = BaseGame.Empty;
@@ -257,6 +267,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public event EventHandler? Deactivated;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Scene" /> class.

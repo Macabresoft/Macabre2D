@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
@@ -12,6 +14,9 @@ using Microsoft.Xna.Framework;
 public abstract class RenderableTileableEntity : TileableEntity, IRenderableEntity {
     private int _renderOrder;
     private bool _shouldRender = true;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderChanged;
 
     /// <inheritdoc />
     [DataMember]
@@ -36,13 +41,11 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
     [DataMember]
     public bool ShouldRender {
         get => this._shouldRender && this.IsEnabled;
-        set => this.Set(ref this._shouldRender, value);
-    }
-
-    /// <inheritdoc />
-    protected override void OnIsEnableChanged() {
-        base.OnIsEnableChanged();
-        this.RaisePropertyChanged(nameof(this.ShouldRender));
+        set {
+            if (this.Set(ref this._shouldRender, value)) {
+                this.ShouldRenderChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -50,4 +53,10 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+        this.RaisePropertyChanged(nameof(this.ShouldRender));
+    }
 }

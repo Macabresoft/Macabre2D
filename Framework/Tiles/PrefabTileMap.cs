@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -13,6 +15,9 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     private readonly HashSet<Point> _activeTiles = new();
 
     private readonly Dictionary<Point, IEntity> _activeTileToEntity = new();
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderChanged;
 
     /// <inheritdoc />
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
@@ -27,16 +32,16 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     public PrefabReference PrefabReference { get; } = new();
 
     /// <inheritdoc />
-    public bool ShouldRender {
-        get => BaseGame.IsDesignMode && this.IsEnabled;
-        set { }
-    }
-
-    /// <inheritdoc />
     public int RenderOrder { get; set; }
 
     /// <inheritdoc />
     public bool RenderOutOfBounds { get; set; } = true;
+
+    /// <inheritdoc />
+    public bool ShouldRender {
+        get => BaseGame.IsDesignMode && this.IsEnabled;
+        set { }
+    }
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -85,6 +90,14 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.PrefabReference;
+    }
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+        if (BaseGame.IsDesignMode) {
+            this.ShouldRenderChanged.SafeInvoke(this);
+        }
     }
 
     /// <inheritdoc />

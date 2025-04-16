@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for sprite animators.
@@ -52,6 +54,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
     private bool _isPlaying;
 
     /// <inheritdoc />
+    public event EventHandler? ShouldAnimateChanged;
+
+    /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => this.GetCurrentAnimation()?.Animation;
 
     /// <inheritdoc />
@@ -62,28 +67,28 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
     public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
 
     /// <inheritdoc />
-    public bool ShouldAnimate => this.CheckShouldAnimate();
-
-    /// <inheritdoc />
-    public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
-
-    /// <inheritdoc />
     public bool IsPlaying {
         get => this._isPlaying;
         protected set {
-            if (this.Set(ref this._isPlaying, value)) {
-                this.RaisePropertyChanged(nameof(this.ShouldAnimate));
+            if (this.Set(ref this._isPlaying, value) && this.IsEnabled) {
+                this.ShouldAnimateChanged.SafeInvoke(this);
             }
         }
     }
 
     /// <inheritdoc />
-    protected override SpriteSheet? SpriteSheet => this.CurrentAnimation?.SpriteSheet;
+    public bool ShouldAnimate => this.CheckShouldAnimate();
+
+    /// <inheritdoc />
+    public override byte? SpriteIndex => this.GetCurrentAnimation()?.CurrentSpriteIndex;
 
     /// <summary>
     /// Get the number of milliseconds in a single frame.
     /// </summary>
     protected int MillisecondsPerFrame { get; private set; }
+
+    /// <inheritdoc />
+    protected override SpriteSheet? SpriteSheet => this.CurrentAnimation?.SpriteSheet;
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -170,7 +175,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
     /// <inheritdoc />
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
-        this.RaisePropertyChanged(nameof(this.ShouldAnimate));
+        if (this.IsPlaying) {
+            this.ShouldAnimateChanged.SafeInvoke(this);
+        }
     }
 
     private void FrameRateOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

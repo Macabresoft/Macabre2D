@@ -1,12 +1,24 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// An updateable entity that is updated on a fixed time step.
 /// </summary>
 public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
+
+    /// <summary>
+    /// Called when <see cref="ShouldUpdate" /> changes.
+    /// </summary>
+    event EventHandler? ShouldUpdateChanged;
+
+    /// <summary>
+    /// Called when <see cref="UpdateOrder" /> changes.
+    /// </summary>
+    event EventHandler? UpdateOrderChanged;
 
     /// <summary>
     /// Gets or sets a value indicating whether this instance should update.
@@ -36,17 +48,32 @@ public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
     private bool _shouldUpdate;
     private int _updateOrder;
 
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
+
+    /// <inheritdoc />
     [DataMember]
     public bool ShouldUpdate {
         get => this._shouldUpdate && this.IsEnabled;
-        set => this.Set(ref this._shouldUpdate, value);
+        set {
+            if (this.Set(ref this._shouldUpdate, value)) {
+                this.ShouldUpdateChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />
     [DataMember]
     public int UpdateOrder {
         get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
+        set {
+            if (this.Set(ref this._updateOrder, value)) {
+                this.UpdateOrderChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />

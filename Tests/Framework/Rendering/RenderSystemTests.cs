@@ -118,6 +118,7 @@ public class RenderSystemTests {
 
     private class TestCamera : Entity, ICamera {
         public event EventHandler BoundingAreaChanged;
+        public event EventHandler RenderOrderChanged;
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => (Layers)2;
@@ -149,6 +150,7 @@ public class RenderSystemTests {
 
         public int RenderCount { get; private set; }
 
+        public event EventHandler ShouldRenderChanged;
         public int RenderOrder { get; set; }
 
         public bool RenderOutOfBounds {

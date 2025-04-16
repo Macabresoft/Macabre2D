@@ -14,41 +14,30 @@ public class FilterSortCollection<T> : FilterCollection<T> where T : INotifyProp
     private readonly Comparison<AddJournalEntry> _addJournalSortComparison;
     private readonly Comparison<int> _removeJournalSortComparison = (x, y) => Comparer<int>.Default.Compare(y, x);
     private readonly Comparison<T> _sort;
-    private readonly string _sortPropertyName;
+    private readonly Action<T, EventHandler> _sortChangedSubscriber;
+    private readonly Action<T, EventHandler> _sortChangedUnsubscriber;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterSortCollection{T}" /> class.
     /// </summary>
     /// <param name="filter">The filter.</param>
-    /// <param name="filterPropertyName">Name of the filter property.</param>
+    /// <param name="filterChangedSubscriber">Subscribes to filter changed events.</param>
+    /// <param name="filterChangedUnsubscriber">Unsubscribes from filter changed events.</param>
     /// <param name="sort">The sort.</param>
-    /// <param name="sortPropertyName">Name of the sort property.</param>
+    /// <param name="sortChangedSubscriber">Subscribes to sort changed events.</param>
+    /// <param name="sortChangedUnsubscriber">Unsubscribes from sort changed events.</param>
     public FilterSortCollection(
         Predicate<T> filter,
-        string filterPropertyName,
+        Action<T, EventHandler> filterChangedSubscriber,
+        Action<T, EventHandler> filterChangedUnsubscriber,
         Comparison<T> sort,
-        string sortPropertyName) : base(filter, filterPropertyName) {
+        Action<T, EventHandler> sortChangedSubscriber,
+        Action<T, EventHandler> sortChangedUnsubscriber) : base(filter, filterChangedSubscriber, filterChangedUnsubscriber) {
         this._sort = sort;
-        this._sortPropertyName = sortPropertyName;
+        this._sortChangedSubscriber = sortChangedSubscriber;
+        this._sortChangedUnsubscriber = sortChangedUnsubscriber;
 
         this._addJournalSortComparison = this.CompareAddJournalEntry;
-    }
-
-    /// <inheritdoc />
-    protected override void OnItemPropertyChanged(T item, string propertyName) {
-        base.OnItemPropertyChanged(item, propertyName);
-
-        if (propertyName == this._sortPropertyName) {
-            var index = this.Items.IndexOf(item);
-
-            this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
-            this.RemoveJournal.Add(index);
-
-            // Until the item is back in place, we don't care about its events. We will
-            // re-subscribe when this._addJournal is processed.
-            this.UnsubscribeFromItemEvents(item);
-            this.ShouldRebuildCache = true;
-        }
     }
 
     /// <inheritdoc />
@@ -107,6 +96,18 @@ public class FilterSortCollection<T> : FilterCollection<T> where T : INotifyProp
         this.RemoveJournal.Clear();
     }
 
+    /// <inheritdoc />
+    protected override void SubscribeToItemEvents(T item) {
+        base.SubscribeToItemEvents(item);
+        this._sortChangedSubscriber(item, this.Item_SortValueChanged);
+    }
+
+    /// <inheritdoc />
+    protected override void UnsubscribeFromItemEvents(T item) {
+        base.UnsubscribeFromItemEvents(item);
+        this._sortChangedUnsubscriber(item, this.Item_SortValueChanged);
+    }
+
     private int CompareAddJournalEntry(AddJournalEntry x, AddJournalEntry y) {
         var result = this._sort(x.Item, y.Item);
         if (result != 0) {
@@ -114,5 +115,22 @@ public class FilterSortCollection<T> : FilterCollection<T> where T : INotifyProp
         }
 
         return x.Order - y.Order;
+    }
+
+    private void Item_SortValueChanged(object? sender, EventArgs e) {
+        if (sender is T item) {
+            var index = this.Items.IndexOf(item);
+
+            this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
+            this.RemoveJournal.Add(index);
+
+            // Until the item is back in place, we don't care about its events. We will
+            // re-subscribe when this._addJournal is processed.
+            this.UnsubscribeFromItemEvents(item);
+
+            lock (this.Lock) {
+                this.ShouldRebuildCache = true;
+            }
+        }
     }
 }

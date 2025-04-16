@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
@@ -15,20 +17,11 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
     private SpriteSheet? _spriteSheet;
     private int _updateOrder;
 
-    /// <summary>
-    /// Gets a reference to the camera to which this mouse cursor is related.
-    /// </summary>
-    [DataMember(Order = 10)]
-    public EntityReference<ICamera> CameraReference { get; } = new();
-
-    /// <summary>
-    /// Gets a reference to the mouse cursor icon set.
-    /// </summary>
-    [DataMember(Order = 10)]
-    public MouseCursorIconSetReference MouseCursorIconSet { get; } = new();
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
 
     /// <inheritdoc />
-    public override byte? SpriteIndex => this._spriteIndex;
+    public event EventHandler? UpdateOrderChanged;
 
     /// <summary>
     /// Gets or sets the appearance of this mouse cursor.
@@ -43,21 +36,44 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
         }
     }
 
+    /// <summary>
+    /// Gets a reference to the camera to which this mouse cursor is related.
+    /// </summary>
+    [DataMember(Order = 10)]
+    public EntityReference<ICamera> CameraReference { get; } = new();
+
+    /// <summary>
+    /// Gets a reference to the mouse cursor icon set.
+    /// </summary>
+    [DataMember(Order = 10)]
+    public MouseCursorIconSetReference MouseCursorIconSet { get; } = new();
+
     /// <inheritdoc />
     [DataMember]
     public bool ShouldUpdate {
         get => this._shouldUpdate && this.IsEnabled;
-        set => this.Set(ref this._shouldUpdate, value);
+        set {
+            if (this.Set(ref this._shouldUpdate, value)) {
+                this.ShouldUpdateChanged.SafeInvoke(this);
+            }
+        }
     }
+
+    /// <inheritdoc />
+    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <inheritdoc />
     [DataMember]
     [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
     public int UpdateOrder {
         get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
+        set {
+            if (this.Set(ref this._updateOrder, value)) {
+                this.UpdateOrderChanged.SafeInvoke(this);
+            }
+        }
     }
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether this is hovering over an activatable element.
     /// </summary>

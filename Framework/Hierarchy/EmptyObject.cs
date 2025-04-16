@@ -18,25 +18,88 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public static readonly EmptyObject Instance = new();
 
     /// <inheritdoc />
-    public event EventHandler? Activated;
+    public event EventHandler? Activated {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event EventHandler? BoundingAreaChanged;
+    public event EventHandler? BoundingAreaChanged {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event EventHandler<CollisionEventArgs>? CollisionOccured;
+    public event EventHandler<CollisionEventArgs>? CollisionOccured {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event EventHandler? Deactivated;
+    public event EventHandler? Deactivated {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
+    public event EventHandler? IsEnabledChanged {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public event EventHandler<SpriteAnimation?>? OnAnimationFinished {
+        add { }
+        remove { }
+    }
 
     /// <inheritdoc />
-    public event EventHandler? TransformChanged;
+    public event PropertyChangedEventHandler? PropertyChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? RenderOrderChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldAnimateChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? TransformChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    event EventHandler? IPhysicsBody.UpdateOrderChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    event EventHandler? IUpdateableEntity.UpdateOrderChanged {
+        add { }
+        remove { }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmptyObject" /> class.

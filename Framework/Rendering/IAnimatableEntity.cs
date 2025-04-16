@@ -1,9 +1,17 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
+using Macabresoft.Core;
+
 /// <summary>
 /// Interface for an entity which animates with frames.
 /// </summary>
 public interface IAnimatableEntity : IEntity {
+    /// <summary>
+    /// Event for when <see cref="ShouldAnimate"/> changes.
+    /// </summary>
+    event EventHandler? ShouldAnimateChanged;
+    
     /// <summary>
     /// Gets the frame rate override.
     /// </summary>

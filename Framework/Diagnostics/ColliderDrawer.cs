@@ -14,6 +14,12 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
     public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
+
+    /// <inheritdoc />
     public override BoundingArea BoundingArea => this._body?.BoundingArea ?? BoundingArea.Empty;
 
     /// <inheritdoc />

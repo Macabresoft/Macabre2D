@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -14,17 +16,20 @@ public class ScrollingSpriteRenderer : SpriteRenderer, IAnimatableEntity {
     private double _millisecondsPassed;
 
     /// <inheritdoc />
-    [DataMember(Order = 11, Name = "Frame Rate")]
-    public ByteOverride FrameRateOverride { get; } = new();
+    public event EventHandler? ShouldAnimateChanged;
 
     /// <inheritdoc />
-    public bool ShouldAnimate => this.IsEnabled;
+    [DataMember(Order = 11, Name = "Frame Rate")]
+    public ByteOverride FrameRateOverride { get; } = new();
 
     /// <summary>
     /// Gets the number of pixels to move per frame.
     /// </summary>
     [DataMember]
     public Point PixelsPerFrame { get; private set; }
+
+    /// <inheritdoc />
+    public bool ShouldAnimate => this.IsEnabled;
 
     /// <summary>
     /// Get the number of milliseconds in a single frame.
@@ -87,7 +92,7 @@ public class ScrollingSpriteRenderer : SpriteRenderer, IAnimatableEntity {
     /// <inheritdoc />
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
-        this.RaisePropertyChanged(nameof(this.ShouldAnimate));
+        this.ShouldAnimateChanged.SafeInvoke(this);
     }
 
     private void FrameRateOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

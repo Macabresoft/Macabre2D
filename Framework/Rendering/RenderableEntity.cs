@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
@@ -10,6 +11,11 @@ using Microsoft.Xna.Framework;
 /// Interface for an entity which can be rendered.
 /// </summary>
 public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable {
+
+    /// <summary>
+    /// Called when <see cref="ShouldRender" /> changes.
+    /// </summary>
+    event EventHandler? ShouldRenderChanged;
 
     /// <summary>
     /// Gets the render order.
@@ -55,6 +61,9 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public abstract event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
+    public event EventHandler? ShouldRenderChanged;
+
+    /// <inheritdoc />
     public abstract BoundingArea BoundingArea { get; }
 
     /// <inheritdoc />
@@ -81,7 +90,11 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     [Category(CommonCategories.Rendering)]
     public bool ShouldRender {
         get => this._shouldRender && this.IsEnabled;
-        set => this.Set(ref this._shouldRender, value);
+        set {
+            if (this.Set(ref this._shouldRender, value)) {
+                this.ShouldRenderChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />

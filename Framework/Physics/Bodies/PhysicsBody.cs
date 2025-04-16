@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 
@@ -15,6 +14,11 @@ public interface IPhysicsBody : IEntity, IBoundableEntity {
     /// Occurs when a collision occurs involving this body.
     /// </summary>
     event EventHandler<CollisionEventArgs> CollisionOccured;
+
+    /// <summary>
+    /// Called when <see cref="UpdateOrder" /> changes.
+    /// </summary>
+    event EventHandler UpdateOrderChanged;
 
     /// <summary>
     /// Gets a value indicating whether this instance has a collider.
@@ -71,6 +75,9 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     public event EventHandler<CollisionEventArgs>? CollisionOccured;
 
     /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
+
+    /// <inheritdoc />
     public abstract BoundingArea BoundingArea { get; }
 
     /// <inheritdoc />
@@ -88,7 +95,11 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     [DataMember]
     public int UpdateOrder {
         get => this._updateOrder;
-        set => this.Set(ref this._updateOrder, value);
+        set {
+            if (this.Set(ref this._updateOrder, value)) {
+                this.UpdateOrderChanged.SafeInvoke(this);
+            }
+        }
     }
 
     /// <inheritdoc />

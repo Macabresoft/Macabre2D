@@ -15,6 +15,12 @@ using Microsoft.Xna.Framework.Graphics;
 /// holds a collection of <see cref="IEntity" />.
 /// </summary>
 public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropertyChanged, ITransformable {
+
+    /// <summary>
+    /// An event that is called when <see cref="IEnableable.IsEnabled" /> changes.
+    /// </summary>
+    event EventHandler? IsEnabledChanged;
+
     /// <summary>
     /// Gets the children.
     /// </summary>
@@ -24,6 +30,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Gets the game.
     /// </summary>
     IGame Game { get; }
+
+    /// <summary>
+    /// Gets the layers.
+    /// </summary>
+    Layers Layers { get; set; }
 
     /// <summary>
     /// Gets the parent.
@@ -39,11 +50,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Gets the scene.
     /// </summary>
     IScene Scene => EmptyObject.Scene;
-
-    /// <summary>
-    /// Gets the layers.
-    /// </summary>
-    Layers Layers { get; set; }
 
     /// <summary>
     /// Adds a child of the specified type.
@@ -217,6 +223,9 @@ public class Entity : Transformable, IEntity {
     private bool _isEnabled = true;
     private string _name = string.Empty;
 
+    /// <inheritdoc />
+    public event EventHandler? IsEnabledChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity" /> class.
     /// </summary>
@@ -229,11 +238,6 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public virtual IGame Game => this.Scene.Game;
-
-    /// <summary>
-    /// Gets the project.
-    /// </summary>
-    public IGameProject Project => this.Game.Project;
 
     /// <inheritdoc />
     [DataMember]
@@ -271,18 +275,23 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public IEntity Parent { get; private set; } = EmptyObject.Entity;
 
+    /// <summary>
+    /// Gets the project.
+    /// </summary>
+    public IGameProject Project => this.Game.Project;
+
     /// <inheritdoc />
     public IScene Scene { get; private set; } = EmptyObject.Scene;
-
-    /// <summary>
-    /// Gets the sprite batch.
-    /// </summary>
-    protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
 
     /// <summary>
     /// Gets a value indicating whether this is initialized.
     /// </summary>
     protected bool IsInitialized { get; private set; }
+
+    /// <summary>
+    /// Gets the sprite batch.
+    /// </summary>
+    protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {
@@ -587,6 +596,7 @@ public class Entity : Transformable, IEntity {
     /// Called when <see cref="IsEnabled" /> changes.
     /// </summary>
     protected virtual void OnIsEnableChanged() {
+        this.IsEnabledChanged.SafeInvoke(this);
     }
 
     /// <summary>

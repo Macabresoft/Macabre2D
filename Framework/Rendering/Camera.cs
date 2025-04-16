@@ -15,6 +15,11 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public interface ICamera : IBoundableEntity, IPixelSnappable {
     /// <summary>
+    /// Called when the <see cref="RenderOrder" /> changes.
+    /// </summary>
+    event EventHandler? RenderOrderChanged;
+
+    /// <summary>
     /// Gets the actual view height.
     /// </summary>
     float ActualViewHeight { get; }
@@ -27,6 +32,12 @@ public interface ICamera : IBoundableEntity, IPixelSnappable {
     /// regardless of whether one of the other layers it has it meant to be rendered.
     /// </remarks>
     Layers LayersToExcludeFromRender { get; }
+
+    /// <summary>
+    /// Gets the layers to render.
+    /// </summary>
+    /// <value>The layers to render.</value>
+    Layers LayersToRender { get; set; }
 
     /// <summary>
     /// Gets the offset options.
@@ -46,20 +57,14 @@ public interface ICamera : IBoundableEntity, IPixelSnappable {
     BoundingArea SafeArea { get; }
 
     /// <summary>
-    /// Gets the view width.
-    /// </summary>
-    float ViewWidth { get; }
-
-    /// <summary>
-    /// Gets the layers to render.
-    /// </summary>
-    /// <value>The layers to render.</value>
-    Layers LayersToRender { get; set; }
-
-    /// <summary>
     /// Gets or sets the view height of the camera in world units (not screen pixels).
     /// </summary>
     float ViewHeight { get; set; }
+
+    /// <summary>
+    /// Gets the view width.
+    /// </summary>
+    float ViewWidth { get; }
 
     /// <summary>
     /// Converts the point from screen space to world space.
@@ -90,6 +95,9 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
+    /// <inheritdoc />
+    public event EventHandler? RenderOrderChanged;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Camera" /> class.
     /// </summary>
@@ -97,6 +105,11 @@ public class Camera : Entity, ICamera {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         this._viewWidth = new ResettableLazy<float>(this.CreateViewWidth);
     }
+
+    /// <summary>
+    /// Gets the actual view height for this camera. Will only be different from <see cref="ViewHeight" /> if pixel snapping is enabled.
+    /// </summary>
+    public float ActualViewHeight { get; private set; }
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
@@ -108,34 +121,16 @@ public class Camera : Entity, ICamera {
     public ColorOverride ColorOverride { get; } = new();
 
     /// <inheritdoc />
-    [DataMember(Name = "Offset Options")]
-    public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
-
-    /// <inheritdoc />
-    public virtual BoundingArea SafeArea => this.BoundingArea;
-
-    /// <summary>
-    /// Gets the shader reference.
-    /// </summary>
-    [DataMember(Name = CommonCategories.Shader)]
-    [Category(CommonCategories.Shader)]
-    public ShaderReference ShaderReference { get; } = new();
-
-    /// <inheritdoc />
-    public float ViewWidth => this._viewWidth.Value;
-
-    /// <summary>
-    /// Gets the actual view height for this camera. Will only be different from <see cref="ViewHeight" /> if pixel snapping is enabled.
-    /// </summary>
-    public float ActualViewHeight { get; private set; }
-
-    /// <inheritdoc />
     [DataMember(Name = "Layers to Exclude")]
     public Layers LayersToExcludeFromRender { get; set; } = Layers.None;
 
     /// <inheritdoc />
     [DataMember(Name = "Layers to Render")]
     public Layers LayersToRender { get; set; } = LayersHelpers.GetAll();
+
+    /// <inheritdoc />
+    [DataMember(Name = "Offset Options")]
+    public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
     /// <summary>
     /// Gets or sets a value indicating whether to override the common view height from <see cref="IGameProject" />.
@@ -161,8 +156,15 @@ public class Camera : Entity, ICamera {
     [DataMember]
     public int RenderOrder {
         get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
+        set {
+            if (this.Set(ref this._renderOrder, value)) {
+                this.RenderOrderChanged.SafeInvoke(this);
+            }
+        }
     }
+
+    /// <inheritdoc />
+    public virtual BoundingArea SafeArea => this.BoundingArea;
 
     /// <summary>
     /// Gets or sets the type of the sampler state.
@@ -170,6 +172,13 @@ public class Camera : Entity, ICamera {
     /// <value>The type of the sampler state.</value>
     [DataMember(Name = "Sampler State")]
     public SamplerStateType Sampler { get; set; } = SamplerStateType.PointClamp;
+
+    /// <summary>
+    /// Gets the shader reference.
+    /// </summary>
+    [DataMember(Name = CommonCategories.Shader)]
+    [Category(CommonCategories.Shader)]
+    public ShaderReference ShaderReference { get; } = new();
 
     /// <summary>
     /// Gets or sets the height of the view.
@@ -189,6 +198,9 @@ public class Camera : Entity, ICamera {
             this.OnScreenAreaChanged();
         }
     }
+
+    /// <inheritdoc />
+    public float ViewWidth => this._viewWidth.Value;
 
     /// <inheritdoc />
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {

@@ -14,8 +14,8 @@ using Macabresoft.Core;
 public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
     private readonly List<T> _cachedFilteredItems = [];
     private readonly Predicate<T> _filter;
-    private readonly string _filterPropertyName;
-    private readonly object _lock = new();
+    private readonly Action<T, EventHandler> _filterChangedSubscriber;
+    private readonly Action<T, EventHandler> _filterChangedUnsubscriber;
     private readonly Comparison<int> _removeJournalSortComparison = (x, y) => Comparer<int>.Default.Compare(y, x);
 
     /// <summary>
@@ -27,12 +27,15 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// Initializes a new instance of the <see cref="FilterCollection{T}" /> class.
     /// </summary>
     /// <param name="filter">The filter.</param>
-    /// <param name="filterPropertyName">Name of the filter property.</param>
+    /// <param name="filterChangedSubscriber">Subscribes to filter changed events.</param>
+    /// <param name="filterChangedUnsubscriber">Unsubscribes from filter changed events.</param>
     public FilterCollection(
         Predicate<T> filter,
-        string filterPropertyName) {
+        Action<T, EventHandler> filterChangedSubscriber,
+        Action<T, EventHandler> filterChangedUnsubscriber) {
         this._filter = filter;
-        this._filterPropertyName = filterPropertyName;
+        this._filterChangedSubscriber = filterChangedSubscriber;
+        this._filterChangedUnsubscriber = filterChangedUnsubscriber;
     }
 
     /// <summary>
@@ -58,6 +61,11 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     protected List<T> Items { get; } = [];
 
     /// <summary>
+    /// Gets the lock.
+    /// </summary>
+    protected object Lock { get; } = new();
+
+    /// <summary>
     /// Gets the temporary journal of items to remove the next time the cache is rebuilt.
     /// </summary>
     protected List<int> RemoveJournal { get; } = [];
@@ -74,7 +82,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.
     /// </param>
     public void Add(T item) {
-        lock (this._lock) {
+        lock (this.Lock) {
             this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
             this.ShouldRebuildCache = true;
             this.SubscribeToItemEvents(item);
@@ -97,7 +105,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// </summary>
     /// <param name="items">The items.</param>
     public void AddRange(IReadOnlyCollection<T> items) {
-        lock (this._lock) {
+        lock (this.Lock) {
             foreach (var item in items) {
                 this.AddJournal.Add(new AddJournalEntry(this.AddJournal.Count, item));
             }
@@ -123,7 +131,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
     /// </summary>
     public void Clear() {
-        lock (this._lock) {
+        lock (this.Lock) {
             foreach (var t in this.Items) {
                 this.UnsubscribeFromItemEvents(t);
             }
@@ -180,7 +188,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// Rebuilds the cache.
     /// </summary>
     public void RebuildCache() {
-        lock (this._lock) {
+        lock (this.Lock) {
             if (this.ShouldRebuildCache) {
                 this.ProcessRemoveJournal();
                 this.ProcessAddJournal();
@@ -218,7 +226,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// .
     /// </returns>
     public bool Remove(T item) {
-        lock (this._lock) {
+        lock (this.Lock) {
             if (this.AddJournal.Remove(AddJournalEntry.CreateKey(item))) {
                 this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
                 return true;
@@ -241,24 +249,13 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// Removes the specified item.
     /// </summary>
     /// <param name="item">The item.</param>
-    /// <returns>A value indicating whether or not the item was removed.</returns>
+    /// <returns>A value indicating whether the item was removed.</returns>
     public bool Remove(object item) {
         if (item is T x) {
             return this.Remove(x);
         }
 
         return false;
-    }
-
-    /// <summary>
-    /// Called when an item's property changes.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <param name="propertyName">The property name.</param>
-    protected virtual void OnItemPropertyChanged(T item, string propertyName) {
-        if (propertyName == this._filterPropertyName) {
-            this.ShouldRebuildCache = true;
-        }
     }
 
     /// <summary>
@@ -299,16 +296,16 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// Subscribes to property changed events.
     /// </summary>
     /// <param name="item">The item.</param>
-    protected void SubscribeToItemEvents(T item) {
-        item.PropertyChanged += this.Item_PropertyChanged;
+    protected virtual void SubscribeToItemEvents(T item) {
+        this._filterChangedSubscriber(item, this.Item_FilterValueChanged);
     }
 
     /// <summary>
     /// Unsubscribes from property changed events.
     /// </summary>
     /// <param name="item">The item.</param>
-    protected void UnsubscribeFromItemEvents(T item) {
-        item.PropertyChanged -= this.Item_PropertyChanged;
+    protected virtual void UnsubscribeFromItemEvents(T item) {
+        this._filterChangedUnsubscriber(item, this.Item_FilterValueChanged);
     }
 
     /// <summary>
@@ -317,11 +314,9 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where 
     /// <returns>The enumerator.</returns>
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.Items).GetEnumerator();
 
-    private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (sender is T item && !string.IsNullOrEmpty(e.PropertyName)) {
-            lock (this._lock) {
-                this.OnItemPropertyChanged(item, e.PropertyName);
-            }
+    private void Item_FilterValueChanged(object? sender, EventArgs e) {
+        lock (this.Lock) {
+            this.ShouldRebuildCache = true;
         }
     }
 

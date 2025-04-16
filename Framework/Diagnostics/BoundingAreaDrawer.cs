@@ -17,7 +17,13 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
     public override BoundingArea BoundingArea => this._boundingArea;
 
     /// <inheritdoc />
+    public event EventHandler? ShouldUpdateChanged;
+
+    /// <inheritdoc />
     public bool ShouldUpdate => true;
+
+    /// <inheritdoc />
+    public event EventHandler? UpdateOrderChanged;
 
     /// <inheritdoc />
     public int UpdateOrder => 0;
