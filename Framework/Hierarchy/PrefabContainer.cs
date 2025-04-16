@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -57,6 +58,9 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
 
     /// <inheritdoc />
     public bool RenderOutOfBounds { get; set; }
+
+    /// <inheritdoc />
+    public RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     public bool ShouldRender {

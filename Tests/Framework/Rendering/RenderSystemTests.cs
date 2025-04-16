@@ -145,12 +145,12 @@ public class RenderSystemTests {
 
     private class TestRenderable : Entity, IRenderableEntity {
         public event EventHandler BoundingAreaChanged;
+
+        public event EventHandler ShouldRenderChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
         public PixelSnap PixelSnap => PixelSnap.Inherit;
 
         public int RenderCount { get; private set; }
-
-        public event EventHandler ShouldRenderChanged;
         public int RenderOrder { get; set; }
 
         public bool RenderOutOfBounds {
@@ -158,6 +158,7 @@ public class RenderSystemTests {
             set { }
         }
 
+        public RenderPriority RenderPriority { get; } = default;
         public bool ShouldRender { get; set; } = true;
 
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

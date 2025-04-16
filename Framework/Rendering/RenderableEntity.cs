@@ -18,7 +18,7 @@ public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable 
     event EventHandler? ShouldRenderChanged;
 
     /// <summary>
-    /// Gets the render order.
+    /// Gets or sets the render order.
     /// </summary>
     int RenderOrder { get; set; }
 
@@ -26,6 +26,11 @@ public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable 
     /// Gets or sets a value indicating whether this should be rendered when out of bounds.
     /// </summary>
     bool RenderOutOfBounds { get; set; }
+
+    /// <summary>
+    /// Gets the render priority.
+    /// </summary>
+    RenderPriority RenderPriority { get; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this instance should render.
@@ -54,7 +59,6 @@ public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable 
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
-    private int _renderOrder;
     private bool _shouldRender = true;
 
     /// <inheritdoc />
@@ -75,15 +79,17 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     [DataMember]
     [Category(CommonCategories.Rendering)]
     [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
-    public int RenderOrder {
-        get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
-    }
+    public int RenderOrder { get; set; }
 
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public bool RenderOutOfBounds { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     [DataMember]

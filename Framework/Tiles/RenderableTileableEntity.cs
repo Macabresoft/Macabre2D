@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableTileableEntity : TileableEntity, IRenderableEntity {
-    private int _renderOrder;
     private bool _shouldRender = true;
 
     /// <inheritdoc />
@@ -27,15 +26,17 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
     [DataMember]
     [Category(CommonCategories.Rendering)]
     [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
-    public int RenderOrder {
-        get => this._renderOrder;
-        set => this.Set(ref this._renderOrder, value);
-    }
+    public int RenderOrder { get; set; }
 
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public bool RenderOutOfBounds { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     [DataMember]
