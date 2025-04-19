@@ -296,12 +296,12 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (this.GraphicsDevice != null && this.SpriteBatch != null) {
+            var previousRenderTarget = this.GetGameRenderTarget(this.GraphicsDevice);
+            this.GraphicsDevice.SetRenderTarget(previousRenderTarget);
+            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+            this.RenderScenes();
+            
             if (this.Project.ScreenShaders.CheckHasEnabledShaders(this) && !IsDesignMode) {
-                var previousRenderTarget = this.GetGameRenderTarget(this.GraphicsDevice);
-                this.GraphicsDevice.SetRenderTarget(previousRenderTarget);
-                this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                this.RenderScenes();
-
                 foreach (var shader in this.Project.ScreenShaders) {
                     if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
                         var renderSize = shader.GetRenderSize(this.ViewportSize, this.PixelRenderSize);
@@ -316,18 +316,13 @@ public class BaseGame : Game, IGame {
                         }
                     }
                 }
+            }
 
-                this.GraphicsDevice.SetRenderTarget(null);
-                this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                this.SpriteBatch.Begin();
-                this.SpriteBatch.Draw(previousRenderTarget, this.GraphicsDevice.Viewport.Bounds, Color.White);
-                this.SpriteBatch.End();
-            }
-            else {
-                this.GraphicsDevice.SetRenderTarget(null);
-                this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                this.RenderScenes();
-            }
+            this.GraphicsDevice.SetRenderTarget(null);
+            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+            this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            this.SpriteBatch.Draw(previousRenderTarget, this.GraphicsDevice.Viewport.Bounds, Color.White);
+            this.SpriteBatch.End();
         }
     }
 
