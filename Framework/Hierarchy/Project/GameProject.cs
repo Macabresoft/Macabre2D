@@ -101,11 +101,6 @@ public interface IGameProject : INotifyPropertyChanged {
     float ViewHeight { get; }
 
     /// <summary>
-    /// Gets the view width based on render resolution and units per pixel.
-    /// </summary>
-    float ViewWidth { get; }
-
-    /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
     /// screen regardless of the current view size.
     /// </summary>
@@ -151,7 +146,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     private Point _internalRenderResolution = new(800, 600);
     private ushort _pixelsPerUnit = 32;
     private float _viewHeight = 10f;
-    private float _viewWidth = 10f;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
@@ -259,12 +253,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     }
 
     /// <inheritdoc />
-    public float ViewWidth {
-        get => this._viewWidth;
-        private set => this._viewWidth = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
-    }
-
-    /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
 
     /// <inheritdoc />
@@ -280,6 +268,5 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     private void ResetViewSize() {
         this.ViewHeight = this._internalRenderResolution.Y * this.UnitsPerPixel;
-        this.ViewWidth = this._internalRenderResolution.X * this.UnitsPerPixel;
     }
 }

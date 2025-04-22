@@ -30,6 +30,8 @@ public class BaseGame : Game, IGame {
     private double _gameSpeed = 1d;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
+    private Point _intermediateRenderResolution;
+    private Rectangle _finalRenderBounds;
 
     /// <inheritdoc />
     public event EventHandler<ResourceCulture>? CultureChanged;
@@ -300,7 +302,7 @@ public class BaseGame : Game, IGame {
             if (this.Project.ScreenShaders.CheckHasEnabledShaders(this) && !IsDesignMode) {
                 foreach (var shader in this.Project.ScreenShaders) {
                     if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
-                        var renderSize = shader.GetRenderSize(this.ViewportSize, this.Project.InternalRenderResolution);
+                        var renderSize = shader.GetRenderSize(this._intermediateRenderResolution, this.Project.InternalRenderResolution);
                         if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
                             var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
                             this.GraphicsDevice.SetRenderTarget(renderTarget);
@@ -317,7 +319,7 @@ public class BaseGame : Game, IGame {
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
             this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            this.SpriteBatch.Draw(previousRenderTarget, this.GraphicsDevice.Viewport.Bounds, Color.White);
+            this.SpriteBatch.Draw(previousRenderTarget, this._finalRenderBounds, Color.White);
             this.SpriteBatch.End();
         }
     }
@@ -507,6 +509,32 @@ public class BaseGame : Game, IGame {
         }
 
         this._screenShaderIdToRenderTargets.Clear();
+
+        if (this.Project.InternalRenderResolution.X > 0f && this.Project.InternalRenderResolution.Y > 0f && this.ViewportSize.X > 0f && this.ViewportSize.Y > 0f) {
+            var internalRatio = (double)this.Project.InternalRenderResolution.X / this.Project.InternalRenderResolution.Y;
+            var viewPortRatio = (double)this.ViewportSize.X / this.ViewportSize.Y;
+            var width = this.ViewportSize.X;
+            var height = this.ViewportSize.Y;
+            var horizontalOffset = 0;
+            var verticalOffset = 0;
+
+            if (internalRatio > viewPortRatio) {
+                // The view port is more vertical than the internal render resolution  and requires horizontal black bars
+                height = (int)Math.Ceiling(width / internalRatio);
+                verticalOffset = (this.ViewportSize.Y - height) / 2;
+            }
+            else if (internalRatio < viewPortRatio) {
+                // The view port is more horizontal than the internal render resolution and requires vertical black bars
+                width = (int)Math.Ceiling(height * internalRatio);
+                horizontalOffset = (this.ViewportSize.X - width) / 2;
+            }
+
+            this._intermediateRenderResolution = new Point(width, height);
+            this._finalRenderBounds = new Rectangle(horizontalOffset, verticalOffset, width, height);
+        }
+        else {
+            this._intermediateRenderResolution = this.ViewportSize;
+        }
     }
 
     private void RunTransitions() {

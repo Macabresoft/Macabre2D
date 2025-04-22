@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -18,35 +17,11 @@ public enum DisplayMode : byte {
 }
 
 /// <summary>
-/// The aspect ratio.
-/// </summary>
-public enum AspectRatio : byte {
-    [Display(Name = "4:3")]
-    FourToThree = 0,
-
-    [Display(Name = "16:9")]
-    SixteenToNine = 1,
-
-    [Display(Name = "16:10")]
-    SixteenToTen = 2,
-
-    [Display(Name = "5:4")]
-    FiveToFour = 3,
-
-    [Display(Name = "3:2")]
-    ThreeToTwo = 4,
-
-    [Display(Name = "17:9")]
-    SeventeenToNine = 5
-}
-
-/// <summary>
 /// DefaultGraphics settings such as resolution and display mode.
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Display)]
 public sealed class DisplaySettings {
-    private const int DefaultVerticalPixels = 480;
     private const byte MinimumWindowScale = 1;
 
     [DataMember]
@@ -61,21 +36,15 @@ public sealed class DisplaySettings {
     }
 
     /// <summary>
-    /// Gets a collection of identifiers for disabled screen shaders.
-    /// </summary>
-    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
-
-    /// <summary>
-    /// Gets or sets the aspect ratio.
-    /// </summary>
-    [DataMember]
-    public AspectRatio AspectRatio { get; set; } = AspectRatio.FourToThree;
-
-    /// <summary>
     /// Gets or sets the current culture.
     /// </summary>
     [DataMember]
     public ResourceCulture Culture { get; set; } = ResourceCulture.Default;
+
+    /// <summary>
+    /// Gets a collection of identifiers for disabled screen shaders.
+    /// </summary>
+    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
 
     /// <summary>
     /// Gets or sets the display mode.
@@ -107,8 +76,8 @@ public sealed class DisplaySettings {
     /// </summary>
     /// <param name="other">The other instance.</param>
     public void CopyTo(DisplaySettings other) {
+        other.Culture = this.Culture;
         other.DisplayMode = this.DisplayMode;
-        other.AspectRatio = this.AspectRatio;
         other.WindowScale = this.WindowScale;
         other.EnableAllScreenShaders();
         foreach (var shaderId in this.DisabledScreenShaders) {
@@ -144,19 +113,5 @@ public sealed class DisplaySettings {
     /// </summary>
     /// <param name="internalRenderResolution">The internal render resolution.</param>
     /// <returns>The resolution.</returns>
-    public Point GetResolution(Point internalRenderResolution) {
-        return new Point(internalRenderResolution.X * this.WindowScale, internalRenderResolution.Y * this.WindowScale);
-    }
-
-    private float GetRatio() {
-        return this.AspectRatio switch {
-            AspectRatio.FourToThree => 4f / 3f,
-            AspectRatio.SixteenToNine => 16f / 9f,
-            AspectRatio.SixteenToTen => 16f / 10f,
-            AspectRatio.FiveToFour => 5f / 4f,
-            AspectRatio.ThreeToTwo => 3f / 2f,
-            AspectRatio.SeventeenToNine => 17f / 9f,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
+    public Point GetResolution(Point internalRenderResolution) => new(internalRenderResolution.X * this.WindowScale, internalRenderResolution.Y * this.WindowScale);
 }
