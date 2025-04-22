@@ -124,7 +124,6 @@ public class RenderSystemTests {
         public Layers LayersToExcludeFromRender => (Layers)2;
         public Layers LayersToRender { get; set; } = (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
-        public PixelSnap PixelSnap => PixelSnap.Inherit;
         public BoundingArea SafeArea => this.BoundingArea;
         public float ViewHeight { get; set; } = 4f;
         public float ViewWidth => 4f;
@@ -148,7 +147,6 @@ public class RenderSystemTests {
 
         public event EventHandler ShouldRenderChanged;
         public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
-        public PixelSnap PixelSnap => PixelSnap.Inherit;
 
         public int RenderCount { get; private set; }
         public int RenderOrder { get; set; }

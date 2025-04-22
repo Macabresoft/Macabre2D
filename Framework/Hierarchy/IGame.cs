@@ -97,11 +97,6 @@ public interface IGame {
     IScene Overlay { get; }
 
     /// <summary>
-    /// Gets the pixel render size when applying shaders.
-    /// </summary>
-    Point PixelRenderSize { get; }
-
-    /// <summary>
     /// Gets the project.
     /// </summary>
     IGameProject Project { get; }

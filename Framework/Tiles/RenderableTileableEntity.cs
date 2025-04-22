@@ -20,11 +20,6 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
     [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
     public int RenderOrder { get; set; }
 

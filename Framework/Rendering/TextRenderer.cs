@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -15,7 +14,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly ResettableLazy<Vector2> _pixelPosition;
     private string _text = string.Empty;
 
     /// <inheritdoc />
@@ -26,7 +24,6 @@ public class TextRenderer : RenderableEntity {
     /// </summary>
     public TextRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-        this._pixelPosition = new ResettableLazy<Vector2>(this.CreatePixelPosition);
     }
 
     /// <inheritdoc />
@@ -37,7 +34,7 @@ public class TextRenderer : RenderableEntity {
     /// </summary>
     [DataMember(Order = 0)]
     public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
-    
+
     /// <summary>
     /// Gets the render options.
     /// </summary>
@@ -74,7 +71,7 @@ public class TextRenderer : RenderableEntity {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
-    
+
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
@@ -82,7 +79,7 @@ public class TextRenderer : RenderableEntity {
                 this.Project.PixelsPerUnit,
                 font,
                 this.Text,
-                this.ShouldSnapToPixels(this.Project) ? this._pixelPosition.Value : this.WorldPosition,
+                this.WorldPosition,
                 colorOverride,
                 this.RenderOptions.Orientation);
         }
@@ -112,23 +109,10 @@ public class TextRenderer : RenderableEntity {
         var maximumX = points.Max(point => point.X);
         var maximumY = points.Max(point => point.Y);
 
-        if (this.ShouldSnapToPixels(this.Project)) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Project);
-            minimumY = minimumY.ToPixelSnappedValue(this.Project);
-            maximumX = maximumX.ToPixelSnappedValue(this.Project);
-            maximumY = maximumY.ToPixelSnappedValue(this.Project);
-        }
-
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
-    private Vector2 CreatePixelPosition() {
-        return this.WorldPosition.ToPixelSnappedValue(this.Project);
-    }
-
-    private Vector2 CreateSize() {
-        return this.FontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
-    }
+    private Vector2 CreateSize() => this.FontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
@@ -137,7 +121,6 @@ public class TextRenderer : RenderableEntity {
     }
 
     private void Reset() {
-        this._pixelPosition.Reset();
         this.ResetBoundingArea();
     }
 

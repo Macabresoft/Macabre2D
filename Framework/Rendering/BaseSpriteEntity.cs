@@ -24,7 +24,6 @@ public interface ISpriteEntity : IRenderableEntity {
 public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _offsetTransform;
-    private readonly ResettableLazy<Vector2> _pixelTransform;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -35,20 +34,19 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     protected BaseSpriteEntity() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         this._offsetTransform = new ResettableLazy<Vector2>(this.CreateOffsetTransform);
-        this._pixelTransform = new ResettableLazy<Vector2>(this.CreatePixelPosition);
     }
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
+    /// <inheritdoc />
+    [DataMember(Order = 4, Name = "Render Options")]
+    public RenderOptions RenderOptions { get; private set; } = new();
+
     /// <summary>
     /// Gets the sprite index.
     /// </summary>
     public abstract byte? SpriteIndex { get; }
-
-    /// <inheritdoc />
-    [DataMember(Order = 4, Name = "Render Options")]
-    public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <summary>
     /// Gets the sprite sheet.
@@ -100,7 +98,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     /// Gets the appropriate transform for rendering.
     /// </summary>
     /// <returns>The render transform.</returns>
-    protected Vector2 GetRenderTransform() => this.ShouldSnapToPixels(this.Project) ? this._pixelTransform.Value : this._offsetTransform.Value;
+    protected Vector2 GetRenderTransform() => this._offsetTransform.Value;
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -129,8 +127,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
 
     private Vector2 CreateOffsetTransform() => this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
 
-    private Vector2 CreatePixelPosition() => this._offsetTransform.Value.ToPixelSnappedValue(this.Project);
-
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this.ResetTransforms();
@@ -140,7 +136,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     private void ResetTransforms() {
         this._boundingArea.Reset();
         this._offsetTransform.Reset();
-        this._pixelTransform.Reset();
         this.BoundingAreaChanged.SafeInvoke(this);
     }
 }

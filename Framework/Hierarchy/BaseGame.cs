@@ -139,9 +139,6 @@ public class BaseGame : Game, IGame {
     public IScene Overlay { get; private set; } = EmptyObject.Scene;
 
     /// <inheritdoc />
-    public Point PixelRenderSize { get; private set; }
-
-    /// <inheritdoc />
     public IGameProject Project {
         get => this._project;
         protected set {
@@ -193,8 +190,7 @@ public class BaseGame : Game, IGame {
             this.GraphicsDeviceManager.IsFullScreen = false;
         }
         else {
-            var verticalPixels = (int)Math.Ceiling(this.Project.CommonViewHeight * this.Project.PixelsPerUnit);
-            var resolution = this.DisplaySettings.GetResolution(verticalPixels);
+            var resolution = this.DisplaySettings.GetResolution(this.Project.InternalRenderResolution);
             this.GraphicsDeviceManager.PreferredBackBufferWidth = resolution.X;
             this.GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Y;
 
@@ -300,11 +296,11 @@ public class BaseGame : Game, IGame {
             this.GraphicsDevice.SetRenderTarget(previousRenderTarget);
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
             this.RenderScenes();
-            
+
             if (this.Project.ScreenShaders.CheckHasEnabledShaders(this) && !IsDesignMode) {
                 foreach (var shader in this.Project.ScreenShaders) {
                     if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
-                        var renderSize = shader.GetRenderSize(this.ViewportSize, this.PixelRenderSize);
+                        var renderSize = shader.GetRenderSize(this.ViewportSize, this.Project.InternalRenderResolution);
                         if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
                             var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
                             this.GraphicsDevice.SetRenderTarget(renderTarget);
@@ -476,20 +472,9 @@ public class BaseGame : Game, IGame {
     }
 
 
-    private RenderTarget2D CreateRenderTarget(GraphicsDevice device) {
-        var width = device.PresentationParameters.BackBufferWidth;
-        var height = device.PresentationParameters.BackBufferHeight;
-        return new RenderTarget2D(
-            device,
-            width,
-            height);
-    }
+    private RenderTarget2D CreateRenderTarget(GraphicsDevice device) => new(device, this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);
 
-    private RenderTarget2D CreateRenderTarget(GraphicsDevice device, Point renderSize) =>
-        new(
-            device,
-            renderSize.X,
-            renderSize.Y);
+    private RenderTarget2D CreateRenderTarget(GraphicsDevice device, Point renderSize) => new(device, renderSize.X, renderSize.Y);
 
     private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= this.CreateRenderTarget(device);
 
@@ -512,8 +497,6 @@ public class BaseGame : Game, IGame {
 
     private void ResetViewPort() {
         this.ViewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        var ratio = this.Project.GetPixelAgnosticRatio(this.Project.CommonViewHeight, this.ViewportSize.Y);
-        this.PixelRenderSize = new Point((int)Math.Round(this.ViewportSize.X * ratio), (int)Math.Round(this.ViewportSize.Y * ratio));
         this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 
         this._gameRenderTarget?.Dispose();
@@ -567,7 +550,6 @@ public class BaseGame : Game, IGame {
         public InputBindings InputBindings => this.UserSettings.Input;
         public LaunchArguments LaunchArguments => LaunchArguments.None;
         public IScene Overlay => EmptyObject.Scene;
-        public Point PixelRenderSize => default;
         public IGameProject Project => GameProject.Empty;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();

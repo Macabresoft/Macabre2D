@@ -23,9 +23,6 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     /// <inheritdoc />
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
 
-    /// <inheritdoc />
-    public PixelSnap PixelSnap { get; } = PixelSnap.No;
-
     /// <summary>
     /// Gets a reference to the prefab this entity contains.
     /// </summary>

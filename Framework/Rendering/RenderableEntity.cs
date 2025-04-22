@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an entity which can be rendered.
 /// </summary>
-public interface IRenderableEntity : IBoundableEntity, IEntity, IPixelSnappable {
+public interface IRenderableEntity : IBoundableEntity {
 
     /// <summary>
     /// Called when <see cref="ShouldRender" /> changes.
@@ -69,11 +69,6 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
 
     /// <inheritdoc />
     public abstract BoundingArea BoundingArea { get; }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
 
     /// <inheritdoc />
     [DataMember]

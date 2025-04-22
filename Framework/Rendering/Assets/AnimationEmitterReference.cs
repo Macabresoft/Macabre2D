@@ -16,14 +16,6 @@ public class AnimationEmitterReference : SpriteSheetReference {
     private readonly Random _randomizer = new();
     private readonly List<PositionalSpriteAnimation> _runningAnimations = new();
 
-    public IReadOnlyCollection<PositionalSpriteAnimation> RunningAnimations => this._runningAnimations;
-
-    /// <summary>
-    /// Gets a timer for the time between sprite appearances.
-    /// </summary>
-    [DataMember]
-    public GameTimer TimeBetweenEmissions { get; } = new() { TimeLimit = 0.5f };
-
     /// <summary>
     /// Gets or sets the emission offset.
     /// </summary>
@@ -36,11 +28,19 @@ public class AnimationEmitterReference : SpriteSheetReference {
     [DataMember]
     public byte MaxActiveAnimations { get; set; } = 5;
 
+    public IReadOnlyCollection<PositionalSpriteAnimation> RunningAnimations => this._runningAnimations;
+
     /// <summary>
     /// Gets or sets the amount of positional variation that should be used when spawning.
     /// </summary>
     [DataMember]
     public Vector2 SpawnVariation { get; set; }
+
+    /// <summary>
+    /// Gets a timer for the time between sprite appearances.
+    /// </summary>
+    [DataMember]
+    public GameTimer TimeBetweenEmissions { get; } = new() { TimeLimit = 0.5f };
 
     /// <inheritdoc />
     public override void LoadAsset(SpriteSheet asset) {
@@ -93,7 +93,7 @@ public class AnimationEmitterReference : SpriteSheetReference {
         IGameProject project,
         Action<PositionalSpriteAnimation>? spawnCallback) {
         if (this.TryGetAvailableAnimation(frameTime, timeMultiplier, trySpawn, out var newAnimation)) {
-            this.UpdateEmissions(newAnimation, spawnWorldPosition, velocity, orientation, project);
+            this.UpdateEmissions(newAnimation, spawnWorldPosition, velocity, orientation);
             spawnCallback?.Invoke(newAnimation);
         }
     }
@@ -119,7 +119,7 @@ public class AnimationEmitterReference : SpriteSheetReference {
         IGameProject project,
         Action<PositionalSpriteAnimation>? spawnCallback) {
         if (this.TryGetAvailableAnimation(frameTime, timeMultiplier, trySpawn, out var newAnimation)) {
-            this.UpdateEmissions(newAnimation, spawnWorldPositionCallback.Invoke(), velocity, orientation, project);
+            this.UpdateEmissions(newAnimation, spawnWorldPositionCallback.Invoke(), velocity, orientation);
             spawnCallback?.Invoke(newAnimation);
         }
     }
@@ -142,11 +142,10 @@ public class AnimationEmitterReference : SpriteSheetReference {
         PositionalSpriteAnimation newAnimation,
         Vector2 spawnWorldPosition,
         Vector2 velocity,
-        SpriteEffects orientation,
-        IGameProject project) {
+        SpriteEffects orientation) {
         var x = spawnWorldPosition.X + this.EmissionOffset.X + (-this.SpawnVariation.X * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.X);
         var y = spawnWorldPosition.Y + this.EmissionOffset.Y + (-this.SpawnVariation.Y * 0.5f + this._randomizer.NextSingle() * this.SpawnVariation.Y);
-        newAnimation.Position = new Vector2(x, y).ToPixelSnappedValue(project);
+        newAnimation.Position = new Vector2(x, y);
         newAnimation.Velocity = velocity;
         newAnimation.Orientation = orientation;
         newAnimation.Reset();

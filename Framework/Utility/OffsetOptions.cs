@@ -113,13 +113,6 @@ public class OffsetOptions : PropertyChangedNotifier {
             var maximumX = points.Max(point => point.X);
             var maximumY = points.Max(point => point.Y);
 
-            if (entity is IPixelSnappable snappable && snappable.ShouldSnapToPixels(entity.Project)) {
-                minimumX = minimumX.ToPixelSnappedValue(entity.Project);
-                minimumY = minimumY.ToPixelSnappedValue(entity.Project);
-                maximumX = maximumX.ToPixelSnappedValue(entity.Project);
-                maximumY = maximumY.ToPixelSnappedValue(entity.Project);
-            }
-
             result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
         }
         else {

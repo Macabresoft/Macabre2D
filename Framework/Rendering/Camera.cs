@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
 /// </summary>
-public interface ICamera : IBoundableEntity, IPixelSnappable {
+public interface ICamera : IBoundableEntity {
     /// <summary>
     /// Called when the <see cref="RenderOrder" /> changes.
     /// </summary>
@@ -146,11 +146,6 @@ public class Camera : Entity, ICamera {
             }
         }
     }
-
-    /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public PixelSnap PixelSnap { get; set; } = PixelSnap.Inherit;
 
     /// <inheritdoc />
     [DataMember]
@@ -302,12 +297,10 @@ public class Camera : Entity, ICamera {
     /// <param name="position">The position to use.</param>
     /// <returns>The view matrix.</returns>
     protected Matrix GetViewMatrix(Vector2 position) {
-        var settings = this.Project;
-        var pixelsPerUnit = settings.PixelsPerUnit;
-        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
+        var zoom = 1f / this.Project.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
 
         var matrix =
-            Matrix.CreateTranslation(new Vector3(-position.ToPixelSnappedValue(this.Project) * pixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-position * this.Project.PixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetOptions.Offset.X, this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y, 0f));
 
@@ -383,7 +376,7 @@ public class Camera : Entity, ICamera {
     }
 
     private void CalculateActualViewHeight() {
-        this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.CommonViewHeight;
+        this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.ViewHeight;
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
     }
 
@@ -405,17 +398,14 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.ShouldSnapToPixels(this.Project)) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Project);
-            minimumY = minimumY.ToPixelSnappedValue(this.Project);
-            maximumX = maximumX.ToPixelSnappedValue(this.Project);
-            maximumY = maximumY.ToPixelSnappedValue(this.Project);
-        }
-
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
-    private Vector2 CreateSize() => new(this.Game.ViewportSize.X, this.Game.ViewportSize.Y);
+    /// <summary>
+    /// Creates the pixel size of this camera's viewing area.
+    /// </summary>
+    /// <returns>The pixel size as a <see cref="Vector2"/>.</returns>
+    protected virtual Vector2 CreateSize() => new(this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);
 
     private float CreateViewWidth() {
         var (x, y) = this.OffsetOptions.Size;

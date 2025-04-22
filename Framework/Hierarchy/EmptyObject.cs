@@ -229,9 +229,6 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
 
     /// <inheritdoc />
-    public PixelSnap PixelSnap => PixelSnap.No;
-
-    /// <inheritdoc />
     public QueueableSpriteAnimation? QueuedAnimation => null;
 
     /// <summary>
@@ -255,10 +252,7 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     }
 
     /// <inheritdoc />
-    public RenderPriority RenderPriority {
-        get => default;
-        set { }
-    }
+    public RenderPriority RenderPriority => default;
 
     /// <inheritdoc />
     public string ResourceName {

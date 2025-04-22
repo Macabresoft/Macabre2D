@@ -44,9 +44,6 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; } = BoundingArea.Empty;
 
-    /// <inheritdoc />
-    public PixelSnap PixelSnap { get; } = PixelSnap.No;
-
     /// <summary>
     /// Gets a reference to the prefab this entity contains.
     /// </summary>

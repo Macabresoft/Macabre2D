@@ -60,6 +60,7 @@ public static class SamplerStateTypeExtensions {
             SamplerStateType.PointWrap => SamplerState.PointWrap,
             _ => SamplerState.PointClamp
         };
+
         return result;
     }
 }

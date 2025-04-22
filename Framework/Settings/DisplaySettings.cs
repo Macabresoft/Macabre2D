@@ -142,17 +142,10 @@ public sealed class DisplaySettings {
     /// <summary>
     /// Gets the resolution given the desired number of vertical pixels. This uses the <see cref="AspectRatio" /> and <see cref="WindowScale" /> values.
     /// </summary>
-    /// <param name="verticalPixels">The number of vertical pixels desired on screen.</param>
+    /// <param name="internalRenderResolution">The internal render resolution.</param>
     /// <returns>The resolution.</returns>
-    public Point GetResolution(int verticalPixels) {
-        if (verticalPixels <= 0) {
-            verticalPixels = DefaultVerticalPixels;
-        }
-
-        var resolutionY = verticalPixels * this.WindowScale;
-        var resolutionX = (int)Math.Ceiling(resolutionY * this.GetRatio());
-
-        return new Point(resolutionX, resolutionY);
+    public Point GetResolution(Point internalRenderResolution) {
+        return new Point(internalRenderResolution.X * this.WindowScale, internalRenderResolution.Y * this.WindowScale);
     }
 
     private float GetRatio() {

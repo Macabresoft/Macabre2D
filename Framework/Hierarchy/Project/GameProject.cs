@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Common.Attributes;
 using Macabresoft.Macabre2D.Project.Common;
+using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for a single project in the engine.
@@ -23,9 +24,10 @@ public interface IGameProject : INotifyPropertyChanged {
     Layers AllLayers { get; }
 
     /// <summary>
-    /// Gets the common view height used when a camera does not override with its own value.
+    /// Gets a value indicating whether input is allowed regardless of device. If this is set to <c>true</c>, the
+    /// desired input device in <see cref="InputBindings" /> is purely for display and all inputs will be available.
     /// </summary>
-    float CommonViewHeight { get; }
+    bool AllowInputRegardlessOfDevice { get; }
 
     /// <summary>
     /// Gets the company name.
@@ -48,6 +50,11 @@ public interface IGameProject : INotifyPropertyChanged {
     ProjectFonts Fonts { get; }
 
     /// <summary>
+    /// Gets the internal render resolution. This is the resolution the game is rendered at before being scaled up to the player's window.
+    /// </summary>
+    Point InternalRenderResolution { get; }
+
+    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -58,14 +65,14 @@ public interface IGameProject : INotifyPropertyChanged {
     Guid PersistentOverlaySceneId { get; }
 
     /// <summary>
+    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
+    /// </summary>
+    ushort PixelsPerUnit { get; set; }
+
+    /// <summary>
     /// Gets the screen shaders for this project.
     /// </summary>
     ScreenShaderCollection ScreenShaders { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether this should pixel snap.
-    /// </summary>
-    bool SnapToPixels { get; }
 
     /// <summary>
     /// Gets the identifier of the scene to load on a debug startup.
@@ -89,15 +96,14 @@ public interface IGameProject : INotifyPropertyChanged {
     float UnitsPerPixel { get; }
 
     /// <summary>
-    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
+    /// Gets the view height based on render resolution and units per pixel.
     /// </summary>
-    ushort PixelsPerUnit { get; set; }
-    
+    float ViewHeight { get; }
+
     /// <summary>
-    /// Gets a value indicating whether input is allowed regardless of device. If this is set to <c>true</c>, the
-    /// desired input device in <see cref="InputBindings"/> is purely for display and all inputs will be available.
+    /// Gets the view width based on render resolution and units per pixel.
     /// </summary>
-    bool AllowInputRegardlessOfDevice { get; }
+    float ViewWidth { get; }
 
     /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -142,8 +148,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// </summary>
     public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
 
-    private float _commonViewHeight = 10f;
+    private Point _internalRenderResolution = new(800, 600);
     private ushort _pixelsPerUnit = 32;
+    private float _viewHeight = 10f;
+    private float _viewWidth = 10f;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
@@ -171,6 +179,14 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
+    public bool AllowInputRegardlessOfDevice { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string CompanyName { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
 
     /// <inheritdoc />
@@ -185,26 +201,17 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public ScreenShaderCollection ScreenShaders { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    public float CommonViewHeight {
-        get => this._commonViewHeight;
-        set => this._commonViewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
+    public Point InternalRenderResolution {
+        get => this._internalRenderResolution;
+        set {
+            this._internalRenderResolution = new Point(Math.Max(1, value.X), Math.Max(1, value.Y));
+            this.ResetViewSize();
+        }
     }
 
     /// <inheritdoc />
     [DataMember]
-    public string CompanyName { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [DataMember]
     public string Name { get; set; }
-    
-    /// <inheritdoc />
-    [DataMember]
-    public bool AllowInputRegardlessOfDevice { get; set; }
 
     /// <inheritdoc />
     [DataMember(Name = "Persistent Overlay")]
@@ -215,7 +222,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     public ushort PixelsPerUnit {
         get => this._pixelsPerUnit;
-
         set {
             if (value < 1) {
                 throw new ArgumentOutOfRangeException($"{nameof(this.PixelsPerUnit)} must be greater than 0!");
@@ -224,13 +230,14 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
             if (value != this._pixelsPerUnit) {
                 this._pixelsPerUnit = value;
                 this.UnitsPerPixel = 1f / this._pixelsPerUnit;
+                this.ResetViewSize();
             }
         }
     }
 
     /// <inheritdoc />
-    [DataMember(Name = "Snap to Pixels During Render")]
-    public bool SnapToPixels { get; set; }
+    [DataMember]
+    public ScreenShaderCollection ScreenShaders { get; } = new();
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]
@@ -246,6 +253,18 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public float UnitsPerPixel { get; private set; } = 1f / 32f;
 
     /// <inheritdoc />
+    public float ViewHeight {
+        get => this._viewHeight;
+        private set => this._viewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
+    }
+
+    /// <inheritdoc />
+    public float ViewWidth {
+        get => this._viewWidth;
+        private set => this._viewWidth = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
+    }
+
+    /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
 
     /// <inheritdoc />
@@ -257,5 +276,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         this.Fallbacks.MouseReference.Initialize(assets, game);
         this.Fallbacks.MouseCursorReference.Initialize(assets, game);
         this.Fallbacks.Font.Initialize(assets, game);
+    }
+
+    private void ResetViewSize() {
+        this.ViewHeight = this._internalRenderResolution.Y * this.UnitsPerPixel;
+        this.ViewWidth = this._internalRenderResolution.X * this.UnitsPerPixel;
     }
 }
