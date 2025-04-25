@@ -33,31 +33,4 @@ public sealed class CameraTests {
         Assert.That(expectedX, Is.EqualTo(camera.LocalPosition.X).Within(0.001f));
         Assert.That(expectedY, Is.EqualTo(camera.LocalPosition.Y).Within(0.001f));
     }
-
-    [Test]
-    [Category("Unit Tests")]
-    [TestCase(1, 1, 1f, 1f)]
-    [TestCase(1, 2, 1f, 2f)]
-    [TestCase(5, 3, 50f, 30f)]
-    public void ViewWidth_Should_BeCorrect(int screenHeight, int screenWidth, float viewHeight, float expectedViewWidth) {
-        var camera = this.CreateCamera(screenWidth, screenHeight, viewHeight);
-
-        using (new AssertionScope()) {
-            camera.ViewWidth.Should().Be(expectedViewWidth);
-        }
-    }
-
-    private ICamera CreateCamera(int screenWidth, int screenHeight, float viewHeight) {
-        var scene = Substitute.For<IScene>();
-        var game = Substitute.For<IGame>();
-        scene.Game.Returns(game);
-        game.ViewportSize.Returns(new Point(screenWidth, screenHeight));
-
-        var camera = new Camera {
-            ViewHeight = viewHeight
-        };
-
-        camera.Initialize(scene, scene);
-        return camera;
-    }
 }

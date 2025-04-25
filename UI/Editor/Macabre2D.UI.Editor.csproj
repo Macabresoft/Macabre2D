@@ -91,7 +91,4 @@
             <Link>icon.ico</Link>
         </None>
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Controls\ValueEditors\" />
-    </ItemGroup>
 </Project>
