@@ -208,6 +208,11 @@ public class BaseGame : Game, IGame {
 
         this.GraphicsDeviceManager.ApplyChanges();
         this.ResetViewPort();
+        
+        // This prevents the mouse position from being seen as "changed" next frame.
+        // If the mouse thinks it has changed, the input device can change from game
+        // pad to mouse / keyboard. We don't want that!
+        this.InputState = this.CreateInputStateForFrame();
     }
 
     /// <inheritdoc />
@@ -448,7 +453,7 @@ public class BaseGame : Game, IGame {
     /// Updates the <see cref="InputState" />.
     /// </summary>
     protected virtual void UpdateInputState() {
-        this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
+        this.InputState = this.CreateInputStateForFrame();
 
         if (!IsDesignMode) {
             if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
@@ -464,6 +469,8 @@ public class BaseGame : Game, IGame {
             }
         }
     }
+
+    private InputState CreateInputStateForFrame() => new(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
     private void ClearSceneStack() {
         foreach (var scene in this._sceneStack) {
