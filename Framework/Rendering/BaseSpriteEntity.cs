@@ -101,15 +101,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     protected Vector2 GetRenderTransform() => this._offsetTransform.Value;
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
-            this.RaisePropertyChanged(nameof(this.ShouldRender));
-        }
-    }
-
-    /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.Reset();

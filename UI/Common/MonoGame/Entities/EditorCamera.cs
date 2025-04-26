@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Camera for the editor.

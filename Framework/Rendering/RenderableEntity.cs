@@ -109,14 +109,7 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
         base.OnIsEnableChanged();
 
         if (this._shouldRender) {
-            this.RaisePropertyChanged(nameof(this.ShouldRender));
-        }
-    }
-
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(IEnableable.IsEnabled) && this._shouldRender) {
-            this.RaisePropertyChanged(nameof(this.ShouldRender));
+            this.ShouldRenderChanged.SafeInvoke(this);
         }
     }
 }

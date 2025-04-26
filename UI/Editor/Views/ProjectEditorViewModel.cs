@@ -21,7 +21,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private readonly IEditorGame _game;
     private readonly IScene _scene;
     private readonly IEditorSettingsService _settingsService;
-    private ICamera _camera;
+    private EditorCamera _camera;
     private EditorGrid _grid;
     private Rect _overallSceneArea;
     private LoopingSpriteAnimator _spriteAnimator;
@@ -165,7 +165,8 @@ public class ProjectEditorViewModel : BaseViewModel {
         scene.AddSystem<UpdateSystem>();
         scene.AddSystem<AnimationSystem>();
 
-        this._camera = scene.AddChild<Camera>();
+        this._camera = scene.AddChild<EditorCamera>();
+        this._camera.OverrideCommonViewHeight = true;
         this._camera.LocalPosition = CameraAdjustment;
 
         this._textAreaRenderer = scene.AddChild<TextAreaRenderer>();
