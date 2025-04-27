@@ -42,16 +42,9 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <summary>
     /// Gets the character height of this font.
     /// </summary>
     public float CharacterHeight { get; private set; }
-
 
 
     /// <summary>
@@ -82,6 +75,12 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the font asset reference.
+    /// </summary>
+    [DataMember]
+    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -141,6 +140,24 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// <value>The render options.</value>
     [DataMember(Order = 4)]
     public RenderOptions RenderOptions { get; private set; } = new();
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority {
+        get {
+            if (this.RenderPriorityOverride.IsEnabled) {
+                return this.RenderPriorityOverride.Value;
+            }
+
+            return this._spriteSheet?.DefaultRenderPriority ?? default;
+        }
+    }
+
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
 
     /// <inheritdoc />
     [ResourceName]

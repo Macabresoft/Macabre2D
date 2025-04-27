@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Tests.Framework;
 using System;
 using System.Threading;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 internal class TestRenderableEntity : RenderableEntity {
@@ -11,6 +12,9 @@ internal class TestRenderableEntity : RenderableEntity {
 
     public override BoundingArea BoundingArea => this._boundingArea;
     public int RenderCount { get; private set; }
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority { get; } = default;
 
     public int SleepAmountInMilliseconds { get; set; } = 10;
 

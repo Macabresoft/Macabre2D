@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
@@ -61,14 +62,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
     }
 
-    /// <inheritdoc />
-    public override bool IncludeFileExtensionInContentPath => false;
-
-    /// <summary>
-    /// Gets the max index.
-    /// </summary>
-    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
-
     /// <summary>
     /// Gets or sets the number of columns in this sprite sheet.
     /// </summary>
@@ -86,6 +79,20 @@ public class SpriteSheet : AssetPackage<Texture2D> {
             }
         }
     }
+
+    /// <summary>
+    /// Gets or sets the default render priority.
+    /// </summary>
+    [DataMember]
+    public RenderPriority DefaultRenderPriority { get; set; }
+
+    /// <inheritdoc />
+    public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets the max index.
+    /// </summary>
+    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
 
     /// <summary>
     /// Gets or sets the number of rows in this sprite sheet.

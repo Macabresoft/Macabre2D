@@ -91,6 +91,24 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     public RenderOptions RenderOptions { get; } = new();
 
     /// <inheritdoc />
+    public override RenderPriority RenderPriority {
+        get {
+            if (this.RenderPriorityOverride.IsEnabled) {
+                return this.RenderPriorityOverride.Value;
+            }
+
+            return this.SpriteSheet?.DefaultRenderPriority ?? default;
+        }
+    }
+
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
+
+    /// <inheritdoc />
     [ResourceName]
     [DataMember]
     public string ResourceName {

@@ -1,12 +1,18 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A base class for drawing the outlines of entities.
 /// </summary>
 public abstract class BaseDrawer : RenderableEntity {
+    [DataMember(Name = nameof(RenderPriority))]
+    [Category(CommonCategories.Rendering)]
+    private RenderPriority _renderPriority;
+
     /// <summary>
     /// Gets or sets the color.
     /// </summary>
@@ -20,6 +26,9 @@ public abstract class BaseDrawer : RenderableEntity {
     /// <value>The line thickness.</value>
     [DataMember(Order = 1)]
     public float LineThickness { get; set; } = 1f;
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority => this._renderPriority;
 
     /// <summary>
     /// Gets or sets a value indicating whether this should use dynamic line thickness.

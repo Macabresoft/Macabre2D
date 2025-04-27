@@ -10,7 +10,7 @@ public class LayersOverride : ValueOverride<Layers> {
     /// Initializes a new instance of <see cref="LayersOverride" />
     /// </summary>
     /// <param name="value">The value.</param>
-    /// <param name="isEnabled">A value indicating whether or not this is enabled.</param>
+    /// <param name="isEnabled">A value indicating whether this is enabled.</param>
     public LayersOverride(Layers value, bool isEnabled) : base(value, isEnabled) {
     }
 

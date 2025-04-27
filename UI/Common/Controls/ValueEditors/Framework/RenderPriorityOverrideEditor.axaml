@@ -1,0 +1,26 @@
+<local:ValueOverrideEditor xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:commonFramework="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+                           x:TypeArguments="framework:RenderPriorityOverride, commonFramework:RenderPriority"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.RenderPriorityOverrideEditor">
+    <Grid ColumnDefinitions="Auto, Auto, *"
+          DataContext="{Binding $parent[local:RenderPriorityOverrideEditor]}">
+        <Design.DataContext>
+            <local:RenderPriorityOverrideEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <CheckBox Grid.Column="1"
+                  IsChecked="{Binding IsOverrideEnabled}" />
+        
+        <local:EnumEditor Grid.Column="2"
+                          IsEnabled="{Binding Value.IsEnabled}"
+                          EnumType="{x:Type commonFramework:RenderPriority}"
+                          Value="{Binding ValueOverride}" />
+    </Grid>
+</local:ValueOverrideEditor>

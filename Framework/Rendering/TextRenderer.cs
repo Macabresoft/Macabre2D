@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,6 +15,11 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+
+    [DataMember(Name = nameof(RenderPriority))]
+    [Category(CommonCategories.Rendering)]
+    private RenderPriority _renderPriority;
+
     private string _text = string.Empty;
 
     /// <inheritdoc />
@@ -41,6 +47,9 @@ public class TextRenderer : RenderableEntity {
     /// <value>The render options.</value>
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority => this._renderPriority;
 
     /// <summary>
     /// Gets or sets the text.

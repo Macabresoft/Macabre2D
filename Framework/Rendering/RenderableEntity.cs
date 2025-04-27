@@ -82,9 +82,7 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriority RenderPriority { get; set; }
+    public abstract RenderPriority RenderPriority { get; }
 
     /// <inheritdoc />
     [DataMember]

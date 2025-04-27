@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -35,6 +36,25 @@ public class BoxTileMap : RenderableEntity {
     /// </summary>
     [DataMember]
     public AutoTileSetReference TileSet { get; } = new();
+    
+    
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority {
+        get {
+            if (this.RenderPriorityOverride.IsEnabled) {
+                return this.RenderPriorityOverride.Value;
+            }
+
+            return this.TileSet.Asset?.DefaultRenderPriority ?? default;
+        }
+    }
+
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
 
     /// <summary>
     /// Gets or sets the height in tiles.

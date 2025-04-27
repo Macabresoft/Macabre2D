@@ -187,6 +187,10 @@
           <DependentUpon>SpriteSheetSpriteIndexReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\RenderPriorityOverrideEditor.axaml.cs">
+          <DependentUpon>RenderPriorityOverrideEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>
