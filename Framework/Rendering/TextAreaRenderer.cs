@@ -150,6 +150,11 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
             return this._spriteSheet?.DefaultRenderPriority ?? default;
         }
+        
+        set {
+            this.RenderPriorityOverride.IsEnabled = true;
+            this.RenderPriorityOverride.Value = value;
+        }
     }
 
     /// <summary>

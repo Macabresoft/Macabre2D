@@ -14,7 +14,7 @@ internal class TestRenderableEntity : RenderableEntity {
     public int RenderCount { get; private set; }
 
     /// <inheritdoc />
-    public override RenderPriority RenderPriority { get; } = default;
+    public override RenderPriority RenderPriority { get; set; } = default;
 
     public int SleepAmountInMilliseconds { get; set; } = 10;
 

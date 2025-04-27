@@ -9,10 +9,6 @@ using Microsoft.Xna.Framework;
 /// A base class for drawing the outlines of entities.
 /// </summary>
 public abstract class BaseDrawer : RenderableEntity {
-    [DataMember(Name = nameof(RenderPriority))]
-    [Category(CommonCategories.Rendering)]
-    private RenderPriority _renderPriority;
-
     /// <summary>
     /// Gets or sets the color.
     /// </summary>
@@ -28,7 +24,9 @@ public abstract class BaseDrawer : RenderableEntity {
     public float LineThickness { get; set; } = 1f;
 
     /// <inheritdoc />
-    public override RenderPriority RenderPriority => this._renderPriority;
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public override RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this should use dynamic line thickness.

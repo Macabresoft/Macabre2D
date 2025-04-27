@@ -47,6 +47,11 @@ public class BoxTileMap : RenderableEntity {
 
             return this.TileSet.Asset?.DefaultRenderPriority ?? default;
         }
+        
+        set {
+            this.RenderPriorityOverride.IsEnabled = true;
+            this.RenderPriorityOverride.Value = value;
+        }
     }
 
     /// <summary>

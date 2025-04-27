@@ -47,7 +47,9 @@ public class BoundableCover : RenderableEntity {
     }
 
     /// <inheritdoc />
-    public override RenderPriority RenderPriority => this._renderPriority;
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public override RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Gets a render priority override.

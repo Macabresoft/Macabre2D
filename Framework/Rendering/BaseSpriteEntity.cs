@@ -63,6 +63,11 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
 
             return this.SpriteSheet?.DefaultRenderPriority ?? default;
         }
+
+        set {
+            this.RenderPriorityOverride.IsEnabled = true;
+            this.RenderPriorityOverride.Value = value;
+        }
     }
 
     /// <summary>

@@ -252,7 +252,7 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     }
 
     /// <inheritdoc />
-    public RenderPriority RenderPriority => default;
+    public RenderPriority RenderPriority { get; set; } = default;
 
     /// <inheritdoc />
     public string ResourceName {

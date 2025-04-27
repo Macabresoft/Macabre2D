@@ -15,11 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-
-    [DataMember(Name = nameof(RenderPriority))]
-    [Category(CommonCategories.Rendering)]
-    private RenderPriority _renderPriority;
-
+    
     private string _text = string.Empty;
 
     /// <inheritdoc />
@@ -49,7 +45,9 @@ public class TextRenderer : RenderableEntity {
     public RenderOptions RenderOptions { get; private set; } = new();
 
     /// <inheritdoc />
-    public override RenderPriority RenderPriority => this._renderPriority;
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public override RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Gets or sets the text.

@@ -30,7 +30,7 @@ public interface IRenderableEntity : IBoundableEntity {
     /// <summary>
     /// Gets the render priority.
     /// </summary>
-    RenderPriority RenderPriority { get; }
+    RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this instance should render.
@@ -82,7 +82,7 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
-    public abstract RenderPriority RenderPriority { get; }
+    public abstract RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     [DataMember]

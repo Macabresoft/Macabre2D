@@ -36,7 +36,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     public bool RenderOutOfBounds { get; set; } = true;
 
     /// <inheritdoc />
-    public RenderPriority RenderPriority { get; } = default;
+    public RenderPriority RenderPriority { get; set; } = default;
 
     /// <inheritdoc />
     public bool ShouldRender {

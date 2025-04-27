@@ -99,6 +99,11 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
             return this.SpriteSheet?.DefaultRenderPriority ?? default;
         }
+        
+        set {
+            this.RenderPriorityOverride.IsEnabled = true;
+            this.RenderPriorityOverride.Value = value;
+        }
     }
 
     /// <summary>

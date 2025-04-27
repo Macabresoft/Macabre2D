@@ -156,7 +156,7 @@ public class RenderSystemTests {
             set { }
         }
 
-        public RenderPriority RenderPriority { get; } = default;
+        public RenderPriority RenderPriority { get; set; } = default;
         public bool ShouldRender { get; set; } = true;
 
         public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
