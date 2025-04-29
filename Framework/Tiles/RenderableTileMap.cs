@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -25,6 +26,29 @@ public abstract class RenderableTileMap : RenderableTileableEntity, IRenderableE
     private readonly List<Point> _orderedActiveTiles = new();
     private TileMapRenderStartingPoint _renderStartingPoint = TileMapRenderStartingPoint.BottomLeft;
 
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority {
+        get {
+            if (this.RenderPriorityOverride.IsEnabled) {
+                return this.RenderPriorityOverride.Value;
+            }
+
+            return this.SpriteSheet?.DefaultRenderPriority ?? default;
+        }
+
+        set {
+            this.RenderPriorityOverride.IsEnabled = true;
+            this.RenderPriorityOverride.Value = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
+
     /// <summary>
     /// Gets or sets the render starting point.
     /// </summary>
@@ -43,10 +67,16 @@ public abstract class RenderableTileMap : RenderableTileableEntity, IRenderableE
         }
     }
 
+
     /// <summary>
     /// Gets the active tiles in an order defined by <see cref="RenderStartingPoint" />.
     /// </summary>
     protected IReadOnlyCollection<Point> OrderedActiveTiles => this._orderedActiveTiles;
+
+    /// <summary>
+    /// Gets the sprite sheet.
+    /// </summary>
+    protected abstract SpriteSheet? SpriteSheet { get; }
 
     /// <inheritdoc />
     protected override void ClearActiveTiles() {

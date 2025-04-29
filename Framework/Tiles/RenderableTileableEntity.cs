@@ -29,9 +29,7 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
     public bool RenderOutOfBounds { get; set; }
 
     /// <inheritdoc />
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriority RenderPriority { get; set; }
+    public abstract RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     [DataMember]

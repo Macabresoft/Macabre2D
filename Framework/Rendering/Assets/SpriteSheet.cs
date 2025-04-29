@@ -31,6 +31,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     private AutoTileSetCollection _autoTileSets = new();
 
     private byte _columns = 1;
+    private RenderPriority _defaultRenderPriority;
 
     [DataMember]
     [Category("Fonts")]
@@ -84,7 +85,10 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// Gets or sets the default render priority.
     /// </summary>
     [DataMember]
-    public RenderPriority DefaultRenderPriority { get; set; }
+    public RenderPriority DefaultRenderPriority {
+        get => this._defaultRenderPriority;
+        set => this.Set(ref this._defaultRenderPriority, value);
+    }
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;

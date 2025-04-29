@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -26,17 +25,20 @@ public sealed class BinaryTileMap : RenderableTileMap {
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
 
     /// <summary>
-    /// Gets the sprite reference.
-    /// </summary>
-    [DataMember(Order = 0)]
-    public SpriteReference SpriteReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
+
+    /// <summary>
+    /// Gets the sprite reference.
+    /// </summary>
+    [DataMember(Order = 0)]
+    public SpriteReference SpriteReference { get; } = new();
+
+    /// <inheritdoc />
+    protected override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) => this._activeTiles.Contains(tilePosition);
@@ -84,7 +86,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.SpriteReference;
     }
-    
+
     /// <inheritdoc />
     protected override bool HasActiveTiles() => this._activeTiles.Any();
 
@@ -109,7 +111,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+        if (e.PropertyName == nameof(this.SpriteSheet.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

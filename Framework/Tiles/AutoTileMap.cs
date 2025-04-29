@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -53,17 +52,17 @@ public sealed class AutoTileMap : RenderableTileMap {
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTileToIndex.Keys;
 
     /// <summary>
-    /// Gets the animation reference.
-    /// </summary>
-    [DataMember(Order = 0, Name = "Tile Set")]
-    public AutoTileSetReference TileSetReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
+
+    /// <summary>
+    /// Gets the animation reference.
+    /// </summary>
+    [DataMember(Order = 0, Name = "Tile Set")]
+    public AutoTileSetReference TileSetReference { get; } = new();
 
     [DataMember]
     public AutoTileMapVisualBehavior VisualBehavior {
@@ -75,6 +74,9 @@ public sealed class AutoTileMap : RenderableTileMap {
             }
         }
     }
+
+    /// <inheritdoc />
+    protected override SpriteSheet? SpriteSheet => this.TileSetReference.Asset;
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -339,7 +341,7 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(SpriteSheet.SpriteSize)) {
+        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(this.SpriteSheet.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

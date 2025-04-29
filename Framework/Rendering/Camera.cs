@@ -280,6 +280,12 @@ public class Camera : Entity, ICamera {
         }
     }
 
+    /// <summary>
+    /// Creates the pixel size of this camera's viewing area.
+    /// </summary>
+    /// <returns>The pixel size as a <see cref="Vector2" />.</returns>
+    protected virtual Vector2 CreateSize() => new(this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);
+
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.ShaderReference;
@@ -350,7 +356,8 @@ public class Camera : Entity, ICamera {
         var entities = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-            .OrderBy(x => x.RenderOrder);
+            .OrderBy(x => x.RenderPriority)
+            .ThenBy(x => x.RenderOrder);
 
         spriteBatch?.Begin(
             SpriteSortMode.Deferred,
@@ -400,12 +407,6 @@ public class Camera : Entity, ICamera {
 
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
-
-    /// <summary>
-    /// Creates the pixel size of this camera's viewing area.
-    /// </summary>
-    /// <returns>The pixel size as a <see cref="Vector2"/>.</returns>
-    protected virtual Vector2 CreateSize() => new(this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);
 
     private float CreateViewWidth() {
         var (x, y) = this.OffsetOptions.Size;
