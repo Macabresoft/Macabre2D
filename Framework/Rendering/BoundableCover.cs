@@ -15,11 +15,6 @@ public class BoundableCover : RenderableEntity {
     private IBoundableEntity _boundable = EmptyObject.Boundable;
     private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
-
-    [DataMember(Name = nameof(RenderPriority))]
-    [Category(CommonCategories.Rendering)]
-    private RenderPriority _renderPriority;
-
     private Texture2D? _texture;
 
     /// <inheritdoc />
