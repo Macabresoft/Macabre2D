@@ -15,6 +15,11 @@ public static class CommonCategories {
     public const string Audio = "Audio";
 
     /// <summary>
+    /// Category for colors.
+    /// </summary>
+    public const string Colors = "Colors";
+
+    /// <summary>
     /// Category for collision map.
     /// </summary>
     public const string CollisionMap = "Collision Map";
