@@ -18,7 +18,12 @@ public enum ScreenShaderSizing {
     /// <summary>
     /// Will shrink the render target based on <see cref="IGameProject.PixelsPerUnit" />.
     /// </summary>
-    PixelSize
+    PixelSize,
+
+    /// <summary>
+    /// Will render at <see cref="PixelSize" /> with a multiplier until a maximum of <see cref="FullScreen" />.
+    /// </summary>
+    LimitedPixelSize
 }
 
 /// <summary>
@@ -27,12 +32,6 @@ public enum ScreenShaderSizing {
 public class ScreenShader : PropertyChangedNotifier, IEnableable, IIdentifiable, INameable {
     private bool _isEnabled = true;
     private string _name = "Shader";
-
-    /// <summary>
-    /// Gets the reference to the shader.
-    /// </summary>
-    [DataMember]
-    public ShaderReference Shader { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -66,6 +65,12 @@ public class ScreenShader : PropertyChangedNotifier, IEnableable, IIdentifiable,
     public SamplerStateType SamplerStateType { get; set; }
 
     /// <summary>
+    /// Gets the reference to the shader.
+    /// </summary>
+    [DataMember]
+    public ShaderReference Shader { get; } = new();
+
+    /// <summary>
     /// Gets the sizing to use when creating a render target.
     /// </summary>
     [DataMember]
@@ -78,10 +83,11 @@ public class ScreenShader : PropertyChangedNotifier, IEnableable, IIdentifiable,
     /// <param name="pixelRenderSize">The render size in converted pixels.</param>
     /// <returns>The multiplied render size.</returns>
     public Point GetRenderSize(Point viewPortSize, Point pixelRenderSize) {
-        if (this.Sizing == ScreenShaderSizing.PixelSize) {
-            return new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier);
-        }
-
-        return new Point(viewPortSize.X * this.Multiplier, viewPortSize.Y * this.Multiplier);
+        return this.Sizing switch {
+            ScreenShaderSizing.PixelSize => new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier),
+            ScreenShaderSizing.LimitedPixelSize when pixelRenderSize.Y * this.Multiplier is var height && height < viewPortSize.Y => new Point(pixelRenderSize.X * this.Multiplier, height),
+            ScreenShaderSizing.LimitedPixelSize => new Point(viewPortSize.X, viewPortSize.Y),
+            _ => new Point(viewPortSize.X * this.Multiplier, viewPortSize.Y * this.Multiplier)
+        };
     }
 }

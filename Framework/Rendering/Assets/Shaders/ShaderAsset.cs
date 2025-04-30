@@ -34,7 +34,7 @@ public sealed class ShaderAsset : Asset<Effect> {
             }
         }
     }
-
+    
     /// <inheritdoc />
     public override string GetContentBuildCommands(string contentPath, string fileExtension) {
         var contentStringBuilder = new StringBuilder();
