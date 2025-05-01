@@ -353,12 +353,6 @@ public class Camera : Entity, ICamera {
         Layers layersToExclude,
         ColorOverride colorOverride,
         Effect? shader) {
-        var entities = renderTree
-            .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-            .OrderBy(x => x.RenderPriority)
-            .ThenBy(x => x.RenderOrder);
-
         spriteBatch?.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,
@@ -369,13 +363,35 @@ public class Camera : Entity, ICamera {
             viewMatrix);
 
         if (colorOverride.IsEnabled) {
+            var entities = renderTree
+                .RetrievePotentialCollisions(viewBoundingArea)
+                .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+                .OrderBy(x => x.RenderPriority)
+                .ThenBy(x => x.RenderOrder);
+
             foreach (var entity in entities) {
                 entity.Render(frameTime, viewBoundingArea, colorOverride.Value);
             }
         }
         else {
-            foreach (var entity in entities) {
-                entity.Render(frameTime, viewBoundingArea);
+            var groupings = renderTree
+                .RetrievePotentialCollisions(viewBoundingArea)
+                .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+                .GroupBy(x => x.RenderPriority)
+                .OrderBy(x => x.Key);
+
+            foreach (var group in groupings) {
+                var entities = group.OrderBy(x => x.RenderOrder);
+                if (this.Game.UserSettings.Colors.TryGetColor(group.Key, out var color)) {
+                    foreach (var entity in entities) {
+                        entity.Render(frameTime, viewBoundingArea, color);
+                    }
+                }
+                else {
+                    foreach (var entity in entities) {
+                        entity.Render(frameTime, viewBoundingArea);
+                    }
+                }
             }
         }
 
