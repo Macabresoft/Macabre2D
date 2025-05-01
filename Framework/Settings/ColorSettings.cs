@@ -40,8 +40,13 @@ public class ColorSettings {
     /// </summary>
     /// <param name="renderPriority">The render priority.</param>
     /// <param name="color">The color.</param>
-    public void SetColor(RenderPriority renderPriority, Color color) {
-        this._renderPriorityToColor[renderPriority] = color;
+    public void SetRenderPriorityColor(RenderPriority renderPriority, Color color) {
+        if (color == Color.White) {
+            this._renderPriorityToColor.Remove(renderPriority);
+        }
+        else {
+            this._renderPriorityToColor[renderPriority] = color;
+        }
     }
 
     /// <summary>
@@ -50,5 +55,5 @@ public class ColorSettings {
     /// <param name="renderPriority">The render priority.</param>
     /// <param name="color">The found color.</param>
     /// <returns>A value indicating whether this render priority has a specified color.</returns>
-    public bool TryGetColor(RenderPriority renderPriority, out Color color) => this._renderPriorityToColor.TryGetValue(renderPriority, out color);
+    public bool TryGetColorForRenderPriority(RenderPriority renderPriority, out Color color) => this._renderPriorityToColor.TryGetValue(renderPriority, out color);
 }

@@ -382,7 +382,7 @@ public class Camera : Entity, ICamera {
 
             foreach (var group in groupings) {
                 var entities = group.OrderBy(x => x.RenderOrder);
-                if (this.Game.UserSettings.Colors.TryGetColor(group.Key, out var color)) {
+                if (this.Game.UserSettings.Colors.TryGetColorForRenderPriority(group.Key, out var color)) {
                     foreach (var entity in entities) {
                         entity.Render(frameTime, viewBoundingArea, color);
                     }
