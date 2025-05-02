@@ -10,71 +10,63 @@
             <Setter Property="Width" Value="24" />
         </Style>
     </UserControl.Styles>
-    <Grid RowDefinitions="Auto, Auto"
-          DataContext="{Binding $parent[local:InputActionControl]}"
-          Margin="{StaticResource DoubleMarginVertical}">
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto"
+          ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:InputActionControl]}">
         <Design.DataContext>
             <local:InputActionControl />
         </Design.DataContext>
 
-        <TextBlock Grid.Row="0"
-                   Classes="Label"
-                   Text="{Binding Action}" />
+        <StackPanel Grid.Column="0"
+                    Grid.Row="0"
+                    Orientation="Horizontal">
+            <avaloniaEx:Icon Content="{StaticResource GamePadIcon}"
+                             ToolTip.Tip="Primary Game Pad Binding" />
+            <TextBlock Text="1"
+                       Classes="SmallLabel" />
+        </StackPanel>
+        <ComboBox Grid.Column="1"
+                  Grid.Row="0"
+                  HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding AvailableGamePadButtons}"
+                  SelectedValue="{Binding SelectedPrimaryButton}"
+                  ToolTip.Tip="Primary Game Pad Binding" />
+        
+        <StackPanel Grid.Column="0"
+                    Grid.Row="1"
+                    Orientation="Horizontal">
+            <avaloniaEx:Icon Content="{StaticResource GamePadIcon}"
+                             ToolTip.Tip="Secondary Game Pad Binding" />
+            <TextBlock Text="2"
+                       Classes="SmallLabel" />
+        </StackPanel>
+        <ComboBox Grid.Column="1"
+                  Grid.Row="1"
+                  HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding AvailableGamePadButtons}"
+                  SelectedValue="{Binding SelectedSecondaryButton}"
+                  ToolTip.Tip="Secondary Game Pad Binding" />
 
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto"
-              ColumnDefinitions="Auto, *"
-              Grid.Row="1">
-            <StackPanel Grid.Column="0"
-                        Grid.Row="0"
-                        Orientation="Horizontal">
-                <avaloniaEx:Icon Content="{StaticResource GamePadIcon}"
-                                 ToolTip.Tip="Primary Game Pad Binding" />
-                <TextBlock Text="1"
-                           Classes="SmallLabel" />
-            </StackPanel>
-            <ComboBox Grid.Column="1"
-                      Grid.Row="0"
-                      HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding AvailableGamePadButtons}"
-                      SelectedValue="{Binding SelectedPrimaryButton}"
-                      ToolTip.Tip="Primary Game Pad Binding" />
-            
-            <StackPanel Grid.Column="0"
-                        Grid.Row="1"
-                        Orientation="Horizontal">
-                <avaloniaEx:Icon Content="{StaticResource GamePadIcon}"
-                                 ToolTip.Tip="Secondary Game Pad Binding" />
-                <TextBlock Text="2"
-                           Classes="SmallLabel" />
-            </StackPanel>
-            <ComboBox Grid.Column="1"
-                      Grid.Row="1"
-                      HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding AvailableGamePadButtons}"
-                      SelectedValue="{Binding SelectedSecondaryButton}"
-                      ToolTip.Tip="Secondary Game Pad Binding" />
+        <avaloniaEx:Icon Grid.Column="0"
+                         Grid.Row="2"
+                         Content="{StaticResource KeyboardIcon}"
+                         ToolTip.Tip="Keyboard Binding" />
+        <ComboBox Grid.Column="1"
+                  Grid.Row="2"
+                  ItemsSource="{Binding AvailableKeys}"
+                  SelectedItem="{Binding SelectedKey}"
+                  HorizontalAlignment="Stretch"
+                  ToolTip.Tip="Keyboard Binding" />
 
-            <avaloniaEx:Icon Grid.Column="0"
-                             Grid.Row="2"
-                             Content="{StaticResource KeyboardIcon}"
-                             ToolTip.Tip="Keyboard Binding" />
-            <ComboBox Grid.Column="1"
-                      Grid.Row="2"
-                      ItemsSource="{Binding AvailableKeys}"
-                      SelectedItem="{Binding SelectedKey}"
-                      HorizontalAlignment="Stretch"
-                      ToolTip.Tip="Keyboard Binding" />
-
-            <avaloniaEx:Icon Grid.Column="0"
-                             Grid.Row="3"
-                             Content="{StaticResource MouseClickIcon}"
-                             ToolTip.Tip="Mouse Binding" />
-            <ComboBox Grid.Column="1"
-                      Grid.Row="3"
-                      ItemsSource="{Binding AvailableMouseButtons}"
-                      SelectedItem="{Binding SelectedMouseButton}"
-                      HorizontalAlignment="Stretch"
-                      ToolTip.Tip="Mouse Binding" />
-        </Grid>
+        <avaloniaEx:Icon Grid.Column="0"
+                         Grid.Row="3"
+                         Content="{StaticResource MouseClickIcon}"
+                         ToolTip.Tip="Mouse Binding" />
+        <ComboBox Grid.Column="1"
+                  Grid.Row="3"
+                  ItemsSource="{Binding AvailableMouseButtons}"
+                  SelectedItem="{Binding SelectedMouseButton}"
+                  HorizontalAlignment="Stretch"
+                  ToolTip.Tip="Mouse Binding" />
     </Grid>
 </UserControl>

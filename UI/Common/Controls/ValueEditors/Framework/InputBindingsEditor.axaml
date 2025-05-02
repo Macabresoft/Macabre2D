@@ -6,7 +6,7 @@
                                  x:TypeArguments="framework:InputBindings"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.InputBindingsEditor">
     <Grid DataContext="{Binding $parent[local:InputBindingsEditor]}"
-          RowDefinitions="Auto, Auto, Auto, *">
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
         <Design.DataContext>
             <local:InputBindingsEditor />
         </Design.DataContext>
@@ -23,16 +23,34 @@
 
         <local:BoolEditor Grid.Row="2"
                           Title="Is Mouse Enabled"
-                          Value="{Binding IsMouseEnabled}"/>
+                          Value="{Binding IsMouseEnabled}" />
 
-        <ItemsControl Grid.Row="3"
-                      ItemsSource="{Binding Actions}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:InputActionControl InputBindings="{Binding $parent[local:InputBindingsEditor].Value}"
-                                              Action="{Binding}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Border Grid.Row="3"
+                Height="1"
+                Classes="HorizontalSeparator" />
+        
+        <Grid Grid.Row="4"
+              ColumnDefinitions="Auto, *">
+            <TextBlock Grid.Column="0"
+                       Classes="Label"
+                       Text="Bindings" />
+
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Actions}"
+                      SelectedItem="{Binding SelectedAction}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Stretch"
+                                   Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
+                                   TextAlignment="Left"
+                                   ToolTip.Tip="{Binding}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <local:InputActionControl Grid.Row="5"
+                                  InputBindings="{Binding $parent[local:InputBindingsEditor].Value}"
+                                  Action="{Binding SelectedAction}"/>
     </Grid>
 </valueEditors:ValueEditorControl>

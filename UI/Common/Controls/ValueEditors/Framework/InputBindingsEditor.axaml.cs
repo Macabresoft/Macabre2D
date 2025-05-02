@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
+using Avalonia.Data;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
@@ -28,6 +29,12 @@ public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
             editor => editor.IsMouseEnabled,
             (editor, value) => editor.IsMouseEnabled = value);
 
+    public static readonly StyledProperty<InputAction> SelectedActionProperty =
+        AvaloniaProperty.Register<InputBindingsEditor, InputAction>(
+            nameof(SelectedAction), 
+            defaultBindingMode: BindingMode.TwoWay, 
+            defaultValue: InputAction.Confirm);
+
     private readonly IUndoService _undoService;
 
     public InputBindingsEditor() : this(null, Resolver.Resolve<IUndoService>()) {
@@ -44,6 +51,7 @@ public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
     }
 
     public IReadOnlyCollection<InputAction> Actions { get; }
+
 
     public GamePadDisplay DesiredGamePad {
         get => this.Value.DesiredGamePad;
@@ -100,5 +108,10 @@ public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
                 });
             }
         }
+    }
+
+    public InputAction SelectedAction {
+        get => this.GetValue(SelectedActionProperty);
+        set => this.SetValue(SelectedActionProperty, value);
     }
 }
