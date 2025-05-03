@@ -191,6 +191,10 @@
           <DependentUpon>RenderPriorityOverrideEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\ColorSettingsEditor.axaml.cs">
+          <DependentUpon>ColorSettingsEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>

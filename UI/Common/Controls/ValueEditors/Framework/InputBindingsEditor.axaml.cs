@@ -32,8 +32,7 @@ public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
     public static readonly StyledProperty<InputAction> SelectedActionProperty =
         AvaloniaProperty.Register<InputBindingsEditor, InputAction>(
             nameof(SelectedAction), 
-            defaultBindingMode: BindingMode.TwoWay, 
-            defaultValue: InputAction.Confirm);
+            defaultBindingMode: BindingMode.TwoWay);
 
     private readonly IUndoService _undoService;
 
@@ -46,6 +45,7 @@ public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
         var actions = Enum.GetValues<InputAction>().ToList();
         actions.Remove(InputAction.None);
         this.Actions = actions;
+        this.SelectedAction = this.Actions.FirstOrDefault();
 
         this.InitializeComponent();
     }
