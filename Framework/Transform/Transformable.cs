@@ -83,7 +83,7 @@ public abstract class Transformable : PropertyChangedNotifier, ITransformable {
     public Vector2 LocalPosition {
         get => this._localPosition;
         set {
-            if (this._localPosition != value) {
+            if (this._localPosition != value && !float.IsNaN(value.X) && !float.IsNaN(value.Y)) {
                 this._localPosition = value;
                 this.HandleTransformed();
 
