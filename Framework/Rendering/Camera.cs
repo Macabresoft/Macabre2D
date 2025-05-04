@@ -201,16 +201,17 @@ public class Camera : Entity, ICamera {
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
         var result = Vector2.Zero;
 
-        if (this.OffsetOptions.Size.Y != 0f) {
-            var ratio = this.ActualViewHeight / this.OffsetOptions.Size.Y;
-            var pointVector = point.ToVector2();
-            var vectorPosition = new Vector2(pointVector.X + this.OffsetOptions.Offset.X, -pointVector.Y + this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y) * ratio;
+        if (this.OffsetOptions.Size.Y > 0f && this.Game.ViewportSize.Y > 0f) {
+            var cameraRatio = this.ActualViewHeight / this.OffsetOptions.Size.Y;
+            var screenSpaceRatio = this.ActualViewHeight / this.Game.ViewportSize.Y;
+            var pointVector = point.ToVector2() * screenSpaceRatio;
+            var vectorPosition = new Vector2(pointVector.X + this.OffsetOptions.Offset.X * cameraRatio, -pointVector.Y + (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y) * cameraRatio);
             result = this.GetWorldPosition(vectorPosition);
         }
 
         return result;
     }
-
+    
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
