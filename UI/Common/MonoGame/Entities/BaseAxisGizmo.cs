@@ -2,10 +2,11 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Linq;
 using Avalonia.Input;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -51,6 +52,11 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected ICamera Camera => this._camera;
 
     /// <summary>
+    /// Gets or sets the current axis being operated on.
+    /// </summary>
+    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
+
+    /// <summary>
     /// Gets the editor service.
     /// </summary>
     protected IEditorService EditorService { get; }
@@ -59,11 +65,6 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     /// Gets the selection service.
     /// </summary>
     protected IEntityService EntityService { get; }
-
-    /// <summary>
-    /// Gets or sets the current axis being operated on.
-    /// </summary>
-    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
 
     /// <summary>
     /// Gets or sets the neutral axis position, which is the intersection of the X and Y axis.
@@ -84,6 +85,8 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
         this.CurrentAxis = GizmoAxis.None;
+        this.RenderPriority = Enum.GetValues<RenderPriority>().Max();
+        this.RenderOrder = int.MaxValue;
         this.LineThickness = 3f;
 
         if (this.TryGetAncestor(out this._camera)) {
@@ -205,9 +208,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     /// A check that gets called when the selected gizmo, selected entity, or selected component changes.
     /// </summary>
     /// <returns>A value indicating whether this should be enabled.</returns>
-    protected virtual bool ShouldBeEnabled() {
-        return this.GizmoKind == this.EditorService.SelectedGizmo && this.EntityService.Selected is not IScene;
-    }
+    protected virtual bool ShouldBeEnabled() => this.GizmoKind == this.EditorService.SelectedGizmo && this.EntityService.Selected is not IScene;
 
     private void Camera_BoundingAreaChanged(object sender, EventArgs e) {
         this.BoundingAreaChanged.SafeInvoke(this);
@@ -229,9 +230,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         }
     }
 
-    private float GetAxisLength() {
-        return this._camera.BoundingArea.Height * 0.1f;
-    }
+    private float GetAxisLength() => this._camera.BoundingArea.Height * 0.1f;
 
     private void ResetIsEnabled() {
         this.IsEnabled = this.ShouldBeEnabled();
