@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An entity which covers a rectangular area in a single color.
 /// </summary>
-public class ColorCover : RenderableEntity {
+public class SingleColorBox : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private Vector2 _size;
     private Texture2D? _texture;
@@ -20,9 +20,9 @@ public class ColorCover : RenderableEntity {
     public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ColorCover" /> class.
+    /// Initializes a new instance of the <see cref="SingleColorBox" /> class.
     /// </summary>
-    public ColorCover() : base() {
+    public SingleColorBox() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
