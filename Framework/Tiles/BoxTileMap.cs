@@ -189,10 +189,12 @@ public class BoxTileMap : RenderableEntity {
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
     protected void SetSize(int width, int height) {
-        this._width = Math.Max(width, 1);
-        this._height = Math.Max(height, 1);
-        this.ResetSize();
-        this.ResetSprites();
+        if (this._width != width || this._height != height) {
+            this._width = Math.Max(width, 1);
+            this._height = Math.Max(height, 1);
+            this.ResetSize();
+            this.ResetSprites();
+        }
     }
 
     private BoundingArea CreateBoundingArea() => this.RenderOptions.CreateBoundingArea(this);
