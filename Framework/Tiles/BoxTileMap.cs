@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class BoxTileMap : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<(Vector2 Position, byte TileIndex)> _spritePositionsAndTileIndex = new();
+    private readonly List<SpriteInstance> _spriteInstances = [];
     private int _height = 3;
 
     private bool _shouldStretchSprites;
@@ -143,9 +143,9 @@ public class BoxTileMap : RenderableEntity {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch && this.TileSet is { Asset: { } spriteSheet, PackagedAsset: { } tileSet }) {
             var offset = this.BoundingArea.Minimum;
-            foreach (var sprite in this._spritePositionsAndTileIndex) {
+            foreach (var sprite in this._spriteInstances) {
                 if (tileSet.TryGetSpriteIndex(sprite.TileIndex, out var spriteIndex)) {
-                    this.RenderSprite(spriteBatch, spriteSheet, sprite.Position + offset, spriteIndex, colorOverride);
+                    this.RenderSprite(spriteBatch, spriteSheet, sprite.Position + offset, sprite.Scale, spriteIndex, colorOverride);
                 }
             }
         }
@@ -214,12 +214,19 @@ public class BoxTileMap : RenderableEntity {
         }
     }
 
-    private void RenderSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 position, byte spriteIndex, Color colorOverride) {
+    private void RenderSprite(
+        SpriteBatch spriteBatch,
+        SpriteSheet spriteSheet,
+        Vector2 position,
+        Vector2 scale,
+        byte spriteIndex,
+        Color colorOverride) {
         spriteBatch.Draw(
             this.Project.PixelsPerUnit,
             spriteSheet,
             spriteIndex,
             position,
+            scale,
             colorOverride,
             this.RenderOptions.Orientation);
     }
@@ -236,7 +243,7 @@ public class BoxTileMap : RenderableEntity {
     }
 
     private void ResetSprites() {
-        this._spritePositionsAndTileIndex.Clear();
+        this._spriteInstances.Clear();
         var spriteSize = this.GetSpriteUnitSize();
 
         if (spriteSize != Vector2.Zero) {
@@ -244,71 +251,72 @@ public class BoxTileMap : RenderableEntity {
                 throw new NotImplementedException();
             }
 
+            var scale = Vector2.One;
             var x = 0f;
             var y = 0f;
             if (this.Height == 1) {
                 if (this.Width == 1) {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.None));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.None));
                 }
                 else {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.East));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.East));
                     x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
-                        this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West)));
                         x += spriteSize.X;
                     }
 
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.West));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.West));
                 }
             }
             else if (this.Width == 1) {
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.North));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.North));
                 y += spriteSize.Y;
 
                 for (var row = 1; row < this.Height - 1; row++) {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.North | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.North | CardinalDirections.South)));
                     y += spriteSize.Y;
                 }
 
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)CardinalDirections.South));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.South));
             }
             else {
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.North)));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.North)));
                 x += spriteSize.X;
 
                 for (var column = 1; column < this.Width - 1; column++) {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
                     x += spriteSize.X;
                 }
 
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.North)));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.North)));
                 x = 0f;
                 y += spriteSize.Y;
 
                 for (var row = 1; row < this.Height - 1; row++) {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
                     x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
-                        this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                         x += spriteSize.X;
                     }
 
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                     y += spriteSize.Y;
                     x = 0f;
                 }
 
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.South)));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.South)));
                 x += spriteSize.X;
 
                 for (var column = 1; column < this.Width - 1; column++) {
-                    this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
                     x += spriteSize.X;
                 }
 
-                this._spritePositionsAndTileIndex.Add((new Vector2(x, y), (byte)(CardinalDirections.West | CardinalDirections.South)));
+                this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.South)));
             }
         }
     }
@@ -316,4 +324,6 @@ public class BoxTileMap : RenderableEntity {
     private void TileSet_AssetChanged(object? sender, bool hasAsset) {
         this.ResetSize();
     }
+
+    private record struct SpriteInstance(Vector2 Position, Vector2 Scale, byte TileIndex);
 }
