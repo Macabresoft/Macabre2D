@@ -9,6 +9,7 @@ public static class GameHelpers {
         var game = Substitute.For<IGame>();
         game.Project.Returns(new GameProject());
         game.State.Returns(new GameState());
+        game.UserSettings.Returns(new UserSettings());
         return game;
     }
 }
