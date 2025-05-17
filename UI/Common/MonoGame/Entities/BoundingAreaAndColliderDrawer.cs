@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,12 +29,15 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
         this.UseDynamicLineThickness = true;
         this.LineThickness = 2f;
         this.Color = this._editorService.SelectionColor;
-        this.RenderOrder = int.MaxValue - 1;
+        this.RenderOrder = int.MaxValue - 2;
         this.RenderOutOfBounds = true;
     }
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => BoundingArea.Empty;
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority { get; set; } = RenderPriority.Final;
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

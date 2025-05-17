@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -45,6 +46,9 @@ public class SelectionDisplay : BaseDrawer {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea;
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority { get; set; } = RenderPriority.Final;
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

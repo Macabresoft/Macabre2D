@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -37,7 +38,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
         this._undoService = undoService;
 
         this.Color = this._editorService.SelectionColor;
-        this.RenderOrder = int.MaxValue;
+        this.RenderOrder = int.MaxValue - 2;
     }
 
     /// <inheritdoc />
@@ -45,6 +46,9 @@ public class TileGizmo : BaseDrawer, IGizmo {
 
     /// <inheritdoc />
     public GizmoKind GizmoKind => GizmoKind.Tile;
+
+    /// <inheritdoc />
+    public override RenderPriority RenderPriority { get; set; } = RenderPriority.Final;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
