@@ -51,6 +51,9 @@ public abstract class RenderableTileableEntity : TileableEntity, IRenderableEnti
     /// <inheritdoc />
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
-        this.RaisePropertyChanged(nameof(this.ShouldRender));
+        
+        if (this._shouldRender) {
+            this.ShouldRenderChanged.SafeInvoke(this);
+        }
     }
 }

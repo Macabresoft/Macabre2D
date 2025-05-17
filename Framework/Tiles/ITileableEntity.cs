@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An interface for tileable entities.
 /// </summary>
-public interface ITileableEntity : IEntity, IBoundableEntity {
+public interface ITileableEntity : IActiveTileableEntity {
     /// <summary>
     /// Occurs when a tile is added or removed.
     /// </summary>
@@ -65,27 +65,9 @@ public interface ITileableEntity : IEntity, IBoundableEntity {
     Point GetTileThatContains(Vector2 worldPosition);
 
     /// <summary>
-    /// Determines whether this instance has an active tile at the provided tile position.
-    /// </summary>
-    /// <param name="tilePosition">The tile position.</param>
-    /// <returns>
-    /// <c>true</c> if this instance has a tile at the provided tile position; otherwise, <c>false</c>.
-    /// </returns>
-    bool HasActiveTileAt(Point tilePosition);
-
-    /// <summary>
-    /// Determines whether this instance has an active tile at the provided world position.
-    /// </summary>
-    /// <param name="worldPosition">The world position.</param>
-    /// <returns>
-    /// <c>true</c> if this instance has a tile at the provided world position; otherwise, <c>false</c>.
-    /// </returns>
-    bool HasActiveTileAt(Vector2 worldPosition);
-
-    /// <summary>
     /// Removes the tile.
     /// </summary>
     /// <param name="tile">The tile.</param>
-    /// <returns>A value indicating whether or not the tile was removed.</returns>
+    /// <returns>A value indicating whether the tile was removed.</returns>
     bool RemoveTile(Point tile);
 }

@@ -54,7 +54,6 @@ public sealed class AutoTileMap : RenderableTileMap {
     /// <summary>
     /// Gets or sets the color.
     /// </summary>
-    /// <value>The color.</value>
     [DataMember(Order = 1)]
     public Color Color { get; set; } = Color.White;
 
@@ -84,6 +83,24 @@ public sealed class AutoTileMap : RenderableTileMap {
         base.Deinitialize();
     }
 
+    /// <summary>
+    /// Gets a set of active tiles which exclude the specified directions. A tile will be included if it excludes any one of the directions.
+    /// </summary>
+    /// <param name="edgeDirections">The directions.</param>
+    /// <returns>The active tiles and their indexes.</returns>
+    public IReadOnlyDictionary<Point, byte> GetActiveTilesWithEdges(params CardinalDirections[] edgeDirections) {
+        var activeTilesToIndex = new Dictionary<Point, byte>();
+        foreach (var activeTile in this.OrderedActiveTiles) {
+            if (this._activeTileToIndex.TryGetValue(activeTile, out var tileIndex)) {
+                if (edgeDirections.Any(direction => !((CardinalDirections)tileIndex).HasFlag(direction))) {
+                    activeTilesToIndex.Add(activeTile, tileIndex);
+                }
+            }
+        }
+
+        return activeTilesToIndex;
+    }
+    
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) => this._activeTileToIndex.ContainsKey(tilePosition);
 
@@ -174,7 +191,7 @@ public sealed class AutoTileMap : RenderableTileMap {
 
     private byte GetIndex(Point tile) {
         return this.VisualBehavior switch {
-            AutoTileMapVisualBehavior.Standard => this.GetStandardIndex(tile),
+            AutoTileMapVisualBehavior.Standard => this.GetStandardAutoTileIndex(tile),
             AutoTileMapVisualBehavior.SingleColumn => this.GetColumnIndex(tile),
             AutoTileMapVisualBehavior.SingleRow => this.GetRowIndex(tile),
             AutoTileMapVisualBehavior.Column => 0,
@@ -188,27 +205,6 @@ public sealed class AutoTileMap : RenderableTileMap {
 
         if (this.HasActiveTileAt(tile + new Point(1, 0))) {
             direction |= CardinalDirections.East;
-        }
-
-        if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-            direction |= CardinalDirections.West;
-        }
-
-        return (byte)direction;
-    }
-
-    private byte GetStandardIndex(Point tile) {
-        var direction = CardinalDirections.None;
-        if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-            direction |= CardinalDirections.North;
-        }
-
-        if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-            direction |= CardinalDirections.East;
-        }
-
-        if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-            direction |= CardinalDirections.South;
         }
 
         if (this.HasActiveTileAt(tile - new Point(1, 0))) {

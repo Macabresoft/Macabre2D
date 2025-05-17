@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker {
+public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker, ITileableEntity {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -84,6 +84,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     }
 
     /// <inheritdoc />
+    public event EventHandler? TilesChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
     public event EventHandler? TransformChanged {
         add { }
         remove { }
@@ -108,6 +114,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<Point> ActiveTiles { get; } = [];
+
+    /// <inheritdoc />
     public float ActualViewHeight => 1f;
 
     /// <inheritdoc />
@@ -126,6 +135,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => null;
+
+    /// <inheritdoc />
+    public IGridContainer CurrentGrid => this;
 
     /// <inheritdoc />
     public GameTimer DelayTimer { get; } = new();
@@ -215,6 +227,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
         get => Vector2.Zero;
         set { }
     }
+
+    /// <inheritdoc />
+    public Point MaximumTile => Point.Zero;
+
+    /// <inheritdoc />
+    public Point MinimumTile => Point.Zero;
 
     /// <inheritdoc />
     public string Name {
@@ -353,11 +371,18 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     }
 
     /// <inheritdoc />
+    public bool AddTile(Point tile) => false;
+
+    /// <inheritdoc />
     public void BeginBlink(byte numberOfBlinks, Action? finishedCallback) {
     }
 
     /// <inheritdoc />
     public void ClearChildren() {
+    }
+
+    /// <inheritdoc />
+    public void ClearTiles() {
     }
 
     /// <inheritdoc />
@@ -421,10 +446,22 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />
+    public BoundingArea GetTileBoundingArea(Point tile) => BoundingArea.Empty;
+
+    /// <inheritdoc />
     public Vector2 GetTilePosition(Point tile) => Vector2.Zero;
 
     /// <inheritdoc />
+    public Point GetTileThatContains(Vector2 worldPosition) => Point.Zero;
+
+    /// <inheritdoc />
     public Vector2 GetWorldPosition(Vector2 originOffset) => this.WorldPosition;
+
+    /// <inheritdoc />
+    public bool HasActiveTileAt(Point tilePosition) => false;
+
+    /// <inheritdoc />
+    public bool HasActiveTileAt(Vector2 worldPosition) => false;
 
     /// <inheritdoc />
     public void IncrementTime(FrameTime frameTime) {
@@ -513,6 +550,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public bool RemoveSystem(IGameSystem system) => false;
+
+    /// <inheritdoc />
+    public bool RemoveTile(Point tile) => false;
 
     /// <inheritdoc />
     public void Render(FrameTime frameTime, InputState inputState) {

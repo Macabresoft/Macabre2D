@@ -163,7 +163,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// Clears the active tiles.
     /// </summary>
     protected abstract void ClearActiveTiles();
-    
+
 
     /// <summary>
     /// Gets the maximum tile.

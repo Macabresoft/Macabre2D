@@ -46,7 +46,7 @@ public class SelectorGizmo : Entity, IGizmo {
                 .OrderByDescending(x => x.RenderOrder);
 
             foreach (var potential in potentials) {
-                if (potential is ITileableEntity tileableEntity) {
+                if (potential is IActiveTileableEntity tileableEntity) {
                     if (tileableEntity.HasActiveTileAt(mousePosition)) {
                         selected = potential;
                         break;
