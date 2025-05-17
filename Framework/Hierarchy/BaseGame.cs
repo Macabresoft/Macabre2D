@@ -26,12 +26,12 @@ public class BaseGame : Game, IGame {
     private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
     private bool _canToggleFullscreen = true;
     private InputDevice _desiredInputDevice = InputDevice.Auto;
+    private Rectangle _finalRenderBounds;
     private RenderTarget2D? _gameRenderTarget;
     private double _gameSpeed = 1d;
+    private Point _intermediateRenderResolution;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
-    private Point _intermediateRenderResolution;
-    private Rectangle _finalRenderBounds;
 
     /// <inheritdoc />
     public event EventHandler<ResourceCulture>? CultureChanged;
@@ -208,7 +208,7 @@ public class BaseGame : Game, IGame {
 
         this.GraphicsDeviceManager.ApplyChanges();
         this.ResetViewPort();
-        
+
         // This prevents the mouse position from being seen as "changed" next frame.
         // If the mouse thinks it has changed, the input device can change from game
         // pad to mouse / keyboard. We don't want that!
@@ -470,8 +470,6 @@ public class BaseGame : Game, IGame {
         }
     }
 
-    private InputState CreateInputStateForFrame() => new(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
-
     private void ClearSceneStack() {
         foreach (var scene in this._sceneStack) {
             scene.Deinitialize();
@@ -479,6 +477,8 @@ public class BaseGame : Game, IGame {
 
         this._sceneStack.Clear();
     }
+
+    private InputState CreateInputStateForFrame() => new(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
 
     private RenderTarget2D CreateRenderTarget(GraphicsDevice device) => new(device, this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);

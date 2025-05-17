@@ -40,7 +40,6 @@ public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
 /// </summary>
 public class AvaloniaGame : BaseGame, IAvaloniaGame {
     private MonoGameKeyboard _keyboard;
-    private MonoGameMouse _mouse;
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler PropertyChanged;
@@ -63,16 +62,19 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
     /// <inheritdoc />
     public IAssetManager Assets { get; }
 
+    /// <summary>
+    /// Gets the mouse.
+    /// </summary>
+    protected MonoGameMouse Mouse { get; private set; }
+
     /// <inheritdoc />
     public void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-        this._mouse = mouse;
+        this.Mouse = mouse;
         this._keyboard = keyboard;
     }
 
     /// <inheritdoc />
-    protected override IAssetManager CreateAssetManager() {
-        return this.Assets;
-    }
+    protected override IAssetManager CreateAssetManager() => this.Assets;
 
     /// <inheritdoc />
     protected override void LoadContent() {
@@ -90,8 +92,8 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
 
     /// <inheritdoc />
     protected override void UpdateInputState() {
-        if (this._mouse != null && this._keyboard != null) {
-            this.InputState = new InputState(this._mouse.State, this._keyboard.GetState(), GamePadState.Default, this.InputState);
+        if (this.Mouse != null && this._keyboard != null) {
+            this.InputState = new InputState(this.Mouse.State, this._keyboard.GetState(), GamePadState.Default, this.InputState);
         }
     }
 }

@@ -61,9 +61,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     }
 
     /// <inheritdoc />
-    public ICamera Camera {
-        get => this.CurrentScene.TryGetChild<ICamera>(out var camera) ? camera : null;
-    }
+    public ICamera Camera => this.CurrentScene.TryGetChild<ICamera>(out var camera) ? camera : null;
 
     /// <inheritdoc />
     public IGizmo SelectedGizmo { get; private set; }
@@ -104,6 +102,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
                 this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
                 this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
                 this.PropertyChanged += this.Self_PropertyChanged;
+                this.ViewportSizeChanged += this.ViewportSize_Changed;
             }
             finally {
                 this._isInitialized = true;
@@ -160,5 +159,10 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
         if (e.PropertyName == nameof(this.CurrentScene)) {
             this.ResetGizmo();
         }
+    }
+
+    private void ViewportSize_Changed(object sender, Point e) {
+        // This hack prevents a horrible zoom in bug on rebuilding content.
+        this.Mouse.ResetScroll();
     }
 }

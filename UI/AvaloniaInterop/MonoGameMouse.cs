@@ -1,10 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop;
 
 using System;
-using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
@@ -33,6 +30,21 @@ public sealed class MonoGameMouse {
     /// <value>The state.</value>
     public MouseState State { get; private set; }
 
+    /// <summary>
+    /// Resets the scroll on this mouse.
+    /// </summary>
+    public void ResetScroll() {
+        this.State = new MouseState(
+            this.State.X,
+            this.State.Y,
+            0,
+            this.State.LeftButton,
+            this.State.MiddleButton,
+            this.State.RightButton,
+            ButtonState.Released,
+            ButtonState.Released);
+    }
+
     private void HandleMouseScrollWheel(object sender, PointerWheelEventArgs e) {
         if (e.Handled) {
             return;
@@ -42,7 +54,7 @@ public sealed class MonoGameMouse {
             if (!this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
-            
+
             var scrollWheelValue = this.State.ScrollWheelValue + (int)e.Delta.Y;
 
             this.State = new MouseState(
@@ -56,7 +68,7 @@ public sealed class MonoGameMouse {
                 ButtonState.Released);
         }
     }
-    
+
     private void HandlePointer(object sender, PointerEventArgs e) {
         if (e.Handled) {
             return;
@@ -66,7 +78,7 @@ public sealed class MonoGameMouse {
             if (!this._focusElement.IsKeyboardFocusWithin) {
                 this._focusElement.Focus();
             }
-            
+
             var position = e.GetPosition(this._focusElement);
 
             var leftButtonState = ButtonState.Released;
