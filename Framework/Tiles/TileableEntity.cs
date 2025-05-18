@@ -105,8 +105,9 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         var grid = this.CurrentGrid;
 
         if (grid.TileSize is { X: > 0, Y: > 0 }) {
-            var xTile = Math.Floor(worldPosition.X / grid.TileSize.X);
-            var yTile = Math.Floor(worldPosition.Y / grid.TileSize.Y);
+            var relativePosition = worldPosition - grid.WorldPosition;
+            var xTile = Math.Floor(relativePosition.X / grid.TileSize.X);
+            var yTile = Math.Floor(relativePosition.Y / grid.TileSize.Y);
             result = new Point((int)xTile, (int)yTile);
         }
 

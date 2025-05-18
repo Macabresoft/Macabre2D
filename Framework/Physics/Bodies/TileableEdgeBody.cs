@@ -117,9 +117,10 @@ public sealed class TileableEdgeBody : QuadBody {
                 allSegments.Remove(removedSegment);
             }
 
+            var gridPosition = this._tileable.CurrentGrid.WorldPosition;
             foreach (var segment in allSegments) {
-                var start = this._tileable.CurrentGrid.GetTilePosition(segment.StartPoint);
-                var end = this._tileable.CurrentGrid.GetTilePosition(segment.EndPoint);
+                var start = this._tileable.CurrentGrid.GetTilePosition(segment.StartPoint) - gridPosition;
+                var end = this._tileable.CurrentGrid.GetTilePosition(segment.EndPoint) - gridPosition;
 
                 var collider = new LineCollider(start, end) {
                     Layers = segment.Layers
