@@ -1,9 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
@@ -11,9 +9,6 @@ using Microsoft.Xna.Framework;
 /// Collider representing a rectangle to be used by the physics engine.
 /// </summary>
 public sealed class RectangleCollider : PolygonCollider {
-    private const int MaximumIndex = 2;
-    private const int MinimumIndex = 0;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
     /// </summary>
@@ -34,18 +29,14 @@ public sealed class RectangleCollider : PolygonCollider {
     [DataMember]
     public Vector2 Maximum {
         get {
-            if (this.Vertices.Count == 4) {
-                return new Vector2(this.Vertices.Max(x => x.X), this.Vertices.Max(x => x.Y));
-            }
-
-            return Vector2.Zero;
+            return this.Vertices.Count == 4 ? new Vector2(this.Vertices.Max(x => x.X), this.Vertices.Max(x => x.Y)) : Vector2.Zero;
         }
 
         set {
             if (value != this.Maximum) {
                 this.ResetVertices(CreateVertices(this.Minimum, value), true);
                 this.RaisePropertyChanged();
-                
+
                 if (this.Maximum != value) {
                     this.RaisePropertyChanged(nameof(this.Minimum));
                 }
@@ -59,11 +50,7 @@ public sealed class RectangleCollider : PolygonCollider {
     [DataMember]
     public Vector2 Minimum {
         get {
-            if (this.Vertices.Count == 4) {
-                return new Vector2(this.Vertices.Min(x => x.X), this.Vertices.Min(x => x.Y));
-            }
-
-            return Vector2.Zero;
+            return this.Vertices.Count == 4 ? new Vector2(this.Vertices.Min(x => x.X), this.Vertices.Min(x => x.Y)) : Vector2.Zero;
         }
 
         set {
