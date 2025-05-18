@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
@@ -34,7 +35,7 @@ public sealed class RectangleCollider : PolygonCollider {
     public Vector2 Maximum {
         get {
             if (this.Vertices.Count == 4) {
-                return this.Vertices[MaximumIndex];
+                return new Vector2(this.Vertices.Max(x => x.X), this.Vertices.Max(x => x.Y));
             }
 
             return Vector2.Zero;
@@ -44,6 +45,10 @@ public sealed class RectangleCollider : PolygonCollider {
             if (value != this.Maximum) {
                 this.ResetVertices(CreateVertices(this.Minimum, value), true);
                 this.RaisePropertyChanged();
+                
+                if (this.Maximum != value) {
+                    this.RaisePropertyChanged(nameof(this.Minimum));
+                }
             }
         }
     }
@@ -55,7 +60,7 @@ public sealed class RectangleCollider : PolygonCollider {
     public Vector2 Minimum {
         get {
             if (this.Vertices.Count == 4) {
-                return this.Vertices[MinimumIndex];
+                return new Vector2(this.Vertices.Min(x => x.X), this.Vertices.Min(x => x.Y));
             }
 
             return Vector2.Zero;
@@ -64,6 +69,10 @@ public sealed class RectangleCollider : PolygonCollider {
         set {
             this.ResetVertices(CreateVertices(value, this.Maximum), true);
             this.RaisePropertyChanged();
+
+            if (this.Minimum != value) {
+                this.RaisePropertyChanged(nameof(this.Maximum));
+            }
         }
     }
 
