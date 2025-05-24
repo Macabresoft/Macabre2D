@@ -43,7 +43,8 @@ public class SelectorGizmo : Entity, IGizmo {
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
             var potentials = scene.RenderableEntities
                 .Where(x => x.ShouldRender && x.BoundingArea.Contains(mousePosition))
-                .OrderByDescending(x => x.RenderOrder);
+                .OrderByDescending(x => x.RenderPriority)
+                .ThenByDescending(x => x.RenderOrder);
 
             foreach (var potential in potentials) {
                 if (potential is IActiveTileableEntity tileableEntity) {

@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for an entity that handles rendering from a single sprite sheet.
@@ -44,16 +45,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
 
-    /// <summary>
-    /// Gets the sprite index.
-    /// </summary>
-    public abstract byte? SpriteIndex { get; }
-
-    /// <summary>
-    /// Gets the sprite sheet.
-    /// </summary>
-    protected abstract SpriteSheet? SpriteSheet { get; }
-
     /// <inheritdoc />
     public override RenderPriority RenderPriority {
         get {
@@ -77,6 +68,16 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     [Category(CommonCategories.Rendering)]
     public RenderPriorityOverride RenderPriorityOverride { get; } = new();
 
+    /// <summary>
+    /// Gets the sprite index.
+    /// </summary>
+    public abstract byte? SpriteIndex { get; }
+
+    /// <summary>
+    /// Gets the sprite sheet.
+    /// </summary>
+    protected abstract SpriteSheet? SpriteSheet { get; }
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
@@ -95,20 +96,14 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
-            spriteSheet.Draw(
-                spriteBatch,
-                this.Project.PixelsPerUnit,
-                this.SpriteIndex.Value,
-                this.GetRenderTransform(),
-                colorOverride,
-                this.RenderOptions.Orientation);
+            this.RenderAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, this.GetRenderTransform(), colorOverride);
         }
     }
 
     /// <summary>
     /// Creates the size of this sprite in pixels for the <see cref="RenderOptions" />.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Creates the size.</returns>
     protected virtual Vector2 CreateSize() {
         var result = Vector2.Zero;
         if (this.SpriteSheet is { } spriteSheet) {
@@ -128,6 +123,24 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.Reset();
+    }
+
+    /// <summary>
+    /// Renders the specified sprite at the specified location.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="spriteIndex">The sprite index.</param>
+    /// <param name="position">The position.</param>
+    /// <param name="colorOverride">The color override.</param>
+    protected void RenderAtPosition(SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Vector2 position, Color colorOverride) {
+        spriteSheet.Draw(
+            spriteBatch,
+            this.Project.PixelsPerUnit,
+            spriteIndex,
+            position,
+            colorOverride,
+            this.RenderOptions.Orientation);
     }
 
     /// <summary>
