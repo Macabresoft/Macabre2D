@@ -42,6 +42,22 @@ public class AnimationEmitterReference : SpriteSheetReference {
     [DataMember]
     public GameTimer TimeBetweenEmissions { get; } = new() { TimeLimit = 0.5f };
 
+    /// <summary>
+    /// Increments the time on a given animation.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="millisecondsPerFrame">The number of milliseconds per frame.</param>
+    public void IncrementTime(FrameTime frameTime, int millisecondsPerFrame) {
+        for (var i = this._runningAnimations.Count - 1; i >= 0; i--) {
+            var animation = this._runningAnimations[i];
+            animation.Update(frameTime, millisecondsPerFrame, out var isAnimationOver);
+            if (isAnimationOver) {
+                this._runningAnimations.Remove(animation);
+                this._availableAnimations.Add(animation);
+            }
+        }
+    }
+
     /// <inheritdoc />
     public override void LoadAsset(SpriteSheet asset) {
         base.LoadAsset(asset);
