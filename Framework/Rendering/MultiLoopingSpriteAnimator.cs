@@ -1,120 +1,70 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Loops all the sprites associated with a <see cref="SpriteSheet" />, choosing a new animation every time the current animation finishes.
+/// Renders a sprite repeatedly over an area.
 /// </summary>
-public class MultiLoopingSpriteAnimator : BaseSpriteAnimator {
-    private readonly List<QueueableSpriteAnimation> _availableAnimations = new();
-    private readonly Random _random = new();
-    private QueueableSpriteAnimation? _currentAnimation;
+public class MultiLoopingSpriteAnimator : LoopingSpriteAnimator {
+    private int _height = 1;
+    private int _width = 1;
 
     /// <summary>
-    /// Gets the sprite sheet reference.
-    /// </summary>
-    [DataMember(Order = 10, Name = "Sprite Sheet")]
-    public SpriteSheetReference SpriteSheetReference { get; } = new();
-
-    [DataMember]
-    public bool IsRandom { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this should start playing by default.
+    /// Gets or sets the height of the area to render this animation. This is how many copies of the animation will be shown, not the number of units.
     /// </summary>
     [DataMember]
-    public bool StartPlaying { get; set; } = true;
-
-    /// <inheritdoc />
-    public override void Deinitialize() {
-        base.Deinitialize();
-        this.SpriteSheetReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
-    }
-
-    /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
-        base.Initialize(scene, parent);
-
-        if (this.TryResetAnimations()) {
-            this.TryStart();
-        }
-
-        this.SpriteSheetReference.PropertyChanged += this.AnimationReference_PropertyChanged;
-    }
-
-    /// <inheritdoc />
-    protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.SpriteSheetReference;
-    }
-
-    /// <inheritdoc />
-    protected override QueueableSpriteAnimation? GetCurrentAnimation() => this._currentAnimation;
-
-    /// <inheritdoc />
-    protected override void HandleAnimationFinished() {
-        this.TryAssignNewAnimation();
-    }
-
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
-
-        if (e.PropertyName == nameof(this.IsEnabled)) {
-            this.TryStart();
-        }
-    }
-
-    private void AnimationReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(SpriteAnimationReference.Asset) or nameof(SpriteAnimationReference.PackagedAsset) or nameof(Framework.SpriteSheet.SpriteSize)) {
-            if (this.TryResetAnimations()) {
-                this.TryStart();
-            }
-        }
-    }
-
-    private bool TryAssignNewAnimation() {
-        if (this._availableAnimations.Count != 0) {
-            if (this.IsRandom) {
-                var index = this._random.Next(0, this._availableAnimations.Count);
-                this._currentAnimation = this._availableAnimations[index];
-            }
-            else if (this._currentAnimation != null) {
-                var index = this._availableAnimations.IndexOf(this._currentAnimation) + 1;
-                if (index >= this._availableAnimations.Count) {
-                    index = 0;
+    public int Height {
+        get => this._height;
+        set {
+            if (value != this._height) {
+                this._height = Math.Max(1, value);
+                if (this.IsInitialized) {
+                    this.Reset();
                 }
-
-                this._currentAnimation = this._availableAnimations[index];
             }
-            else {
-                this._currentAnimation = this._availableAnimations[0];
-            }
-
-            this._currentAnimation?.Reset();
-            return true;
         }
-
-        return false;
     }
 
-    private bool TryResetAnimations() {
-        this._availableAnimations.Clear();
-
-        if (this.SpriteSheetReference.Asset is { } spriteSheet) {
-            foreach (var animation in spriteSheet.GetAssets<SpriteAnimation>()) {
-                this._availableAnimations.Add(new QueueableSpriteAnimation(animation, false));
+    /// <summary>
+    /// Gets or sets the width of the area to render this animation. This is how many copies of the animation will be shown, not the number of units.
+    /// </summary>
+    [DataMember]
+    public int Width {
+        get => this._width;
+        set {
+            if (value != this._width) {
+                this._width = Math.Max(1, value);
+                if (this.IsInitialized) {
+                    this.Reset();
+                }
             }
         }
-
-        return this.TryAssignNewAnimation();
     }
 
-    private void TryStart() {
-        if (this.StartPlaying && this.IsEnabled) {
-            this.Play();
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
+            var xPosition = this.BoundingArea.Minimum.X;
+            var yPosition = this.BoundingArea.Minimum.Y;
+            var spriteWidth = spriteSheet.SpriteSize.X * this.Project.UnitsPerPixel;
+            var spriteHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            for (var x = 0; x < this.Width; x++) {
+                for (var y = 0; y < this.Height; y++) {
+                    this.RenderAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, new Vector2(xPosition, yPosition), colorOverride);
+                    yPosition += spriteHeight;
+                }
+                
+                yPosition = this.BoundingArea.Minimum.Y;
+                xPosition += spriteWidth;
+            }
         }
+    }
+
+    /// <inheritdoc />
+    protected override Vector2 CreateSize() {
+        var size = base.CreateSize();
+        return new Vector2(size.X * this.Width, size.Y * this.Height);
     }
 }
