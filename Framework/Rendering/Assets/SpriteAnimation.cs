@@ -24,10 +24,7 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
     /// </summary>
     public SpriteAnimation() {
-        if (BaseGame.IsDesignMode) {
-            this._steps.CollectionChanged += this.Steps_CollectionChanged;
-        }
-
+        this._steps.CollectionChanged += this.Steps_CollectionChanged;
         this.Name = DefaultName;
     }
 
@@ -47,6 +44,11 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     /// </summary>
     /// <value>The steps.</value>
     public IReadOnlyCollection<SpriteAnimationStep> Steps => this._steps;
+
+    /// <summary>
+    /// Gets the total number of frames in this animation.
+    /// </summary>
+    public int TotalNumberOfFrames { get; private set; }
 
     /// <summary>
     /// Adds the step.
@@ -95,7 +97,7 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     /// Removes the step.
     /// </summary>
     /// <param name="step">The step.</param>
-    /// <returns>A value indicating whether or not the step was removed.</returns>
+    /// <returns>A value indicating whether the step was removed.</returns>
     public bool RemoveStep(SpriteAnimationStep step) => this._steps.Remove(step);
 
     private void HandleAdd(IEnumerable? newItems) {
@@ -115,20 +117,22 @@ public sealed class SpriteAnimation : SpriteSheetMember {
     }
 
     private void OnAdd(SpriteAnimationStep step) {
-        if (step is INotifyPropertyChanged notifier) {
-            notifier.PropertyChanged += this.Step_PropertyChanged;
-        }
+        step.PropertyChanged += this.Step_PropertyChanged;
     }
 
-    private void OnRemove(SpriteAnimationStep asset) {
-        if (asset is INotifyPropertyChanged notifier) {
-            notifier.PropertyChanged -= this.Step_PropertyChanged;
-        }
+    private void OnRemove(SpriteAnimationStep step) {
+        step.PropertyChanged -= this.Step_PropertyChanged;
+    }
+
+    private void ResetTotalNumberOfFrames() {
+        this.TotalNumberOfFrames = this._steps.Sum(x => x.Frames);
     }
 
     private void Step_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        // TODO: remove this?
         this.RaisePropertyChanged(nameof(this.Steps));
+        if (e.PropertyName == nameof(SpriteAnimationStep.Frames)) {
+            this.ResetTotalNumberOfFrames();
+        }
     }
 
     private void Steps_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
@@ -146,5 +150,6 @@ public sealed class SpriteAnimation : SpriteSheetMember {
         }
 
         this.RaisePropertyChanged(nameof(this.Steps));
+        this.ResetTotalNumberOfFrames();
     }
 }

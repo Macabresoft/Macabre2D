@@ -68,7 +68,7 @@ public class QueueableSpriteAnimation {
         var result = 0f;
 
         if (this._currentStepIndex < this.Animation.Steps.Count) {
-            var totalFrames = this.Animation.Steps.Sum(x => x.Frames);
+            var totalFrames = this.Animation.TotalNumberOfFrames;
 
             if (totalFrames > 0) {
                 var currentFrames = this.Animation.Steps.Take(this._currentStepIndex).Sum(x => x.Frames) + this._currentFrameIndex;
