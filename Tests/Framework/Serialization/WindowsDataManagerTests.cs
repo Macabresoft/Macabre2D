@@ -3,8 +3,8 @@ namespace Macabresoft.Macabre2D.Tests.Framework;
 using System;
 using System.Runtime.Serialization;
 using System.Threading;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.Macabre2D.Common;
 using NUnit.Framework;
 

@@ -1,7 +1,7 @@
 namespace Macabresoft.Macabre2D.Tests.Framework.Tiles;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
 using NSubstitute;
 using NUnit.Framework;

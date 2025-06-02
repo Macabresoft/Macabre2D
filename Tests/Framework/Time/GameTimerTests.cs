@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework.Time;
 
 using System;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;

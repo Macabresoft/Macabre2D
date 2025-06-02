@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NSubstitute;

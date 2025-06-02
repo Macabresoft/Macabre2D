@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Tests;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 using NSubstitute;

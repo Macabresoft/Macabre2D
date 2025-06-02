@@ -2,8 +2,8 @@ namespace Macabresoft.Macabre2D.UI.Tests;
 
 using System;
 using System.IO;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
