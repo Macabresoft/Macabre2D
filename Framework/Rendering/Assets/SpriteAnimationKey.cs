@@ -4,7 +4,7 @@ using System;
 using Macabresoft.Core;
 
 /// <summary>
-/// A key for a sprite animation in a <see cref="SpriteAnimationSet" />.
+/// A key for a sprite animation in a <see cref="SpriteAnimationKey" />.
 /// </summary>
 public abstract class SpriteAnimationKey : PropertyChangedNotifier {
     private Guid _animationId;
@@ -24,7 +24,7 @@ public abstract class SpriteAnimationKey : PropertyChangedNotifier {
 }
 
 /// <summary>
-/// A single animatiin a <see cref="SpriteAnimationSet{TKey}" />.
+/// A single animation a <see cref="SpriteAnimationKey{TKey}" />.
 /// </summary>
 public class SpriteAnimationKey<TKey> : SpriteAnimationKey where TKey : struct {
 
