@@ -55,6 +55,11 @@ public interface IGameProject : INotifyPropertyChanged {
     Point InternalRenderResolution { get; }
 
     /// <summary>
+    /// Gets the ratio of the internal render resolution. This is width / height. So, if your render resolution is 800x600, the value of this will be equal to 800/600 or 4/3.
+    /// </summary>
+    float InternalRenderResolutionRatio { get; }
+
+    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -199,9 +204,12 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         get => this._internalRenderResolution;
         set {
             this._internalRenderResolution = new Point(Math.Max(1, value.X), Math.Max(1, value.Y));
+            this.InternalRenderResolutionRatio = this._internalRenderResolution.X / (float)this._internalRenderResolution.Y;
             this.ResetViewSize();
         }
     }
+
+    public float InternalRenderResolutionRatio { get; private set; }
 
     /// <inheritdoc />
     [DataMember]
