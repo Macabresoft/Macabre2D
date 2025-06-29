@@ -41,7 +41,7 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     public bool ShouldUpdate {
         get => this._shouldUpdate && this.IsEnabled;
         set {
-            if (this.Set(ref this._shouldUpdate, value)) {
+            if (this.Set(ref this._shouldUpdate, value) && this.IsInitialized) {
                 this.ShouldUpdateChanged.SafeInvoke(this);
             }
         }
@@ -53,7 +53,7 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     public int UpdateOrder {
         get => this._updateOrder;
         set {
-            if (this.Set(ref this._updateOrder, value)) {
+            if (this.Set(ref this._updateOrder, value) && this.IsInitialized) {
                 this.UpdateOrderChanged.SafeInvoke(this);
             }
         }
