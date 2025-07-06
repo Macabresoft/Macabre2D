@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker, ITileableEntity {
+public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker, ITileableEntity {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -178,6 +178,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public bool HasCollider => false;
 
     /// <inheritdoc />
+    public float HorizontalAxis => 0f;
+
+    /// <inheritdoc />
     public Guid Id {
         get => Guid.Empty;
         set { }
@@ -340,6 +343,9 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public int UpdateOrder => 0;
 
     /// <inheritdoc />
+    public float VerticalAxis => 0f;
+
+    /// <inheritdoc />
     public float ViewHeight {
         get => 1f;
         set { }
@@ -431,6 +437,12 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
     public string GetFullText() => string.Empty;
 
     /// <inheritdoc />
+    public InputActionState GetInputActionState(InputAction action) => InputActionState.None;
+
+    /// <inheritdoc />
+    public InputActionState GetInputActionState(InputAction action, InputKind inputKind) => InputActionState.None;
+
+    /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
 
     /// <inheritdoc />
@@ -491,6 +503,18 @@ public class EmptyObject : ICamera, IPhysicsBody, IQueueableSpriteAnimator, ITex
 
     /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) => false;
+
+    /// <inheritdoc />
+    public bool IsHeld(InputAction action) => false;
+
+    /// <inheritdoc />
+    public bool IsPressed(InputAction action, InputKind inputKind) => false;
+
+    /// <inheritdoc />
+    public bool IsPressed(InputAction action) => false;
+
+    /// <inheritdoc />
+    public bool IsReleased(InputAction action) => false;
 
     /// <inheritdoc />
     public void LoadAssets(IAssetManager assets, IGame game) {

@@ -93,8 +93,6 @@ public class InputSystem : GameSystem, IInputSystem {
     private readonly IDictionary<InputAction, InputActionState> _actionToButtonState = new Dictionary<InputAction, InputActionState>();
     private InputState _inputState;
 
-    public static IInputSystem Empty { get; } = new EmptyInputSystem();
-
     /// <inheritdoc />
     public float HorizontalAxis { get; private set; }
 
@@ -278,16 +276,5 @@ public class InputSystem : GameSystem, IInputSystem {
         }
 
         return result;
-    }
-
-    private sealed class EmptyInputSystem : IInputSystem {
-        public float HorizontalAxis => 0f;
-        public float VerticalAxis => 0f;
-        public InputActionState GetInputActionState(InputAction action) => InputActionState.None;
-        public InputActionState GetInputActionState(InputAction action, InputKind inputKind) => InputActionState.None;
-        public bool IsHeld(InputAction action) => false;
-        public bool IsPressed(InputAction action) => false;
-        public bool IsPressed(InputAction action, InputKind inputKind) => false;
-        public bool IsReleased(InputAction action) => false;
     }
 }
