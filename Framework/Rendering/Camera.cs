@@ -91,6 +91,7 @@ public class Camera : Entity, ICamera {
     private bool _overrideCommonViewHeight = true;
     private int _renderOrder;
     private float _viewHeight = 10f;
+    private float _zoom;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -191,6 +192,7 @@ public class Camera : Entity, ICamera {
             this._viewHeight = value;
             this.CalculateActualViewHeight();
             this.OnScreenAreaChanged();
+            this.ResetZoom();
         }
     }
 
@@ -211,7 +213,7 @@ public class Camera : Entity, ICamera {
 
         return result;
     }
-    
+
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
@@ -225,9 +227,11 @@ public class Camera : Entity, ICamera {
 
         this.OffsetOptions.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
+        this.ResetZoom();
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
+        this.ResetZoom();
     }
 
     /// <inheritdoc />
@@ -304,12 +308,14 @@ public class Camera : Entity, ICamera {
     /// <param name="position">The position to use.</param>
     /// <returns>The view matrix.</returns>
     protected Matrix GetViewMatrix(Vector2 position) {
-        var zoom = 1f / this.Project.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
+        position = this.ToPixelSnappedValue(position);
+        var offsetX = this.OffsetOptions.Offset.X;
+        var offsetY = this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y;
 
         var matrix =
             Matrix.CreateTranslation(new Vector3(-position * this.Project.PixelsPerUnit, 0f)) *
-            Matrix.CreateScale(zoom, -zoom, 0f) *
-            Matrix.CreateTranslation(new Vector3(-this.OffsetOptions.Offset.X, this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y, 0f));
+            Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
+            Matrix.CreateTranslation(new Vector3(-offsetX, offsetY, 0f));
 
         return matrix;
     }
@@ -434,6 +440,7 @@ public class Camera : Entity, ICamera {
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OffsetOptions.InvalidateSize();
         this.OnScreenAreaChanged();
+        this.ResetZoom();
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
@@ -441,4 +448,17 @@ public class Camera : Entity, ICamera {
             this.OnScreenAreaChanged();
         }
     }
+
+    private void ResetZoom() {
+        if (this.OffsetOptions.Size.Y > 0f) {
+            this._zoom = 1f / this.Project.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
+        }
+    }
+
+    private Vector2 ToPixelSnappedValue(Vector2 value) =>
+        new(
+            this.ToPixelSnappedValue(value.X),
+            this.ToPixelSnappedValue(value.Y));
+
+    private float ToPixelSnappedValue(float value) => (int)Math.Round(value * this.Project.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * this.Project.UnitsPerPixel;
 }
