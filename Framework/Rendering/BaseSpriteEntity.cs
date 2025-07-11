@@ -79,9 +79,13 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     protected abstract SpriteSheet? SpriteSheet { get; }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
+    public override void Deinitialize() {
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
+        base.Deinitialize();
+    }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
