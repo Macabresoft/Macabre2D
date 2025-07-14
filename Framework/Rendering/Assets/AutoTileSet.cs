@@ -65,7 +65,7 @@ public sealed class AutoTileSet : SpriteSheetKeyedMember<byte> {
     /// </summary>
     /// <param name="tileIndex">The tile index.</param>
     /// <param name="spriteIndex">The sprite index.</param>
-    /// <returns>A value indicating whether or not the sprite was found.</returns>
+    /// <returns>A value indicating whether the sprite was found.</returns>
     public bool TryGetSpriteIndex(byte tileIndex, out byte spriteIndex) {
         return this._tileIndexToSpriteIndex.TryGetValue(tileIndex, out spriteIndex);
     }
