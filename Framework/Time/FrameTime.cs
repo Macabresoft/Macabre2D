@@ -18,7 +18,7 @@ public struct FrameTime {
     public readonly TimeSpan FrameTimeSpan;
 
     /// <summary>
-    /// A value indicating whether or not this is running slowly.
+    /// A value indicating whether this is running slowly.
     /// </summary>
     public readonly bool IsRunningSlowly;
 
