@@ -103,11 +103,11 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     protected Vector2 WorldPosition => this._worldPosition.Value;
 
     /// <summary>
-    /// Gets a value indicating whether or not this instance collides with the specified collider.
+    /// Gets a value indicating whether this instance collides with the specified collider.
     /// </summary>
     /// <param name="other">The other collider.</param>
     /// <param name="collision">The collision.</param>
-    /// <returns>A value indicating whether or not the collision occurred.</returns>
+    /// <returns>A value indicating whether the collision occurred.</returns>
     public bool CollidesWith(Collider other, out CollisionEventArgs? collision) {
         if (!this.BoundingArea.Overlaps(other.BoundingArea)) {
             collision = null;
@@ -230,7 +230,7 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
             }
         }
 
-        hits = Enumerable.Empty<RaycastHit>();
+        hits = [];
         return false;
     }
 
@@ -286,12 +286,12 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
         var bottomRight = new Vector2(boundingArea.Maximum.X, boundingArea.Minimum.Y);
         var topLeft = new Vector2(boundingArea.Minimum.X, boundingArea.Maximum.Y);
         var topRight = boundingArea.Maximum;
-        return new[] {
+        return [
             new LineSegment(bottomLeft, topLeft),
             new LineSegment(topLeft, topRight),
             new LineSegment(topRight, bottomRight),
             new LineSegment(bottomRight, bottomLeft)
-        };
+        ];
     }
 
     /// <summary>

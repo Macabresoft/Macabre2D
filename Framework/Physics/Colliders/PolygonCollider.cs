@@ -217,7 +217,7 @@ public abstract class PolygonCollider : Collider {
             }
         }
 
-        hits = Enumerable.Empty<RaycastHit>();
+        hits = [];
         return false;
     }
 

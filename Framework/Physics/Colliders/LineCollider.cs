@@ -81,9 +81,7 @@ public sealed class LineCollider : PolygonCollider {
 
     /// <inheritdoc />
     protected override List<Vector2> GetNormals() =>
-        new() {
-            this.GetNormal(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1))
-        };
+        [this.GetNormal(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1))];
 
     /// <inheritdoc />
     protected override bool TryHit(LineSegment ray, out RaycastHit result) {
