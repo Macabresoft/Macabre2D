@@ -615,6 +615,14 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
+    public void Swap(SpriteAnimation animation) {
+    }
+
+    /// <inheritdoc />
+    public void Swap(SpriteAnimationReference animationReference) {
+    }
+
+    /// <inheritdoc />
     public bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) {
         entity = default;
         return false;

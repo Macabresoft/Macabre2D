@@ -65,6 +65,23 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// </summary>
     /// <param name="eraseQueue">A value indicating whether the queue should be erased.</param>
     void Stop(bool eraseQueue);
+
+    /// <summary>
+    /// Swaps in one animation for another while maintaining everything about the current frame and transposing it onto the new animation.
+    /// </summary>
+    /// <param name="animation">The animation.</param>
+    /// <remarks>
+    /// This will only work if the new animation has the same or more frames than the current animation.
+    /// </remarks>
+    void Swap(SpriteAnimation animation);
+
+    /// <summary>
+    /// Swaps in one animation for another while maintaining everything about the current frame and transposing it onto the new animation.
+    /// </summary>
+    /// <remarks>
+    /// This will only work if the new animation has the same or more frames than the current animation.
+    /// </remarks>
+    void Swap(SpriteAnimationReference animationReference);
 }
 
 /// <summary>
@@ -133,6 +150,18 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
         }
         else {
             this.QueuedAnimation?.Reset();
+        }
+    }
+
+    /// <inheritdoc />
+    public void Swap(SpriteAnimation animation) {
+        this.GetCurrentAnimation()?.TrySwap(animation);
+    }
+
+    /// <inheritdoc />
+    public void Swap(SpriteAnimationReference animationReference) {
+        if (animationReference.PackagedAsset is { } animation) {
+            this.Swap(animation);
         }
     }
 

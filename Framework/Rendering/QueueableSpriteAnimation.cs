@@ -28,22 +28,17 @@ public class QueueableSpriteAnimation {
     /// Gets the animation.
     /// </summary>
     /// <value>The animation.</value>
-    public SpriteAnimation Animation { get; }
-
-    /// <summary>
-    /// Gets the identifier for this animation.
-    /// </summary>
-    public Guid Id { get; } = Guid.NewGuid();
-
-    /// <summary>
-    /// Gets the sprite sheet associated with this animation.
-    /// </summary>
-    public SpriteSheet? SpriteSheet => this.Animation?.SpriteSheet;
+    public SpriteAnimation Animation { get; private set; }
 
     /// <summary>
     /// Gets or sets the current sprite index.
     /// </summary>
     public byte? CurrentSpriteIndex { get; private set; }
+
+    /// <summary>
+    /// Gets the identifier for this animation.
+    /// </summary>
+    public Guid Id { get; } = Guid.NewGuid();
 
     /// <summary>
     /// Gets or sets the milliseconds that have passed for this animation.
@@ -59,6 +54,11 @@ public class QueueableSpriteAnimation {
     /// otherwise, <c>false</c>.
     /// </value>
     public bool ShouldLoopIndefinitely { get; set; }
+
+    /// <summary>
+    /// Gets the sprite sheet associated with this animation.
+    /// </summary>
+    public SpriteSheet? SpriteSheet => this.Animation.SpriteSheet;
 
     /// <summary>
     /// Gets the percentage complete for the current animation.
@@ -116,6 +116,21 @@ public class QueueableSpriteAnimation {
                 this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
             }
         }
+    }
+
+    /// <summary>
+    /// Swaps in one animation for another while maintaining everything about the current frame and transposing it onto the new animation.
+    /// </summary>
+    /// <remarks>
+    /// This will only work if the new animation has the same or more frames than the current animation.
+    /// </remarks>
+    public bool TrySwap(SpriteAnimation animation) {
+        if (animation.TotalNumberOfFrames >= this.Animation.TotalNumberOfFrames) {
+            this.Animation = animation;
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
