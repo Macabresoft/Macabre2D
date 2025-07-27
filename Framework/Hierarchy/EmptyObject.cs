@@ -603,6 +603,10 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
+    public void SetPercentageComplete(float amount) {
+    }
+
+    /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
     }
 

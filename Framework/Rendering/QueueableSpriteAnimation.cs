@@ -91,6 +91,21 @@ public class QueueableSpriteAnimation {
         this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
     }
 
+    /// <summary>
+    /// Sets the percentage complete of the current animation to a value between 0 and 1.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="millisecondsPerFrame">The milliseconds per frame.</param>
+    public void SetPercentageComplete(float amount, int millisecondsPerFrame) {
+        this._currentFrameIndex = 0;
+        this._currentStepIndex = 0;
+
+        var totalFrames = this.Animation.TotalNumberOfFrames;
+        var desiredFrameNumber = (int)Math.Round(totalFrames * Math.Clamp(amount, 0f, 1f));
+        this.MillisecondsPassed = desiredFrameNumber * millisecondsPerFrame;
+        this.Update(FrameTime.Zero, millisecondsPerFrame, out _); // One update to distribute the milliseconds to the steps.
+    }
+
     public void TryNextFrame(out bool isAnimationOver) {
         isAnimationOver = false;
         this._currentFrameIndex++;

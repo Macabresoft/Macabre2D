@@ -61,6 +61,12 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     void Play(SpriteAnimationReference animationReference, bool shouldLoop);
 
     /// <summary>
+    /// Sets the percentage complete of the current animation to a value between 0 and 1.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    void SetPercentageComplete(float amount);
+
+    /// <summary>
     /// Stops this instance.
     /// </summary>
     /// <param name="eraseQueue">A value indicating whether the queue should be erased.</param>
@@ -127,6 +133,13 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
     public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
         if (animationReference.PackagedAsset is { } animation) {
             this.Play(animation, shouldLoop);
+        }
+    }
+
+    /// <inheritdoc />
+    public void SetPercentageComplete(float amount) {
+        if (this.GetCurrentAnimation() is { } animation) {
+            animation.SetPercentageComplete(amount, this.MillisecondsPerFrame);
         }
     }
 
