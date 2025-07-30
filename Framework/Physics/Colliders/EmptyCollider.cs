@@ -9,9 +9,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class EmptyCollider : Collider {
     /// <inheritdoc />
-    public override ColliderType ColliderType => ColliderType.Empty;
-
-    /// <inheritdoc />
     public override bool Contains(Collider other) {
         return false;
     }

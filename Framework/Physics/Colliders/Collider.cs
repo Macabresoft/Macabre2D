@@ -9,31 +9,6 @@ using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// The type of collider being used.
-/// </summary>
-public enum ColliderType {
-    /// <summary>
-    /// Circle collider.
-    /// </summary>
-    Circle,
-
-    /// <summary>
-    /// Polygon collider.
-    /// </summary>
-    Polygon,
-
-    /// <summary>
-    /// Some other type of collider. Most custom colliders will fall into this category.
-    /// </summary>
-    Other,
-
-    /// <summary>
-    /// Reserved for the single empty collider instance.
-    /// </summary>
-    Empty
-}
-
-/// <summary>
 /// Collider to be attached to bodies in the physics engine.
 /// </summary>
 [DataContract]
@@ -62,11 +37,6 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <summary>
-    /// Gets the type of the collider.
-    /// </summary>
-    public abstract ColliderType ColliderType { get; }
 
     /// <summary>
     /// Gets the body that this collider is attached to.

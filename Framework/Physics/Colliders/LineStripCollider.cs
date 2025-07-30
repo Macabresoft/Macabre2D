@@ -11,11 +11,10 @@ using Microsoft.Xna.Framework;
 /// A strip of lines as a collider.
 /// </summary>
 public class LineStripCollider : PolygonCollider {
-    private const float EqualityTolerance = 0.001f;
-    private readonly List<LineSegment> _lineSegments = new();
+    private readonly List<LineSegment> _lineSegments = [];
 
     [DataMember]
-    private readonly RelativeVertices _relativeVertices = new();
+    private readonly RelativeVertices _relativeVertices = [];
 
     private bool _isResetting;
 

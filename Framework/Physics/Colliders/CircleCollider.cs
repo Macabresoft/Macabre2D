@@ -34,9 +34,6 @@ public sealed class CircleCollider : Collider {
     /// <value>The center.</value>
     public Vector2 Center => this.WorldPosition;
 
-    /// <inheritdoc />
-    public override ColliderType ColliderType => ColliderType.Circle;
-
     /// <summary>
     /// Gets or sets the radius.
     /// </summary>

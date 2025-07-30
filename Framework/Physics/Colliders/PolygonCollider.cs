@@ -65,9 +65,6 @@ public abstract class PolygonCollider : Collider {
     protected PolygonCollider(params Vector2[] points) : this(points as IEnumerable<Vector2>) {
     }
 
-    /// <inheritdoc />
-    public override ColliderType ColliderType => ColliderType.Polygon;
-
     /// <summary>
     /// Gets a value indicating whether the first and final vertex should be connected.
     /// </summary>
