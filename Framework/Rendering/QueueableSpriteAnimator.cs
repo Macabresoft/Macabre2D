@@ -168,7 +168,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
 
     /// <inheritdoc />
     public void Swap(SpriteAnimation animation) {
-        this.GetCurrentAnimation()?.TrySwap(animation);
+        this.GetCurrentAnimation()?.Swap(animation);
     }
 
     /// <inheritdoc />

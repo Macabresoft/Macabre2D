@@ -102,8 +102,13 @@ public class QueueableSpriteAnimation {
 
         var totalFrames = this.Animation.TotalNumberOfFrames;
         var desiredFrameNumber = (int)Math.Round(totalFrames * Math.Clamp(amount, 0f, 1f));
-        this.MillisecondsPassed = desiredFrameNumber * millisecondsPerFrame;
-        this.Update(FrameTime.Zero, millisecondsPerFrame, out _); // One update to distribute the milliseconds to the steps.
+        if (desiredFrameNumber == 0) {
+            this.MillisecondsPassed = 0d;
+        }
+        else {
+            this.MillisecondsPassed = desiredFrameNumber * millisecondsPerFrame;
+            this.Update(FrameTime.Zero, millisecondsPerFrame, out _); // One update to distribute the milliseconds to the steps.
+        }
     }
 
     public void TryNextFrame(out bool isAnimationOver) {
@@ -139,13 +144,8 @@ public class QueueableSpriteAnimation {
     /// <remarks>
     /// This will only work if the new animation has the same or more frames than the current animation.
     /// </remarks>
-    public bool TrySwap(SpriteAnimation animation) {
-        if (animation.TotalNumberOfFrames >= this.Animation.TotalNumberOfFrames) {
-            this.Animation = animation;
-            return true;
-        }
-
-        return false;
+    public void Swap(SpriteAnimation animation) {
+        this.Animation = animation;
     }
 
     /// <summary>
