@@ -139,7 +139,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
     /// <inheritdoc />
     public void SetPercentageComplete(float amount) {
         if (this.GetCurrentAnimation() is { } animation) {
-            animation.SetPercentageComplete(amount, this.MillisecondsPerFrame);
+            animation.SetPercentageComplete(amount);
         }
     }
 

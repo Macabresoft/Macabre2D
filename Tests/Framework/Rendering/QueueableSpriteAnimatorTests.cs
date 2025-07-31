@@ -73,6 +73,69 @@ public static class QueueableSpriteAnimatorTests {
 
     [Test]
     [Category("Unit Tests")]
+    public static void IncrementTime_ShouldNotTriggerOnAnimationFinished_WhenAnimationNotFinished() {
+        CreateAnimation(1, 1, false, out var animator, out var gameTime, out var frameTime);
+        var isFinished = false;
+        SpriteAnimation finishedAnimation = null;
+        animator.OnAnimationFinished += (_, spriteAnimation) =>
+        {
+            isFinished = true;
+            finishedAnimation = spriteAnimation;
+        };
+
+        using (new AssertionScope()) {
+            gameTime.ElapsedGameTime = TimeSpan.FromMilliseconds(1d);
+            frameTime = new FrameTime(gameTime, 1f);
+            animator.IncrementTime(frameTime);
+            isFinished.Should().BeFalse();
+            finishedAnimation.Should().BeNull();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void IncrementTime_ShouldNotTriggerOnAnimationFinished_WhenLooping() {
+        CreateAnimation(1, 1, true, out var animator, out var gameTime, out var frameTime);
+        var isFinished = false;
+        SpriteAnimation finishedAnimation = null;
+        animator.OnAnimationFinished += (_, spriteAnimation) =>
+        {
+            isFinished = true;
+            finishedAnimation = spriteAnimation;
+        };
+
+        using (new AssertionScope()) {
+            gameTime.ElapsedGameTime = TimeSpan.FromSeconds(10d);
+            frameTime = new FrameTime(gameTime, 1f);
+            animator.IncrementTime(frameTime);
+            isFinished.Should().BeFalse();
+            finishedAnimation.Should().BeNull();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void IncrementTime_ShouldTriggerOnAnimationFinished_WhenAnimationFinished() {
+        var animation = CreateAnimation(1, 1, false, out var animator, out var gameTime, out var frameTime);
+        var isFinished = false;
+        SpriteAnimation finishedAnimation = null;
+        animator.OnAnimationFinished += (_, spriteAnimation) =>
+        {
+            isFinished = true;
+            finishedAnimation = spriteAnimation;
+        };
+
+        using (new AssertionScope()) {
+            gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
+            frameTime = new FrameTime(gameTime, 1f);
+            animator.IncrementTime(frameTime);
+            isFinished.Should().BeTrue();
+            finishedAnimation.Should().Be(animation);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
     public static void Play_ShouldTriggerOnAnimationFinished() {
         var animation = CreateAnimation(1, 1, false, out var animator, out var gameTime, out _);
         var secondAnimation = CreateAnimation(5, 1, false, out _, out _, out _);
@@ -113,6 +176,45 @@ public static class QueueableSpriteAnimatorTests {
     }
 
     [Test]
+    [TestCase(5, 1)]
+    [TestCase(10, 10)]
+    [TestCase(25, 3)]
+    [Category("Unit Tests")]
+    public static void SetPercentageComplete_ShouldWork_WithManySteps(byte steps, byte framesPerStep) {
+        CreateAnimation(steps, framesPerStep, false, out var animator, out _, out _);
+
+        using (new AssertionScope()) {
+            for (var step = 0; step <= steps; step++) {
+                for (var frame = 0; frame <= framesPerStep; frame++) {
+                    var percentageComplete = animator.GetPercentageComplete();
+                    animator.SetPercentageComplete(percentageComplete);
+                    var newPercentageComplete = animator.GetPercentageComplete();
+                    newPercentageComplete.Should().BeApproximately(percentageComplete, Defaults.FloatComparisonTolerance);
+                    animator.NextFrame();
+                }
+            }
+        }
+    }
+
+    [Test]
+    [TestCase(1)]
+    [TestCase(10)]
+    [TestCase(25)]
+    [Category("Unit Tests")]
+    public static void SetPercentageComplete_ShouldWork_WithOneStep(byte frames) {
+        CreateAnimation(1, frames, false, out var animator, out var gameTime, out var frameTime);
+
+        using (new AssertionScope()) {
+            for (var i = 0; i <= frames; i++) {
+                var percentageComplete = animator.GetPercentageComplete();
+                animator.SetPercentageComplete(percentageComplete);
+                animator.GetPercentageComplete().Should().BeApproximately(percentageComplete, Defaults.FloatComparisonTolerance);
+                animator.NextFrame();
+            }
+        }
+    }
+
+    [Test]
     [Category("Unit Tests")]
     public static void Stop_ShouldTriggerOnAnimationFinished() {
         var animation = CreateAnimation(1, 1, true, out var animator, out var gameTime, out _);
@@ -127,69 +229,6 @@ public static class QueueableSpriteAnimatorTests {
         using (new AssertionScope()) {
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
             animator.Stop();
-            isFinished.Should().BeTrue();
-            finishedAnimation.Should().Be(animation);
-        }
-    }
-
-    [Test]
-    [Category("Unit Tests")]
-    public static void IncrementTime_ShouldNotTriggerOnAnimationFinished_WhenAnimationNotFinished() {
-        CreateAnimation(1, 1, false, out var animator, out var gameTime, out var frameTime);
-        var isFinished = false;
-        SpriteAnimation finishedAnimation = null;
-        animator.OnAnimationFinished += (_, spriteAnimation) =>
-        {
-            isFinished = true;
-            finishedAnimation = spriteAnimation;
-        };
-
-        using (new AssertionScope()) {
-            gameTime.ElapsedGameTime = TimeSpan.FromMilliseconds(1d);
-            frameTime = new FrameTime(gameTime, 1f);
-            animator.IncrementTime(frameTime);
-            isFinished.Should().BeFalse();
-            finishedAnimation.Should().BeNull();
-        }
-    }
-
-    [Test]
-    [Category("Unit Tests")]
-    public static void IncrementTime_ShouldNotTriggerOnAnimationFinished_WhenLooping() {
-        CreateAnimation(1, 1, true, out var animator, out var gameTime, out var frameTime);
-        var isFinished = false;
-        SpriteAnimation finishedAnimation = null;
-        animator.OnAnimationFinished += (_, spriteAnimation) =>
-        {
-            isFinished = true;
-            finishedAnimation = spriteAnimation;
-        };
-
-        using (new AssertionScope()) {
-            gameTime.ElapsedGameTime = TimeSpan.FromSeconds(10d);
-            frameTime = new FrameTime(gameTime, 1f);
-            animator.IncrementTime(frameTime);
-            isFinished.Should().BeFalse();
-            finishedAnimation.Should().BeNull();
-        }
-    }
-    
-    [Test]
-    [Category("Unit Tests")]
-    public static void IncrementTime_ShouldTriggerOnAnimationFinished_WhenAnimationFinished() {
-        var animation = CreateAnimation(1, 1, false, out var animator, out var gameTime, out var frameTime);
-        var isFinished = false;
-        SpriteAnimation finishedAnimation = null;
-        animator.OnAnimationFinished += (_, spriteAnimation) =>
-        {
-            isFinished = true;
-            finishedAnimation = spriteAnimation;
-        };
-
-        using (new AssertionScope()) {
-            gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
-            frameTime = new FrameTime(gameTime, 1f);
-            animator.IncrementTime(frameTime);
             isFinished.Should().BeTrue();
             finishedAnimation.Should().Be(animation);
         }
@@ -236,7 +275,7 @@ public static class QueueableSpriteAnimatorTests {
 
         animator.FrameRateOverride.IsEnabled = frameRate > 0;
         animator.FrameRateOverride.Value = frameRate;
-        
+
 
         var scene = Substitute.For<IScene>();
         var assets = Substitute.For<IAssetManager>();
