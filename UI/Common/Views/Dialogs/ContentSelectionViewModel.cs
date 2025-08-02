@@ -26,15 +26,22 @@ public class ContentSelectionViewModel : FilterableViewModel<FilteredContentWrap
     /// <param name="contentService">The content service.</param>
     /// <param name="desiredAssetType">The desired asset type.</param>
     /// <param name="allowDirectorySelection">
-    /// A value indicating whether or not the user can press 'Ok' after selecting a
+    /// A value indicating whether the user can press 'Ok' after selecting a
     /// directory node.
     /// </param>
+    /// <param name="title">The title of the window.</param>
     [InjectionConstructor]
-    public ContentSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection) : this() {
+    public ContentSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection, string title) : this() {
         this._desiredAssetType = desiredAssetType;
         this._allowDirectorySelection = allowDirectorySelection;
+        this.Title = title;
         this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, desiredAssetType, allowDirectorySelection);
     }
+
+    /// <summary>
+    /// Gets the title of the window.
+    /// </summary>
+    public string Title { get; }
 
     /// <summary>
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.

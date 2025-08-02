@@ -3,14 +3,13 @@
                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                        x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetAssetSelectionDialog"
                        Height="768"
                        Width="1024"
                        CanResize="False"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
-                       Title="Make a Selection"
+                       Title="{Binding Title}"
                        VectorIcon="{StaticResource SpriteSheetIcon}">
     <avaloniaEx:BaseDialog.Styles>
         <Style Selector="avaloniaEx|EditableSelectableItem">

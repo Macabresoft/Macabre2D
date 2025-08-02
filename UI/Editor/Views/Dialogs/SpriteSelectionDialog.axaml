@@ -9,7 +9,7 @@
                        CanResize="False"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
-                       Title="Make a Selection"
+                       Title="{Binding Title}"
                        VectorIcon="{StaticResource SpriteSheetIcon}">
     <avaloniaEx:BaseDialog.Styles>
         <Style Selector="avaloniaEx|EditableSelectableItem">

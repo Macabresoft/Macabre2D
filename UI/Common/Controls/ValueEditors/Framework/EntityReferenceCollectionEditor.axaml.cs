@@ -92,7 +92,7 @@ public partial class EntityReferenceCollectionEditor : ValueEditorControl<IEntit
     }
 
     private async Task Add() {
-        var entity = await this._dialogService.OpenEntitySelectionDialog(this.Value.Type);
+        var entity = await this._dialogService.OpenEntitySelectionDialog(this.Value.Type, this.Title);
         if (entity != null && !this.Value.EntityIds.Contains(entity.Id)) {
             this._undoService.Do(
                 () =>

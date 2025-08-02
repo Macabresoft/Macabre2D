@@ -148,7 +148,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         var saveResult = await this._saveService.RequestSave();
 
         if (saveResult != YesNoCancelResult.Cancel) {
-            var result = await this._dialogService.OpenAssetSelectionDialog(typeof(SceneAsset), false);
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(SceneAsset), false, "Select a Scene");
 
             if (result != null && !this._sceneService.TryLoadScene(result.Id, out _)) {
                 await this._dialogService.ShowWarningDialog("Error", "The scene could not be loaded");

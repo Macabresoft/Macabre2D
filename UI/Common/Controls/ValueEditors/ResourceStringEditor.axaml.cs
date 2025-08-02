@@ -84,7 +84,7 @@ public partial class ResourceStringEditor : ValueEditorControl<string> {
     }
     
     private async Task Select() {
-        var resourceEntry = await this._dialogService.ShowSearchResourceDialog(this.ResourceEntries);
+        var resourceEntry = await this._dialogService.ShowSearchResourceDialog(this.ResourceEntries, this.Title);
         if (resourceEntry != null) {
             var originalResource = this.Value;
             this._undoService.Do(

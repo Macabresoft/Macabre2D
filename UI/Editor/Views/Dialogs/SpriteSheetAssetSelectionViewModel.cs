@@ -33,9 +33,11 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     /// </summary>
     /// <param name="contentService">The content service.</param>
     /// <param name="packagedAssetType">The packaged asset type.</param>
+    /// <param name="title">The title of the window.</param>
     [InjectionConstructor]
-    public SpriteSheetAssetSelectionViewModel(IContentService contentService, Type packagedAssetType) : this() {
+    public SpriteSheetAssetSelectionViewModel(IContentService contentService, Type packagedAssetType, string title) : this() {
         this._packagedAssetType = packagedAssetType;
+        this.Title = title;
         this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false, file => this.ShouldDisplay(file, out _));
         this.SelectedContentNode = this.RootContentDirectory;
     }
@@ -44,11 +46,6 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper RootContentDirectory { get; }
-
-    /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection> SpriteSheets => this._spriteSheets;
 
     /// <summary>
     /// Gets or sets the selected asset.
@@ -81,6 +78,16 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
         get => this._selectedThumbnailSize;
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection> SpriteSheets => this._spriteSheets;
+
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <inheritdoc />
     protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;

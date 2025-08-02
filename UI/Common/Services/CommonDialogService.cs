@@ -21,25 +21,28 @@ public interface ICommonDialogService : IBaseDialogService {
     /// </summary>
     /// <param name="baseAssetType">The base asset type.</param>
     /// <param name="allowDirectorySelection">
-    /// A value indicating whether or not the user can select a directory. Usually used
+    /// A value indicating whether the user can select a directory. Usually used
     /// when creating a new asset as opposed to loading one.
     /// </param>
+    /// <param name="title">The title of the window.</param>
     /// <returns>The selected content node.</returns>
-    Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
+    Task<IContentNode> OpenContentSelectionDialog(Type baseAssetType, bool allowDirectorySelection, string title);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which inherits from the specified base type.
     /// </summary>
     /// <param name="baseEntityType">The base entity type.</param>
+    /// <param name="title">The title of the window.</param>
     /// <returns>The selected entity.</returns>
-    Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType);
+    Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType, string title);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick an <see cref="IEntity" /> which contains the specified content.
     /// </summary>
     /// <param name="contentId">The content type.</param>
+    /// <param name="title">The title of the window.</param>
     /// <returns>The selected entity.</returns>
-    Task<IEntity> OpenEntitySelectionDialog(Guid contentId);
+    Task<IEntity> OpenEntitySelectionDialog(Guid contentId, string title);
 
     /// <summary>
     /// Opens a dialog to show the licenses.
@@ -50,20 +53,24 @@ public interface ICommonDialogService : IBaseDialogService {
     /// <summary>
     /// Opens a dialog that allows the user to pick a sprite.
     /// </summary>
+    /// <param name="title">The title of the window.</param>
     /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
-    Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+    Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog(string title);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetMember" />.
     /// </summary>
+    /// <param name="title">The title of the window.</param>
     /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
-    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
+    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>(string title) where TAsset : SpriteSheetMember;
 
     /// <summary>
     /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetMember" />.
     /// </summary>
+    /// <param name="assetType">The type of asset.</param>
+    /// <param name="title">The title of the window.</param>
     /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
-    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType);
+    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType, string title);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="IGameSystem" /> which inherits from the specified base type.
@@ -77,8 +84,9 @@ public interface ICommonDialogService : IBaseDialogService {
     /// </summary>
     /// <param name="types">The types to select from.</param>
     /// <param name="defaultType">The default type to have selected upon opening the window.</param>
+    /// <param name="title">The window title.</param>
     /// <returns>The selected type.</returns>
-    Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType);
+    Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType, string title);
 
     /// <summary>
     /// Shows a dialog to lay out a font.
@@ -97,8 +105,9 @@ public interface ICommonDialogService : IBaseDialogService {
     /// Shows a dialog to filter and select a resource entry.
     /// </summary>
     /// <param name="resources">The resources to filter through.</param>
+    /// <param name="title">The title of the window.</param>
     /// <returns>The selected resource.</returns>
-    Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources);
+    Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources, string title);
 
     /// <summary>
     /// Shows a dialog to select a file.
@@ -144,11 +153,14 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection) {
+    public async Task<IContentNode> OpenContentSelectionDialog(Type baseAssetType, bool allowDirectorySelection, string title) {
         IContentNode selectedNode = null;
-        var window = Resolver.Resolve<ContentSelectionDialog>(new ParameterOverride(typeof(Type), baseAssetType), new ParameterOverride(typeof(bool), allowDirectorySelection));
-        var result = await window.ShowDialog<bool>(this.MainWindow);
+        var window = Resolver.Resolve<ContentSelectionDialog>(
+            new ParameterOverride(typeof(Type), baseAssetType),
+            new ParameterOverride(typeof(bool), allowDirectorySelection),
+            new ParameterOverride(typeof(string), title));
 
+        var result = await window.ShowDialog<bool>(this.MainWindow);
         if (result && window.ViewModel != null) {
             selectedNode = window.ViewModel.SelectedContentNode?.Node;
         }
@@ -157,9 +169,9 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType) {
+    public async Task<IEntity> OpenEntitySelectionDialog(Type baseEntityType, string title) {
         IEntity selectedEntity = null;
-        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), baseEntityType);
+        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), baseEntityType, title);
         var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(EntitySelectionViewModel), viewModel));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
@@ -171,9 +183,9 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<IEntity> OpenEntitySelectionDialog(Guid contentId) {
+    public async Task<IEntity> OpenEntitySelectionDialog(Guid contentId, string title) {
         IEntity selectedEntity = null;
-        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), contentId);
+        var viewModel = new EntitySelectionViewModel(Resolver.Resolve<ISceneService>(), contentId, title);
         var window = Resolver.Resolve<EntitySelectionDialog>(new ParameterOverride(typeof(EntitySelectionViewModel), viewModel));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
@@ -191,13 +203,13 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public abstract Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+    public abstract Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog(string title);
 
     /// <inheritdoc />
-    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
+    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>(string title) where TAsset : SpriteSheetMember;
 
     /// <inheritdoc />
-    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType);
+    public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType, string title);
 
     /// <inheritdoc />
     public async Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType) {
@@ -213,11 +225,14 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType) {
+    public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types, Type defaultType, string title) {
         Type selectedType = null;
-        var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(IEnumerable<Type>), types), new ParameterOverride(typeof(Type), defaultType));
-        var result = await window.ShowDialog<bool>(this.MainWindow);
+        var window = Resolver.Resolve<TypeSelectionDialog>(
+            new ParameterOverride(typeof(IEnumerable<Type>), types),
+            new ParameterOverride(typeof(Type), defaultType),
+            new ParameterOverride(typeof(string), title));
 
+        var result = await window.ShowDialog<bool>(this.MainWindow);
         if (result && window.ViewModel != null) {
             selectedType = window.ViewModel.SelectedItem;
         }
@@ -240,11 +255,13 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     }
 
     /// <inheritdoc />
-    public async Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources) {
+    public async Task<ResourceEntry?> ShowSearchResourceDialog(IEnumerable<ResourceEntry> resources, string title) {
         ResourceEntry? selectedResource = null;
-        var window = Resolver.Resolve<ResourceSelectionDialog>(new ParameterOverride(typeof(IEnumerable<ResourceEntry>), resources));
-        var result = await window.ShowDialog<bool>(this.MainWindow);
+        var window = Resolver.Resolve<ResourceSelectionDialog>(
+            new ParameterOverride(typeof(IEnumerable<ResourceEntry>), resources),
+            new ParameterOverride(typeof(string), title));
 
+        var result = await window.ShowDialog<bool>(this.MainWindow);
         if (result && window.ViewModel != null) {
             selectedResource = window.ViewModel.SelectedItem;
         }

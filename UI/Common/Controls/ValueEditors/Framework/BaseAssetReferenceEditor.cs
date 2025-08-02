@@ -103,7 +103,7 @@ public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueE
     }
 
     protected virtual async Task Select() {
-        var contentNode = await this.DialogService.OpenAssetSelectionDialog(typeof(TAsset), false);
+        var contentNode = await this.DialogService.OpenContentSelectionDialog(typeof(TAsset), false, this.Title);
         if (contentNode is ContentFile { Asset: TAsset newAsset }) {
             var originalAsset = this.Value.Asset;
             this.UndoService.Do(

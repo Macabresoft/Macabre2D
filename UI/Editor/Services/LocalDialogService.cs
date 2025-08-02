@@ -25,8 +25,8 @@ public sealed class LocalDialogService : CommonDialogService {
     }
 
     /// <inheritdoc />
-    public override async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
-        var window = Resolver.Resolve<SpriteSelectionDialog>();
+    public override async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog(string title) {
+        var window = Resolver.Resolve<SpriteSelectionDialog>(new ParameterOverride(typeof(string), title));
         if (await window.ShowDialog<bool>(this.MainWindow) &&
             window.ViewModel.SelectedSprite is { SpriteSheet: { } contentSpriteSheet } sprite &&
             this._assetManager.TryGetMetadata(contentSpriteSheet.ContentId, out var metadata) &&
@@ -38,11 +38,13 @@ public sealed class LocalDialogService : CommonDialogService {
     }
 
     /// <inheritdoc />
-    public override async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() => await this.OpenSpriteSheetAssetSelectionDialog(typeof(TAsset));
+    public override async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>(string title) => await this.OpenSpriteSheetAssetSelectionDialog(typeof(TAsset), title);
 
     /// <inheritdoc />
-    public override async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType) {
-        var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(new ParameterOverride("packagedAssetType", assetType));
+    public override async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType, string title) {
+        var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(
+            new ParameterOverride("packagedAssetType", assetType),
+            new ParameterOverride(typeof(string), title));
 
         if (await window.ShowDialog<bool>(this.MainWindow) &&
             window.DataContext is SpriteSheetAssetSelectionViewModel { SelectedAsset: { } asset } viewModel &&

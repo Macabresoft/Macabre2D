@@ -166,7 +166,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
             prefab.AddChild(prefabChild);
 
-            var result = await this._dialogService.OpenAssetSelectionDialog(typeof(PrefabAsset), true);
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), true, "Save the Prefab");
             var parent = result as IContentDirectory ?? result?.Parent;
 
             if (parent != null) {

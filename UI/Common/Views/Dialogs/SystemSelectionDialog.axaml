@@ -7,7 +7,7 @@
                        Width="640"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
-                       Title="Make a Selection">
+                       Title="{Binding Title}">
     <Design.DataContext>
         <local:SystemSelectionViewModel />
     </Design.DataContext>

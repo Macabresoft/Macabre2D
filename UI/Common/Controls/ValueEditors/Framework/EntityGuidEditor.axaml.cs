@@ -120,7 +120,7 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
     }
 
     private async Task Select() {
-        var entity = await this._dialogService.OpenEntitySelectionDialog(this._entityType);
+        var entity = await this._dialogService.OpenEntitySelectionDialog(this._entityType, this.Title);
         if (entity != null) {
             var originalId = this.Value;
             var newId = entity.Id;

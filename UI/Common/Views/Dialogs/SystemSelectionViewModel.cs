@@ -26,10 +26,17 @@ public class SystemSelectionViewModel : BaseDialogViewModel {
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="desiredAssetType">The desired asset type.</param>
+    /// <param name="title">The title.</param>
     [InjectionConstructor]
-    public SystemSelectionViewModel(ISceneService sceneService, Type desiredAssetType) : this() {
+    public SystemSelectionViewModel(ISceneService sceneService, Type desiredAssetType, string title) : this() {
+        this.Title = title;
         this.Systems = sceneService.CurrentScene.Systems.Where(x => x.GetType().IsAssignableTo(desiredAssetType)).ToList();
     }
+    
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <summary>
     /// Gets the systems.

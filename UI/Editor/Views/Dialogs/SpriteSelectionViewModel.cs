@@ -27,11 +27,18 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
     /// Initializes a new instance of the <see cref="SpriteSelectionViewModel" /> class.
     /// </summary>
     /// <param name="contentService">The content service.</param>
+    /// <param name="title">The title of the window.</param>
     [InjectionConstructor]
-    public SpriteSelectionViewModel(IContentService contentService) : this() {
+    public SpriteSelectionViewModel(IContentService contentService, string title) : this() {
+        this.Title = title;
         this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
+    
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <summary>
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.

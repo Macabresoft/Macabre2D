@@ -42,7 +42,7 @@ public partial class SpriteSheetAssetReferenceEditor : BaseSpriteSheetReferenceE
     }
 
     protected override async Task Select() {
-        var (spriteSheet, packagedAssetId) = await this.DialogService.OpenSpriteSheetAssetSelectionDialog(this.Value.PackagedAssetType);
+        var (spriteSheet, packagedAssetId) = await this.DialogService.OpenSpriteSheetAssetSelectionDialog(this.Value.PackagedAssetType, this.Title);
         if (spriteSheet != null) {
             var originalAsset = this.Value.Asset;
             var originalPackagedAssetId = this.Value.PackagedAssetId;

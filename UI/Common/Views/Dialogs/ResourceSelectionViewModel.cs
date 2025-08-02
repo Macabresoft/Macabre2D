@@ -21,9 +21,16 @@ public class ResourceSelectionViewModel : BaseFilterDialogViewModel<ResourceEntr
     /// Initializes a new instance of the <see cref="TypeSelectionViewModel" /> class.
     /// </summary>
     /// <param name="resources">The types to select from.</param>
+    /// <param name="title">The title of the window.</param>
     [InjectionConstructor]
-    public ResourceSelectionViewModel(IEnumerable<ResourceEntry> resources) : base(resources) {
+    public ResourceSelectionViewModel(IEnumerable<ResourceEntry> resources, string title) : base(resources) {
+        this.Title = title;
     }
+    
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <inheritdoc />
     protected override IEnumerable<ResourceEntry> GetFilteredItems(string filter) {

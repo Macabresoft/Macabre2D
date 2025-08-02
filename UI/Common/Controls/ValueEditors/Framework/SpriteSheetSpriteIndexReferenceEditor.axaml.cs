@@ -104,7 +104,7 @@ public partial class SpriteSheetSpriteIndexReferenceEditor : ValueEditorControl<
     }
 
     private async Task Select() {
-        var (spriteSheet, spriteIndex) = await this._dialogService.OpenSpriteSelectionDialog();
+        var (spriteSheet, spriteIndex) = await this._dialogService.OpenSpriteSelectionDialog(this.Title);
 
         if (spriteSheet != null) {
             var originalValue = this.Value;

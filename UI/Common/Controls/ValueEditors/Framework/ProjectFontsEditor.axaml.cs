@@ -106,7 +106,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
     }
 
     private async Task SelectFont(ProjectFontModel font) {
-        var (spriteSheet, packagedAssetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>();
+        var (spriteSheet, packagedAssetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>(this.Title);
         if (spriteSheet != null && packagedAssetId != Guid.Empty) {
             var contentId = spriteSheet.ContentId;
             var originalDefinition = font.Definition;

@@ -117,7 +117,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
     }
 
     private async Task Select() {
-        var contentNode = await this._dialogService.OpenAssetSelectionDialog(this._assetType, false);
+        var contentNode = await this._dialogService.OpenContentSelectionDialog(this._assetType, false, this.Title);
         if (contentNode is ContentFile { Metadata: { } metadata }) {
             var originalId = this.Value;
             var contentId = metadata.ContentId;

@@ -119,11 +119,11 @@ public partial class SpriteSheetAssetGuidReferenceEditor : ValueEditorControl<Sp
 
     private async Task Select() {
         var (spriteSheet, packagedAssetId) = this._assetKind switch {
-            SpriteSheetAssetKind.Animation => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteAnimation>(),
-            SpriteSheetAssetKind.AutoTileSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>(),
-            SpriteSheetAssetKind.Font => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>(),
-            SpriteSheetAssetKind.GamePadIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<GamePadIconSet>(),
-            SpriteSheetAssetKind.KeyboardIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<KeyboardIconSet>(),
+            SpriteSheetAssetKind.Animation => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteAnimation>(this.Title),
+            SpriteSheetAssetKind.AutoTileSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>(this.Title),
+            SpriteSheetAssetKind.Font => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>(this.Title),
+            SpriteSheetAssetKind.GamePadIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<GamePadIconSet>(this.Title),
+            SpriteSheetAssetKind.KeyboardIconSet => await this._dialogService.OpenSpriteSheetAssetSelectionDialog<KeyboardIconSet>(this.Title),
             _ => (null, Guid.Empty)
         };
 

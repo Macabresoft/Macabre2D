@@ -8,7 +8,7 @@
                        CanResize="False"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
-                       Title="Make a Selection">
+                       Title="{Binding Title}">
     <Design.DataContext>
         <local:TypeSelectionViewModel />
     </Design.DataContext>

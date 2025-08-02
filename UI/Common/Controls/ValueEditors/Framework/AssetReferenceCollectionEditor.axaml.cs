@@ -102,7 +102,7 @@ public partial class AssetReferenceCollectionEditor : ValueEditorControl<IAssetR
     }
 
     private async Task Add() {
-        var contentNode = await this._dialogService.OpenAssetSelectionDialog(this.Value.AssetType, false);
+        var contentNode = await this._dialogService.OpenContentSelectionDialog(this.Value.AssetType, false, this.Title);
         if (contentNode is ContentFile { Metadata: { } metadata }) {
             if (!this.Value.ContentIds.Contains(metadata.ContentId)) {
                 this._undoService.Do(

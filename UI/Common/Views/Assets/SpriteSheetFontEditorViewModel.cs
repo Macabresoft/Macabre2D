@@ -230,7 +230,7 @@ public class SpriteSheetFontEditorViewModel : BaseViewModel {
     }
 
     private async Task ImportFontSettings() {
-        var result = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>();
+        var result = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>("Import Font Settings");
 
         if (result.SpriteSheet != null && result.PackagedAssetId != Guid.Empty) {
             var font = result.SpriteSheet.GetAssets<SpriteSheetFont>().FirstOrDefault(x => x.Id == result.PackagedAssetId);

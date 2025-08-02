@@ -278,7 +278,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         if (!collection.TryCreateNewMember(out var newMember)) {
             var types = this._assemblyService.LoadTypes(collection.MemberType).ToList();
             if (types.Any()) {
-                var selectedType = await this._dialogService.OpenTypeSelectionDialog(types, types.First());
+                var selectedType = await this._dialogService.OpenTypeSelectionDialog(types, types.First(), "Make a Selection");
                 if (Activator.CreateInstance(selectedType) is SpriteSheetMember member) {
                     newMember = member;
                 }
@@ -447,7 +447,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private async Task FindContentUsages(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
             if (this._sceneService.CurrentScene.GetDescendentsWithContent(node.Id).Any()) {
-                var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id);
+                var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id, "Select an Entity");
 
                 if (!Entity.IsNullOrEmpty(entity, out var found)) {
                     Dispatcher.UIThread.Post(() =>

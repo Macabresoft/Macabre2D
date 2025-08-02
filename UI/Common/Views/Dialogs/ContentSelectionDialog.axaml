@@ -8,7 +8,7 @@
                        CanResize="False"
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
-                       Title="Make a Selection"
+                       Title="{Binding Title}"
                        VectorIcon="{StaticResource DirectoryIcon}">
     <avaloniaEx:BaseDialog.Styles>
         <Style Selector="avaloniaEx|EditableSelectableItem">

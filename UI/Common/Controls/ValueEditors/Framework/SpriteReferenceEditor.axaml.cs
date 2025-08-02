@@ -62,7 +62,7 @@ public partial class SpriteReferenceEditor : BaseSpriteSheetReferenceEditor<Spri
     }
 
     protected override async Task Select() {
-        var (spriteSheet, spriteIndex) = await this.DialogService.OpenSpriteSelectionDialog();
+        var (spriteSheet, spriteIndex) = await this.DialogService.OpenSpriteSelectionDialog(this.Title);
         if (spriteSheet != null) {
             var originalAsset = this.Value.Asset;
             var originalIndex = this.Value.SpriteIndex;

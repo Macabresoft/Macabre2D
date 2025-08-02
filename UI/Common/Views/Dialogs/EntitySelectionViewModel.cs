@@ -22,7 +22,9 @@ public class EntitySelectionViewModel : BaseDialogViewModel {
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="desiredAssetType">The desired asset type.</param>
-    public EntitySelectionViewModel(ISceneService sceneService, Type desiredAssetType) : this() {
+    /// <param name="title">The title of the window.</param>
+    public EntitySelectionViewModel(ISceneService sceneService, Type desiredAssetType, string title) : this() {
+        this.Title = title;
         this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, desiredAssetType);
     }
 
@@ -31,9 +33,16 @@ public class EntitySelectionViewModel : BaseDialogViewModel {
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="contentId">The content identifier.</param>
-    public EntitySelectionViewModel(ISceneService sceneService, Guid contentId) : this() {
+    /// <param name="title">The title of the window.</param>
+    public EntitySelectionViewModel(ISceneService sceneService, Guid contentId, string title) : this() {
+        this.Title = title;
         this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, contentId);
     }
+    
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <summary>
     /// Gets the scene as a <see cref="FilteredEntityWrapper" />.
