@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -56,6 +57,8 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
                 if (this._packagedAsset != null) {
                     this._packagedAsset.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
                 }
+                
+                this.RaisePropertyChanged(nameof(this.AssetName));
             }
         }
     }
