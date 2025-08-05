@@ -6,12 +6,12 @@
 public readonly record struct TextCharacter {
 
     /// <summary>
-    /// Gets the sprite index.
+    /// The sprite index.
     /// </summary>
     public readonly byte SpriteIndex;
 
     /// <summary>
-    /// Gets the width.
+    /// The width.
     /// </summary>
     public readonly float Width;
 

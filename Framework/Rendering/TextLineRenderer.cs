@@ -99,7 +99,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
             return this.SpriteSheet?.DefaultRenderPriority ?? default;
         }
-        
+
         set {
             this.RenderPriorityOverride.IsEnabled = true;
             this.RenderPriorityOverride.Value = value;
@@ -236,8 +236,25 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this._fontReference != null) {
-            this.RenderWithFont(this._fontReference, colorOverride);
+        if (!this.BoundingArea.IsEmpty && this.SpriteBatch is { } spriteBatch) {
+            if (this.ShouldScroll && this.WidthOverride.IsEnabled) {
+                this.TextLine.Render(
+                    spriteBatch,
+                    colorOverride,
+                    this.GetTextStartPosition(),
+                    this.Project.PixelsPerUnit,
+                    this.RenderOptions.Orientation,
+                    this.WidthOverride.Value,
+                    this._offset);
+            }
+            else {
+                this.TextLine.Render(
+                    spriteBatch,
+                    colorOverride,
+                    this.GetTextStartPosition(),
+                    this.Project.PixelsPerUnit,
+                    this.RenderOptions.Orientation);
+            }
         }
     }
 
@@ -378,31 +395,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this._boundingArea.Reset();
-        }
-    }
-
-    private void RenderWithFont(SpriteSheetFontReference fontReference, Color color) {
-        if (!this.BoundingArea.IsEmpty && fontReference is { Asset: { } spriteSheet } && this.SpriteBatch is { } spriteBatch) {
-            if (this.ShouldScroll && this.WidthOverride.IsEnabled) {
-                this.TextLine.Render(
-                    spriteBatch,
-                    spriteSheet,
-                    color,
-                    this.GetTextStartPosition(),
-                    this.Project.PixelsPerUnit,
-                    this.RenderOptions.Orientation,
-                    this.WidthOverride.Value,
-                    this._offset);
-            }
-            else {
-                this.TextLine.Render(
-                    spriteBatch,
-                    spriteSheet,
-                    color,
-                    this.GetTextStartPosition(),
-                    this.Project.PixelsPerUnit,
-                    this.RenderOptions.Orientation);
-            }
         }
     }
 

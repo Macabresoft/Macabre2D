@@ -82,14 +82,7 @@ public class TextLine {
         else {
             this.Width = 0f;
         }
-
-        this.IsEmpty = this._words.Count == 0;
     }
-
-    /// <summary>
-    /// Gets a value indicating whether this is empty.
-    /// </summary>
-    public bool IsEmpty { get; }
 
     /// <summary>
     /// Gets the width of this text line. This represents the words and spaces.
@@ -130,47 +123,46 @@ public class TextLine {
         var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
         var words = TextWord.CreateTextWords(project, text, font, kerning);
         var currentLineWidth = 0f;
-        var psuedoLines = new List<List<TextWord>>();
-        var currentPsuedoLine = new List<TextWord>();
-        psuedoLines.Add(currentPsuedoLine);
+        var pseudoLines = new List<List<TextWord>>();
+        var currentPseudoLine = new List<TextWord>();
+        pseudoLines.Add(currentPseudoLine);
 
         foreach (var word in words) {
             currentLineWidth += word.Width;
-            if (currentPsuedoLine.Count == 0 || currentLineWidth < maxWidth) {
-                currentPsuedoLine.Add(word);
+            if (currentPseudoLine.Count == 0 || currentLineWidth < maxWidth) {
+                currentPseudoLine.Add(word);
             }
             else {
                 currentLineWidth = word.Width;
-                currentPsuedoLine = [word];
-                psuedoLines.Add(currentPsuedoLine);
+                currentPseudoLine = [word];
+                pseudoLines.Add(currentPseudoLine);
             }
 
             currentLineWidth += spaceWidth;
         }
 
-        return psuedoLines.Select(psuedoLine => new TextLine(textAlignment, maxWidth, spaceWidth, psuedoLine)).ToList();
+        return pseudoLines.Select(psuedoLine => new TextLine(textAlignment, maxWidth, spaceWidth, psuedoLine)).ToList();
     }
 
     /// <summary>
     /// Renders this text line given a start position.
     /// </summary>
     /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="colorOverride">The color override.</param>
     /// <param name="position">The start position.</param>
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="orientation">The orientation.</param>
     public void Render(
         SpriteBatch spriteBatch,
-        SpriteSheet spriteSheet,
         Color colorOverride,
         Vector2 position,
         ushort pixelsPerUnit,
         SpriteEffects orientation) {
         foreach (var (word, xPosition) in this._words) {
             var currentPosition = new Vector2(position.X + xPosition, position.Y);
+
             foreach (var character in word.Characters) {
-                spriteSheet.Draw(
+                word.SpriteSheet.Draw(
                     spriteBatch,
                     pixelsPerUnit,
                     character.SpriteIndex,
@@ -187,7 +179,6 @@ public class TextLine {
     /// Renders this text line given a start position.
     /// </summary>
     /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="colorOverride">The color override.</param>
     /// <param name="position">The start position.</param>
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
@@ -196,7 +187,6 @@ public class TextLine {
     /// <param name="offset">The offset.</param>
     public void Render(
         SpriteBatch spriteBatch,
-        SpriteSheet spriteSheet,
         Color colorOverride,
         Vector2 position,
         ushort pixelsPerUnit,
@@ -215,7 +205,7 @@ public class TextLine {
                 }
 
                 if (characterPosition >= offset) {
-                    spriteSheet.Draw(
+                    word.SpriteSheet.Draw(
                         spriteBatch,
                         pixelsPerUnit,
                         character.SpriteIndex,

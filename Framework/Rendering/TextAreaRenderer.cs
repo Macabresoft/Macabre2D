@@ -150,7 +150,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
             return this._spriteSheet?.DefaultRenderPriority ?? default;
         }
-        
+
         set {
             this.RenderPriorityOverride.IsEnabled = true;
             this.RenderPriorityOverride.Value = value;
@@ -259,7 +259,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
                 if (currentPosition.Y >= this.BoundingArea.Minimum.Y && currentPosition.Y + this.CharacterHeight <= topPosition) {
                     line.Render(
                         spriteBatch,
-                        this._spriteSheet,
                         colorOverride,
                         currentPosition,
                         this.Project.PixelsPerUnit,
