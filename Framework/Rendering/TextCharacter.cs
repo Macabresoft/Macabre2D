@@ -26,4 +26,14 @@ public readonly record struct TextCharacter {
         this.SpriteIndex = character.SpriteIndex;
         this.Width = font.GetCharacterWidth(character, kerning, project);
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextCharacter" /> class.
+    /// </summary>
+    /// <param name="spriteIndex">The sprite index.</param>
+    /// <param name="width">The width.</param>
+    public TextCharacter(byte spriteIndex, float width) {
+        this.SpriteIndex = spriteIndex;
+        this.Width = width;
+    }
 }

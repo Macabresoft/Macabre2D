@@ -414,7 +414,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
 
         if (this.Font != null) {
             var actualText = this.GetFullText();
-            this.TextLine = TextLine.CreateTextLine(this.Project, actualText, this.Font, this.Kerning);
+            this.TextLine = TextLine.CreateTextLine(this.Project, this.Game.InputActionIconResolver, actualText, this.Font, this.Kerning);
         }
     }
 

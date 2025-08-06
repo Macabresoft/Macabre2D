@@ -93,13 +93,14 @@ public class TextLine {
     /// Creates a single text line from text.
     /// </summary>
     /// <param name="project">The project.</param>
+    /// <param name="iconResolver">The icon resolver.</param>
     /// <param name="text">The text.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The kerning.</param>
     /// <returns>The created text line.</returns>
-    public static TextLine CreateTextLine(IGameProject project, string text, SpriteSheetFont font, int kerning) {
+    public static TextLine CreateTextLine(IGameProject project, IInputActionIconResolver iconResolver, string text, SpriteSheetFont font, int kerning) {
         var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
-        var words = TextWord.CreateTextWords(project, text, font, kerning);
+        var words = TextWord.CreateTextWords(project, iconResolver, text, font, kerning);
         return new TextLine(TextAlignment.Left, 0f, spaceWidth, words);
     }
 
@@ -107,6 +108,7 @@ public class TextLine {
     /// Creates multiple lines of text given a maximum width and a text alignment.
     /// </summary>
     /// <param name="project">The project.</param>
+    /// <param name="iconResolver">The icon resolver.</param>
     /// <param name="text">The text.</param>
     /// <param name="maxWidth">The max width.</param>
     /// <param name="font">The font.</param>
@@ -115,13 +117,14 @@ public class TextLine {
     /// <returns>The created text lines.</returns>
     public static IReadOnlyCollection<TextLine> CreateTextLines(
         IGameProject project,
+        IInputActionIconResolver iconResolver,
         string text,
         float maxWidth,
         SpriteSheetFont font,
         int kerning,
         TextAlignment textAlignment) {
         var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
-        var words = TextWord.CreateTextWords(project, text, font, kerning);
+        var words = TextWord.CreateTextWords(project, iconResolver, text, font, kerning);
         var currentLineWidth = 0f;
         var pseudoLines = new List<List<TextWord>>();
         var currentPseudoLine = new List<TextWord>();
@@ -141,7 +144,7 @@ public class TextLine {
             currentLineWidth += spaceWidth;
         }
 
-        return pseudoLines.Select(psuedoLine => new TextLine(textAlignment, maxWidth, spaceWidth, psuedoLine)).ToList();
+        return pseudoLines.Select(pseudoLine => new TextLine(textAlignment, maxWidth, spaceWidth, pseudoLine)).ToList();
     }
 
     /// <summary>

@@ -46,7 +46,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// </summary>
     public float CharacterHeight { get; private set; }
 
-
     /// <summary>
     /// Gets or sets a value indicating whether this should constrain height vertically.
     /// </summary>
@@ -359,7 +358,16 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
 
         if (this._font != null && this._spriteSheet != null) {
             this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
-            this._textLines.AddRange(TextLine.CreateTextLines(this.Project, this.GetFullText(), this.Width, this._font, this.Kerning, this.HorizontalAlignment));
+            var textLines = TextLine.CreateTextLines(
+                this.Project,
+                this.Game.InputActionIconResolver,
+                this.GetFullText(),
+                this.Width,
+                this._font,
+                this.Kerning,
+                this.HorizontalAlignment);
+
+            this._textLines.AddRange(textLines);
             this.TextHeight = this.CharacterHeight * this._textLines.Count;
         }
     }

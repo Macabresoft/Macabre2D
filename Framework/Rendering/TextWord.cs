@@ -9,9 +9,9 @@ using Macabresoft.Macabre2D.Project.Common;
 /// Represents a single word in a <see cref="TextLine" />.
 /// </summary>
 public class TextWord {
-    private const char InputActionStartToken = '{';
     private const char InputActionEndToken = '}';
-    
+    private const char InputActionStartToken = '{';
+
     private TextWord(IGameProject project, SpriteSheet spriteSheet, SpriteSheetFont font, int kerning, string word) {
         var fontCharacters = new List<SpriteSheetFontCharacter>();
 
@@ -31,11 +31,17 @@ public class TextWord {
         this.SpriteSheet = spriteSheet;
     }
 
+    private TextWord(IReadOnlyCollection<TextCharacter> characters, SpriteSheet spriteSheet) {
+        this.Characters = characters;
+        this.SpriteSheet = spriteSheet;
+        this.Width = characters.Sum(x => x.Width);
+    }
+
     /// <summary>
     /// Gets the characters in this word.
     /// </summary>
     public IReadOnlyCollection<TextCharacter> Characters { get; }
-    
+
     /// <summary>
     /// Gets the sprite sheet for this word.
     /// </summary>
@@ -50,11 +56,17 @@ public class TextWord {
     /// Creates a collection of <see cref="TextWord" />.
     /// </summary>
     /// <param name="project">The project.</param>
+    /// <param name="iconResolver">The icon resolver.</param>
     /// <param name="text">The text.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The kerning.</param>
     /// <returns>A collection of words.</returns>
-    public static IReadOnlyCollection<TextWord> CreateTextWords(IGameProject project, string text, SpriteSheetFont font, int kerning) {
+    public static IReadOnlyCollection<TextWord> CreateTextWords(
+        IGameProject project,
+        IInputActionIconResolver iconResolver,
+        string text,
+        SpriteSheetFont font,
+        int kerning) {
         var result = new List<TextWord>();
 
         if (font.SpriteSheet is { } spriteSheet) {
@@ -62,9 +74,11 @@ public class TextWord {
             foreach (var word in splitWords) {
                 if (word.StartsWith(InputActionStartToken) && word.EndsWith(InputActionEndToken)) {
                     var inputActionString = word[1..^1];
-                    if (Enum.TryParse<InputAction>(inputActionString, out var action)) {
-                        // TODO: make an input action word
-                        result.Add(new TextWord(project, spriteSheet, font, kerning, action.ToString().ToUpper()));
+                    if (Enum.TryParse<InputAction>(inputActionString, out var action) &&
+                        iconResolver.TryGetIcon(action, InputDevice.Auto, InputActionDisplayMode.Primary, out var iconSpriteSheet, out var spriteIndex, out var iconKerning)) {
+                        var width = project.UnitsPerPixel * (iconSpriteSheet.SpriteSize.X + iconKerning + kerning);
+                        var textCharacter = new TextCharacter(spriteIndex.Value, width);
+                        result.Add(new TextWord([textCharacter], iconSpriteSheet));
                     }
                     else {
                         result.Add(new TextWord(project, spriteSheet, font, kerning, $"ERROR:{word}"));

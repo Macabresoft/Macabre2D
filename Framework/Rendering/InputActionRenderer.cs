@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -29,10 +28,6 @@ public class InputActionRenderer : BaseSpriteEntity {
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private InputDevice _inputDeviceToRender = InputDevice.Auto;
     private int _kerning;
-    private Keys _key = Keys.None;
-    private MouseButton _mouseButton = MouseButton.None;
-    private Buttons _primaryButton = Buttons.None;
-    private Buttons _secondaryButton = Buttons.None;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
 
@@ -40,39 +35,6 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// Indicates that the size of this element has changed.
     /// </summary>
     public event EventHandler? SizeChanged;
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
-    /// </summary>
-    [DataMember]
-    public GamePadIconSetReference GamePadNReference { get; } = new();
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
-    /// </summary>
-    [DataMember]
-    public GamePadIconSetReference GamePadSReference { get; } = new();
-
-    /// <summary>
-    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
-    /// </summary>
-    [DataMember]
-    public GamePadIconSetReference GamePadXReference { get; } = new();
-
-    /// <summary>
-    /// Gets the icon set reference for keyboards.
-    /// </summary>
-    [DataMember]
-    public KeyboardIconSetReference KeyboardReference { get; } = new();
-
-    /// <summary>
-    /// Gets the icon set reference for the mouse.
-    /// </summary>
-    [DataMember]
-    public MouseButtonIconSetReference MouseReference { get; } = new();
-
-    /// <inheritdoc />
-    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <summary>
     /// Gets the input action to display.
@@ -83,7 +45,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         set {
             if (value != this._action) {
                 this._action = value;
-                this.ResetBindings();
+                this.RequestRefresh();
             }
         }
     }
@@ -103,6 +65,24 @@ public class InputActionRenderer : BaseSpriteEntity {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
+    /// </summary>
+    [DataMember]
+    public GamePadIconSetReference GamePadNReference { get; } = new();
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad S".
+    /// </summary>
+    [DataMember]
+    public GamePadIconSetReference GamePadSReference { get; } = new();
+
+    /// <summary>
+    /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad X".
+    /// </summary>
+    [DataMember]
+    public GamePadIconSetReference GamePadXReference { get; } = new();
 
     /// <summary>
     /// Gets the input device to render.
@@ -131,6 +111,21 @@ public class InputActionRenderer : BaseSpriteEntity {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the icon set reference for keyboards.
+    /// </summary>
+    [DataMember]
+    public KeyboardIconSetReference KeyboardReference { get; } = new();
+
+    /// <summary>
+    /// Gets the icon set reference for the mouse.
+    /// </summary>
+    [DataMember]
+    public MouseButtonIconSetReference MouseReference { get; } = new();
+
+    /// <inheritdoc />
+    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <inheritdoc />
     protected override SpriteSheet? SpriteSheet => this._spriteSheet;
@@ -161,7 +156,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
         this.Game.InputBindings.BindingChanged += this.InputBindings_BindingChanged;
-        this.ResetBindings();
+        this.ResetSprite();
     }
 
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
@@ -194,17 +189,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void Game_SettingsSaved(object? sender, EventArgs e) {
-        this.ResetBindings();
-    }
-
-    private static Buttons GetFirst(Buttons buttons) {
-        if (buttons == Buttons.None) {
-            return buttons;
-        }
-
-        var allButtons = Enum.GetValues<Buttons>().ToList();
-        allButtons.Remove(Buttons.None);
-        return allButtons.FirstOrDefault(x => buttons.HasFlag(x));
+        this.RequestRefresh();
     }
 
     private GamePadIconSet? GetGamePadIconSet() {
@@ -225,7 +210,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private void InputBindings_BindingChanged(object? sender, InputAction e) {
-        this.ResetBindings();
+        this.RequestRefresh();
     }
 
     private void RequestRefresh() {
@@ -234,62 +219,22 @@ public class InputActionRenderer : BaseSpriteEntity {
         }
     }
 
-    private void ResetBindings() {
-        if (this.IsInitialized) {
-            if (this.Game.InputBindings.TryGetBindings(this._action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton)) {
-                this._primaryButton = GetFirst(primaryButton);
-                this._secondaryButton = GetFirst(secondaryButton);
-                this._key = key;
-                this._mouseButton = mouseButton;
-            }
-
-            this.ResetSprite();
-        }
-    }
-
     private void ResetSprite() {
         this._currentKerning = this.Kerning;
         this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
 
-        this._spriteIndex = null;
-        this._spriteSheet = null;
-
         var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
-        if (inputDevice == InputDevice.KeyboardMouse) {
-            if (this.DisplayMode == InputActionDisplayMode.SecondaryOnly || this.DisplayMode == InputActionDisplayMode.SecondaryThenPrimary && this._mouseButton != MouseButton.None) {
-                var iconSet = this.GetMouseButtonIconSet();
-                if (iconSet != null && iconSet.TryGetSpriteIndex(this._mouseButton, out var index)) {
-                    this._spriteIndex = index;
-                    this._spriteSheet = iconSet.SpriteSheet;
-                    this._currentKerning += iconSet.GetKerning(this._mouseButton);
-                }
-            }
-            else if (this._key != Keys.None) {
-                var iconSet = this.GetKeyboardIconSet();
-                if (iconSet != null && iconSet.TryGetSpriteIndex(this._key, out var index)) {
-                    this._spriteIndex = index;
-                    this._spriteSheet = iconSet.SpriteSheet;
-                    this._currentKerning += iconSet.GetKerning(this._key);
-                }
-            }
-        }
-        else if (this.DisplayMode == InputActionDisplayMode.SecondaryOnly || this.DisplayMode == InputActionDisplayMode.SecondaryThenPrimary && this._secondaryButton != Buttons.None) {
-            var iconSet = this.GetGamePadIconSet();
-
-            if (iconSet != null && iconSet.TryGetSpriteIndex(this._secondaryButton, out var index)) {
-                this._spriteIndex = index;
-                this._spriteSheet = iconSet.SpriteSheet;
-                this._currentKerning += iconSet.GetKerning(this._secondaryButton);
-            }
-        }
-        else if (this._primaryButton != Buttons.None) {
-            var iconSet = this.GetGamePadIconSet();
-
-            if (iconSet != null && iconSet.TryGetSpriteIndex(this._primaryButton, out var index)) {
-                this._spriteIndex = index;
-                this._spriteSheet = iconSet.SpriteSheet;
-                this._currentKerning += iconSet.GetKerning(this._primaryButton);
-            }
+        if (this.Game.InputActionIconResolver.TryGetIcon(
+                this.Action,
+                inputDevice,
+                this.DisplayMode,
+                this.GetGamePadIconSet(),
+                this.GetKeyboardIconSet(),
+                this.GetMouseButtonIconSet(),
+                out this._spriteSheet,
+                out this._spriteIndex,
+                out var kerning)) {
+            this._currentKerning += kerning;
         }
 
         this.Reset();

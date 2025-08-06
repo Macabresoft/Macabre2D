@@ -124,6 +124,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public IInputActionIconResolver InputActionIconResolver { get; } = new InputActionIconResolver();
+
+    /// <inheritdoc />
     public InputBindings InputBindings => this.UserSettings.Input;
 
     /// <inheritdoc />
@@ -176,6 +179,7 @@ public class BaseGame : Game, IGame {
     /// <summary>
     /// Gets the graphics device manager.
     /// </summary>
+    // ReSharper disable once MemberCanBePrivate.Global
     protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
@@ -360,6 +364,7 @@ public class BaseGame : Game, IGame {
             }
         }
 
+        this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
         this.Overlay.Initialize(this, this.CreateAssetManager());
@@ -582,6 +587,7 @@ public class BaseGame : Game, IGame {
         }
 
         public GraphicsDevice? GraphicsDevice => null;
+        public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
         public InputBindings InputBindings => this.UserSettings.Input;
         public LaunchArguments LaunchArguments => LaunchArguments.None;
         public IScene Overlay => EmptyObject.Scene;

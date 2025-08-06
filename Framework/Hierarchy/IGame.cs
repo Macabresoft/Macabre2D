@@ -77,6 +77,11 @@ public interface IGame {
     GraphicsDevice? GraphicsDevice { get; }
 
     /// <summary>
+    /// Gets the input action icon resolver.
+    /// </summary>
+    IInputActionIconResolver InputActionIconResolver { get; }
+
+    /// <summary>
     /// Gets the input bindings.
     /// </summary>
     InputBindings InputBindings { get; }
