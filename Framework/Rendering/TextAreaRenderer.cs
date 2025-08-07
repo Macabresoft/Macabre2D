@@ -120,6 +120,12 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether color should be ignored when rendering icons.
+    /// </summary>
+    [DataMember]
+    public bool IgnoreColorForIcons { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
     /// </summary>
     [DataMember]
@@ -261,7 +267,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
                         colorOverride,
                         currentPosition,
                         this.Project.PixelsPerUnit,
-                        this.RenderOptions.Orientation);
+                        this.RenderOptions.Orientation, this.IgnoreColorForIcons);
                 }
 
                 currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this.CharacterHeight);

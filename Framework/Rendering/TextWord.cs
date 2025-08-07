@@ -33,6 +33,7 @@ public class TextWord {
 
     private TextWord(IReadOnlyCollection<TextCharacter> characters, SpriteSheet spriteSheet) {
         this.Characters = characters;
+        this.IsIcon = true;
         this.SpriteSheet = spriteSheet;
         this.Width = characters.Sum(x => x.Width);
     }
@@ -41,6 +42,11 @@ public class TextWord {
     /// Gets the characters in this word.
     /// </summary>
     public IReadOnlyCollection<TextCharacter> Characters { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this represents an icon.
+    /// </summary>
+    public bool IsIcon { get; }
 
     /// <summary>
     /// Gets the sprite sheet for this word.

@@ -74,6 +74,12 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether color should be ignored when rendering icons.
+    /// </summary>
+    [DataMember]
+    public bool IgnoreColorForIcons { get; set; } = true;
+
     /// <inheritdoc />
     [DataMember]
     public int Kerning {
@@ -244,6 +250,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
                     this.GetTextStartPosition(),
                     this.Project.PixelsPerUnit,
                     this.RenderOptions.Orientation,
+                    this.IgnoreColorForIcons,
                     this.WidthOverride.Value,
                     this._offset);
             }
@@ -253,7 +260,8 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
                     colorOverride,
                     this.GetTextStartPosition(),
                     this.Project.PixelsPerUnit,
-                    this.RenderOptions.Orientation);
+                    this.RenderOptions.Orientation,
+                    this.IgnoreColorForIcons);
             }
         }
     }
