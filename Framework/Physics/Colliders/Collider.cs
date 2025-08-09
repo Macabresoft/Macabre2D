@@ -35,13 +35,13 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
-    /// <inheritdoc />
-    public BoundingArea BoundingArea => this._boundingArea.Value;
-
     /// <summary>
     /// Gets the body that this collider is attached to.
     /// </summary>
     public IPhysicsBody? Body { get; private set; }
+
+    /// <inheritdoc />
+    public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
     /// Gets or sets the layers.
@@ -173,7 +173,12 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// </summary>
     /// <param name="body">The body.</param>
     public void Initialize(IPhysicsBody body) {
+        if (this.Body != null) {
+            this.Body.TransformChanged -= this.Body_TransformChanged;
+        }
+
         this.Body = body;
+        this.Body.TransformChanged += this.Body_TransformChanged;
         this.Reset();
     }
 
@@ -300,4 +305,8 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// <param name="result">The result.</param>
     /// <returns>A value indicating whether a hit occurred.</returns>
     protected abstract bool TryHit(LineSegment ray, out RaycastHit result);
+
+    private void Body_TransformChanged(object? sender, EventArgs e) {
+        this.ResetLazyFields();
+    }
 }

@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 
@@ -30,9 +29,6 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     public override BoundingArea BoundingArea => this.Collider.BoundingArea;
 
     /// <inheritdoc />
-    public override bool HasCollider => true;
-
-    /// <inheritdoc />
     [DataMember(Order = 0)]
     [Category("Collider")]
     public Collider Collider {
@@ -48,6 +44,9 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     }
 
     /// <inheritdoc />
+    public override bool HasCollider => true;
+
+    /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
         return new[] { this.Collider };
     }
@@ -61,7 +60,7 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
-        this._collider.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void Collider_BoundingAreaChanged(object? sender, EventArgs e) {
