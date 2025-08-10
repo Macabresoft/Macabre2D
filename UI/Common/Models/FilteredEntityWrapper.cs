@@ -39,7 +39,7 @@ public class FilteredEntityWrapper {
 
         var children = new List<FilteredEntityWrapper>(
             this.Entity.Children
-                .Where(x => x.ReferencesContent(contentId) || x.GetDescendentsWithContent(this.ContentId).Any())
+                .Where(x => x.ReferencesContent(contentId) || x.GetDescendantsWithContent(this.ContentId).Any())
                 .Select(x => new FilteredEntityWrapper(x, contentId)));
 
         this.Children = children;

@@ -111,11 +111,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEnumerable<IEntity> GetDescendants(Type type);
 
     /// <summary>
-    /// Gets all descendents that contain the specified content.
+    /// Gets all descendants that contain the specified content.
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
     /// <returns>The entities with that content.</returns>
-    IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId);
+    IEnumerable<IEntity> GetDescendantsWithContent(Guid contentId);
 
     /// <summary>
     /// Gets the child of the specified type if it exists; otherwise, adds a new child.
@@ -401,12 +401,12 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) {
+    public IEnumerable<IEntity> GetDescendantsWithContent(Guid contentId) {
         foreach (var child in this.Children.Where(x => x.ReferencesContent(contentId))) {
             yield return child;
         }
 
-        foreach (var child in this.Children.SelectMany(x => x.GetDescendentsWithContent(contentId))) {
+        foreach (var child in this.Children.SelectMany(x => x.GetDescendantsWithContent(contentId))) {
             yield return child;
         }
     }

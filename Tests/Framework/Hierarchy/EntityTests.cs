@@ -199,7 +199,7 @@ public static class EntityTests {
 
         using (new AssertionScope()) {
             contentCount.Should().BePositive();
-            parent.GetDescendentsWithContent(contentId).Count().Should().Be(contentCount);
+            parent.GetDescendantsWithContent(contentId).Count().Should().Be(contentCount);
         }
     }
 
@@ -211,7 +211,7 @@ public static class EntityTests {
         child.SpriteReference.ContentId = Guid.NewGuid();
 
         using (new AssertionScope()) {
-            parent.GetDescendentsWithContent(Guid.NewGuid()).Count().Should().Be(0);
+            parent.GetDescendantsWithContent(Guid.NewGuid()).Count().Should().Be(0);
         }
     }
 
@@ -222,7 +222,7 @@ public static class EntityTests {
         var child = parent.AddChild<SpriteRenderer>();
         child.SpriteReference.ContentId = Guid.NewGuid();
 
-        var descendents = parent.GetDescendentsWithContent(child.SpriteReference.ContentId).ToList();
+        var descendents = parent.GetDescendantsWithContent(child.SpriteReference.ContentId).ToList();
 
         using (new AssertionScope()) {
             descendents.Count().Should().Be(1);
@@ -237,7 +237,7 @@ public static class EntityTests {
         entity.SpriteReference.ContentId = Guid.NewGuid();
 
         using (new AssertionScope()) {
-            entity.GetDescendentsWithContent(entity.SpriteReference.ContentId).Count().Should().Be(0);
+            entity.GetDescendantsWithContent(entity.SpriteReference.ContentId).Count().Should().Be(0);
         }
     }
 

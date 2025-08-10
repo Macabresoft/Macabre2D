@@ -431,7 +431,7 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public IEnumerable<IEntity> GetDescendants(Type type) => [];
 
     /// <inheritdoc />
-    public IEnumerable<IEntity> GetDescendentsWithContent(Guid contentId) => [];
+    public IEnumerable<IEntity> GetDescendantsWithContent(Guid contentId) => [];
 
     /// <inheritdoc />
     public string GetFullText() => string.Empty;

@@ -446,7 +446,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private async Task FindContentUsages(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
-            if (this._sceneService.CurrentScene.GetDescendentsWithContent(node.Id).Any()) {
+            if (this._sceneService.CurrentScene.GetDescendantsWithContent(node.Id).Any()) {
                 var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id, "Select an Entity");
 
                 if (!Entity.IsNullOrEmpty(entity, out var found)) {
