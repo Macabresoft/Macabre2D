@@ -9,9 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// Camera for the editor.
 /// </summary>
 public class EditorCamera : Camera {
-    
-    
-    
     /// <inheritdoc />
     protected override Vector2 CreateSize() => new(this.Game.ViewportSize.X, this.Game.ViewportSize.Y);
 }

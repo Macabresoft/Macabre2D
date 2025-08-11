@@ -24,7 +24,7 @@ public sealed class CameraController : UpdateableEntity {
     }
 
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Game is IAvaloniaGame game && this._camera != null) {
+        if (this.Game is IAvaloniaGame && this._camera != null) {
             var mouseState = inputState.CurrentMouseState;
             var keyboardState = inputState.CurrentKeyboardState;
             var previousMouseState = inputState.PreviousMouseState;
@@ -59,19 +59,19 @@ public sealed class CameraController : UpdateableEntity {
 
             if (!keyboardState.IsModifierKeyDown()) {
                 var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ActualViewHeight;
-                if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up)) {
+                if (keyboardState.IsKeyDown(Keys.W)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left)) {
+                if (keyboardState.IsKeyDown(Keys.A)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down)) {
+                if (keyboardState.IsKeyDown(Keys.S)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right)) {
+                if (keyboardState.IsKeyDown(Keys.D)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
 

@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
+using System.Diagnostics.CodeAnalysis;
 using Avalonia.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
@@ -37,7 +38,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
-        
+
         if (this.Game.GraphicsDevice is { } graphicsDevice) {
             this._xAxisArrowSprite = PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, GizmoPointSize);
             this._yAxisArrowSprite = PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, GizmoPointSize);
@@ -119,6 +120,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     public override bool Update(FrameTime frameTime, InputState inputState) {
         var result = base.Update(frameTime, inputState);
         var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
+        var snapToGrid = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
 
         if (inputState.IsMouseButtonNewlyPressed(MouseButton.Left)) {
             var axis = this.GetAxisUnderMouse(mousePosition);
@@ -130,8 +132,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
         else if (this.CurrentAxis != GizmoAxis.None) {
             if (this.EntityService.Selected is { } entity) {
                 if (inputState.IsMouseButtonHeld(MouseButton.Left)) {
-                    var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
-                    var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
+                    var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToGrid);
                     UpdatePosition(entity, newPosition);
                     this.ResetEndPoints();
                     result = true;
@@ -154,25 +155,22 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
             this.SetCursor(axis == GizmoAxis.None ? StandardCursorType.None : StandardCursorType.Hand);
         }
 
+        this.TryNudgeEntity(inputState, snapToGrid);
+
         return result;
     }
 
     /// <inheritdoc />
-    protected override bool ShouldBeEnabled() {
-        return this.EntityService.Selected != null && base.ShouldBeEnabled();
-    }
+    protected override bool ShouldBeEnabled() => this.EntityService.Selected != null && base.ShouldBeEnabled();
 
-    private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
+    private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToGrid) {
         var newPosition = this.CurrentAxis switch {
             GizmoAxis.X => mousePosition - (this.XAxisPosition - this.NeutralAxisPosition),
             GizmoAxis.Y => mousePosition - (this.YAxisPosition - this.NeutralAxisPosition),
             _ => mousePosition
         };
 
-        if (snapToAxis &&
-            this.EntityService.Selected != null &&
-            this.EntityService.Selected.TryGetAncestor<IGridContainer>(out var gridContainer) &&
-            gridContainer != null) {
+        if (snapToGrid && this.TryGetGridContainer(out var gridContainer)) {
             newPosition = gridContainer.GetNearestTilePosition(newPosition);
         }
 
@@ -197,6 +195,64 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
         }
         else {
             this.SetCursor(StandardCursorType.DragMove);
+        }
+    }
+
+    private bool TryGetGridContainer([NotNullWhen(true)] out IGridContainer gridContainer) {
+        gridContainer = null;
+        return this.EntityService.Selected?.TryGetAncestor(out gridContainer) == true;
+    }
+
+    private void TryNudgeEntity(InputState inputState, bool snapToGrid) {
+        if (this.EntityService.Selected is { } selected) {
+            var position = selected.WorldPosition;
+            var nudgeAmount = Vector2.Zero;
+
+            if (inputState.IsKeyNewlyPressed(Keys.Left)) {
+                nudgeAmount = new Vector2(-1f, nudgeAmount.Y);
+            }
+
+            if (inputState.IsKeyNewlyPressed(Keys.Up)) {
+                nudgeAmount = new Vector2(nudgeAmount.X, 1f);
+            }
+
+            if (inputState.IsKeyNewlyPressed(Keys.Right)) {
+                nudgeAmount = new Vector2(nudgeAmount.X + 1f, nudgeAmount.Y);
+            }
+
+            if (inputState.IsKeyNewlyPressed(Keys.Down)) {
+                nudgeAmount = new Vector2(nudgeAmount.X, nudgeAmount.Y - 1f);
+            }
+
+            if (nudgeAmount != Vector2.Zero) {
+                if (snapToGrid && this.TryGetGridContainer(out var gridContainer)) {
+                    nudgeAmount = new Vector2(nudgeAmount.X * gridContainer.TileSize.X, nudgeAmount.Y * gridContainer.TileSize.Y);
+                    position += nudgeAmount;
+
+                    if (nudgeAmount.X != 0f) {
+                        if (nudgeAmount.Y != 0f) {
+                            position = gridContainer.GetNearestTilePosition(position);
+                        }
+                        else {
+                            var gridPosition = gridContainer.GetNearestTilePosition(position);
+                            position = new Vector2(gridPosition.X, position.Y);
+                        }
+                    }
+                    else if (nudgeAmount.Y != 0f) {
+                        var gridPosition = gridContainer.GetNearestTilePosition(position);
+                        position = new Vector2(position.X, gridPosition.Y);
+                    }
+                }
+                else {
+                    nudgeAmount *= this.Project.UnitsPerPixel;
+                    position += nudgeAmount;
+                }
+                
+                var unmovedPosition = selected.WorldPosition;
+                this._undoService.Do(
+                    () => { UpdatePosition(selected, position); },
+                    () => { UpdatePosition(selected, unmovedPosition); });
+            }
         }
     }
 
