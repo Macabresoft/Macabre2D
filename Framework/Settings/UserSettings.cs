@@ -19,7 +19,7 @@ public class UserSettings : VersionedData {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
-    public UserSettings() : this(new AudioSettings(), new ColorSettings(), new DisplaySettings(), new InputBindings(), new CustomSettings()) {
+    public UserSettings() : this(new AudioSettings(), new RenderSettings(), new DisplaySettings(), new InputBindings(), new CustomSettings()) {
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public class UserSettings : VersionedData {
     /// <param name="project">The game project.</param>
     public UserSettings(IGameProject project) {
         this.Audio = project.DefaultUserSettings.Audio.Clone();
-        this.Colors = project.DefaultUserSettings.Colors.Clone();
+        this.Rendering = project.DefaultUserSettings.Rendering.Clone();
         this.Display = project.DefaultUserSettings.Display.Clone();
         this.Input = project.DefaultUserSettings.Input.Clone();
         this.Custom = project.DefaultUserSettings.Custom;
@@ -38,13 +38,13 @@ public class UserSettings : VersionedData {
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
     /// <param name="audio">The audio settings.</param>
-    /// <param name="colors">The color settings.</param>
+    /// <param name="rendering">The color settings.</param>
     /// <param name="display">The graphics settings.</param>
     /// <param name="inputBindings">The input bindings.</param>
     /// <param name="custom">The custom settings.</param>
-    public UserSettings(AudioSettings audio, ColorSettings colors, DisplaySettings display, InputBindings inputBindings, CustomSettings custom) {
+    public UserSettings(AudioSettings audio, RenderSettings rendering, DisplaySettings display, InputBindings inputBindings, CustomSettings custom) {
         this.Audio = audio;
-        this.Colors = colors;
+        this.Rendering = rendering;
         this.Display = display;
         this.Input = inputBindings;
         this.Custom = custom;
@@ -56,13 +56,6 @@ public class UserSettings : VersionedData {
     [DataMember]
     [Category(CommonCategories.Audio)]
     public AudioSettings Audio { get; }
-
-    /// <summary>
-    /// Gets the color settings.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Colors)]
-    public ColorSettings Colors { get; }
 
     /// <summary>
     /// Gets the custom user settings.
@@ -85,10 +78,17 @@ public class UserSettings : VersionedData {
     public InputBindings Input { get; }
 
     /// <summary>
+    /// Gets the color settings.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderSettings Rendering { get; }
+
+    /// <summary>
     /// Clones this instance.
     /// </summary>
     /// <returns>A clone of this instance.</returns>
-    public UserSettings Clone() => new(this.Audio, this.Colors, this.Display, this.Input, this.Custom);
+    public UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Custom);
 
     /// <summary>
     /// Copies settings to another instance.
@@ -96,7 +96,7 @@ public class UserSettings : VersionedData {
     /// <param name="settings">The other instance.</param>
     public void CopyTo(UserSettings settings) {
         this.Audio.CopyTo(settings.Audio);
-        this.Colors.CopyTo(settings.Colors);
+        this.Rendering.CopyTo(settings.Rendering);
         this.Display.CopyTo(settings.Display);
         this.Input.CopyTo(settings.Input);
         this.Custom.CopyTo(settings.Custom);

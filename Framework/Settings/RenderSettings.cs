@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Settings for colors that the user can specify.
+/// Settings for rendering. This includes colors and shaders.
 /// </summary>
 [DataContract]
-public class ColorSettings {
+public class RenderSettings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, Color> _renderPriorityToColor = new();
 
@@ -32,8 +32,8 @@ public class ColorSettings {
     /// Clones this instance.
     /// </summary>
     /// <returns>A clone of this instance.</returns>
-    public ColorSettings Clone() {
-        var settings = new ColorSettings();
+    public RenderSettings Clone() {
+        var settings = new RenderSettings();
         this.CopyTo(settings);
         return settings;
     }
@@ -42,7 +42,7 @@ public class ColorSettings {
     /// Copies color settings to another instance.
     /// </summary>
     /// <param name="other">The other instance.</param>
-    public void CopyTo(ColorSettings other) {
+    public void CopyTo(RenderSettings other) {
         other._renderPriorityToColor.Clear();
         foreach (var entry in this._renderPriorityToColor) {
             other._renderPriorityToColor[entry.Key] = entry.Value;

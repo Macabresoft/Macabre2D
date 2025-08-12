@@ -10,7 +10,7 @@ using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Unity;
 
-public partial class ColorSettingsEditor : ValueEditorControl<ColorSettings> {
+public partial class ColorSettingsEditor : ValueEditorControl<RenderSettings> {
 
     public static readonly DirectProperty<ColorSettingsEditor, Color> CurrentColorProperty =
         AvaloniaProperty.RegisterDirect<ColorSettingsEditor, Color>(
@@ -120,7 +120,7 @@ public partial class ColorSettingsEditor : ValueEditorControl<ColorSettings> {
         }
     }
     
-    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<ColorSettings> args) {
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<RenderSettings> args) {
         base.OnValueChanged(args);
         this.Reset();
     }

@@ -121,6 +121,13 @@ public class Camera : Entity, ICamera {
     [DataMember]
     public ColorOverride ColorOverride { get; } = new();
 
+    /// <summary>
+    /// Gets the shader reference to fall back to if a <see cref="RenderPriority" /> does not have a shader associated with it.
+    /// </summary>
+    [DataMember(Name = CommonCategories.Shader)]
+    [Category(CommonCategories.Shader)]
+    public ShaderReference FallbackShaderReference { get; } = new();
+
     /// <inheritdoc />
     [DataMember(Name = "Layers to Exclude")]
     public Layers LayersToExcludeFromRender { get; set; } = Layers.None;
@@ -168,13 +175,6 @@ public class Camera : Entity, ICamera {
     /// <value>The type of the sampler state.</value>
     [DataMember(Name = "Sampler State")]
     public SamplerStateType Sampler { get; set; } = SamplerStateType.PointClamp;
-
-    /// <summary>
-    /// Gets the shader reference.
-    /// </summary>
-    [DataMember(Name = CommonCategories.Shader)]
-    [Category(CommonCategories.Shader)]
-    public ShaderReference ShaderReference { get; } = new();
 
     /// <summary>
     /// Gets or sets the height of the view.
@@ -236,7 +236,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.ShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
     }
 
     /// <summary>
@@ -293,7 +293,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.ShaderReference;
+        yield return this.FallbackShaderReference;
     }
 
     /// <summary>
@@ -389,7 +389,7 @@ public class Camera : Entity, ICamera {
 
             foreach (var group in groupings) {
                 var entities = group.OrderBy(x => x.RenderOrder);
-                if (this.Game.UserSettings.Colors.TryGetColorForRenderPriority(group.Key, out var color)) {
+                if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(group.Key, out var color)) {
                     foreach (var entity in entities) {
                         entity.Render(frameTime, viewBoundingArea, color);
                     }
