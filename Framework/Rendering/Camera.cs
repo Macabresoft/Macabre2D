@@ -87,6 +87,7 @@ public interface ICamera : IBoundableEntity {
 /// </summary>
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private bool _overrideCommonViewHeight = true;
     private int _renderOrder;
@@ -114,12 +115,6 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
-
-    /// <summary>
-    /// Gets the color override.
-    /// </summary>
-    [DataMember]
-    public ColorOverride ColorOverride { get; } = new();
 
     /// <summary>
     /// Gets the shader reference to fall back to if a <see cref="RenderPriority" /> does not have a shader associated with it.
@@ -219,6 +214,7 @@ public class Camera : Entity, ICamera {
         base.Deinitialize();
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
+        this.Game.UserSettings.Rendering.ShaderChanged -= this.RenderOptions_ShaderChanged;
     }
 
     /// <inheritdoc />
@@ -228,15 +224,17 @@ public class Camera : Entity, ICamera {
         this.OffsetOptions.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
         this.ResetZoom();
+        this.InitializeShaders();
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
+        this.Game.UserSettings.Rendering.ShaderChanged += this.RenderOptions_ShaderChanged;
         this.ResetZoom();
     }
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.ColorOverride, this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
     }
 
     /// <summary>
@@ -348,8 +346,7 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
-    /// <param name="colorOverride">The color override.</param>
-    /// <param name="shader">The shader.</param>
+    /// <param name="fallbackShader">The shader.</param>
     protected virtual void Render(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
@@ -358,56 +355,57 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude,
-        ColorOverride colorOverride,
-        Effect? shader) {
-        spriteBatch?.Begin(
-            SpriteSortMode.Deferred,
-            BlendState.AlphaBlend,
-            this.Sampler.ToSamplerState(),
-            null,
-            RasterizerState.CullNone,
-            shader,
-            viewMatrix);
+        Effect? fallbackShader) {
+        var groupings = renderTree
+            .RetrievePotentialCollisions(viewBoundingArea)
+            .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+            .GroupBy(x => x.RenderPriority)
+            .OrderBy(x => x.Key);
 
-        if (colorOverride.IsEnabled) {
-            var entities = renderTree
-                .RetrievePotentialCollisions(viewBoundingArea)
-                .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-                .OrderBy(x => x.RenderPriority)
-                .ThenBy(x => x.RenderOrder);
-
-            foreach (var entity in entities) {
-                entity.Render(frameTime, viewBoundingArea, colorOverride.Value);
+        foreach (var group in groupings) {
+            var shader = fallbackShader;
+            if (this._renderPriorityToShader.TryGetValue(group.Key, out var shaderReference) && shaderReference.Asset?.Content is { } effect) {
+                shader = effect;
             }
-        }
-        else {
-            var groupings = renderTree
-                .RetrievePotentialCollisions(viewBoundingArea)
-                .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-                .GroupBy(x => x.RenderPriority)
-                .OrderBy(x => x.Key);
 
-            foreach (var group in groupings) {
-                var entities = group.OrderBy(x => x.RenderOrder);
-                if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(group.Key, out var color)) {
-                    foreach (var entity in entities) {
-                        entity.Render(frameTime, viewBoundingArea, color);
-                    }
-                }
-                else {
-                    foreach (var entity in entities) {
-                        entity.Render(frameTime, viewBoundingArea);
-                    }
+            spriteBatch?.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                this.Sampler.ToSamplerState(),
+                null,
+                RasterizerState.CullNone,
+                shader,
+                viewMatrix);
+
+            var entities = group.OrderBy(x => x.RenderOrder);
+            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(group.Key, out var color)) {
+                foreach (var entity in entities) {
+                    entity.Render(frameTime, viewBoundingArea, color);
                 }
             }
-        }
+            else {
+                foreach (var entity in entities) {
+                    entity.Render(frameTime, viewBoundingArea);
+                }
+            }
 
-        spriteBatch?.End();
+            spriteBatch?.End();
+        }
     }
 
     private void CalculateActualViewHeight() {
         this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.ViewHeight;
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
+    }
+
+    private void CreateAndInitializeShader(RenderPriority renderPriority, Guid shaderId) {
+        if (!this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
+            shaderReference = new ShaderReference();
+            this._renderPriorityToShader[renderPriority] = shaderReference;
+        }
+
+        shaderReference.ContentId = shaderId;
+        shaderReference.Initialize(this.Scene.Assets, this.Game);
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -443,9 +441,27 @@ public class Camera : Entity, ICamera {
         this.ResetZoom();
     }
 
+    private void InitializeShaders() {
+        var renderOptions = this.Game.UserSettings.Rendering;
+        foreach (var renderPriority in Enum.GetValues<RenderPriority>()) {
+            if (renderOptions.TryGetShaderIdForRenderPriority(renderPriority, out var shaderId)) {
+                this.CreateAndInitializeShader(renderPriority, shaderId);
+            }
+        }
+    }
+
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.OffsetOptions.Offset)) {
             this.OnScreenAreaChanged();
+        }
+    }
+
+    private void RenderOptions_ShaderChanged(object? sender, RenderPriority renderPriority) {
+        if (this.Game.UserSettings.Rendering.TryGetShaderIdForRenderPriority(renderPriority, out var shaderId)) {
+            this.CreateAndInitializeShader(renderPriority, shaderId);
+        }
+        else {
+            this._renderPriorityToShader.Remove(renderPriority);
         }
     }
 
