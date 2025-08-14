@@ -16,6 +16,7 @@ public class RenderSettings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, Color> _renderPriorityToColor = [];
 
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, Guid> _renderPriorityToShaderId = [];
 
     /// <summary>
@@ -105,8 +106,13 @@ public class RenderSettings {
     /// <param name="renderPriority">The render priority.</param>
     /// <param name="shaderId">The shader identifier.</param>
     public void SetRenderPriorityShader(RenderPriority renderPriority, Guid shaderId) {
-        this._renderPriorityToShaderId[renderPriority] = shaderId;
-        this.ShaderChanged.SafeInvoke(this, renderPriority);
+        if (shaderId != Guid.Empty) {
+            this._renderPriorityToShaderId[renderPriority] = shaderId;
+            this.ShaderChanged.SafeInvoke(this, renderPriority);
+        }
+        else {
+            this.RemoveRenderPriorityShader(renderPriority);
+        }
     }
 
     /// <summary>

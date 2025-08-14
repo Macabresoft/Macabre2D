@@ -191,7 +191,7 @@
           <DependentUpon>RenderPriorityOverrideEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\ColorSettingsEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\Framework\RenderSettingsEditor.axaml.cs">
           <DependentUpon>ColorSettingsEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
