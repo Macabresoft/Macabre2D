@@ -369,7 +369,7 @@ public class Camera : Entity, ICamera {
             if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(group.Key, out var shaderReference)) {
                 shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
             }
-            
+
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -398,16 +398,6 @@ public class Camera : Entity, ICamera {
     private void CalculateActualViewHeight() {
         this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.ViewHeight;
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
-    }
-
-    private void CreateAndInitializeShader(RenderPriority renderPriority, Guid shaderId) {
-        if (!this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
-            shaderReference = new ShaderReference();
-            this._renderPriorityToShader[renderPriority] = shaderReference;
-        }
-
-        shaderReference.ContentId = shaderId;
-        shaderReference.Initialize(this.Scene.Assets, this.Game);
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -446,8 +436,9 @@ public class Camera : Entity, ICamera {
     private void InitializeShaders() {
         var renderOptions = this.Game.UserSettings.Rendering;
         foreach (var renderPriority in Enum.GetValues<RenderPriority>()) {
-            if (renderOptions.TryGetShaderIdForRenderPriority(renderPriority, out var shaderId)) {
-                this.CreateAndInitializeShader(renderPriority, shaderId);
+            var shaderReference = renderOptions.GetShaderForRenderPriority(renderPriority);
+            if (shaderReference.ContentId != Guid.Empty) {
+                shaderReference.Initialize(this.Scene.Assets, this.Game);
             }
         }
     }
@@ -459,8 +450,9 @@ public class Camera : Entity, ICamera {
     }
 
     private void RenderOptions_ShaderChanged(object? sender, RenderPriority renderPriority) {
-        if (this.Game.UserSettings.Rendering.TryGetShaderIdForRenderPriority(renderPriority, out var shaderId)) {
-            this.CreateAndInitializeShader(renderPriority, shaderId);
+        var shaderReference = this.Game.UserSettings.Rendering.GetShaderForRenderPriority(renderPriority);
+        if (shaderReference.ContentId != Guid.Empty) {
+            shaderReference.Initialize(this.Scene.Assets, this.Game);
         }
         else {
             this._renderPriorityToShader.Remove(renderPriority);

@@ -17,7 +17,7 @@ public class RenderSettings {
     private readonly Dictionary<RenderPriority, Color> _renderPriorityToColor = [];
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<RenderPriority, Guid> _renderPriorityToShaderId = [];
+    private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShaderReference = [];
 
     /// <summary>
     /// Called when a color changes for a specific <see cref="RenderPriority" />.
@@ -34,7 +34,7 @@ public class RenderSettings {
     /// </summary>
     public void Clear() {
         this._renderPriorityToColor.Clear();
-        this._renderPriorityToShaderId.Clear();
+        this._renderPriorityToShaderReference.Clear();
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ public class RenderSettings {
             other._renderPriorityToColor[entry.Key] = entry.Value;
         }
 
-        foreach (var entry in this._renderPriorityToShaderId) {
-            other._renderPriorityToShaderId[entry.Key] = entry.Value;
+        foreach (var entry in this._renderPriorityToShaderReference) {
+            other._renderPriorityToShaderReference[entry.Key] = entry.Value;
         }
     }
 
@@ -86,7 +86,7 @@ public class RenderSettings {
     /// </summary>
     /// <param name="renderPriority">The render priority.</param>
     public void RemoveRenderPriorityShader(RenderPriority renderPriority) {
-        this._renderPriorityToShaderId.Remove(renderPriority);
+        this._renderPriorityToShaderReference.Remove(renderPriority);
         this.ShaderChanged.SafeInvoke(this, renderPriority);
     }
 
@@ -106,13 +106,12 @@ public class RenderSettings {
     /// <param name="renderPriority">The render priority.</param>
     /// <param name="shaderId">The shader identifier.</param>
     public void SetRenderPriorityShader(RenderPriority renderPriority, Guid shaderId) {
-        if (shaderId != Guid.Empty) {
-            this._renderPriorityToShaderId[renderPriority] = shaderId;
-            this.ShaderChanged.SafeInvoke(this, renderPriority);
-        }
-        else {
-            this.RemoveRenderPriorityShader(renderPriority);
-        }
+        var shaderReference = new ShaderReference() {
+            ContentId = shaderId
+        };
+        
+        this._renderPriorityToShaderReference[renderPriority] = shaderReference;
+        this.ShaderChanged.SafeInvoke(this, renderPriority);
     }
 
     /// <summary>
@@ -124,10 +123,16 @@ public class RenderSettings {
     public bool TryGetColorForRenderPriority(RenderPriority renderPriority, out Color color) => this._renderPriorityToColor.TryGetValue(renderPriority, out color);
 
     /// <summary>
-    /// Tries to get the shader identifier for the specified <see cref="RenderPriority" />.
+    /// Tries to get the shader for the specified <see cref="RenderPriority" />.
     /// </summary>
     /// <param name="renderPriority">The render priority.</param>
-    /// <param name="shaderId">The found shader identifier.</param>
-    /// <returns>A value indicating whether this render priority has an associated shader.</returns>
-    public bool TryGetShaderIdForRenderPriority(RenderPriority renderPriority, out Guid shaderId) => this._renderPriorityToShaderId.TryGetValue(renderPriority, out shaderId);
+    /// <returns>The existing shader reference or a new one associated with the specified <see cref="RenderPriority"/>.</returns>
+    public ShaderReference GetShaderForRenderPriority(RenderPriority renderPriority) {
+        if (!this._renderPriorityToShaderReference.TryGetValue(renderPriority, out var shaderReference)) {
+            shaderReference = new ShaderReference();
+            this._renderPriorityToShaderReference[renderPriority] = shaderReference;
+        }
+
+        return shaderReference;
+    }
 }

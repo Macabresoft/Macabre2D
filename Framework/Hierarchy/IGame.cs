@@ -65,7 +65,7 @@ public interface IGame {
     /// Gets the graphics settings.
     /// </summary>
     DisplaySettings DisplaySettings { get; }
-
+    
     /// <summary>
     /// Gets or sets the game speed.
     /// </summary>

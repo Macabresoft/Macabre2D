@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
@@ -73,9 +72,6 @@ public partial class ColliderEditor : ValueEditorControl<Collider> {
     }
 
     private void ClearEditors() {
-        if (this._controlCollection != null) {
-        }
-
         if (this._childEditors.Any()) {
             this.Collection.RemoveControls(this._childEditors);
             this._childEditors.Clear();

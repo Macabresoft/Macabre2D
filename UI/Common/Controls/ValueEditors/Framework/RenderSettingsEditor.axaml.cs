@@ -3,22 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
-using ReactiveUI;
 using Unity;
 
 public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
-
-    public static readonly DirectProperty<RenderSettingsEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, ICommand>(
-            nameof(ClearCommand),
-            editor => editor.ClearCommand);
 
     public static readonly DirectProperty<RenderSettingsEditor, Color> CurrentColorProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, Color>(
@@ -26,26 +19,11 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.CurrentColor,
             (editor, value) => editor.CurrentColor = value);
 
-    public static readonly DirectProperty<RenderSettingsEditor, bool> HasShaderProperty =
-        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, bool>(
-            nameof(HasShader),
-            editor => editor.HasShader);
-
     public static readonly DirectProperty<RenderSettingsEditor, bool> IsOverrideEnabledProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, bool>(
             nameof(IsOverrideEnabled),
             editor => editor.IsOverrideEnabled,
             (editor, value) => editor.IsOverrideEnabled = value);
-
-    public static readonly DirectProperty<RenderSettingsEditor, string> ShaderPathTextProperty =
-        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, string>(
-            nameof(ShaderPathText),
-            editor => editor.ShaderPathText);
-
-    public static readonly DirectProperty<RenderSettingsEditor, ICommand> SelectCommandProperty =
-        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, ICommand>(
-            nameof(SelectCommand),
-            editor => editor.SelectCommand);
 
     public static readonly DirectProperty<RenderSettingsEditor, RenderPriority> SelectedPriorityProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, RenderPriority>(
@@ -53,42 +31,34 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.SelectedPriority,
             (editor, value) => editor.SelectedPriority = value);
 
-    private readonly IAssetManager _assetManager;
-    private readonly ICommonDialogService _dialogService;
+    private readonly HashSet<IValueControl> _shaderEditors = new();
 
     private readonly IUndoService _undoService;
+    private readonly IValueControlService _valueControlService;
+    private ValueControlCollection _controlCollection;
     private Color _currentColor;
-    private bool _hasShader;
     private bool _isOverrideEnabled;
-    private string _shaderPathText;
     private RenderPriority _selectedPriority;
 
     public RenderSettingsEditor() : this(
         null,
-        Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<ICommonDialogService>(),
-        Resolver.Resolve<IUndoService>()) {
+        Resolver.Resolve<IUndoService>(),
+        Resolver.Resolve<IValueControlService>()) {
     }
 
     [InjectionConstructor]
     public RenderSettingsEditor(
         ValueControlDependencies dependencies,
-        IAssetManager assetManager,
-        ICommonDialogService dialogService,
-        IUndoService undoService) : base(dependencies) {
-        this._assetManager = assetManager;
-        this._dialogService = dialogService;
+        IUndoService undoService,
+        IValueControlService valueControlService) : base(dependencies) {
         this._undoService = undoService;
-        var priorities = Enum.GetValues<RenderPriority>().ToList();
-        this.Priorities = priorities;
+        this._valueControlService = valueControlService;
 
-        this.ClearCommand = ReactiveCommand.Create(this.Clear, this.WhenAny(x => x.HasShader, y => y.Value));
-        this.SelectCommand = ReactiveCommand.CreateFromTask(this.SelectShader);
+        this.Priorities = Enum.GetValues<RenderPriority>().ToList();
 
+        this.ResetShaderEditors();
         this.InitializeComponent();
     }
-
-    public ICommand ClearCommand { get; }
 
     public Color CurrentColor {
         get => this._currentColor;
@@ -109,14 +79,6 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
                     this.RaisePropertyChanged(CurrentColorProperty, newValue, originalValue);
                 });
             }
-        }
-    }
-
-    public bool HasShader {
-        get => this._hasShader;
-        set {
-            this._hasShader = value;
-            this.RaisePropertyChanged(HasShaderProperty, !this._hasShader, this._hasShader);
         }
     }
 
@@ -156,14 +118,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
-    public string ShaderPathText {
-        get => this._shaderPathText;
-        private set => this.SetAndRaise(ShaderPathTextProperty, ref this._shaderPathText, value);
-    }
-
     public IReadOnlyCollection<RenderPriority> Priorities { get; }
-
-    public ICommand SelectCommand { get; }
 
     public RenderPriority SelectedPriority {
         get => this._selectedPriority;
@@ -177,15 +132,25 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
+        base.OnPropertyChanged(change);
+
+        if (change.Property.Name == nameof(IValueEditor.Collection)) {
+            this.ResetShaderEditors();
+        }
+    }
+
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<RenderSettings> args) {
         base.OnValueChanged(args);
         this.Reset();
     }
 
-    private void Clear() {
-        var priority = this.SelectedPriority;
-        if (this.Value.TryGetShaderIdForRenderPriority(priority, out var originalId)) {
-            this.SetShader(priority, originalId, Guid.Empty);
+    private void ClearEditors() {
+        if (this._shaderEditors.Any()) {
+            this.Collection.RemoveControls(this._shaderEditors);
+            this._shaderEditors.Clear();
+            this._valueControlService.ReturnControls(this._controlCollection);
+            this._controlCollection = null;
         }
     }
 
@@ -205,7 +170,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.RaisePropertyChanged(CurrentColorProperty, originalColor, this._currentColor);
         this.RaisePropertyChanged(IsOverrideEnabledProperty, originalIsOverrideEnabled, this._isOverrideEnabled);
 
-        this.ResetPath();
+        this.ResetShaderEditors();
     }
 
     private void ResetColor() {
@@ -223,39 +188,29 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.RaisePropertyChanged(CurrentColorProperty, originalColor, this._currentColor);
     }
 
-    private void ResetPath() {
-        this.ShaderPathText = null;
+    private void ResetShaderEditors() {
+        try {
+            this.IgnoreUpdates = true;
+            this.ClearEditors();
 
-        if (this._assetManager != null &&
-            this.Value.TryGetShaderIdForRenderPriority(this.SelectedPriority, out var shaderId) &&
-            this._assetManager.TryGetMetadata(shaderId, out var metadata)) {
-            this.ShaderPathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
-            this.HasShader = true;
-        }
-        else {
-            this.HasShader = false;
-        }
-    }
+            if (this._valueControlService != null && this.Collection != null) {
+                var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
+                this._controlCollection = this._valueControlService.CreateControl(shaderReference, "Shader");
 
-    private async Task SelectShader() {
-        var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(ShaderAsset), false, this.Title);
-        if (contentNode is ContentFile { Metadata: { } metadata }) {
-            var priority = this.SelectedPriority;
-            this.Value.TryGetShaderIdForRenderPriority(priority, out var originalId);
-            var newId = metadata.ContentId;
-            this.SetShader(priority, originalId, newId);
-        }
-    }
+                if (this._controlCollection != null) {
+                    this._shaderEditors.Clear();
+                    this._shaderEditors.AddRange(this._controlCollection.ValueControls);
 
-    private void SetShader(RenderPriority priority, Guid originalId, Guid newId) {
-        this._undoService.Do(() =>
-        {
-            this.Value.SetRenderPriorityShader(priority, newId);
-            this.ResetPath();
-        }, () =>
-        {
-            this.Value.SetRenderPriorityShader(priority, originalId);
-            this.ResetPath();
-        });
+                    if (this._shaderEditors.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
+                        shaderEditor.Title = "Shader";
+                    }
+                    
+                    this.Collection.AddControls(this._shaderEditors);
+                }
+            }
+        }
+        finally {
+            this.IgnoreUpdates = false;
+        }
     }
 }

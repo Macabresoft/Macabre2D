@@ -18,17 +18,22 @@ public interface IAssetReference : INotifyPropertyChanged {
     /// <summary>
     /// Gets the asset type.
     /// </summary>
-    public Type AssetType { get; }
+    Type AssetType { get; }
 
     /// <summary>
     /// Gets the content type.
     /// </summary>
-    public Type ContentType { get; }
+    Type ContentType { get; }
+    
+    /// <summary>
+    /// Gets a value indicating whether this has been initialized.
+    /// </summary>
+    bool IsInitialized { get; }
 
     /// <summary>
     /// Gets a value indicating whether this has content.
     /// </summary>
-    public bool HasContent { get; }
+    bool HasContent { get; }
 
     /// <summary>
     /// Clears the asset reference.
@@ -44,7 +49,7 @@ public interface IAssetReference : INotifyPropertyChanged {
     /// Gets the content identifiers associated with this instance.
     /// </summary>
     /// <returns>The content identifiers.</returns>
-    public IEnumerable<Guid> GetContentIds();
+    IEnumerable<Guid> GetContentIds();
 
     /// <summary>
     /// Initializes this reference with the asset manager.
@@ -67,7 +72,7 @@ public interface IAssetReference<TAsset> : IAssetReference where TAsset : class,
     /// <summary>
     /// Gets or sets the asset identifier.
     /// </summary>
-    public Guid ContentId { get; set; }
+    Guid ContentId { get; set; }
 
     /// <summary>
     /// Loads this instance with the content identifier..
@@ -99,6 +104,9 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
 
     /// <inheritdoc />
     public abstract bool HasContent { get; }
+    
+    /// <inheritdoc />
+    public bool IsInitialized { get; private set; }
 
     /// <summary>
     /// Gets the asset manager.
@@ -117,6 +125,7 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
     /// <inheritdoc />
     public virtual void Initialize(IAssetManager assets, IGame game) {
         this.AssetManager = assets;
+        this.IsInitialized = true;
     }
 
     /// <summary>
