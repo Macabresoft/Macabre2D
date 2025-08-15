@@ -234,7 +234,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
-        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene));
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
     }
 
     /// <summary>
@@ -346,7 +346,7 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
-    /// <param name="fallbackShader">The shader.</param>
+    /// <param name="fallbackShaderReference">The shader.</param>
     protected virtual void Render(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
@@ -355,19 +355,21 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude,
-        Effect? fallbackShader) {
+        ShaderReference? fallbackShaderReference) {
         var groupings = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
             .GroupBy(x => x.RenderPriority)
             .OrderBy(x => x.Key);
 
+        var fallbackShader = fallbackShaderReference?.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+
         foreach (var group in groupings) {
             var shader = fallbackShader;
-            if (this._renderPriorityToShader.TryGetValue(group.Key, out var shaderReference) && shaderReference.Asset?.Content is { } effect) {
-                shader = effect;
+            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(group.Key, out var shaderReference)) {
+                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
             }
-
+            
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
