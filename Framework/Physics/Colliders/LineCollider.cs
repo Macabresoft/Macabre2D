@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Collider representing a line defined by a start and end point to be used by the physics engine.
 /// </summary>
-public sealed class LineCollider : PolygonCollider {
+public class LineCollider : PolygonCollider {
     /// <summary>
     /// Initializes a new instance of the <see cref="LineCollider" /> class.
     /// </summary>
