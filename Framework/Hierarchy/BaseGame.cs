@@ -29,6 +29,7 @@ public class BaseGame : Game, IGame {
     private Rectangle _finalRenderBounds;
     private RenderTarget2D? _gameRenderTarget;
     private double _gameSpeed = 1d;
+    private GameTime _gameTime = new();
     private Point _intermediateRenderResolution;
     private IGameProject _project = new GameProject();
     private UserSettings _userSettings = new();
@@ -157,6 +158,9 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public GameState State { get; } = new();
+
+    /// <inheritdoc />
+    public TimeSpan TimeSinceGameStart => this._gameTime.TotalGameTime;
 
     /// <inheritdoc />
     public UserSettings UserSettings {
@@ -427,6 +431,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     protected override void Update(GameTime gameTime) {
         if (!IsDesignMode) {
+            this._gameTime = gameTime;
             var keyboardState = Keyboard.GetState();
             if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
                 this.Exit();
@@ -594,6 +599,7 @@ public class BaseGame : Game, IGame {
         public IGameProject Project => GameProject.Empty;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
+        public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
 

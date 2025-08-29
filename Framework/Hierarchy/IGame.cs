@@ -65,7 +65,7 @@ public interface IGame {
     /// Gets the graphics settings.
     /// </summary>
     DisplaySettings DisplaySettings { get; }
-    
+
     /// <summary>
     /// Gets or sets the game speed.
     /// </summary>
@@ -115,6 +115,11 @@ public interface IGame {
     /// Gets the game state.
     /// </summary>
     GameState State { get; }
+
+    /// <summary>
+    /// Gets a <see cref="TimeSpan" /> representing the time since launching the game.
+    /// </summary>
+    TimeSpan TimeSinceGameStart { get; }
 
     /// <summary>
     /// Gets the user settings.
