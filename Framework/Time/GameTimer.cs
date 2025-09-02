@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Gets the state of the timer.
@@ -16,37 +17,29 @@ public enum TimerState {
 /// </summary>
 [DataContract]
 public class GameTimer {
+    private readonly ResettableLazy<float> _percentComplete;
+    private float _timeLimit;
+    private float _timeRunning;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GameTimer" /> class.
     /// </summary>
     public GameTimer() {
+        this._percentComplete = new ResettableLazy<float>(this.GetPercentComplete);
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameTimer" /> class.
     /// </summary>
     /// <param name="timeLimit">The time limit.</param>
-    public GameTimer(float timeLimit) {
+    public GameTimer(float timeLimit) : this() {
         this.TimeLimit = timeLimit;
     }
 
     /// <summary>
     /// Gets the percentage complete.
     /// </summary>
-    public float PercentComplete {
-        get {
-            if (this.TimeLimit > 0f) {
-                return this.TimeRunning / this.TimeLimit;
-            }
-
-            return 0f;
-        }
-    }
-
-    /// <summary>
-    /// Gets the number of seconds remaining.
-    /// </summary>
-    public float TimeRemaining => this.TimeLimit - this.TimeRunning;
+    public float PercentComplete => this._percentComplete.Value;
 
     /// <summary>
     /// Gets the state of this timer.
@@ -57,12 +50,31 @@ public class GameTimer {
     /// Gets or sets the time limit of this timer in seconds.
     /// </summary>
     [DataMember]
-    public float TimeLimit { get; set; }
+    public float TimeLimit {
+        get => this._timeLimit;
+        set {
+            this._timeLimit = value;
+            if (this._timeRunning > 0f) {
+                this.OnPercentCompleteChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the number of seconds remaining.
+    /// </summary>
+    public float TimeRemaining => this.TimeLimit - this.TimeRunning;
 
     /// <summary>
     /// Gets the number of seconds this has been running.
     /// </summary>
-    public float TimeRunning { get; private set; }
+    public float TimeRunning {
+        get => this._timeRunning;
+        private set {
+            this._timeRunning = value;
+            this.OnPercentCompleteChanged();
+        }
+    }
 
     /// <summary>
     /// Completes this timer prematurely.
@@ -182,6 +194,10 @@ public class GameTimer {
         this.TimeRunning = 0f;
     }
 
+    protected virtual void OnPercentCompleteChanged() {
+        this._percentComplete.Reset();
+    }
+
     private void Decrement(float seconds) {
         if (this.State != TimerState.Disabled) {
             this.TimeRunning -= seconds;
@@ -194,5 +210,13 @@ public class GameTimer {
                 this.TimeRunning = 0f;
             }
         }
+    }
+
+    private float GetPercentComplete() {
+        if (this.TimeLimit > 0f) {
+            return this.TimeRunning / this.TimeLimit;
+        }
+
+        return 0f;
     }
 }
