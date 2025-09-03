@@ -63,15 +63,5 @@ public class ColorLerpTimer : GameTimer {
         this._currentColor.Reset();
     }
 
-    private Color GetCurrentColor() {
-        var endAmount = this.PercentComplete;
-        var startAmount = 1f - endAmount;
-        var startColor = this.StartColor.ToVector4();
-        var endColor = this.EndColor.ToVector4();
-        return new Color(
-            startColor.X * startAmount + endColor.X * endAmount,
-            startColor.Y * startAmount + endColor.Y * endAmount,
-            startColor.Z * startAmount + endColor.Z * endAmount,
-            startColor.W * startAmount + endColor.W * endAmount);
-    }
+    private Color GetCurrentColor() => Color.Lerp(this.StartColor, this.EndColor, this.PercentComplete);
 }
