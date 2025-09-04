@@ -366,13 +366,15 @@ public class Camera : Entity, ICamera {
 
         foreach (var group in groupings) {
             var shader = fallbackShader;
-            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(group.Key, out var shaderReference)) {
+            var renderPriority = group.Key;
+
+            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
                 shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
             }
 
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
+                this.Game.UserSettings.Rendering.GetRenderPriorityBlendState(renderPriority),
                 this.Sampler.ToSamplerState(),
                 null,
                 RasterizerState.CullNone,
@@ -380,7 +382,7 @@ public class Camera : Entity, ICamera {
                 viewMatrix);
 
             var entities = group.OrderBy(x => x.RenderOrder);
-            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(group.Key, out var color)) {
+            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
                 foreach (var entity in entities) {
                     entity.Render(frameTime, viewBoundingArea, color);
                 }

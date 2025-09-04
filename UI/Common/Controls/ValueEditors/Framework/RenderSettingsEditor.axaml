@@ -6,7 +6,7 @@
                                  x:TypeArguments="framework:RenderSettings"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.RenderSettingsEditor">
     <Grid DataContext="{Binding $parent[local:RenderSettingsEditor]}"
-          RowDefinitions="Auto, Auto, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto">
         <Design.DataContext>
             <local:RenderSettingsEditor />
         </Design.DataContext>
@@ -38,5 +38,10 @@
         <local:ColorEditor Grid.Row="2"
                            IsVisible="{Binding IsOverrideEnabled}"
                            Value="{Binding CurrentColor, Mode=TwoWay}" />
+
+        <local:EnumEditor Grid.Row="3"
+                          Title="Blend State"
+                          EnumType="{x:Type framework:BlendStateType}"
+                          Value="{Binding CurrentBlendState}" />
     </Grid>
 </valueEditors:ValueEditorControl>

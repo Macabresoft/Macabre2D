@@ -13,6 +13,12 @@ using Unity;
 
 public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
+    public static readonly DirectProperty<RenderSettingsEditor, BlendStateType> CurrentBlendStateProperty =
+        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, BlendStateType>(
+            nameof(CurrentBlendState),
+            editor => editor.CurrentBlendState,
+            (editor, value) => editor.CurrentBlendState = value);
+
     public static readonly DirectProperty<RenderSettingsEditor, Color> CurrentColorProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, Color>(
             nameof(CurrentColor),
@@ -31,12 +37,14 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.SelectedPriority,
             (editor, value) => editor.SelectedPriority = value);
 
+    private readonly IAssetManager _assetManager;
+
     private readonly HashSet<IValueControl> _shaderEditors = new();
 
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
-    private readonly IAssetManager _assetManager;
     private ValueControlCollection _controlCollection;
+    private BlendStateType _currentBlendState;
     private Color _currentColor;
     private bool _isOverrideEnabled;
     private RenderPriority _selectedPriority;
@@ -62,6 +70,28 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
         this.ResetShaderEditors();
         this.InitializeComponent();
+    }
+
+    public BlendStateType CurrentBlendState {
+        get => this._currentBlendState;
+        set {
+            if (this._currentBlendState != value) {
+                var priority = this.SelectedPriority;
+                var originalValue = this._currentBlendState;
+                var newValue = value;
+                this._undoService.Do(() =>
+                {
+                    this._currentBlendState = newValue;
+                    this.Value.SetRenderPriorityBlendState(priority, this._currentBlendState);
+                    this.RaisePropertyChanged(CurrentBlendStateProperty, originalValue, newValue);
+                }, () =>
+                {
+                    this._currentBlendState = originalValue;
+                    this.Value.SetRenderPriorityBlendState(priority, this._currentBlendState);
+                    this.RaisePropertyChanged(CurrentBlendStateProperty, newValue, originalValue);
+                });
+            }
+        }
     }
 
     public Color CurrentColor {
@@ -164,6 +194,10 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
     }
 
     private void Reset() {
+        var originalBlendState = this._currentBlendState;
+        this._currentBlendState = this.Value.GetRenderPriorityBlendStateType(this.SelectedPriority);
+        this.RaisePropertyChanged(CurrentBlendStateProperty, originalBlendState, this._currentBlendState);
+
         var originalColor = this._currentColor;
         var originalIsOverrideEnabled = this._isOverrideEnabled;
 
