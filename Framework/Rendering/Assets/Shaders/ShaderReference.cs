@@ -18,15 +18,16 @@ public class ShaderReference : AssetReference<ShaderAsset, Effect> {
     public IShaderConfiguration Configuration { get; private set; } = ShaderConfiguration.Empty;
 
     /// <inheritdoc />
-    public override void LoadAsset(ShaderAsset asset) {
-        base.LoadAsset(asset);
+    public override void Initialize(IAssetManager assetManager, IGame game) {
+        base.Initialize(assetManager, game);
         this.ResetConfigurationType();
+        this.Configuration.Initialize(assetManager, game);
     }
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assetManager, IGame game) {
-        base.Initialize(assetManager, game);
-        this.Configuration.Initialize(assetManager, game);
+    public override void LoadAsset(ShaderAsset asset) {
+        base.LoadAsset(asset);
+        this.ResetConfigurationType();
     }
 
     /// <summary>

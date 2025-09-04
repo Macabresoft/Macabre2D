@@ -439,6 +439,7 @@ public class Camera : Entity, ICamera {
             var shaderReference = renderOptions.GetShaderForRenderPriority(renderPriority);
             if (shaderReference.ContentId != Guid.Empty) {
                 shaderReference.Initialize(this.Scene.Assets, this.Game);
+                this._renderPriorityToShader[renderPriority] = shaderReference;
             }
         }
     }
@@ -453,6 +454,7 @@ public class Camera : Entity, ICamera {
         var shaderReference = this.Game.UserSettings.Rendering.GetShaderForRenderPriority(renderPriority);
         if (shaderReference.ContentId != Guid.Empty) {
             shaderReference.Initialize(this.Scene.Assets, this.Game);
+            this._renderPriorityToShader[renderPriority] = shaderReference;
         }
         else {
             this._renderPriorityToShader.Remove(renderPriority);

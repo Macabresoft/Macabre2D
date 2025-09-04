@@ -35,6 +35,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
+    private readonly IAssetManager _assetManager;
     private ValueControlCollection _controlCollection;
     private Color _currentColor;
     private bool _isOverrideEnabled;
@@ -42,6 +43,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
     public RenderSettingsEditor() : this(
         null,
+        Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<IUndoService>(),
         Resolver.Resolve<IValueControlService>()) {
     }
@@ -49,8 +51,10 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
     [InjectionConstructor]
     public RenderSettingsEditor(
         ValueControlDependencies dependencies,
+        IAssetManager assetManager,
         IUndoService undoService,
         IValueControlService valueControlService) : base(dependencies) {
+        this._assetManager = assetManager;
         this._undoService = undoService;
         this._valueControlService = valueControlService;
 
@@ -145,9 +149,14 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.Reset();
     }
 
+    private void AssetGuidEditorOnValueChanged(object sender, ValueChangedEventArgs<object> e) {
+        this.ResetShaderEditors();
+    }
+
     private void ClearEditors() {
         if (this._shaderEditors.Any()) {
             this.Collection.RemoveControls(this._shaderEditors);
+            this.UnsubscribeFromShaderChange();
             this._shaderEditors.Clear();
             this._valueControlService.ReturnControls(this._controlCollection);
             this._controlCollection = null;
@@ -195,6 +204,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
             if (this._valueControlService != null && this.Collection != null) {
                 var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
+                shaderReference.Initialize(this._assetManager, BaseGame.Empty);
                 this._controlCollection = this._valueControlService.CreateControl(shaderReference, "Shader");
 
                 if (this._controlCollection != null) {
@@ -204,13 +214,26 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
                     if (this._shaderEditors.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
                         shaderEditor.Title = "Shader";
                     }
-                    
+
                     this.Collection.AddControls(this._shaderEditors);
+                    this.SubscribeToShaderChange();
                 }
             }
         }
         finally {
             this.IgnoreUpdates = false;
+        }
+    }
+
+    private void SubscribeToShaderChange() {
+        if (this._shaderEditors.OfType<AssetGuidEditor>().FirstOrDefault() is { } assetGuidEditor) {
+            assetGuidEditor.ValueChanged += this.AssetGuidEditorOnValueChanged;
+        }
+    }
+
+    private void UnsubscribeFromShaderChange() {
+        if (this._shaderEditors.OfType<AssetGuidEditor>().FirstOrDefault() is { } assetGuidEditor) {
+            assetGuidEditor.ValueChanged -= this.AssetGuidEditorOnValueChanged;
         }
     }
 }
