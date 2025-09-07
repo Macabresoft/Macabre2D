@@ -16,15 +16,15 @@ public interface IAsset : INotifyPropertyChanged {
     Guid ContentId { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not this should include the file extension in its content path.
+    /// Gets a value indicating whether this asset should be ignored when building a content file.
+    /// </summary>
+    bool IgnoreInBuild { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether this should include the file extension in its content path.
     /// </summary>
     bool IncludeFileExtensionInContentPath { get; }
 
-    /// <summary>
-    /// Gets a value indicating whether or not this asset should be ignored when building a content file.
-    /// </summary>
-    bool IgnoreInBuild { get; }
-    
     /// <summary>
     /// Gets the developer notes for this asset.
     /// </summary>
@@ -78,9 +78,6 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     }
 
     /// <inheritdoc />
-    public abstract bool IncludeFileExtensionInContentPath { get; }
-
-    /// <inheritdoc />
     public TContent? Content { get; protected set; }
 
     /// <inheritdoc />
@@ -94,6 +91,9 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
         get => this._ignoreInBuild;
         set => this.Set(ref this._ignoreInBuild, value);
     }
+
+    /// <inheritdoc />
+    public abstract bool IncludeFileExtensionInContentPath { get; }
 
     /// <inheritdoc />
     [DataMember]
@@ -112,13 +112,13 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     }
 
     /// <inheritdoc />
-    public virtual void SetNewIds() {
-        this.ContentId = Guid.NewGuid();
+    public virtual void LoadContent(TContent content) {
+        this.Content = content;
     }
 
     /// <inheritdoc />
-    public virtual void LoadContent(TContent content) {
-        this.Content = content;
+    public virtual void SetNewIds() {
+        this.ContentId = Guid.NewGuid();
     }
 
     /// <inheritdoc />
