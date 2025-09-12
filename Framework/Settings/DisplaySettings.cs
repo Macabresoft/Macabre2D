@@ -42,6 +42,12 @@ public sealed class DisplaySettings {
     public ResourceCulture Culture { get; set; } = ResourceCulture.Default;
 
     /// <summary>
+    /// Gets the custom settings.
+    /// </summary>
+    [DataMember]
+    public CustomDisplaySettings CustomSettings { get; } = new();
+
+    /// <summary>
     /// Gets a collection of identifiers for disabled screen shaders.
     /// </summary>
     public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
@@ -79,6 +85,8 @@ public sealed class DisplaySettings {
         other.Culture = this.Culture;
         other.DisplayMode = this.DisplayMode;
         other.WindowScale = this.WindowScale;
+        this.CustomSettings.CopyTo(other.CustomSettings);
+
         other.EnableAllScreenShaders();
         foreach (var shaderId in this.DisabledScreenShaders) {
             other.DisableScreenShader(shaderId);
