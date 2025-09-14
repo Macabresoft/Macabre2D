@@ -18,7 +18,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
             nameof(Action),
             defaultBindingMode: BindingMode.OneWay);
 
-    public static readonly StyledProperty<InputSettings> InputBindingsProperty =
+    public static readonly StyledProperty<InputSettings> InputSettingsProperty =
         AvaloniaProperty.Register<InputActionControl, InputSettings>(
             nameof(InputSettings),
             defaultBindingMode: BindingMode.OneTime);
@@ -72,7 +72,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public InputActionControl(IUndoService undoService) {
         this._undoService = undoService;
         ActionProperty.Changed.Subscribe(this);
-        InputBindingsProperty.Changed.Subscribe(this);
+        InputSettingsProperty.Changed.Subscribe(this);
         this.InitializeComponent();
     }
 
@@ -88,8 +88,8 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public static IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
 
     public InputSettings InputSettings {
-        get => this.GetValue(InputBindingsProperty);
-        set => this.SetValue(InputBindingsProperty, value);
+        get => this.GetValue(InputSettingsProperty);
+        set => this.SetValue(InputSettingsProperty, value);
     }
 
     public Keys SelectedKey {
