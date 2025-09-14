@@ -87,11 +87,13 @@ public class UserSettings : CopyableSettings<UserSettings> {
     public override UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Custom);
 
     /// <inheritdoc />
-    public override void CopyTo(UserSettings settings) {
-        this.Audio.CopyTo(settings.Audio);
-        this.Rendering.CopyTo(settings.Rendering);
-        this.Display.CopyTo(settings.Display);
-        this.Input.CopyTo(settings.Input);
-        this.Custom.CopyTo(settings.Custom);
+    public override void CopyTo(UserSettings other) {
+        base.CopyTo(other);
+
+        this.Audio.CopyTo(other.Audio);
+        this.Rendering.CopyTo(other.Rendering);
+        this.Display.CopyTo(other.Display);
+        this.Input.CopyTo(other.Input);
+        this.Custom.CopyTo(other.Custom);
     }
 }

@@ -89,6 +89,8 @@ public class InputSettings : CopyableSettings<InputSettings> {
 
     /// <inheritdoc />
     public override void CopyTo(InputSettings other) {
+        base.CopyTo(other);
+
         other._primaryGamePadBindings.Clear();
         other._keyBindings.Clear();
         other._mouseBindings.Clear();

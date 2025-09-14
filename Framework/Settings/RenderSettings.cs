@@ -45,6 +45,8 @@ public class RenderSettings : CopyableSettings<RenderSettings> {
 
     /// <inheritdoc />
     public override void CopyTo(RenderSettings other) {
+        base.CopyTo(other);
+
         other._renderPriorityToBlendStateType.Clear();
         foreach (var entry in this._renderPriorityToBlendStateType) {
             other._renderPriorityToBlendStateType[entry.Key] = entry.Value;

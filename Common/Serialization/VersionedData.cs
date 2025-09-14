@@ -43,7 +43,7 @@ public class VersionedData : IVersionedData {
 
     /// <inheritdoc />
     [DataMember]
-    public string TypeName { get; private set; }
+    public string TypeName { get; }
 
     /// <inheritdoc />
     [DataMember]

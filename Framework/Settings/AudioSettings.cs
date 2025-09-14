@@ -34,6 +34,8 @@ public class AudioSettings : CopyableSettings<AudioSettings> {
 
     /// <inheritdoc />
     public override void CopyTo(AudioSettings other) {
+        base.CopyTo(other);
+
         other._categoryToVolume.Clear();
         other._categoryToVolume.AddRange(this._categoryToVolume);
     }
