@@ -12,15 +12,15 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 
-public partial class InputActionControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<InputAction>>, IObserver<AvaloniaPropertyChangedEventArgs<InputBindings>> {
+public partial class InputActionControl : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<InputAction>>, IObserver<AvaloniaPropertyChangedEventArgs<InputSettings>> {
     public static readonly StyledProperty<InputAction> ActionProperty =
         AvaloniaProperty.Register<InputActionControl, InputAction>(
             nameof(Action),
             defaultBindingMode: BindingMode.OneWay);
 
-    public static readonly StyledProperty<InputBindings> InputBindingsProperty =
-        AvaloniaProperty.Register<InputActionControl, InputBindings>(
-            nameof(InputBindings),
+    public static readonly StyledProperty<InputSettings> InputBindingsProperty =
+        AvaloniaProperty.Register<InputActionControl, InputSettings>(
+            nameof(InputSettings),
             defaultBindingMode: BindingMode.OneTime);
 
     public static readonly DirectProperty<InputActionControl, Keys> SelectedKeyProperty =
@@ -87,7 +87,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
 
     public static IReadOnlyCollection<MouseButton> AvailableMouseButtons { get; }
 
-    public InputBindings InputBindings {
+    public InputSettings InputSettings {
         get => this.GetValue(InputBindingsProperty);
         set => this.SetValue(InputBindingsProperty, value);
     }
@@ -95,7 +95,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public Keys SelectedKey {
         get => this._selectedKey;
         set {
-            if (value != this._selectedKey && this.InputBindings is { } inputBindings) {
+            if (value != this._selectedKey && this.InputSettings is { } inputBindings) {
                 var action = this.Action;
                 inputBindings.TryGetBindings(this.Action, out _, out _, out var originalValue, out _);
                 this._undoService.Do(() =>
@@ -127,7 +127,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public MouseButton SelectedMouseButton {
         get => this._selectedMouseButton;
         set {
-            if (value != this._selectedMouseButton && this.InputBindings is { } inputBindings) {
+            if (value != this._selectedMouseButton && this.InputSettings is { } inputBindings) {
                 var action = this.Action;
                 inputBindings.TryGetBindings(this.Action, out _, out _, out _, out var originalValue);
                 this._undoService.Do(() =>
@@ -159,7 +159,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public Buttons SelectedPrimaryButton {
         get => this._selectedPrimaryButton;
         set {
-            if (value != this._selectedPrimaryButton && this.InputBindings is { } inputBindings) {
+            if (value != this._selectedPrimaryButton && this.InputSettings is { } inputBindings) {
                 var action = this.Action;
                 inputBindings.TryGetBindings(this.Action, out var originalValue, out _, out _, out _);
                 this._undoService.Do(() =>
@@ -191,7 +191,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public Buttons SelectedSecondaryButton {
         get => this._selectedSecondaryButton;
         set {
-            if (value != this._selectedSecondaryButton && this.InputBindings is { } inputBindings) {
+            if (value != this._selectedSecondaryButton && this.InputSettings is { } inputBindings) {
                 var action = this.Action;
                 inputBindings.TryGetBindings(this.Action, out _, out var originalValue, out _, out _);
                 this._undoService.Do(() =>
@@ -226,7 +226,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     public void OnError(Exception error) {
     }
 
-    public void OnNext(AvaloniaPropertyChangedEventArgs<InputBindings> value) {
+    public void OnNext(AvaloniaPropertyChangedEventArgs<InputSettings> value) {
         this.Reset();
 
         if (value.OldValue.Value != null) {
@@ -245,8 +245,8 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     protected override void OnUnloaded(RoutedEventArgs e) {
         base.OnUnloaded(e);
 
-        if (this.InputBindings != null) {
-            this.InputBindings.BindingChanged -= this.OnBindingChanged;
+        if (this.InputSettings != null) {
+            this.InputSettings.BindingChanged -= this.OnBindingChanged;
         }
     }
 
@@ -261,7 +261,7 @@ public partial class InputActionControl : UserControl, IObserver<AvaloniaPropert
     }
 
     private void Reset() {
-        if (!this._isSetting && this.InputBindings is { } inputBindings && this.Action != InputAction.None) {
+        if (!this._isSetting && this.InputSettings is { } inputBindings && this.Action != InputAction.None) {
             inputBindings.TryGetBindings(this.Action, out this._selectedPrimaryButton, out this._selectedSecondaryButton, out this._selectedKey, out this._selectedMouseButton);
 
             this.RaisePropertyChanged(SelectedPrimaryButtonProperty, this._selectedPrimaryButton);

@@ -2,7 +2,6 @@
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Project.Common;
 
 /// <summary>
@@ -10,7 +9,7 @@ using Macabresoft.Macabre2D.Project.Common;
 /// </summary>
 [DataContract]
 [Category("User Settings")]
-public class UserSettings : VersionedData {
+public class UserSettings : CopyableSettings<UserSettings> {
     /// <summary>
     /// The settings file name.
     /// </summary>
@@ -19,7 +18,7 @@ public class UserSettings : VersionedData {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
-    public UserSettings() : this(new AudioSettings(), new RenderSettings(), new DisplaySettings(), new InputBindings(), new CustomSettings()) {
+    public UserSettings() : this(new AudioSettings(), new RenderSettings(), new DisplaySettings(), new InputSettings(), new CustomSettings()) {
     }
 
     /// <summary>
@@ -40,13 +39,13 @@ public class UserSettings : VersionedData {
     /// <param name="audio">The audio settings.</param>
     /// <param name="rendering">The color settings.</param>
     /// <param name="display">The graphics settings.</param>
-    /// <param name="inputBindings">The input bindings.</param>
+    /// <param name="inputSettings">The input bindings.</param>
     /// <param name="custom">The custom settings.</param>
-    public UserSettings(AudioSettings audio, RenderSettings rendering, DisplaySettings display, InputBindings inputBindings, CustomSettings custom) {
+    public UserSettings(AudioSettings audio, RenderSettings rendering, DisplaySettings display, InputSettings inputSettings, CustomSettings custom) {
         this.Audio = audio;
         this.Rendering = rendering;
         this.Display = display;
-        this.Input = inputBindings;
+        this.Input = inputSettings;
         this.Custom = custom;
     }
 
@@ -75,7 +74,7 @@ public class UserSettings : VersionedData {
     /// </summary>
     [DataMember]
     [Category(CommonCategories.Input)]
-    public InputBindings Input { get; }
+    public InputSettings Input { get; }
 
     /// <summary>
     /// Gets the color settings.
@@ -84,17 +83,11 @@ public class UserSettings : VersionedData {
     [Category(CommonCategories.Rendering)]
     public RenderSettings Rendering { get; }
 
-    /// <summary>
-    /// Clones this instance.
-    /// </summary>
-    /// <returns>A clone of this instance.</returns>
-    public UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Custom);
+    /// <inheritdoc />
+    public override UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Custom);
 
-    /// <summary>
-    /// Copies settings to another instance.
-    /// </summary>
-    /// <param name="settings">The other instance.</param>
-    public void CopyTo(UserSettings settings) {
+    /// <inheritdoc />
+    public override void CopyTo(UserSettings settings) {
         this.Audio.CopyTo(settings.Audio);
         this.Rendering.CopyTo(settings.Rendering);
         this.Display.CopyTo(settings.Display);

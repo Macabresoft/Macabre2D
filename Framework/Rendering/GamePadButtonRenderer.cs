@@ -74,7 +74,7 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this._gamePadDisplay != this.Game.InputBindings.DesiredGamePad) {
+        if (this._gamePadDisplay != this.Game.InputSettings.DesiredGamePad) {
             this.ResetSprite();
         }
 
@@ -102,9 +102,9 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
     }
 
     private void ResetSprite() {
-        this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
+        this._gamePadDisplay = this.Game.InputSettings.DesiredGamePad;
 
-        var iconSet = this.Game.InputBindings.DesiredGamePad switch {
+        var iconSet = this.Game.InputSettings.DesiredGamePad switch {
             GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.Fallbacks.GamePadXReference.PackagedAsset,
             GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.Fallbacks.GamePadNReference.PackagedAsset,
             GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.Fallbacks.GamePadSReference.PackagedAsset,

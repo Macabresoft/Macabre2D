@@ -10,7 +10,7 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using Unity;
 
-public partial class InputBindingsEditor : ValueEditorControl<InputBindings> {
+public partial class InputBindingsEditor : ValueEditorControl<InputSettings> {
     public static readonly DirectProperty<InputBindingsEditor, GamePadDisplay> DesiredGamePadProperty =
         AvaloniaProperty.RegisterDirect<InputBindingsEditor, GamePadDisplay>(
             nameof(DesiredGamePad),

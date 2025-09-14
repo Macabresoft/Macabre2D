@@ -106,8 +106,8 @@ public class InputActionIconResolver : IInputActionIconResolver {
         }
 
         if (inputDevice == InputDevice.KeyboardMouse) {
-            this._game.InputBindings.TryGetBindings(action, out MouseButton mouseButton);
-            this._game.InputBindings.TryGetBindings(action, out Keys key);
+            this._game.InputSettings.TryGetBindings(action, out MouseButton mouseButton);
+            this._game.InputSettings.TryGetBindings(action, out Keys key);
             if (displayMode == InputActionDisplayMode.SecondaryOnly || displayMode == InputActionDisplayMode.SecondaryThenPrimary && mouseButton != MouseButton.None) {
                 var iconSet = mouseIconSet ?? this._game.Project.Fallbacks.MouseReference.PackagedAsset;
                 if (iconSet != null && iconSet.TryGetSpriteIndex(mouseButton, out var index)) {
@@ -126,7 +126,7 @@ public class InputActionIconResolver : IInputActionIconResolver {
             }
         }
         else {
-            this._game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton);
+            this._game.InputSettings.TryGetBindings(action, out var primaryButton, out var secondaryButton);
             if (displayMode == InputActionDisplayMode.SecondaryOnly || displayMode == InputActionDisplayMode.SecondaryThenPrimary && secondaryButton != Buttons.None) {
                 var iconSet = gamePadIconSet ?? this.GetGamePadIconSet();
 
@@ -151,7 +151,7 @@ public class InputActionIconResolver : IInputActionIconResolver {
     }
 
     private GamePadIconSet? GetGamePadIconSet() {
-        return this._game.InputBindings.DesiredGamePad switch {
+        return this._game.InputSettings.DesiredGamePad switch {
             GamePadDisplay.X => this._game.Project.Fallbacks.GamePadXReference.PackagedAsset,
             GamePadDisplay.N => this._game.Project.Fallbacks.GamePadNReference.PackagedAsset,
             GamePadDisplay.S => this._game.Project.Fallbacks.GamePadSReference.PackagedAsset,

@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Audio)]
-public class AudioSettings {
+public class AudioSettings : CopyableSettings<AudioSettings> {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<VolumeCategory, float> _categoryToVolume = new();
 
@@ -32,21 +32,8 @@ public class AudioSettings {
         this.SetCategoryVolume(category, newVolume);
     }
 
-    /// <summary>
-    /// Clones this instance.
-    /// </summary>
-    /// <returns>A clone of this instance.</returns>
-    public AudioSettings Clone() {
-        var settings = new AudioSettings();
-        this.CopyTo(settings);
-        return settings;
-    }
-
-    /// <summary>
-    /// Copies audio settings to another instance.
-    /// </summary>
-    /// <param name="other">The other instance.</param>
-    public void CopyTo(AudioSettings other) {
+    /// <inheritdoc />
+    public override void CopyTo(AudioSettings other) {
         other._categoryToVolume.Clear();
         other._categoryToVolume.AddRange(this._categoryToVolume);
     }
@@ -56,13 +43,7 @@ public class AudioSettings {
     /// </summary>
     /// <param name="category">The category.</param>
     /// <returns>The volume.</returns>
-    public float GetCategoryVolume(VolumeCategory category) {
-        if (this._categoryToVolume.TryGetValue(category, out var value)) {
-            return value;
-        }
-
-        return 1f;
-    }
+    public float GetCategoryVolume(VolumeCategory category) => this._categoryToVolume.GetValueOrDefault(category, 1f);
 
     /// <summary>
     /// Gets the volume given an <see cref="VolumeCategory" /> and instance volume.

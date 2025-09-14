@@ -128,7 +128,7 @@ public class BaseGame : Game, IGame {
     public IInputActionIconResolver InputActionIconResolver { get; } = new InputActionIconResolver();
 
     /// <inheritdoc />
-    public InputBindings InputBindings => this.UserSettings.Input;
+    public InputSettings InputSettings => this.UserSettings.Input;
 
     /// <inheritdoc />
     public InputState InputState { get; protected set; }
@@ -359,12 +359,12 @@ public class BaseGame : Game, IGame {
 
             this.State.Initialize(this.DataManager, this.UserSettings.Custom);
 
-            if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
+            if (this.InputSettings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);
                 this.DesiredInputDevice = gamePadState.IsConnected ? InputDevice.GamePad : InputDevice.KeyboardMouse;
             }
             else {
-                this.DesiredInputDevice = this.InputBindings.DesiredInputDevice;
+                this.DesiredInputDevice = this.InputSettings.DesiredInputDevice;
             }
         }
 
@@ -466,7 +466,7 @@ public class BaseGame : Game, IGame {
         this.InputState = this.CreateInputStateForFrame();
 
         if (!IsDesignMode) {
-            if (this.InputBindings.DesiredInputDevice == InputDevice.Auto) {
+            if (this.InputSettings.DesiredInputDevice == InputDevice.Auto) {
                 if (this.DesiredInputDevice != InputDevice.GamePad && this.InputState.IsGamePadActive()) {
                     this.DesiredInputDevice = InputDevice.GamePad;
                 }
@@ -475,7 +475,7 @@ public class BaseGame : Game, IGame {
                 }
             }
             else {
-                this.DesiredInputDevice = this.InputBindings.DesiredInputDevice;
+                this.DesiredInputDevice = this.InputSettings.DesiredInputDevice;
             }
         }
     }
@@ -593,7 +593,7 @@ public class BaseGame : Game, IGame {
 
         public GraphicsDevice? GraphicsDevice => null;
         public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
-        public InputBindings InputBindings => this.UserSettings.Input;
+        public InputSettings InputSettings => this.UserSettings.Input;
         public LaunchArguments LaunchArguments => LaunchArguments.None;
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;

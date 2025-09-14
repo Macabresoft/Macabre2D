@@ -155,12 +155,12 @@ public class InputActionRenderer : BaseSpriteEntity {
 
         this.Game.InputDeviceChanged += this.Game_InputDisplayChanged;
         this.Game.SettingsSaved += this.Game_SettingsSaved;
-        this.Game.InputBindings.BindingChanged += this.InputBindings_BindingChanged;
+        this.Game.InputSettings.BindingChanged += this.InputSettingsSettingChanged;
         this.ResetSprite();
     }
 
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this.Game.DesiredInputDevice != InputDevice.KeyboardMouse && this._gamePadDisplay != this.Game.InputBindings.DesiredGamePad) {
+        if (this.Game.DesiredInputDevice != InputDevice.KeyboardMouse && this._gamePadDisplay != this.Game.InputSettings.DesiredGamePad) {
             this.ResetSprite();
         }
 
@@ -193,7 +193,7 @@ public class InputActionRenderer : BaseSpriteEntity {
     }
 
     private GamePadIconSet? GetGamePadIconSet() {
-        return this.Game.InputBindings.DesiredGamePad switch {
+        return this.Game.InputSettings.DesiredGamePad switch {
             GamePadDisplay.X => this.GamePadXReference.PackagedAsset ?? this.Project.Fallbacks.GamePadXReference.PackagedAsset,
             GamePadDisplay.N => this.GamePadNReference.PackagedAsset ?? this.Project.Fallbacks.GamePadNReference.PackagedAsset,
             GamePadDisplay.S => this.GamePadSReference.PackagedAsset ?? this.Project.Fallbacks.GamePadSReference.PackagedAsset,
@@ -209,7 +209,7 @@ public class InputActionRenderer : BaseSpriteEntity {
         this.ResetSprite();
     }
 
-    private void InputBindings_BindingChanged(object? sender, InputAction e) {
+    private void InputSettingsSettingChanged(object? sender, InputAction e) {
         this.RequestRefresh();
     }
 
@@ -221,7 +221,7 @@ public class InputActionRenderer : BaseSpriteEntity {
 
     private void ResetSprite() {
         this._currentKerning = this.Kerning;
-        this._gamePadDisplay = this.Game.InputBindings.DesiredGamePad;
+        this._gamePadDisplay = this.Game.InputSettings.DesiredGamePad;
 
         var inputDevice = this.InputDeviceToRender == InputDevice.Auto ? this.Game.DesiredInputDevice : this.InputDeviceToRender;
         if (this.Game.InputActionIconResolver.TryGetIcon(

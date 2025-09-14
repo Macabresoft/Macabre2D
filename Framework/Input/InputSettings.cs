@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 /// , and <see cref="MouseButton" />.
 /// </summary>
 [DataContract]
-public class InputBindings {
+public class InputSettings : CopyableSettings<InputSettings> {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Keys> _keyBindings = new();
@@ -33,12 +33,12 @@ public class InputBindings {
     public event EventHandler<InputAction>? BindingChanged;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="InputBindings" />.
+    /// Initializes a new instance of <see cref="InputSettings" />.
     /// </summary>
-    public InputBindings() {
+    public InputSettings() {
     }
 
-    private InputBindings(
+    private InputSettings(
         Dictionary<InputAction, Buttons> primaryGamePadBindings,
         Dictionary<InputAction, Buttons> secondaryGamePadBindings,
         Dictionary<InputAction, Keys> keyBindings,
@@ -50,6 +50,12 @@ public class InputBindings {
         this._mouseBindings = new Dictionary<InputAction, MouseButton>(mouseBindings);
         this.IsMouseEnabled = isMouseEnabled;
     }
+
+    /// <summary>
+    /// Gets the custom input settings.
+    /// </summary>
+    [DataMember]
+    public CustomInputSettings CustomSettings { get; } = new();
 
     /// <summary>
     /// Gets or sets the desired game pad.
@@ -81,22 +87,8 @@ public class InputBindings {
         this.BindingChanged.SafeInvoke(this, action);
     }
 
-    /// <summary>
-    /// Clones this instance.
-    /// </summary>
-    /// <returns>A clone of this instance.</returns>
-    public InputBindings Clone() => new(
-        this._primaryGamePadBindings,
-        this._secondaryGamePadBindings,
-        this._keyBindings,
-        this._mouseBindings,
-        this.IsMouseEnabled);
-
-    /// <summary>
-    /// Copies settings to another instance.
-    /// </summary>
-    /// <param name="other">The other instance.</param>
-    public void CopyTo(InputBindings other) {
+    /// <inheritdoc />
+    public override void CopyTo(InputSettings other) {
         other._primaryGamePadBindings.Clear();
         other._keyBindings.Clear();
         other._mouseBindings.Clear();
@@ -118,6 +110,7 @@ public class InputBindings {
         }
 
         other.IsMouseEnabled = this.IsMouseEnabled;
+        this.CustomSettings.CopyTo(other.CustomSettings);
     }
 
     /// <summary>

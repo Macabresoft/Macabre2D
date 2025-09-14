@@ -25,7 +25,7 @@ public interface IGameProject : INotifyPropertyChanged {
 
     /// <summary>
     /// Gets a value indicating whether input is allowed regardless of device. If this is set to <c>true</c>, the
-    /// desired input device in <see cref="InputBindings" /> is purely for display and all inputs will be available.
+    /// desired input device in <see cref="InputSettings" /> is purely for display and all inputs will be available.
     /// </summary>
     bool AllowInputRegardlessOfDevice { get; }
 

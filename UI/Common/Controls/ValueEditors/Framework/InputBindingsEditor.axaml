@@ -3,7 +3,7 @@
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                                 x:TypeArguments="framework:InputBindings"
+                                 x:TypeArguments="framework:InputSettings"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.InputBindingsEditor">
     <Grid DataContext="{Binding $parent[local:InputBindingsEditor]}"
           RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
@@ -50,7 +50,7 @@
         </Grid>
 
         <local:InputActionControl Grid.Row="5"
-                                  InputBindings="{Binding $parent[local:InputBindingsEditor].Value}"
+                                  InputSettings="{Binding $parent[local:InputBindingsEditor].Value}"
                                   Action="{Binding SelectedAction}"/>
     </Grid>
 </valueEditors:ValueEditorControl>

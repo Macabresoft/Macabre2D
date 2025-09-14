@@ -105,7 +105,7 @@ public class InputSystem : GameSystem, IInputSystem {
     /// <inheritdoc />
     public InputActionState GetInputActionState(InputAction action) {
         if (!this._actionToButtonState.TryGetValue(action, out var result)) {
-            this.Game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton);
+            this.Game.InputSettings.TryGetBindings(action, out var primaryButton, out var secondaryButton, out var key, out var mouseButton);
             result = this.ResolveState(action, primaryButton, secondaryButton, key, mouseButton, true);
         }
 
@@ -116,17 +116,17 @@ public class InputSystem : GameSystem, IInputSystem {
     public InputActionState GetInputActionState(InputAction action, InputKind inputKind) {
         var result = InputActionState.None;
         if (inputKind.HasFlag(InputKind.GamePad)) {
-            this.Game.InputBindings.TryGetBindings(action, out var primaryButton, out var secondaryButton);
+            this.Game.InputSettings.TryGetBindings(action, out var primaryButton, out var secondaryButton);
             result = this.ResolveState(action, primaryButton, secondaryButton, Keys.None, MouseButton.None, false);
         }
 
         if (result == InputActionState.None && inputKind.HasFlag(InputKind.Keyboard)) {
-            this.Game.InputBindings.TryGetBindings(action, out Keys key);
+            this.Game.InputSettings.TryGetBindings(action, out Keys key);
             result = this.ResolveState(action, Buttons.None, Buttons.None, key, MouseButton.None, false);
         }
 
         if (result == InputActionState.None && inputKind.HasFlag(InputKind.Mouse)) {
-            this.Game.InputBindings.TryGetBindings(action, out MouseButton button);
+            this.Game.InputSettings.TryGetBindings(action, out MouseButton button);
             result = this.ResolveState(action, Buttons.None, Buttons.None, Keys.None, button, false);
         }
 
@@ -237,7 +237,7 @@ public class InputSystem : GameSystem, IInputSystem {
         MouseButton mouseButton,
         bool cacheResult) {
         var result = InputActionState.None;
-        if (this.Game.InputBindings.DesiredInputDevice == InputDevice.Auto || this.Game.Project.AllowInputRegardlessOfDevice) {
+        if (this.Game.InputSettings.DesiredInputDevice == InputDevice.Auto || this.Game.Project.AllowInputRegardlessOfDevice) {
             if (this.IsNewlyPressed(primaryButton, secondaryButton, key, mouseButton)) {
                 result = InputActionState.Pressed;
             }
@@ -248,7 +248,7 @@ public class InputSystem : GameSystem, IInputSystem {
                 result = InputActionState.Released;
             }
         }
-        else if (this.Game.InputBindings.DesiredInputDevice == InputDevice.GamePad) {
+        else if (this.Game.InputSettings.DesiredInputDevice == InputDevice.GamePad) {
             if (this.IsNewlyPressed(primaryButton, secondaryButton)) {
                 result = InputActionState.Pressed;
             }
@@ -259,7 +259,7 @@ public class InputSystem : GameSystem, IInputSystem {
                 result = InputActionState.Released;
             }
         }
-        else if (this.Game.InputBindings.DesiredInputDevice == InputDevice.KeyboardMouse) {
+        else if (this.Game.InputSettings.DesiredInputDevice == InputDevice.KeyboardMouse) {
             if (this.IsNewlyPressed(key, mouseButton)) {
                 result = InputActionState.Pressed;
             }

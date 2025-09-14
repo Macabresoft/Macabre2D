@@ -84,7 +84,7 @@ public interface IGame {
     /// <summary>
     /// Gets the input bindings.
     /// </summary>
-    InputBindings InputBindings { get; }
+    InputSettings InputSettings { get; }
 
     /// <summary>
     /// Gets the state of input.

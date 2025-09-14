@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 /// Settings for rendering. This includes colors and shaders.
 /// </summary>
 [DataContract]
-public class RenderSettings {
+public class RenderSettings : CopyableSettings<RenderSettings> {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, BlendStateType> _renderPriorityToBlendStateType = [];
@@ -34,7 +34,6 @@ public class RenderSettings {
     /// </summary>
     public event EventHandler<RenderPriority>? ShaderChanged;
 
-
     /// <summary>
     /// Clears color overrides for all render priorities.
     /// </summary>
@@ -44,21 +43,8 @@ public class RenderSettings {
         this._renderPriorityToShaderReference.Clear();
     }
 
-    /// <summary>
-    /// Clones this instance.
-    /// </summary>
-    /// <returns>A clone of this instance.</returns>
-    public RenderSettings Clone() {
-        var settings = new RenderSettings();
-        this.CopyTo(settings);
-        return settings;
-    }
-
-    /// <summary>
-    /// Copies color settings to another instance.
-    /// </summary>
-    /// <param name="other">The other instance.</param>
-    public void CopyTo(RenderSettings other) {
+    /// <inheritdoc />
+    public override void CopyTo(RenderSettings other) {
         other._renderPriorityToBlendStateType.Clear();
         foreach (var entry in this._renderPriorityToBlendStateType) {
             other._renderPriorityToBlendStateType[entry.Key] = entry.Value;
