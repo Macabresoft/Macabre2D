@@ -19,9 +19,9 @@
         <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.xml"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.4" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.4" />
+        <PackageReference Include="Avalonia" Version="11.3.6" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4" />
     </ItemGroup>
     <ItemGroup>

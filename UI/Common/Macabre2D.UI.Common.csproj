@@ -5,10 +5,10 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.4" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.4" />
-        <PackageReference Include="Macabresoft.AvaloniaEx" Version="2.0.24" />
+        <PackageReference Include="Avalonia" Version="11.3.6" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="2.0.25" />
         <PackageReference Include="Unity" Version="5.11.10"/>
     </ItemGroup>
     <ItemGroup>
