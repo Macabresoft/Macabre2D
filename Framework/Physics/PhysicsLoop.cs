@@ -20,7 +20,7 @@ public interface IPhysicsSystem : ISimplePhysicsGameSystem {
     /// <summary>
     /// Gets the groundedness. This is a value indicating how likely a body is to be grounded.
     /// It should be a value between 0 and 1, where 0.5 would (theoretically) allow an object to
-    /// be grounded at a 45 degree angle.
+    /// be grounded at a 45-degree angle.
     /// </summary>
     /// <value>The groundedness.</value>
     float Groundedness { get; }
