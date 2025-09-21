@@ -538,6 +538,10 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
+    public void OnSceneTreeLoaded() {
+    }
+
+    /// <inheritdoc />
     public void Pause() {
     }
 

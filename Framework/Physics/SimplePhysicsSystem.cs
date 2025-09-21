@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
 /// </summary>
-public interface ISimplePhysicsGameSystem : IGameSystem {
+public interface ISimplePhysicsSystem : IGameSystem {
     /// <summary>
     /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
     /// </summary>
@@ -34,7 +34,7 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
     /// <param name="layers">The layers.</param>
-    /// <returns>A value indicating whether or not there was a hit.</returns>
+    /// <returns>A value indicating whether there was a hit.</returns>
     bool TryBoundingAreaCast(BoundingArea boundingArea, Layers layers);
 
     /// <summary>
@@ -62,7 +62,7 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
     /// <param name="distance">The distance.</param>
     /// <param name="layers">The layers.</param>
     /// <param name="hit">The hit.</param>
-    /// <returns>A value indicating whether or not anything was hit.</returns>
+    /// <returns>A value indicating whether anything was hit.</returns>
     bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit);
 
     /// <summary>
@@ -73,7 +73,7 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
     /// <param name="distance">The distance.</param>
     /// <param name="layers">The layers.</param>
     /// <param name="hitEntity">The hit entity.</param>
-    /// <returns>A value indicating whether or not anything was hit.</returns>
+    /// <returns>A value indicating whether anything was hit.</returns>
     bool TryRaycastToBoundingArea(Vector2 start, Vector2 direction, float distance, Layers layers, [NotNullWhen(true)] out IEntity? hitEntity);
 }
 
@@ -81,7 +81,7 @@ public interface ISimplePhysicsGameSystem : IGameSystem {
 /// A system which allows simple raycasting through colliders.
 /// </summary>
 [Category(CommonCategories.Physics)]
-public class SimplePhysicsGameSystem : FixedTimeStepSystem, ISimplePhysicsGameSystem {
+public class SimplePhysicsSystem : FixedTimeStepSystem, ISimplePhysicsSystem {
     /// <summary>
     /// Gets the collider tree.
     /// </summary>
@@ -110,10 +110,12 @@ public class SimplePhysicsGameSystem : FixedTimeStepSystem, ISimplePhysicsGameSy
     public override void Initialize(IScene scene) {
         base.Initialize(scene);
 
-        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
-            this.Scene.PropertyChanged += this.Scene_PropertyChanged;
-        }
+        this.Scene.PropertyChanged += this.Scene_PropertyChanged;
+    }
 
+    /// <inheritdoc />
+    public override void OnSceneTreeLoaded() {
+        base.OnSceneTreeLoaded();
         this.ResetTree();
     }
 

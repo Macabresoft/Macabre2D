@@ -181,13 +181,13 @@ public sealed class SceneTests {
     [Category("Unit Tests")]
     public static void FindSystem_ShouldFindSystem_WhenSerialized() {
         var scene = new Scene();
-        var system = scene.AddSystem<SimplePhysicsGameSystem>();
+        var system = scene.AddSystem<SimplePhysicsSystem>();
 
         var serialized = Serializer.Instance.SerializeToString(scene);
         var deserialized = Serializer.Instance.DeserializeFromString<Scene>(serialized);
 
         using (new AssertionScope()) {
-            deserialized.FindSystem<SimplePhysicsGameSystem>(system.Id).Should().BeEquivalentTo(system);
+            deserialized.FindSystem<SimplePhysicsSystem>(system.Id).Should().BeEquivalentTo(system);
             deserialized.FindSystem<IGameSystem>(system.Id).Should().BeEquivalentTo(system);
         }
     }
@@ -196,7 +196,7 @@ public sealed class SceneTests {
     [Category("Unit Tests")]
     public static void FindSystem_ShouldNotFindSystem_WhenMismatched() {
         var scene = new Scene();
-        var system = scene.AddSystem<SimplePhysicsGameSystem>();
+        var system = scene.AddSystem<SimplePhysicsSystem>();
 
         using (new AssertionScope()) {
             scene.FindSystem<RenderSystem>(system.Id).Should().BeNull();

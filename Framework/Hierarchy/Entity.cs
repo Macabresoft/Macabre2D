@@ -173,6 +173,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void OnRemovedFromSceneTree();
 
     /// <summary>
+    /// Called when the scene tree is ready for interactions.
+    /// </summary>
+    void OnSceneTreeLoaded();
+
+    /// <summary>
     /// Checks whether this instance references the specified content.
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
@@ -506,6 +511,13 @@ public class Entity : Transformable, IEntity {
         }
     }
 
+    /// <inheritdoc />
+    public virtual void OnSceneTreeLoaded() {
+        foreach (var child in this.Children) {
+            child.OnSceneTreeLoaded();
+        }
+    }
+
     /// <summary>
     /// Gets a value indicating whether this references the specified content.
     /// </summary>
@@ -588,6 +600,7 @@ public class Entity : Transformable, IEntity {
             {
                 child.LoadAssets(this.Scene.Assets, this.Game);
                 child.Initialize(this.Scene, this);
+                child.OnSceneTreeLoaded();
             });
         }
     }

@@ -32,7 +32,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the animatable entities.
     /// </summary>
-    IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => Array.Empty<IAnimatableEntity>();
+    IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => [];
 
     /// <summary>
     /// Gets the asset manager.
@@ -47,12 +47,12 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
-    IReadOnlyCollection<ICamera> Cameras => Array.Empty<ICamera>();
+    IReadOnlyCollection<ICamera> Cameras => [];
 
     /// <summary>
     /// Gets the fixed updateable entities.
     /// </summary>
-    IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
+    IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => [];
 
     /// <summary>
     /// Gets or sets a value indicating whether this is active.
@@ -62,17 +62,17 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the named children.
     /// </summary>
-    IReadOnlyCollection<INameableCollection> NamedChildren => Array.Empty<INameableCollection>();
+    IReadOnlyCollection<INameableCollection> NamedChildren => [];
 
     /// <summary>
     /// Gets the physics bodies.
     /// </summary>
-    IReadOnlyCollection<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
+    IReadOnlyCollection<IPhysicsBody> PhysicsBodies => [];
 
     /// <summary>
     /// Gets the renderable entities in the scene.
     /// </summary>
-    IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
+    IReadOnlyCollection<IRenderableEntity> RenderableEntities => [];
 
     /// <summary>
     /// Gets the scene state.
@@ -82,12 +82,12 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the systems.
     /// </summary>
-    IReadOnlyCollection<IGameSystem> Systems => Array.Empty<IGameSystem>();
+    IReadOnlyCollection<IGameSystem> Systems => [];
 
     /// <summary>
     /// Gets the updateable entities.
     /// </summary>
-    IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
+    IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => [];
 
     /// <summary>
     /// Adds the system.
@@ -350,6 +350,7 @@ public sealed class Scene : GridContainer, IScene {
 
         if (this._isInitialized) {
             system.Initialize(this);
+            system.OnSceneTreeLoaded();
         }
     }
 
@@ -410,6 +411,7 @@ public sealed class Scene : GridContainer, IScene {
                 this.LoadAssets(this.Assets, this.Game);
                 this.Initialize(this, this);
                 this.RebuildFilterCaches();
+                this.OnSceneTreeLoaded();
             }
             finally {
                 this._isInitialized = true;
@@ -421,6 +423,7 @@ public sealed class Scene : GridContainer, IScene {
         else {
             foreach (var system in this.Systems) {
                 system.Initialize(this);
+                system.OnSceneTreeLoaded();
             }
         }
     }
@@ -431,6 +434,7 @@ public sealed class Scene : GridContainer, IScene {
 
         if (this._isInitialized) {
             system.Initialize(this);
+            system.OnSceneTreeLoaded();
         }
     }
 
@@ -452,6 +456,15 @@ public sealed class Scene : GridContainer, IScene {
     /// <c>true</c> if the specified scene is null or <see cref="Scene.Empty" />; otherwise, <c>false</c>.
     /// </returns>
     public static bool IsNullOrEmpty(IScene? scene) => scene == null || scene == Empty;
+
+    /// <inheritdoc />
+    public override void OnSceneTreeLoaded() {
+        foreach (var system in this.Systems) {
+            system.OnSceneTreeLoaded();
+        }
+
+        base.OnSceneTreeLoaded();
+    }
 
     /// <inheritdoc />
     public void RaiseActivated() {

@@ -47,6 +47,7 @@ public class RenderSystemTests {
         var scene = Substitute.For<IScene>();
         scene.Game.Returns(game);
         renderSystem.Initialize(scene);
+        renderSystem.OnSceneTreeLoaded();
 
         var includedRenderable = new TestRenderable { Layers = (Layers)1 };
         var excludedRenderable = new TestRenderable { Layers = (Layers)2 | (Layers)1 };

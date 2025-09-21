@@ -25,6 +25,11 @@ public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
     /// </summary>
     /// <param name="scene">The scene.</param>
     void Initialize(IScene scene);
+
+    /// <summary>
+    /// Called when the scene tree is loaded and ready for interactions.
+    /// </summary>
+    void OnSceneTreeLoaded();
 }
 
 /// <summary>
@@ -86,6 +91,10 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     /// <inheritdoc />
     public virtual void Initialize(IScene scene) {
         this.Scene = scene;
+    }
+
+    /// <inheritdoc />
+    public virtual void OnSceneTreeLoaded() {
     }
 
     /// <inheritdoc />
