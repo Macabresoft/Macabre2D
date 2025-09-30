@@ -36,10 +36,7 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
         set {
             this._collider.BoundingAreaChanged -= this.Collider_BoundingAreaChanged;
             this._collider = value;
-
-            if (this.IsInitialized) {
-                this.InitializeCollider();
-            }
+            this.OnColliderChanged();
         }
     }
 
@@ -48,13 +45,22 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
 
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
-        return new[] { this.Collider };
+        return [this.Collider];
     }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.InitializeCollider();
+    }
+
+    /// <summary>
+    /// Called when the collider changes.
+    /// </summary>
+    protected virtual void OnColliderChanged() {
+        if (this.IsInitialized) {
+            this.InitializeCollider();
+        }
     }
 
     /// <inheritdoc />
