@@ -128,6 +128,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem;
 
     /// <summary>
+    /// Gets the specified system if it exists, otherwise it adds it to the scene.
+    /// </summary>
+    /// <typeparam name="T">The type of system to get or add.</typeparam>
+    /// <returns>The system.</returns>
+    T GetOrAddSystem<T>() where T : class, IGameSystem, new();
+
+    /// <summary>
     /// Gets the first found system of the specified type.
     /// </summary>
     /// <typeparam name="T">The type of system.</typeparam>
@@ -388,6 +395,9 @@ public sealed class Scene : GridContainer, IScene {
     public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem {
         return this.Systems.OfType<TSystem>().FirstOrDefault(x => x.Id == id);
     }
+
+    /// <inheritdoc />
+    public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => this.GetSystem<T>() ?? this.AddSystem<T>();
 
     /// <inheritdoc />
     public T? GetSystem<T>() where T : class, IGameSystem => this.Systems.OfType<T>().FirstOrDefault();

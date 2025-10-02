@@ -452,6 +452,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new() => [];
 
     /// <inheritdoc />
+    public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => throw new NotSupportedException("Initialization has not occured.");
+
+    /// <inheritdoc />
     public float GetPercentageComplete() => 0f;
 
     /// <inheritdoc />
