@@ -158,6 +158,22 @@ public class GameTimer {
     }
 
     /// <summary>
+    /// Restarts this timer at the specified percentage complete.
+    /// </summary>
+    /// <param name="percentageComplete"></param>
+    public void Restart(float percentageComplete) {
+        if (percentageComplete >= 1f) {
+            this.Complete();
+        }
+        else {
+            this.Restart();
+            if (percentageComplete > 0f) {
+                this.TimeRunning = percentageComplete * this.TimeLimit;
+            }
+        }
+    }
+
+    /// <summary>
     /// Restarts this timer.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
