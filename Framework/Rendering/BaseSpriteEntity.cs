@@ -38,6 +38,12 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
         this._offsetTransform = new ResettableLazy<Vector2>(this.CreateOffsetTransform);
     }
 
+    /// <summary>
+    /// Gets the override for the alpha when rendering this sprite.
+    /// </summary>
+    [DataMember]
+    public FloatOverride AlphaOverride { get; } = new();
+
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
@@ -138,12 +144,13 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     /// <param name="position">The position.</param>
     /// <param name="colorOverride">The color override.</param>
     protected void RenderAtPosition(SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Vector2 position, Color colorOverride) {
+        var color = this.AlphaOverride.IsEnabled ? new Color(colorOverride, this.AlphaOverride.Value) : colorOverride;
         spriteSheet.Draw(
             spriteBatch,
             this.Project.PixelsPerUnit,
             spriteIndex,
             position,
-            colorOverride,
+            color,
             this.RenderOptions.Orientation);
     }
 
