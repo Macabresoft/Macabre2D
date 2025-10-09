@@ -11,7 +11,7 @@ using Macabresoft.Core;
 /// The FilterCollection class provides efficient, reusable filtering based on a filter
 /// predicate, and associate change events.
 /// </summary>
-public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
+public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
     private readonly List<T> _cachedFilteredItems = [];
     private readonly Predicate<T> _filter;
     private readonly Action<T, EventHandler> _filterChangedSubscriber;

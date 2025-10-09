@@ -8,13 +8,7 @@ using Macabresoft.Core;
 /// <summary>
 /// Interface for an system which runs operations for a <see cref="IScene" />.
 /// </summary>
-public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
-    /// <summary>
-    /// Gets the system.
-    /// </summary>
-    /// <value>The system.</value>
-    GameSystemKind Kind { get; }
-
+public interface IGameSystem : INameable, IIdentifiable {
     /// <summary>
     /// Deinitializes this service.
     /// </summary>
@@ -38,10 +32,6 @@ public interface IGameSystem : IUpdateableGameObject, INameable, IIdentifiable {
 [DataContract]
 [Category("System")]
 public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
-    private bool _shouldUpdate = true;
-
-    /// <inheritdoc />
-    public event EventHandler? ShouldUpdateChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameSystem" /> class.
@@ -56,22 +46,8 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <inheritdoc />
-    public abstract GameSystemKind Kind { get; }
-
-    /// <inheritdoc />
     [DataMember]
     public string Name { get; set; }
-
-    /// <inheritdoc />
-    [DataMember]
-    public bool ShouldUpdate {
-        get => this._shouldUpdate;
-        set {
-            if (this.Set(ref this._shouldUpdate, value)) {
-                this.ShouldUpdateChanged.SafeInvoke(this);
-            }
-        }
-    }
 
     /// <summary>
     /// Gets the game.
@@ -96,7 +72,4 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     /// <inheritdoc />
     public virtual void OnSceneTreeLoaded() {
     }
-
-    /// <inheritdoc />
-    public abstract void Update(FrameTime frameTime, InputState inputState);
 }

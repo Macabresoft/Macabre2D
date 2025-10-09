@@ -397,7 +397,7 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     /// <inheritdoc />
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) => Vector2.Zero;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IEntity" />
     public void Deinitialize() {
     }
 
@@ -540,7 +540,7 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
         throw new NotSupportedException("An empty entity should never be added to a scene tree, much less removed.");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IEntity" />
     public void OnSceneTreeLoaded() {
     }
 

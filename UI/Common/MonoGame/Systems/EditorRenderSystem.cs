@@ -6,7 +6,7 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// A render system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
-public class EditorRenderSystem : GameSystem {
+public class EditorRenderSystem : RenderSystem {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;
@@ -20,10 +20,7 @@ public class EditorRenderSystem : GameSystem {
     }
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.Render;
-
-    /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
+    public override void Render(FrameTime frameTime) {
         if (this.Game is IEditorGame { SpriteBatch: { } spriteBatch, Camera: { } camera } sceneEditor) {
             this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);

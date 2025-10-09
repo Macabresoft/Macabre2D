@@ -30,7 +30,7 @@ public class RenderSystemTests {
 
         using (new AssertionScope()) {
             for (var i = 0; i < NumberOfRenders; i++) {
-                renderSystem.Update(new FrameTime(), new InputState());
+                renderSystem.Render(new FrameTime());
                 disabled.RenderCount.Should().Be(0);
             }
         }
@@ -51,14 +51,14 @@ public class RenderSystemTests {
 
         var includedRenderable = new TestRenderable { Layers = (Layers)1 };
         var excludedRenderable = new TestRenderable { Layers = (Layers)2 | (Layers)1 };
-        scene.RenderableEntities.Returns(new[] { includedRenderable, excludedRenderable });
+        scene.RenderableEntities.Returns([includedRenderable, excludedRenderable]);
 
         var camera = new TestCamera();
-        scene.Cameras.Returns(new[] { camera });
+        scene.Cameras.Returns([camera]);
 
         using (new AssertionScope()) {
             for (var i = 0; i < NumberOfRenders; i++) {
-                renderSystem.Update(new FrameTime(), new InputState());
+                renderSystem.Render(new FrameTime());
                 includedRenderable.RenderCount.Should().Be(i + 1);
                 excludedRenderable.RenderCount.Should().Be(0);
             }
@@ -81,7 +81,7 @@ public class RenderSystemTests {
 
         using (new AssertionScope()) {
             for (var i = 0; i < NumberOfRenders; i++) {
-                renderSystem.Update(new FrameTime(), new InputState());
+                renderSystem.Render(new FrameTime());
                 disabled.RenderCount.Should().Be(0);
             }
         }
@@ -112,7 +112,7 @@ public class RenderSystemTests {
                     entity.RenderCount.Should().Be(i);
                 }
 
-                renderSystem.Update(new FrameTime(), new InputState());
+                renderSystem.Render(new FrameTime());
             }
         }
     }

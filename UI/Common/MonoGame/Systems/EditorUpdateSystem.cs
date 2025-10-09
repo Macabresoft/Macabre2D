@@ -25,7 +25,7 @@ public class EditorUpdateSystem : UpdateSystem {
     }
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.Update;
+    public override UpdateSystemKind Kind => UpdateSystemKind.Update;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

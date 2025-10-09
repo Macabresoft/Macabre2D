@@ -74,8 +74,6 @@ public class QueueableSpriteAnimation {
                 var currentFrames = this.Animation.Steps.Take(this._currentStepIndex).Sum(x => x.Frames) + this._currentFrameIndex;
                 result = currentFrames / (float)totalFrames;
             }
-
-            return result;
         }
 
         return result;

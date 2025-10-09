@@ -1,16 +1,54 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
+
+/// <summary>
+/// The kind of system being run.
+/// </summary>
+public enum UpdateSystemKind {
+    None = 0,
+    Update = 1,
+    PreUpdate = 2,
+    PostUpdate = 3
+}
+
+/// <summary>
+/// Interface for a <see cref="IGameSystem"/> that has an update loop.
+/// </summary>
+public interface IUpdateSystem : IGameSystem, IUpdateableGameObject {
+    /// <summary>
+    /// Gets the kind of update.
+    /// </summary>
+    UpdateSystemKind Kind { get; }
+}
 
 /// <summary>
 /// A system that calls updates on entities.
 /// </summary>
-public class UpdateSystem : GameSystem {
+public class UpdateSystem : GameSystem, IUpdateSystem {
+    private bool _shouldUpdate = true;
+
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.Update;
+    public event EventHandler? ShouldUpdateChanged;
+    
+    /// <inheritdoc />
+    public virtual UpdateSystemKind Kind => UpdateSystemKind.Update;
+    
+    /// <inheritdoc />
+    [DataMember]
+    public bool ShouldUpdate {
+        get => this._shouldUpdate;
+        set {
+            if (this.Set(ref this._shouldUpdate, value)) {
+                this.ShouldUpdateChanged.SafeInvoke(this);
+            }
+        }
+    }
 
     /// <summary>
     /// Gets the bottom edge's overriden layer.
@@ -19,7 +57,7 @@ public class UpdateSystem : GameSystem {
     public LayersOverride LayersToUpdate { get; } = new();
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
+    public virtual void Update(FrameTime frameTime, InputState inputState) {
         foreach (var entity in this.GetEntitiesToUpdate()) {
             entity.Update(frameTime, inputState);
         }

@@ -223,7 +223,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
 [Category("Entity")]
 public class Entity : Transformable, IEntity {
     [DataMember]
-    private readonly EntityCollection _children = new();
+    private readonly EntityCollection _children = [];
 
     private bool _isEnabled = true;
     private string _name = string.Empty;

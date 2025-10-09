@@ -1,17 +1,56 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
+using Macabresoft.Core;
+
+/// <summary>
+/// Interface for a <see cref="IGameSystem" /> that has an update loop.
+/// </summary>
+public interface IRenderSystem : IGameSystem {
+    /// <summary>
+    /// Called when <see cref="ShouldRender" /> changes.
+    /// </summary>
+    event EventHandler? ShouldRenderChanged;
+
+    /// <summary>
+    /// Gets a value indicating whether this should render.
+    /// </summary>
+    bool ShouldRender { get; }
+
+    /// <summary>
+    /// Renders entities as defined by this system.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    void Render(FrameTime frameTime);
+}
 
 /// <summary>
 /// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : GameSystem {
+public class RenderSystem : GameSystem, IRenderSystem {
+
+
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
+    private bool _shouldRender = true;
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.Render;
+    public event EventHandler? ShouldRenderChanged;
+
+    /// <inheritdoc />
+    [DataMember]
+    public bool ShouldRender {
+        get => this._shouldRender;
+        set {
+            if (this.Set(ref this._shouldRender, value)) {
+                this.ShouldRenderChanged.SafeInvoke(this);
+            }
+        }
+    }
+
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -31,7 +70,7 @@ public class RenderSystem : GameSystem {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
+    public virtual void Render(FrameTime frameTime) {
         this.InsertRenderables();
 
         foreach (var camera in this.Scene.Cameras) {

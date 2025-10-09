@@ -232,8 +232,8 @@ public sealed class Scene : GridContainer, IScene {
         (u, handler) => u.UpdateOrderChanged += handler,
         (u, handler) => u.UpdateOrderChanged -= handler);
 
-    private readonly List<INameableCollection> _namedChildren = new();
-    private readonly List<Action> _pendingActions = new();
+    private readonly List<INameableCollection> _namedChildren = [];
+    private readonly List<Action> _pendingActions = [];
 
     private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new(
         p => p.IsEnabled,
@@ -243,6 +243,16 @@ public sealed class Scene : GridContainer, IScene {
         (p, handler) => p.UpdateOrderChanged += handler,
         (p, handler) => p.UpdateOrderChanged -= handler);
 
+    private readonly FilterCollection<IUpdateSystem> _postUpdateSystems = new(
+        a => a.ShouldUpdate,
+        (a, handler) => a.ShouldUpdateChanged += handler,
+        (a, handler) => a.ShouldUpdateChanged -= handler);
+
+    private readonly FilterCollection<IUpdateSystem> _preUpdateSystems = new(
+        a => a.ShouldUpdate,
+        (a, handler) => a.ShouldUpdateChanged += handler,
+        (a, handler) => a.ShouldUpdateChanged -= handler);
+
     private readonly HashSet<Guid> _registeredEntities = [];
 
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
@@ -250,8 +260,13 @@ public sealed class Scene : GridContainer, IScene {
         (r, handler) => r.ShouldRenderChanged += handler,
         (r, handler) => r.ShouldRenderChanged -= handler);
 
+    private readonly FilterCollection<IRenderSystem> _renderSystems = new(
+        a => a.ShouldRender,
+        (a, handler) => a.ShouldRenderChanged += handler,
+        (a, handler) => a.ShouldRenderChanged -= handler);
+
     [DataMember]
-    private readonly SystemCollection _systems = new();
+    private readonly SystemCollection _systems = [];
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
         u => u.ShouldUpdate,
@@ -260,6 +275,11 @@ public sealed class Scene : GridContainer, IScene {
         (p1, p2) => Comparer<int>.Default.Compare(p1.UpdateOrder, p2.UpdateOrder),
         (u, handler) => u.UpdateOrderChanged += handler,
         (u, handler) => u.UpdateOrderChanged -= handler);
+
+    private readonly FilterCollection<IUpdateSystem> _updateSystems = new(
+        a => a.ShouldUpdate,
+        (a, handler) => a.ShouldUpdateChanged += handler,
+        (a, handler) => a.ShouldUpdateChanged -= handler);
 
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IGame _game = BaseGame.Empty;
@@ -354,11 +374,7 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     public void AddSystem(IGameSystem system) {
         this._systems.Add(system);
-
-        if (this._isInitialized) {
-            system.Initialize(this);
-            system.OnSceneTreeLoaded();
-        }
+        this.OnSystemAdded(system);
     }
 
     /// <inheritdoc />
@@ -415,6 +431,7 @@ public sealed class Scene : GridContainer, IScene {
 
                 foreach (var system in this.Systems) {
                     system.Initialize(this);
+                    this.RegisterSystem(system);
                 }
 
                 this.State.Initialize(this._game.State);
@@ -432,8 +449,7 @@ public sealed class Scene : GridContainer, IScene {
         }
         else {
             foreach (var system in this.Systems) {
-                system.Initialize(this);
-                system.OnSceneTreeLoaded();
+                this.OnSystemAdded(system);
             }
         }
     }
@@ -441,11 +457,7 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     public void InsertSystem(int index, IGameSystem system) {
         this._systems.InsertOrAdd(index, system);
-
-        if (this._isInitialized) {
-            system.Initialize(this);
-            system.OnSceneTreeLoaded();
-        }
+        this.OnSystemAdded(system);
     }
 
     /// <inheritdoc />
@@ -515,7 +527,7 @@ public sealed class Scene : GridContainer, IScene {
             this.Invoke(() =>
             {
                 this._systems.Remove(system);
-                system.Deinitialize();
+                this.OnSystemRemoved(system);
             });
             result = true;
         }
@@ -527,9 +539,10 @@ public sealed class Scene : GridContainer, IScene {
     public void Render(FrameTime frameTime, InputState inputState) {
         try {
             this._isBusy = true;
+            this._renderSystems.RebuildCache();
 
-            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.Render })) {
-                system.Update(frameTime, inputState);
+            foreach (var system in this._renderSystems) {
+                system.Render(frameTime);
             }
         }
         finally {
@@ -566,15 +579,15 @@ public sealed class Scene : GridContainer, IScene {
             this.RebuildFilterCaches();
             this.InvokePendingActions();
 
-            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.PreUpdate })) {
+            foreach (var system in this._preUpdateSystems) {
                 system.Update(frameTime, inputState);
             }
 
-            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.Update })) {
+            foreach (var system in this._updateSystems) {
                 system.Update(frameTime, inputState);
             }
 
-            foreach (var system in this.Systems.Where(x => x is { ShouldUpdate: true, Kind: GameSystemKind.PostUpdate })) {
+            foreach (var system in this._postUpdateSystems) {
                 system.Update(frameTime, inputState);
             }
         }
@@ -596,6 +609,11 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Clear();
         this._updateableEntities.Clear();
         this._fixedUpdateableEntities.Clear();
+
+        this._renderSystems.Clear();
+        this._updateSystems.Clear();
+        this._preUpdateSystems.Clear();
+        this._postUpdateSystems.Clear();
     }
 
     private void InvokePendingActions() {
@@ -606,6 +624,20 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
+    private void OnSystemAdded(IGameSystem system) {
+        if (this._isInitialized) {
+            system.Initialize(this);
+            system.OnSceneTreeLoaded();
+        }
+    }
+
+    private void OnSystemRemoved(IGameSystem system) {
+        if (this._isInitialized) {
+            this.UnregisterSystem(system);
+            system.Deinitialize();
+        }
+    }
+
     private void RebuildFilterCaches() {
         this._animatableEntities.RebuildCache();
         this._cameras.RebuildCache();
@@ -613,5 +645,38 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.RebuildCache();
         this._updateableEntities.RebuildCache();
         this._fixedUpdateableEntities.RebuildCache();
+
+        this._updateSystems.RebuildCache();
+        this._preUpdateSystems.RebuildCache();
+        this._postUpdateSystems.RebuildCache();
+    }
+
+    private void RegisterSystem(IGameSystem system) {
+        this._renderSystems.Add(system);
+
+        if (system is IUpdateSystem updateSystem) {
+            switch (updateSystem.Kind) {
+                case UpdateSystemKind.Update:
+                    this._updateSystems.Add(updateSystem);
+                    break;
+                case UpdateSystemKind.PreUpdate:
+                    this._preUpdateSystems.Add(updateSystem);
+                    break;
+                case UpdateSystemKind.PostUpdate:
+                    this._postUpdateSystems.Add(updateSystem);
+                    break;
+                case UpdateSystemKind.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
+    private void UnregisterSystem(IGameSystem system) {
+        this._renderSystems.Remove(system);
+        this._updateSystems.Remove(system);
+        this._preUpdateSystems.Remove(system);
+        this._postUpdateSystems.Remove(system);
     }
 }

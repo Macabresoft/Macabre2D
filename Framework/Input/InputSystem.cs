@@ -89,7 +89,7 @@ public interface IInputSystem {
 /// <summary>
 /// A system which handles basic input operations on a per-frame basis.
 /// </summary>
-public class InputSystem : GameSystem, IInputSystem {
+public class InputSystem : UpdateSystem, IInputSystem {
     private readonly IDictionary<InputAction, InputActionState> _actionToButtonState = new Dictionary<InputAction, InputActionState>();
     private InputState _inputState;
 
@@ -97,7 +97,7 @@ public class InputSystem : GameSystem, IInputSystem {
     public float HorizontalAxis { get; private set; }
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.PreUpdate;
+    public override UpdateSystemKind Kind => UpdateSystemKind.PreUpdate;
 
     /// <inheritdoc />
     public float VerticalAxis { get; private set; }

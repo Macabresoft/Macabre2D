@@ -8,11 +8,11 @@ using Macabresoft.Macabre2D.Project.Common;
 /// <summary>
 /// A system that handles animations.
 /// </summary>
-public class AnimationSystem : GameSystem {
+public class AnimationSystem : UpdateSystem {
     private byte _frameRate = 30;
 
     /// <inheritdoc />
-    public override GameSystemKind Kind => GameSystemKind.PostUpdate;
+    public override UpdateSystemKind Kind => UpdateSystemKind.PostUpdate;
 
     /// <summary>
     /// Gets the bottom edge's overriden layer.

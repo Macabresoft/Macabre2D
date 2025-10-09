@@ -10,7 +10,7 @@ using System.ComponentModel;
 /// this code from the MonoGame source code. Theirs is private to Game, I wanted to reuse this
 /// all over the place.
 /// </summary>
-public class FilterSortCollection<T> : FilterCollection<T> where T : INotifyPropertyChanged {
+public class FilterSortCollection<T> : FilterCollection<T> {
     private readonly Comparison<AddJournalEntry> _addJournalSortComparison;
     private readonly Comparison<int> _removeJournalSortComparison = (x, y) => Comparer<int>.Default.Compare(y, x);
     private readonly Comparison<T> _sort;
