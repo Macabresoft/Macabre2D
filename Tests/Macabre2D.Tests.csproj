@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
+        <PackageReference Include="AwesomeAssertions" Version="9.2.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4" />
         <PackageReference Include="NSubstitute" Version="5.3.0" />
         <PackageReference Include="nunit" Version="4.4.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303"/>
         <PackageReference Include="NSubstitute" Version="5.1.0"/>
         <PackageReference Include="nunit" Version="3.14.0"/>

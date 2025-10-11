@@ -26,6 +26,9 @@ public sealed class CameraTests {
         };
 
         var scene = Substitute.For<IScene>();
+        var game = Substitute.For<IGame>();
+        scene.Game.Returns(game);
+        game.UserSettings.Returns(new UserSettings());
         camera.Initialize(scene, new Entity());
 
         camera.ZoomTo(new Vector2(zoomX, zoomY), zoomAmount);
