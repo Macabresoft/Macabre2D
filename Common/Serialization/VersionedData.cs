@@ -42,6 +42,7 @@ public class VersionedData : IVersionedData {
     }
 
     /// <inheritdoc />
+    /// <remarks>The setter here is required for this to actually get loaded with <see cref="DataMemberAttribute"/>.</remarks>
     [DataMember]
     public string TypeName { get; private set; }
 
