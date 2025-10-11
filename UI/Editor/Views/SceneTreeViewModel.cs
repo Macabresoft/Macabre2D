@@ -67,22 +67,22 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanRemove(x.Value)));
-        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.SceneService.WhenAny(
-            x => x.ImpliedSelected,
-            x => this.CanMoveDown(x.Value)));
-        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.SceneService.WhenAny(
-            x => x.ImpliedSelected,
-            x => this.CanMoveUp(x.Value)));
+
+        var canMoveDown = this.SceneService.WhenAny(x => x.ImpliedSelected, x => this.CanMoveDown(x.Value));
+        this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, canMoveDown);
+        this.MoveToEndCommand = ReactiveCommand.Create<object>(this.MoveToEnd, canMoveDown);
+
+        var canMoveUp = this.SceneService.WhenAny(x => x.ImpliedSelected, x => this.CanMoveUp(x.Value));
+        this.MoveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, canMoveUp);
+        this.MoveToStartCommand = ReactiveCommand.Create<object>(this.MoveToStart, canMoveUp);
+
+        var canClone = this.SceneService.WhenAny(x => x.ImpliedSelected, x => this.CanClone(x.Value));
         this.RenameCommand = ReactiveCommand.Create<string>(this.RenameChild);
-        this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.SceneService.WhenAny(
-            x => x.ImpliedSelected,
-            x => this.CanClone(x.Value)));
+        this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, canClone);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
-        this.DisassociateFromParentCommand = ReactiveCommand.Create<IEntity>(this.DisassociateFromParent, this.SceneService.WhenAny(
-            x => x.ImpliedSelected,
-            x => x.Value is IEntity entity && entity.Parent.Id != this.SceneService.CurrentScene.Id));
+        this.DisassociateFromParentCommand = ReactiveCommand.Create<IEntity>(this.DisassociateFromParent, canClone);
         this.EnableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, true));
         this.DisableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, false));
         this.RevealCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsVisible(x, true));
@@ -163,6 +163,16 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// Gets a command to move a child down.
     /// </summary>
     public ICommand MoveDownCommand { get; }
+
+    /// <summary>
+    /// Gets a command to move a child to the end of its parent's child list.
+    /// </summary>
+    public ICommand MoveToEndCommand { get; }
+
+    /// <summary>
+    /// Gets a command to move a child to the start of its parent's child list.
+    /// </summary>
+    public ICommand MoveToStartCommand { get; }
 
     /// <summary>
     /// Gets a command to move a child up.
@@ -378,7 +388,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private bool CanAdd() => !this.IsFiltered;
 
-    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity != this.SceneService.CurrentScene || selected is IGameSystem);
+    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity.Id != this.SceneService.CurrentScene?.Id || selected is IGameSystem);
 
     private bool CanMoveDown(object selected) {
         if (this.IsFiltered) {
@@ -498,6 +508,36 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private void MoveSystemByIndex(IGameSystem gameSystem, int index) {
         this.SceneService.CurrentScene.ReorderSystem(gameSystem, index);
         this.SceneService.RaiseSelectedChanged();
+    }
+
+    private void MoveToEnd(object selected) {
+        switch (selected) {
+            case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                var index = parent.Children.IndexOf(entity);
+                this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, parent.Children.Count - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
+                break;
+            }
+            case IGameSystem system: {
+                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
+                this._undoService.Do(() => { this.MoveSystemByIndex(system, this.SceneService.CurrentScene.Systems.Count - 1); }, () => { this.MoveSystemByIndex(system, index); });
+                break;
+            }
+        }
+    }
+
+    private void MoveToStart(object selected) {
+        switch (selected) {
+            case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                var index = parent.Children.IndexOf(entity);
+                this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, 0); }, () => { this.MoveEntityByIndex(entity, parent, index); });
+                break;
+            }
+            case IGameSystem system: {
+                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
+                this._undoService.Do(() => { this.MoveSystemByIndex(system, 0); }, () => { this.MoveSystemByIndex(system, index); });
+                break;
+            }
+        }
     }
 
     private void MoveUp(object selected) {

@@ -22,7 +22,7 @@
             <local:SceneTreeViewModel />
         </Design.DataContext>
         <Grid RowDefinitions="Auto, Auto, *"
-              ColumnDefinitions="Auto, *, Auto">
+              ColumnDefinitions="*, Auto">
             <StackPanel Grid.Column="0"
                         Grid.Row="0"
                         Orientation="Horizontal">
@@ -80,6 +80,20 @@
                         ToolTip.Tip="Contextually clone an entity or system depending on the currently selected object in the tree">
                     <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
                 </Button>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        IsEnabled="{Binding !IsFiltered}">
+                <Button Command="{Binding MoveToStartCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        ToolTip.Tip="Move the selected entity to the top of its parent's child collection"
+                        Classes="Icon">
+                    <avaloniaEx:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
+                </Button>
 
                 <Button Command="{Binding MoveUpCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
@@ -96,28 +110,16 @@
                         IsVisible="{Binding IsEntityOrSystemSelected}">
                     <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
                 </Button>
-            </StackPanel>
-
-            <StackPanel Grid.Column="2"
-                        Grid.Row="0"
-                        Orientation="Horizontal"
-                        IsVisible="{Binding !IsFiltered}">
-                <Button Classes="Icon"
-                        Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
-                        CommandParameter="{Binding #_treeView}"
-                        ToolTip.Tip="Expand all nodes in the scene tree">
-                    <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
-                </Button>
-                <Button Classes="Icon"
-                        Command="{x:Static common:TreeViewHelper.CollapseAllCommand}"
-                        CommandParameter="{Binding #_treeView}"
-                        ToolTip.Tip="Collapse all nodes in the scene tree">
-                    <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+                
+                <Button Command="{Binding MoveToEndCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        ToolTip.Tip="Move the selected entity to the bottom of its parent's child collection"
+                        Classes="Icon">
+                    <avaloniaEx:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
                 </Button>
             </StackPanel>
-
+            
             <Grid Grid.Column="0"
-                  Grid.ColumnSpan="3"
                   Grid.Row="1"
                   ColumnDefinitions="*, Auto">
                 <TextBox Grid.Column="0"
@@ -133,9 +135,27 @@
                     <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
                 </Button>
             </Grid>
+            
+            <StackPanel Grid.Column="1"
+                        Grid.Row="1"
+                        Orientation="Horizontal"
+                        IsEnabled="{Binding !IsFiltered}">
+                <Button Classes="Icon"
+                        Command="{x:Static common:TreeViewHelper.ExpandAllCommand}"
+                        CommandParameter="{Binding #_treeView}"
+                        ToolTip.Tip="Expand all nodes in the scene tree">
+                    <avaloniaEx:Icon Content="{StaticResource ExpandIcon}" />
+                </Button>
+                <Button Classes="Icon"
+                        Command="{x:Static common:TreeViewHelper.CollapseAllCommand}"
+                        CommandParameter="{Binding #_treeView}"
+                        ToolTip.Tip="Collapse all nodes in the scene tree">
+                    <avaloniaEx:Icon Content="{StaticResource CollapseIcon}" />
+                </Button>
+            </StackPanel>
 
             <TreeView Grid.Column="0"
-                      Grid.ColumnSpan="3"
+                      Grid.ColumnSpan="2"
                       Grid.Row="2"
                       IsVisible="{Binding !IsFiltered}"
                       Name="_treeView"
@@ -355,7 +375,7 @@
             </TreeView>
 
             <ListBox Grid.Column="0"
-                     Grid.ColumnSpan="3"
+                     Grid.ColumnSpan="2"
                      Grid.Row="2"
                      IsVisible="{Binding IsFiltered}"
                      Margin="{StaticResource StandardMarginAll}"
