@@ -297,6 +297,11 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ReinitializeCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Re-initializes this entity" />
+                                    
+                                    <MenuItem Header="Disassociate from Parent" 
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.DisassociateFromParentCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Disassociates this entity from its parent, making its parent the scene itself"/>
 
                                     <Separator />
 

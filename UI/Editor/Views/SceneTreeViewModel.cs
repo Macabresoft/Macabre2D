@@ -80,6 +80,9 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
+        this.DisassociateFromParentCommand = ReactiveCommand.Create<IEntity>(this.DisassociateFromParent, this.SceneService.WhenAny(
+            x => x.ImpliedSelected,
+            x => x.Value is IEntity entity && entity.Parent.Id != this.SceneService.CurrentScene.Id));
         this.EnableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, true));
         this.DisableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, false));
         this.RevealCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsVisible(x, true));
@@ -125,6 +128,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// Gets a command to disable an entity and its descendants.
     /// </summary>
     public ICommand DisableCommand { get; }
+
+    /// <summary>
+    /// Gets a command to disassociate this entity from its parent, thus returning it to the root scene.
+    /// </summary>
+    public ICommand DisassociateFromParentCommand { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -454,6 +462,17 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private async Task CreateFromPrefab(IEntity entity) {
         await this._contentService.CreatePrefab(entity);
+    }
+
+    private void DisassociateFromParent(IEntity entity) {
+        if (entity != null) {
+            var scene = entity.Scene;
+            entity.Initialize(scene, scene);
+            var parent = entity.Parent;
+            parent.RemoveChild(entity);
+            scene.AddChild(entity);
+            this.SceneService.Selected = entity;
+        }
     }
 
     private void MoveDown(object selected) {

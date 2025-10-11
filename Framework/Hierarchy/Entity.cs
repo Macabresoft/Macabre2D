@@ -24,7 +24,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <summary>
     /// Gets the children.
     /// </summary>
-    IReadOnlyCollection<IEntity> Children => Array.Empty<IEntity>();
+    IReadOnlyCollection<IEntity> Children => [];
 
     /// <summary>
     /// Gets the game.
@@ -202,7 +202,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// </summary>
     /// <typeparam name="T">The type of parent entity.</typeparam>
     /// <param name="entity">The parent entity.</param>
-    /// <returns>A value indicating whether or not the entity was found.</returns>
+    /// <returns>A value indicating whether the entity was found.</returns>
     bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity);
 
     /// <summary>
