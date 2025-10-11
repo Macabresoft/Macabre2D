@@ -59,6 +59,7 @@ public class RandomLoopingSpriteAnimator : BaseSpriteAnimator {
         this.SpriteSheetReference.PropertyChanged += this.AnimationReference_PropertyChanged;
     }
 
+    /// <inheritdoc />
     public override void Stop() {
         this.TrySetFirstAnimation();
         base.Stop();

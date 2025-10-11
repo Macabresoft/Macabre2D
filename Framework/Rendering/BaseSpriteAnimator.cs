@@ -141,7 +141,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
     }
 
     /// <inheritdoc />
-    public void Play() {
+    public virtual void Play() {
         this.IsPlaying = true;
         this.Reset();
     }
