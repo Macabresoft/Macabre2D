@@ -357,7 +357,7 @@ public class BaseGame : Game, IGame {
                 this.UserSettings = new UserSettings(this.Project);
             }
 
-            this.State.Initialize(this.DataManager, this.UserSettings.Custom);
+            this.State.Initialize(this.DataManager, this.UserSettings.Gameplay);
 
             if (this.InputSettings.DesiredInputDevice == InputDevice.Auto) {
                 var gamePadState = GamePad.GetState(PlayerIndex.One);

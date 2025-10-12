@@ -18,7 +18,7 @@ public class UserSettings : CopyableSettings<UserSettings> {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSettings" /> class.
     /// </summary>
-    public UserSettings() : this(new AudioSettings(), new RenderSettings(), new DisplaySettings(), new InputSettings(), new CustomSettings()) {
+    public UserSettings() : this(new AudioSettings(), new RenderSettings(), new DisplaySettings(), new InputSettings(), new GameplaySettings()) {
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class UserSettings : CopyableSettings<UserSettings> {
         this.Rendering = project.DefaultUserSettings.Rendering.Clone();
         this.Display = project.DefaultUserSettings.Display.Clone();
         this.Input = project.DefaultUserSettings.Input.Clone();
-        this.Custom = project.DefaultUserSettings.Custom;
+        this.Gameplay = project.DefaultUserSettings.Gameplay;
     }
 
     /// <summary>
@@ -40,13 +40,13 @@ public class UserSettings : CopyableSettings<UserSettings> {
     /// <param name="rendering">The color settings.</param>
     /// <param name="display">The graphics settings.</param>
     /// <param name="inputSettings">The input bindings.</param>
-    /// <param name="custom">The custom settings.</param>
-    public UserSettings(AudioSettings audio, RenderSettings rendering, DisplaySettings display, InputSettings inputSettings, CustomSettings custom) {
+    /// <param name="gameplay">The custom settings.</param>
+    public UserSettings(AudioSettings audio, RenderSettings rendering, DisplaySettings display, InputSettings inputSettings, GameplaySettings gameplay) {
         this.Audio = audio;
         this.Rendering = rendering;
         this.Display = display;
         this.Input = inputSettings;
-        this.Custom = custom;
+        this.Gameplay = gameplay;
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class UserSettings : CopyableSettings<UserSettings> {
     /// Gets the custom user settings.
     /// </summary>
     [DataMember]
-    public CustomSettings Custom { get; }
+    public GameplaySettings Gameplay { get; }
 
     /// <summary>
     /// Gets the graphics settings.
@@ -84,7 +84,7 @@ public class UserSettings : CopyableSettings<UserSettings> {
     public RenderSettings Rendering { get; }
 
     /// <inheritdoc />
-    public override UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Custom);
+    public override UserSettings Clone() => new(this.Audio, this.Rendering, this.Display, this.Input, this.Gameplay);
 
     /// <inheritdoc />
     public override void CopyTo(UserSettings other) {
@@ -94,6 +94,6 @@ public class UserSettings : CopyableSettings<UserSettings> {
         this.Rendering.CopyTo(other.Rendering);
         this.Display.CopyTo(other.Display);
         this.Input.CopyTo(other.Input);
-        this.Custom.CopyTo(other.Custom);
+        this.Gameplay.CopyTo(other.Gameplay);
     }
 }
