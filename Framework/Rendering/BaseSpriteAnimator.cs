@@ -26,6 +26,12 @@ public interface ISpriteAnimator : IAnimatableEntity, ISpriteEntity {
     bool IsPlaying { get; }
 
     /// <summary>
+    /// Gets the current sprite index.
+    /// </summary>
+    /// <returns>The current sprite index.</returns>
+    byte? GetCurrentSpriteIndex();
+
+    /// <summary>
     /// Gets the animation percentage complete as a value between 0 and 1.
     /// </summary>
     /// <returns>The percentage completed.</returns>
@@ -95,6 +101,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
         base.Deinitialize();
         this.FrameRateOverride.PropertyChanged -= this.FrameRateOverride_PropertyChanged;
     }
+
+    /// <inheritdoc />
+    public byte? GetCurrentSpriteIndex() => this.SpriteIndex;
 
     /// <inheritdoc />
     public float GetPercentageComplete() {

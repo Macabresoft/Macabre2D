@@ -425,6 +425,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public IEnumerable<Collider> GetColliders() => [];
 
     /// <inheritdoc />
+    public byte? GetCurrentSpriteIndex() => null;
+
+    /// <inheritdoc />
     public IEnumerable<T> GetDescendants<T>() => [];
 
     /// <inheritdoc />
