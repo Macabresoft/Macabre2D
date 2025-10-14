@@ -23,7 +23,6 @@ public class BaseGame : Game, IGame {
 
     private readonly List<GameTransition> _runningTransitions = new();
     private readonly Stack<IScene> _sceneStack = new();
-    private readonly Dictionary<Guid, RenderTarget2D> _screenShaderIdToRenderTargets = new();
     private bool _canToggleFullscreen = true;
     private InputDevice _desiredInputDevice = InputDevice.Auto;
     private Rectangle _finalRenderBounds;
@@ -313,19 +312,15 @@ public class BaseGame : Game, IGame {
             this.RenderScenes();
 
             if (!IsDesignMode) {
-                // TODO: offload all of this to a method on the RenderStep
-                foreach (var shader in this.Project.RenderSteps.OfType<ScreenShader>()) {
-                    if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
-                        var renderSize = shader.GetRenderSize(this._intermediateRenderResolution, this.Project.InternalRenderResolution);
-                        if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
-                            var renderTarget = this.GetRenderTarget(this.GraphicsDevice, shader, renderSize);
-                            this.GraphicsDevice.SetRenderTarget(renderTarget);
-                            this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                            this.SpriteBatch.Begin(effect: effect, samplerState: shader.SamplerStateType.ToSamplerState());
-                            this.SpriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
-                            this.SpriteBatch.End();
-                            previousRenderTarget = renderTarget;
-                        }
+                foreach (var step in this.Project.RenderSteps) {
+                    if (step.IsEnabled) {
+                        previousRenderTarget = step.RenderToTexture(
+                            this,
+                            this.GraphicsDevice,
+                            this.SpriteBatch,
+                            previousRenderTarget,
+                            this._intermediateRenderResolution,
+                            this.Project.InternalRenderResolution);
                     }
                 }
             }
@@ -337,7 +332,6 @@ public class BaseGame : Game, IGame {
             this.SpriteBatch.End();
         }
     }
-
 
     /// <inheritdoc />
     protected override void Initialize() {
@@ -491,21 +485,7 @@ public class BaseGame : Game, IGame {
 
     private InputState CreateInputStateForFrame() => new(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
-
-    private RenderTarget2D CreateRenderTarget(GraphicsDevice device) => new(device, this.Project.InternalRenderResolution.X, this.Project.InternalRenderResolution.Y);
-
-    private RenderTarget2D CreateRenderTarget(GraphicsDevice device, Point renderSize) => new(device, renderSize.X, renderSize.Y);
-
-    private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= this.CreateRenderTarget(device);
-
-    private RenderTarget2D GetRenderTarget(GraphicsDevice device, ScreenShader shader, Point renderSize) {
-        if (!this._screenShaderIdToRenderTargets.TryGetValue(shader.Id, out var renderTarget)) {
-            renderTarget = this.CreateRenderTarget(device, renderSize);
-            this._screenShaderIdToRenderTargets[shader.Id] = renderTarget;
-        }
-
-        return renderTarget;
-    }
+    private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= device.CreateRenderTarget(this.Project);
 
     private void RenderScenes() {
         foreach (var scene in this._sceneStack.Reverse()) {
@@ -522,11 +502,9 @@ public class BaseGame : Game, IGame {
         this._gameRenderTarget?.Dispose();
         this._gameRenderTarget = null;
 
-        foreach (var shaderRenderTarget in this._screenShaderIdToRenderTargets.Values) {
-            shaderRenderTarget.Dispose();
+        foreach (var step in this.Project.RenderSteps) {
+            step.Reset();
         }
-
-        this._screenShaderIdToRenderTargets.Clear();
 
         if (this.Project.InternalRenderResolution.X > 0f && this.Project.InternalRenderResolution.Y > 0f && this.ViewportSize.X > 0f && this.ViewportSize.Y > 0f) {
             var internalRatio = (double)this.Project.InternalRenderResolution.X / this.Project.InternalRenderResolution.Y;

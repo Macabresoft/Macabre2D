@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Gets the screen shader sizing.
@@ -27,6 +29,7 @@ public enum ScreenShaderSizing {
 /// An instance of a shader that is used by the project as a whole and not specific scenes.
 /// </summary>
 public class ScreenShader : RenderStep {
+    private RenderTarget2D? _renderTarget;
 
     /// <summary>
     /// Multiplies the render size after applying of <see cref="Sizing" />.
@@ -65,5 +68,40 @@ public class ScreenShader : RenderStep {
     /// <inheritdoc />
     public override void Initialize(IAssetManager assets, IGame game) {
         this.Shader.Initialize(assets, game);
+    }
+
+    /// <inheritdoc />
+    public override RenderTarget2D RenderToTexture(
+        IGame game,
+        GraphicsDevice device,
+        SpriteBatch spriteBatch,
+        RenderTarget2D previousRenderTarget,
+        Point viewportSize,
+        Point internalResolution) {
+        if (!game.DisplaySettings.DisabledScreenShaders.Contains(this.Id)) {
+            var renderSize = this.GetRenderSize(viewportSize, internalResolution);
+            if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), game, game.CurrentScene) is { } effect) {
+                var renderTarget = this.GetRenderTarget(device, renderSize);
+                device.SetRenderTarget(renderTarget);
+                device.Clear(game.CurrentScene.BackgroundColor);
+                spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
+                spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
+                spriteBatch.End();
+                previousRenderTarget = renderTarget;
+            }
+        }
+
+        return previousRenderTarget;
+    }
+
+    /// <inheritdoc />
+    public override void Reset() {
+        this._renderTarget?.Dispose();
+        this._renderTarget = null;
+    }
+
+    private RenderTarget2D GetRenderTarget(GraphicsDevice device, Point renderSize) {
+        this._renderTarget ??= device.CreateRenderTarget(renderSize);
+        return this._renderTarget;
     }
 }
