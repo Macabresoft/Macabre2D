@@ -96,7 +96,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 IContentDirectory => ProjectSelectionType.Directory,
                 IContentNode => ProjectSelectionType.File,
                 SpriteSheetMember => ProjectSelectionType.Asset,
-                ScreenShaderCollection => ProjectSelectionType.Shader,
+                RenderStepCollection => ProjectSelectionType.Shader,
                 ScreenShader => ProjectSelectionType.Shader,
                 _ => ProjectSelectionType.None
             };

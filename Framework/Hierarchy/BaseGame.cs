@@ -312,8 +312,9 @@ public class BaseGame : Game, IGame {
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
             this.RenderScenes();
 
-            if (this.Project.ScreenShaders.CheckHasEnabledShaders(this) && !IsDesignMode) {
-                foreach (var shader in this.Project.ScreenShaders) {
+            if (!IsDesignMode) {
+                // TODO: offload all of this to a method on the RenderStep
+                foreach (var shader in this.Project.RenderSteps.OfType<ScreenShader>()) {
                     if (shader.IsEnabled && !this.DisplaySettings.DisabledScreenShaders.Contains(shader.Id)) {
                         var renderSize = shader.GetRenderSize(this._intermediateRenderResolution, this.Project.InternalRenderResolution);
                         if (shader.Shader.PrepareAndGetShader(renderSize.ToVector2(), this, this.CurrentScene) is { } effect) {
@@ -374,8 +375,8 @@ public class BaseGame : Game, IGame {
         this.Overlay.Initialize(this, this.CreateAssetManager());
 
         var assetManager = this.CreateAssetManager();
-        foreach (var shader in this.Project.ScreenShaders) {
-            shader.Shader.Initialize(assetManager, this);
+        foreach (var renderSTep in this.Project.RenderSteps) {
+            renderSTep.Initialize(assetManager, this);
         }
 
         this.IsInitialized = true;

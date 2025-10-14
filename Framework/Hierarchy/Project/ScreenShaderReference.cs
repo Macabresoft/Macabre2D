@@ -33,6 +33,6 @@ public class ScreenShaderReference {
     /// </summary>
     /// <param name="project">The project.</param>
     public void Initialize(IGameProject project) {
-        this.Shader = project.ScreenShaders.OfType<ScreenShader>().FirstOrDefault(x => x.Id == this.Id);
+        this.Shader = project.RenderSteps.OfType<ScreenShader>().FirstOrDefault(x => x.Id == this.Id);
     }
 }

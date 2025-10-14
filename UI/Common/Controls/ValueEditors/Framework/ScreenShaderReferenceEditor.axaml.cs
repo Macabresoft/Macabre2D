@@ -50,7 +50,7 @@ public partial class ScreenShaderReferenceEditor : ValueEditorControl<ScreenShad
         this._projectService = projectService;
         this._undoService = undoService;
 
-        var screenShaders = this._projectService.CurrentProject.ScreenShaders.OfType<ScreenShader>().ToList();
+        var screenShaders = this._projectService.CurrentProject.RenderSteps.OfType<ScreenShader>().ToList();
         screenShaders.Insert(0, null);
         this._availableShaders.Reset(screenShaders);
         this.ResetSelectedShader();

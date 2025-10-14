@@ -173,7 +173,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     private void ResetProjectTreeRoot() {
         this._treeRoot.Clear();
-        this._treeRoot.Add(this.CurrentProject.ScreenShaders);
+        this._treeRoot.Add(this.CurrentProject.RenderSteps);
         this._treeRoot.Add(this._contentService.RootContentDirectory);
     }
 

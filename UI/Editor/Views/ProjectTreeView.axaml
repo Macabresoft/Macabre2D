@@ -262,7 +262,7 @@
                             </Border>
                         </TreeDataTemplate>
 
-                        <TreeDataTemplate DataType="framework:ScreenShaderCollection"
+                        <TreeDataTemplate DataType="framework:RenderStepCollection"
                                           ItemsSource="{Binding}">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource ScreenIcon}"
                                                                IconForeground="{StaticResource PurpleBrush}"

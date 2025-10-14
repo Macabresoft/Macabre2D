@@ -77,7 +77,7 @@ public interface IGameProject : INotifyPropertyChanged {
     /// <summary>
     /// Gets the screen shaders for this project.
     /// </summary>
-    ScreenShaderCollection ScreenShaders { get; }
+    RenderStepCollection RenderSteps { get; }
 
     /// <summary>
     /// Gets the identifier of the scene to load on a debug startup.
@@ -239,7 +239,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public ScreenShaderCollection ScreenShaders { get; } = new();
+    public RenderStepCollection RenderSteps { get; } = new();
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]

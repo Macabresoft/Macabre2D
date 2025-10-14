@@ -264,12 +264,12 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this._undoService.Do(
             () =>
             {
-                this.ProjectService.CurrentProject.ScreenShaders.Add(newShader);
+                this.ProjectService.CurrentProject.RenderSteps.Add(newShader);
                 this.AssetSelectionService.Selected = newShader;
             },
             () =>
             {
-                this.ProjectService.CurrentProject.ScreenShaders.Remove(newShader);
+                this.ProjectService.CurrentProject.RenderSteps.Remove(newShader);
                 this.AssetSelectionService.Selected = originalSelected;
             });
     }
@@ -316,7 +316,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
                 break;
             case ScreenShader:
-            case ScreenShaderCollection:
+            case RenderStepCollection:
                 this.AddNewProjectShader();
                 break;
         }
@@ -343,7 +343,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         SpriteSheetIconSetCollection or
         SpriteSheetMember or
         ScreenShader or
-        ScreenShaderCollection;
+        RenderStepCollection;
 
     private static bool CanClone(object selected) => selected is SpriteSheetMember or ScreenShader or ContentFile;
 
@@ -356,8 +356,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             result = index < maxIndex;
         }
         else if (selected is ScreenShader shader) {
-            var index = this.ProjectService.CurrentProject.ScreenShaders.IndexOf(shader);
-            var maxIndex = this.ProjectService.CurrentProject.ScreenShaders.Count;
+            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(shader);
+            var maxIndex = this.ProjectService.CurrentProject.RenderSteps.Count;
             result = index < maxIndex;
         }
 
@@ -372,7 +372,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             result = index > 0;
         }
         else if (selected is ScreenShader shader) {
-            var index = this.ProjectService.CurrentProject.ScreenShaders.IndexOf(shader);
+            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(shader);
             result = index > 0;
         }
 
@@ -400,7 +400,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             });
         }
         else if (selected is ScreenShader shader && shader.TryClone(out var clonedShader)) {
-            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            var shaders = this.ProjectService.CurrentProject.RenderSteps;
             this._undoService.Do(() =>
             {
                 shaders.Add(clonedShader);
@@ -489,7 +489,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             }
         }
         else if (selected is ScreenShader shader) {
-            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            var shaders = this.ProjectService.CurrentProject.RenderSteps;
             var originalIndex = shaders.IndexOf(shader);
             if (originalIndex < shaders.Count - 1 && originalIndex >= 0) {
                 var newIndex = originalIndex + 1;
@@ -527,7 +527,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             }
         }
         else if (selected is ScreenShader shader) {
-            var shaders = this.ProjectService.CurrentProject.ScreenShaders;
+            var shaders = this.ProjectService.CurrentProject.RenderSteps;
             var originalIndex = shaders.IndexOf(shader);
             if (originalIndex > 0) {
                 var newIndex = originalIndex - 1;
@@ -588,7 +588,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
                 break;
             case ScreenShader shader:
-                if (this.ProjectService.CurrentProject.ScreenShaders is var shaders && shaders.Contains(shader)) {
+                if (this.ProjectService.CurrentProject.RenderSteps is var shaders && shaders.Contains(shader)) {
                     var index = shaders.IndexOf(shader);
                     this._undoService.Do(() => shaders.Remove(shader),
                         () => shaders.Insert(index, shader));
