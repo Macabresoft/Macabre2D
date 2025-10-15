@@ -5,9 +5,9 @@ using System.Linq;
 using Macabresoft.Core;
 
 /// <summary>
-/// A collection of shaders stored at the project level.
+/// A collection of <see cref="IRenderStep"/> stored at the project level.
 /// </summary>
-public class RenderStepCollection : ObservableCollectionExtended<RenderStep>, INameableCollection {
+public class RenderStepCollection : ObservableCollectionExtended<IRenderStep>, INameableCollection {
 
     /// <inheritdoc />
     public string Name => "Render Steps";

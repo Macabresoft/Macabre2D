@@ -32,7 +32,7 @@ public class AssetToIconConverter : IValueConverter {
                     AudioClip => application.TryFindResource("AudioClipIcon", out result),
                     PrefabAsset => application.TryFindResource("EntityIcon", out result),
                     SceneAsset => application.TryFindResource("SceneIcon", out result),
-                    ShaderAsset => application.TryFindResource("ShaderIcon", out result),
+                    ShaderAsset => application.TryFindResource("RenderStepIcon", out result),
                     SpriteSheet => application.TryFindResource("SpriteSheetIcon", out result),
                     _ => application.TryFindResource("FileIcon", out result)
                 },

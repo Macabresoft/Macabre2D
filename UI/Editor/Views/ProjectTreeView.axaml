@@ -271,8 +271,8 @@
                                                                Text="{Binding Name, Mode=OneTime}" />
                         </TreeDataTemplate>
 
-                        <TreeDataTemplate DataType="framework:ScreenShader">
-                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource ShaderIcon}"
+                        <TreeDataTemplate DataType="framework:IRenderStep">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource RenderStepIcon}"
                                                                IsFileName="False" />
                         </TreeDataTemplate>
 

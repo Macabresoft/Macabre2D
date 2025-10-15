@@ -80,9 +80,9 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
     protected IAssemblyService AssemblyService { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not editors should be loaded.
+    /// Gets a value indicating whether editors should be loaded.
     /// </summary>
-    /// <returns>A value indicating whether or not editors should be loaded.</returns>
+    /// <returns>A value indicating whether editors should be loaded.</returns>
     protected virtual bool ShouldLoadEditors() {
         return this.Selected != null;
     }

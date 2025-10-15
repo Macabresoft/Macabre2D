@@ -55,16 +55,6 @@ public class ScreenShader : RenderStep {
     public ScreenShaderSizing Sizing { get; set; } = ScreenShaderSizing.FullScreen;
 
     /// <inheritdoc />
-    public override Point GetRenderSize(Point viewPortSize, Point pixelRenderSize) {
-        return this.Sizing switch {
-            ScreenShaderSizing.PixelSize => new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier),
-            ScreenShaderSizing.LimitedPixelSize when pixelRenderSize.Y * this.Multiplier is var height && height < viewPortSize.Y => new Point(pixelRenderSize.X * this.Multiplier, height),
-            ScreenShaderSizing.LimitedPixelSize => new Point(viewPortSize.X, viewPortSize.Y),
-            _ => new Point(viewPortSize.X * this.Multiplier, viewPortSize.Y * this.Multiplier)
-        };
-    }
-
-    /// <inheritdoc />
     public override void Initialize(IAssetManager assets, IGame game) {
         this.Shader.Initialize(assets, game);
     }
@@ -95,6 +85,15 @@ public class ScreenShader : RenderStep {
     public override void Reset() {
         this._renderTarget?.Dispose();
         this._renderTarget = null;
+    }
+
+    private Point GetRenderSize(Point viewPortSize, Point pixelRenderSize) {
+        return this.Sizing switch {
+            ScreenShaderSizing.PixelSize => new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier),
+            ScreenShaderSizing.LimitedPixelSize when pixelRenderSize.Y * this.Multiplier is var height && height < viewPortSize.Y => new Point(pixelRenderSize.X * this.Multiplier, height),
+            ScreenShaderSizing.LimitedPixelSize => new Point(viewPortSize.X, viewPortSize.Y),
+            _ => new Point(viewPortSize.X * this.Multiplier, viewPortSize.Y * this.Multiplier)
+        };
     }
 
     private RenderTarget2D GetRenderTarget(GraphicsDevice device, Point renderSize) {

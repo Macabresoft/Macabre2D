@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -258,20 +257,30 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
-    private void AddNewProjectShader() {
-        var newShader = new ScreenShader();
-        var originalSelected = this.GetActualSelected();
-        this._undoService.Do(
-            () =>
-            {
-                this.ProjectService.CurrentProject.RenderSteps.Add(newShader);
-                this.AssetSelectionService.Selected = newShader;
-            },
-            () =>
-            {
-                this.ProjectService.CurrentProject.RenderSteps.Remove(newShader);
-                this.AssetSelectionService.Selected = originalSelected;
-            });
+    private async Task AddNewRenderStep() {
+        Type type;
+        var renderStepTypes = this._assemblyService.LoadTypes(typeof(IRenderStep)).ToList();
+        if (renderStepTypes.Count == 1) {
+            type = renderStepTypes.FirstOrDefault();
+        }
+        else {
+            type = await this._dialogService.OpenTypeSelectionDialog(renderStepTypes, typeof(IRenderStep), "Select a Render Step Type");
+        }
+
+        if (type != null && Activator.CreateInstance(type) is IRenderStep newStep) {
+            var originalSelected = this.GetActualSelected();
+            this._undoService.Do(
+                () =>
+                {
+                    this.ProjectService.CurrentProject.RenderSteps.Add(newStep);
+                    this.AssetSelectionService.Selected = newStep;
+                },
+                () =>
+                {
+                    this.ProjectService.CurrentProject.RenderSteps.Remove(newStep);
+                    this.AssetSelectionService.Selected = originalSelected;
+                });
+        }
     }
 
     private async Task AddNewSpriteSheetMember(ISpriteSheetMemberCollection collection) {
@@ -315,9 +324,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }
 
                 break;
-            case ScreenShader:
+            case IRenderStep:
             case RenderStepCollection:
-                this.AddNewProjectShader();
+                await this.AddNewRenderStep();
                 break;
         }
     }
@@ -342,10 +351,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         SpriteSheetFontCollection or
         SpriteSheetIconSetCollection or
         SpriteSheetMember or
-        ScreenShader or
+        IRenderStep or
         RenderStepCollection;
 
-    private static bool CanClone(object selected) => selected is SpriteSheetMember or ScreenShader or ContentFile;
+    private static bool CanClone(object selected) => selected is SpriteSheetMember or IRenderStep or ContentFile;
 
     private bool CanMoveDown(object selected) {
         var result = false;
@@ -355,8 +364,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             var maxIndex = collection.Count - 1;
             result = index < maxIndex;
         }
-        else if (selected is ScreenShader shader) {
-            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(shader);
+        else if (selected is IRenderStep step) {
+            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(step);
             var maxIndex = this.ProjectService.CurrentProject.RenderSteps.Count;
             result = index < maxIndex;
         }
@@ -371,8 +380,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             var index = collection.IndexOf(member);
             result = index > 0;
         }
-        else if (selected is ScreenShader shader) {
-            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(shader);
+        else if (selected is IRenderStep step) {
+            var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(step);
             result = index > 0;
         }
 
@@ -399,16 +408,16 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 this.AssetSelectionService.Selected = member;
             });
         }
-        else if (selected is ScreenShader shader && shader.TryClone(out var clonedShader)) {
-            var shaders = this.ProjectService.CurrentProject.RenderSteps;
+        else if (selected is IRenderStep step && step.TryClone(out var clonedStep)) {
+            var steps = this.ProjectService.CurrentProject.RenderSteps;
             this._undoService.Do(() =>
             {
-                shaders.Add(clonedShader);
-                this.AssetSelectionService.Selected = clonedShader;
+                steps.Add(clonedStep);
+                this.AssetSelectionService.Selected = clonedStep;
             }, () =>
             {
-                shaders.Remove(clonedShader);
-                this.AssetSelectionService.Selected = shader;
+                steps.Remove(clonedStep);
+                this.AssetSelectionService.Selected = step;
             });
         }
         else if (selected is ContentFile { Asset: { } asset, Parent: { } directory } file) {
@@ -488,19 +497,19 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 });
             }
         }
-        else if (selected is ScreenShader shader) {
-            var shaders = this.ProjectService.CurrentProject.RenderSteps;
-            var originalIndex = shaders.IndexOf(shader);
-            if (originalIndex < shaders.Count - 1 && originalIndex >= 0) {
+        else if (selected is IRenderStep step) {
+            var steps = this.ProjectService.CurrentProject.RenderSteps;
+            var originalIndex = steps.IndexOf(step);
+            if (originalIndex < steps.Count - 1 && originalIndex >= 0) {
                 var newIndex = originalIndex + 1;
                 this._undoService.Do(() =>
                 {
-                    shaders.Move(originalIndex, newIndex);
+                    steps.Move(originalIndex, newIndex);
                     this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
                     this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    shaders.Move(newIndex, originalIndex);
+                    steps.Move(newIndex, originalIndex);
                     this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
                     this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
@@ -526,19 +535,19 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 });
             }
         }
-        else if (selected is ScreenShader shader) {
-            var shaders = this.ProjectService.CurrentProject.RenderSteps;
-            var originalIndex = shaders.IndexOf(shader);
+        else if (selected is IRenderStep step) {
+            var steps = this.ProjectService.CurrentProject.RenderSteps;
+            var originalIndex = steps.IndexOf(step);
             if (originalIndex > 0) {
                 var newIndex = originalIndex - 1;
                 this._undoService.Do(() =>
                 {
-                    shaders.Move(originalIndex, newIndex);
+                    steps.Move(originalIndex, newIndex);
                     this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
                     this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 }, () =>
                 {
-                    shaders.Move(newIndex, originalIndex);
+                    steps.Move(newIndex, originalIndex);
                     this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
                     this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
@@ -582,16 +591,18 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             case SpriteSheetMember { SpriteSheet: { } spriteSheet } member:
                 if (spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
                     var index = collection.IndexOf(member);
-                    this._undoService.Do(() => collection.RemoveMember(member),
+                    this._undoService.Do(
+                        () => collection.RemoveMember(member),
                         () => collection.InsertMember(index, member));
                 }
 
                 break;
-            case ScreenShader shader:
-                if (this.ProjectService.CurrentProject.RenderSteps is var shaders && shaders.Contains(shader)) {
-                    var index = shaders.IndexOf(shader);
-                    this._undoService.Do(() => shaders.Remove(shader),
-                        () => shaders.Insert(index, shader));
+            case IRenderStep step:
+                if (this.ProjectService.CurrentProject.RenderSteps is var steps && steps.Contains(step)) {
+                    var index = steps.IndexOf(step);
+                    this._undoService.Do(
+                        () => steps.Remove(step),
+                        () => steps.Insert(index, step));
                 }
 
                 break;
