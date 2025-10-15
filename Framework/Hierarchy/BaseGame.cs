@@ -313,7 +313,7 @@ public class BaseGame : Game, IGame {
 
             if (!IsDesignMode) {
                 foreach (var step in this.Project.RenderSteps) {
-                    if (step.IsEnabled) {
+                    if (step.IsEnabled && !this.DisplaySettings.DisabledRenderSteps.Contains(step.Id)) {
                         previousRenderTarget = step.RenderToTexture(
                             this,
                             this.GraphicsDevice,

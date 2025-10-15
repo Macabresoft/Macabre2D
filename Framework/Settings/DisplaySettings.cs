@@ -25,7 +25,7 @@ public sealed class DisplaySettings {
     private const byte MinimumWindowScale = 1;
 
     [DataMember]
-    private readonly HashSet<Guid> _disabledScreenShaders = new();
+    private readonly HashSet<Guid> _disabledRenderSteps = new();
 
     private byte _windowScale = 4;
 
@@ -48,9 +48,9 @@ public sealed class DisplaySettings {
     public CustomDisplaySettings CustomSettings { get; } = new();
 
     /// <summary>
-    /// Gets a collection of identifiers for disabled screen shaders.
+    /// Gets a collection of identifiers for disabled render steps.
     /// </summary>
-    public IReadOnlyCollection<Guid> DisabledScreenShaders => this._disabledScreenShaders;
+    public IReadOnlyCollection<Guid> DisabledRenderSteps => this._disabledRenderSteps;
 
     /// <summary>
     /// Gets or sets the display mode.
@@ -87,37 +87,37 @@ public sealed class DisplaySettings {
         other.WindowScale = this.WindowScale;
         this.CustomSettings.CopyTo(other.CustomSettings);
 
-        other.EnableAllScreenShaders();
-        foreach (var shaderId in this.DisabledScreenShaders) {
-            other.DisableScreenShader(shaderId);
+        other.EnableAllRenderSteps();
+        foreach (var shaderId in this.DisabledRenderSteps) {
+            other.DisableRenderStep(shaderId);
         }
     }
 
     /// <summary>
-    /// Disables a screen shader.
+    /// Disables a render step.
     /// </summary>
-    /// <param name="identifier">The screen shader identifier.</param>
-    public void DisableScreenShader(Guid identifier) {
-        this._disabledScreenShaders.Add(identifier);
+    /// <param name="identifier">The render step identifier.</param>
+    public void DisableRenderStep(Guid identifier) {
+        this._disabledRenderSteps.Add(identifier);
     }
 
     /// <summary>
-    /// Enables all screen shaders.
+    /// Enables all render steps.
     /// </summary>
-    public void EnableAllScreenShaders() {
-        this._disabledScreenShaders.Clear();
+    public void EnableAllRenderSteps() {
+        this._disabledRenderSteps.Clear();
     }
 
     /// <summary>
-    /// Enables a screen shader that was previously disabled.
+    /// Enables a render step that was previously disabled.
     /// </summary>
-    /// <param name="identifier">The screen shader identifier.</param>
-    public void EnableScreenShader(Guid identifier) {
-        this._disabledScreenShaders.Remove(identifier);
+    /// <param name="identifier">The render step identifier.</param>
+    public void EnableRenderStep(Guid identifier) {
+        this._disabledRenderSteps.Remove(identifier);
     }
 
     /// <summary>
-    /// Gets the resolution given the desired number of vertical pixels. This uses the <see cref="AspectRatio" /> and <see cref="WindowScale" /> values.
+    /// Gets the resolution given the desired number of vertical pixels.
     /// </summary>
     /// <param name="internalRenderResolution">The internal render resolution.</param>
     /// <returns>The resolution.</returns>

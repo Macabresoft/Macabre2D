@@ -8,8 +8,8 @@ using System.Runtime.Serialization;
 /// A reference to a <see cref="ScreenShader"/>.
 /// </summary>
 [DataContract]
-public class ScreenShaderReference {
-    private ScreenShader? _shader;
+public class RenderStepReference {
+    private RenderStep? _step;
     
     /// <summary>
     /// Gets or sets the screen shader identifier.
@@ -18,13 +18,13 @@ public class ScreenShaderReference {
     public Guid Id { get; private set; }
 
     /// <summary>
-    /// Gets the shader.
+    /// Gets the render step.
     /// </summary>
-    public ScreenShader? Shader {
-        get => this._shader;
+    public RenderStep? Step {
+        get => this._step;
         set {
-            this._shader = value;
-            this.Id = this._shader?.Id ?? Guid.Empty;
+            this._step = value;
+            this.Id = this._step?.Id ?? Guid.Empty;
         }
     }
     
@@ -33,6 +33,6 @@ public class ScreenShaderReference {
     /// </summary>
     /// <param name="project">The project.</param>
     public void Initialize(IGameProject project) {
-        this.Shader = project.RenderSteps.OfType<ScreenShader>().FirstOrDefault(x => x.Id == this.Id);
+        this.Step = project.RenderSteps.OfType<RenderStep>().FirstOrDefault(x => x.Id == this.Id);
     }
 }

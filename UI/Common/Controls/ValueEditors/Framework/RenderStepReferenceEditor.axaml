@@ -4,12 +4,12 @@
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                            xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           x:TypeArguments="framework:ScreenShaderReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.ScreenShaderReferenceEditor">
+                           x:TypeArguments="framework:RenderStepReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.RenderStepReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto"
-          DataContext="{Binding $parent[local:ScreenShaderReferenceEditor]}">
+          DataContext="{Binding $parent[local:RenderStepReferenceEditor]}">
         <Design.DataContext>
-            <local:ScreenShaderReferenceEditor />
+            <local:RenderStepReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
@@ -17,8 +17,8 @@
                    Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
-                  ItemsSource="{Binding AvailableShaders}"
-                  SelectedItem="{Binding SelectedShader}">
+                  ItemsSource="{Binding AvailableSteps}"
+                  SelectedItem="{Binding SelectedStep}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Stretch"

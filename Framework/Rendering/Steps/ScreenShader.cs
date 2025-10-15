@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -78,17 +77,15 @@ public class ScreenShader : RenderStep {
         RenderTarget2D previousRenderTarget,
         Point viewportSize,
         Point internalResolution) {
-        if (!game.DisplaySettings.DisabledScreenShaders.Contains(this.Id)) {
-            var renderSize = this.GetRenderSize(viewportSize, internalResolution);
-            if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), game, game.CurrentScene) is { } effect) {
-                var renderTarget = this.GetRenderTarget(device, renderSize);
-                device.SetRenderTarget(renderTarget);
-                device.Clear(game.CurrentScene.BackgroundColor);
-                spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
-                spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
-                spriteBatch.End();
-                previousRenderTarget = renderTarget;
-            }
+        var renderSize = this.GetRenderSize(viewportSize, internalResolution);
+        if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), game, game.CurrentScene) is { } effect) {
+            var renderTarget = this.GetRenderTarget(device, renderSize);
+            device.SetRenderTarget(renderTarget);
+            device.Clear(game.CurrentScene.BackgroundColor);
+            spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
+            spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
+            spriteBatch.End();
+            previousRenderTarget = renderTarget;
         }
 
         return previousRenderTarget;
