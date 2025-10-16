@@ -21,7 +21,7 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
-    private readonly List<GameTransition> _runningTransitions = new();
+    private readonly List<GameTransition> _runningTransitions = [];
     private readonly Stack<IScene> _sceneStack = new();
     private bool _canToggleFullscreen = true;
     private InputDevice _desiredInputDevice = InputDevice.Auto;
