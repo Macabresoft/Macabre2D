@@ -21,16 +21,12 @@ public interface IRenderStep : IEnableable, IIdentifiable, INameable {
     /// <summary>
     /// Processes this render step and outputs a new render target.
     /// </summary>
-    /// <param name="game">The game.</param>
-    /// <param name="device">The graphics device.</param>
-    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="spriteBatch">The current sprite batch.</param>
     /// <param name="previousRenderTarget">The previous render target.</param>
     /// <param name="viewportSize">The viewport size.</param>
     /// <param name="internalResolution">The internal resolution.</param>
     /// <returns>A new render target, if processing occurred; otherwise, the original render target.</returns>
     RenderTarget2D RenderToTexture(
-        IGame game,
-        GraphicsDevice device,
         SpriteBatch spriteBatch,
         RenderTarget2D previousRenderTarget,
         Point viewportSize,
@@ -65,6 +61,11 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
         set => this.Set(ref this._isEnabled, value);
     }
 
+    /// <summary>
+    /// Gets the current <see cref="IGame"/>.
+    /// </summary>
+    protected IGame Game { get; private set; } = BaseGame.Empty;
+
     /// <inheritdoc />
     [DataMember]
     public string Name {
@@ -73,17 +74,19 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
     }
 
     /// <inheritdoc />
-    public abstract void Initialize(IAssetManager assets, IGame game);
+    public virtual void Initialize(IAssetManager assets, IGame game) {
+        this.Game = game;
+    }
 
     /// <inheritdoc />
     public abstract RenderTarget2D RenderToTexture(
-        IGame game,
-        GraphicsDevice device,
         SpriteBatch spriteBatch,
         RenderTarget2D previousRenderTarget,
         Point viewportSize,
         Point internalResolution);
 
     /// <inheritdoc />
-    public abstract void Reset();
+    public virtual void Reset() {
+        
+    }
 }

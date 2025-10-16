@@ -399,8 +399,6 @@ public class BaseGame : Game, IGame {
         foreach (var step in this.Project.RenderSteps) {
             if (step.IsEnabled && !this.DisplaySettings.DisabledRenderSteps.Contains(step.Id)) {
                 renderTarget = step.RenderToTexture(
-                    this,
-                    this.GraphicsDevice,
                     spriteBatch,
                     renderTarget,
                     this._intermediateRenderResolution,

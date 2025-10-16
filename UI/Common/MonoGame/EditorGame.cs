@@ -59,6 +59,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
         this._editorService = editorService;
         this._projectService = projectService;
         this._sceneService = sceneService;
+        this._renderStep.Initialize(assetManager, this);
         this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
     }
 
@@ -124,7 +125,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
     /// <inheritdoc />
     protected override RenderTarget2D PerformRenderSteps(RenderTarget2D renderTarget, SpriteBatch spriteBatch) {
-        this._renderStep.RenderToTexture(this, this.GraphicsDevice, spriteBatch, renderTarget, this.ViewportSize, this.Project.InternalRenderResolution);
+        this._renderStep.RenderToTexture(spriteBatch, renderTarget, this.ViewportSize, this.Project.InternalRenderResolution);
         return renderTarget;
     }
 

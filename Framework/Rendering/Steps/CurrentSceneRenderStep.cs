@@ -10,25 +10,15 @@ using Microsoft.Xna.Framework.Graphics;
 public class CurrentSceneRenderStep : RenderStep {
 
     /// <inheritdoc />
-    public override void Initialize(IAssetManager assets, IGame game) {
-    }
-
-    /// <inheritdoc />
     public override RenderTarget2D RenderToTexture(
-        IGame game,
-        GraphicsDevice device,
         SpriteBatch spriteBatch,
         RenderTarget2D previousRenderTarget,
         Point viewportSize,
         Point internalResolution) {
-        foreach (var scene in game.OpenScenes.Reverse()) {
-            scene.Render(game.FrameTime, game.InputState);
+        foreach (var scene in this.Game.OpenScenes.Reverse()) {
+            scene.Render(this.Game.FrameTime, this.Game.InputState);
         }
         
         return previousRenderTarget;
-    }
-
-    /// <inheritdoc />
-    public override void Reset() {
     }
 }

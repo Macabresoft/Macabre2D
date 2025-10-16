@@ -56,22 +56,21 @@ public class ScreenShaderRenderStep : RenderStep {
 
     /// <inheritdoc />
     public override void Initialize(IAssetManager assets, IGame game) {
+        base.Initialize(assets, game);
         this.Shader.Initialize(assets, game);
     }
 
     /// <inheritdoc />
     public override RenderTarget2D RenderToTexture(
-        IGame game,
-        GraphicsDevice device,
         SpriteBatch spriteBatch,
         RenderTarget2D previousRenderTarget,
         Point viewportSize,
         Point internalResolution) {
         var renderSize = this.GetRenderSize(viewportSize, internalResolution);
-        if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), game, game.CurrentScene) is { } effect) {
-            var renderTarget = this.GetRenderTarget(device, renderSize);
-            device.SetRenderTarget(renderTarget);
-            device.Clear(game.CurrentScene.BackgroundColor);
+        if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), this.Game, this.Game.CurrentScene) is { } effect) {
+            var renderTarget = this.GetRenderTarget(this.Game.GraphicsDevice, renderSize);
+            this.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+            this.Game.GraphicsDevice.Clear(this.Game.CurrentScene.BackgroundColor);
             spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
             spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
             spriteBatch.End();
@@ -83,6 +82,7 @@ public class ScreenShaderRenderStep : RenderStep {
 
     /// <inheritdoc />
     public override void Reset() {
+        base.Reset();
         this._renderTarget?.Dispose();
         this._renderTarget = null;
     }

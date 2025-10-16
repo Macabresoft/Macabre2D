@@ -80,7 +80,7 @@ public interface IGame {
     /// <summary>
     /// Gets the graphics device.
     /// </summary>
-    GraphicsDevice? GraphicsDevice { get; }
+    GraphicsDevice GraphicsDevice { get; }
 
     /// <summary>
     /// Gets the input action icon resolver.
