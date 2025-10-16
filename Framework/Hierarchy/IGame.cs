@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -67,6 +68,11 @@ public interface IGame {
     DisplaySettings DisplaySettings { get; }
 
     /// <summary>
+    /// Gets the frame time.
+    /// </summary>
+    FrameTime FrameTime { get; }
+
+    /// <summary>
     /// Gets or sets the game speed.
     /// </summary>
     double GameSpeed { get; set; }
@@ -95,6 +101,11 @@ public interface IGame {
     /// Gets the launch arguments.
     /// </summary>
     LaunchArguments LaunchArguments { get; }
+
+    /// <summary>
+    /// Gets a stack of the currently opened scenes.
+    /// </summary>
+    IReadOnlyCollection<IScene> OpenScenes { get; }
 
     /// <summary>
     /// Gets the overlay.

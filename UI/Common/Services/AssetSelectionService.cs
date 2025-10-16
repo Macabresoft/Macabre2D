@@ -97,7 +97,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 IContentNode => ProjectSelectionType.File,
                 SpriteSheetMember => ProjectSelectionType.Asset,
                 RenderStepCollection => ProjectSelectionType.Shader,
-                ScreenShader => ProjectSelectionType.Shader,
+                ScreenShaderRenderStep => ProjectSelectionType.Shader,
                 _ => ProjectSelectionType.None
             };
 
@@ -180,7 +180,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         else if (this._selected is IContentNode) {
             this._editors.AddRange(this._contentService.Editors);
         }
-        else if (this._selected is ScreenShader) {
+        else if (this._selected is ScreenShaderRenderStep) {
             var editors = this._valueControlService.CreateControls(this._selected);
             this._editors.AddRange(editors);
 

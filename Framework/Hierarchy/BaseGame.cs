@@ -112,6 +112,9 @@ public class BaseGame : Game, IGame {
     public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
+    public FrameTime FrameTime { get; private set; }
+
+    /// <inheritdoc />
     public double GameSpeed {
         get => this._gameSpeed;
 
@@ -139,6 +142,8 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public LaunchArguments LaunchArguments { get; }
+
+    public IReadOnlyCollection<IScene> OpenScenes => this._sceneStack;
 
     /// <inheritdoc />
     public IScene Overlay { get; private set; } = EmptyObject.Scene;
@@ -172,12 +177,6 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public Point ViewportSize { get; private set; }
-
-    /// <summary>
-    /// Gets the frame time.
-    /// </summary>
-    /// <value>The frame time.</value>
-    protected FrameTime FrameTime { get; private set; }
 
     /// <summary>
     /// Gets the graphics device manager.
@@ -305,30 +304,17 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
-        if (this.GraphicsDevice != null && this.SpriteBatch != null) {
-            var previousRenderTarget = this.GetGameRenderTarget(this.GraphicsDevice);
-            this.GraphicsDevice.SetRenderTarget(previousRenderTarget);
+        if (this.SpriteBatch != null) {
+            var renderTarget = this.GetGameRenderTarget(this.GraphicsDevice);
+            this.GraphicsDevice.SetRenderTarget(renderTarget);
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-            this.RenderScenes();
 
-            if (!IsDesignMode) {
-                foreach (var step in this.Project.RenderSteps) {
-                    if (step.IsEnabled && !this.DisplaySettings.DisabledRenderSteps.Contains(step.Id)) {
-                        previousRenderTarget = step.RenderToTexture(
-                            this,
-                            this.GraphicsDevice,
-                            this.SpriteBatch,
-                            previousRenderTarget,
-                            this._intermediateRenderResolution,
-                            this.Project.InternalRenderResolution);
-                    }
-                }
-            }
+            renderTarget = this.PerformRenderSteps(renderTarget, this.SpriteBatch);
 
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
             this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            this.SpriteBatch.Draw(previousRenderTarget, this._finalRenderBounds, Color.White);
+            this.SpriteBatch.Draw(renderTarget, this._finalRenderBounds, Color.White);
             this.SpriteBatch.End();
         }
     }
@@ -402,6 +388,27 @@ public class BaseGame : Game, IGame {
         if (!IsDesignMode) {
             assetManager.Dispose();
         }
+    }
+
+    /// <summary>
+    /// Steps through the project's render steps one at a time.
+    /// </summary>
+    /// <param name="renderTarget">The render target.</param>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    protected virtual RenderTarget2D PerformRenderSteps(RenderTarget2D renderTarget, SpriteBatch spriteBatch) {
+        foreach (var step in this.Project.RenderSteps) {
+            if (step.IsEnabled && !this.DisplaySettings.DisabledRenderSteps.Contains(step.Id)) {
+                renderTarget = step.RenderToTexture(
+                    this,
+                    this.GraphicsDevice,
+                    spriteBatch,
+                    renderTarget,
+                    this._intermediateRenderResolution,
+                    this.Project.InternalRenderResolution);
+            }
+        }
+
+        return renderTarget;
     }
 
     /// <summary>
@@ -561,6 +568,7 @@ public class BaseGame : Game, IGame {
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
+        public FrameTime FrameTime => FrameTime.Zero;
 
         public double GameSpeed {
             get => 1f;
@@ -574,6 +582,7 @@ public class BaseGame : Game, IGame {
         public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
         public InputSettings InputSettings => this.UserSettings.Input;
         public LaunchArguments LaunchArguments => LaunchArguments.None;
+        public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
         public SpriteBatch? SpriteBatch => null;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A reference to a <see cref="ScreenShader"/>.
+/// A reference to a <see cref="ScreenShaderRenderStep"/>.
 /// </summary>
 [DataContract]
 public class RenderStepReference {

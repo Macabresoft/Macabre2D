@@ -7,6 +7,7 @@ using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.AvaloniaInterop;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
@@ -34,6 +35,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     private readonly IBusyService _busyService;
     private readonly IEditorService _editorService;
     private readonly IProjectService _projectService;
+    private readonly CurrentSceneRenderStep _renderStep = new();
     private readonly ISceneService _sceneService;
     private bool _isInitialized;
 
@@ -118,6 +120,12 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
         this.TryCreateSpriteBatch();
         this.Assets.Initialize(this.Content, new Serializer());
+    }
+
+    /// <inheritdoc />
+    protected override RenderTarget2D PerformRenderSteps(RenderTarget2D renderTarget, SpriteBatch spriteBatch) {
+        this._renderStep.RenderToTexture(this, this.GraphicsDevice, spriteBatch, renderTarget, this.ViewportSize, this.Project.InternalRenderResolution);
+        return renderTarget;
     }
 
     /// <inheritdoc />

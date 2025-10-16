@@ -27,7 +27,7 @@ public enum ScreenShaderSizing {
 /// <summary>
 /// An instance of a shader that is used by the project as a whole and not specific scenes.
 /// </summary>
-public class ScreenShader : RenderStep {
+public class ScreenShaderRenderStep : RenderStep {
     private RenderTarget2D? _renderTarget;
 
     /// <summary>
