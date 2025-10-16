@@ -330,13 +330,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         }
 
         if (type != null && Activator.CreateInstance(type) is IEntity child) {
-            if (type.GetCustomAttribute(typeof(DataContractAttribute)) is DataContractAttribute attribute) {
-                child.Name = string.IsNullOrEmpty(attribute.Name) ? type.Name : attribute.Name;
-            }
-            else {
-                child.Name = type.Name;
-            }
-
+            child.Name = type.ToPresentableName();
             var parent = this.EntityService.Selected ?? this.SceneService.CurrentScene;
 
             if (parent != null) {

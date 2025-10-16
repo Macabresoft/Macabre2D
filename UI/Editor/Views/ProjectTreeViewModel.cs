@@ -268,6 +268,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
 
         if (type != null && Activator.CreateInstance(type) is IRenderStep newStep) {
+            newStep.Name = type.ToPresentableName();
             var originalSelected = this.GetActualSelected();
             this._undoService.Do(
                 () =>
