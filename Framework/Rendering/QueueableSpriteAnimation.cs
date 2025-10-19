@@ -4,25 +4,40 @@ using System;
 using System.Linq;
 
 /// <summary>
+/// Defines the way a <see cref="QueueableSpriteAnimation" /> loops.
+/// </summary>
+public enum AnimationLoopKind {
+    None,
+    NoneReverse,
+    Repeating,
+    RepeatingReverse,
+    PingPong
+}
+
+/// <summary>
 /// A wrapper for <see cref="SpriteAnimation" /> that allows it to be queued.
 /// </summary>
 public class QueueableSpriteAnimation {
     private int _currentFrameIndex;
     private int _currentStepIndex;
+    private bool _isReversed;
+    private AnimationLoopKind _loopKind;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueueableSpriteAnimation" /> class.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoopIndefinitely">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    public QueueableSpriteAnimation(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+    /// <param name="loopKind">The kind of loop this animation performs.</param>
+    public QueueableSpriteAnimation(SpriteAnimation animation, AnimationLoopKind loopKind) {
         this.Animation = animation ?? throw new ArgumentNullException(nameof(animation));
-        this.ShouldLoopIndefinitely = shouldLoopIndefinitely;
+        this._loopKind = loopKind;
         this.Reset();
     }
+
+    /// <summary>
+    /// Gets a value indicating whether this is looping.
+    /// </summary>
+    public bool IsLooping => this.LoopKind is AnimationLoopKind.Repeating or AnimationLoopKind.RepeatingReverse or AnimationLoopKind.PingPong;
 
     /// <summary>
     /// Gets the animation.
@@ -41,19 +56,22 @@ public class QueueableSpriteAnimation {
     public Guid Id { get; } = Guid.NewGuid();
 
     /// <summary>
+    /// Gets or sets the kind of loop this performs.
+    /// </summary>
+    public AnimationLoopKind LoopKind {
+        get => this._loopKind;
+        set {
+            if (value != this._loopKind) {
+                this._loopKind = value;
+                this.Reset();
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the milliseconds that have passed for this animation.
     /// </summary>
     public double MillisecondsPassed { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this should loop indefinitely when no other animation
-    /// has been queued.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if this should loop indefinitely when no other animation has been queued;
-    /// otherwise, <c>false</c>.
-    /// </value>
-    public bool ShouldLoopIndefinitely { get; set; }
 
     /// <summary>
     /// Gets the sprite sheet associated with this animation.
@@ -87,6 +105,7 @@ public class QueueableSpriteAnimation {
         this._currentFrameIndex = 0;
         this._currentStepIndex = 0;
         this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
+        this._isReversed = this.LoopKind == AnimationLoopKind.RepeatingReverse;
     }
 
     /// <summary>
@@ -118,33 +137,6 @@ public class QueueableSpriteAnimation {
         this.MillisecondsPassed = 0d;
     }
 
-    public void TryNextFrame(out bool isAnimationOver) {
-        isAnimationOver = false;
-        this._currentFrameIndex++;
-        var currentStep = this.GetCurrentStep();
-        if (currentStep == null) {
-            isAnimationOver = true;
-        }
-        else if (this._currentFrameIndex >= currentStep.Frames) {
-            this._currentFrameIndex = 0;
-            this._currentStepIndex++;
-
-            if (this._currentStepIndex >= this.Animation.Steps.Count) {
-                if (this.ShouldLoopIndefinitely) {
-                    this._currentStepIndex = 0;
-                    this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
-                }
-                else {
-                    this._currentStepIndex -= 1;
-                    isAnimationOver = true;
-                }
-            }
-            else {
-                this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
-            }
-        }
-    }
-
     /// <summary>
     /// Swaps in one animation for another while maintaining everything about the current frame and transposing it onto the new animation.
     /// </summary>
@@ -153,6 +145,16 @@ public class QueueableSpriteAnimation {
     /// </remarks>
     public void Swap(SpriteAnimation animation) {
         this.Animation = animation;
+    }
+
+    /// <summary>
+    /// Tries to move to the next frame.
+    /// </summary>
+    /// <param name="isAnimationOver">A value indicating whether the animation is over.</param>
+    public void TryNextFrame(out bool isAnimationOver) {
+        isAnimationOver = false;
+        this._currentFrameIndex++;
+        this.TryNewStep(out isAnimationOver);
     }
 
     /// <summary>
@@ -171,30 +173,57 @@ public class QueueableSpriteAnimation {
                 this._currentFrameIndex++;
             }
 
-            var currentStep = this.GetCurrentStep();
-            if (currentStep == null) {
-                isAnimationOver = true;
-            }
-            else if (this._currentFrameIndex >= currentStep.Frames) {
-                this._currentFrameIndex = 0;
-                this._currentStepIndex++;
-
-                if (this._currentStepIndex >= this.Animation.Steps.Count) {
-                    if (this.ShouldLoopIndefinitely) {
-                        this._currentStepIndex = 0;
-                        this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
-                    }
-                    else {
-                        this._currentStepIndex -= 1;
-                        isAnimationOver = true;
-                    }
-                }
-                else {
-                    this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
-                }
-            }
+            this.TryNewStep(out isAnimationOver);
         }
     }
 
     private SpriteAnimationStep? GetCurrentStep() => this._currentStepIndex < this.Animation.Steps.Count ? this.Animation.Steps.ElementAt(this._currentStepIndex) : null;
+
+    private void TryNewStep(out bool isAnimationOver) {
+        isAnimationOver = false;
+        var currentStep = this.GetCurrentStep();
+        if (currentStep == null) {
+            isAnimationOver = true;
+        }
+        else if (this._currentFrameIndex >= currentStep.Frames) {
+            this._currentFrameIndex = 0;
+
+            if (!this._isReversed) {
+                this._currentStepIndex++;
+
+                if (this._currentStepIndex >= this.Animation.Steps.Count) {
+                    if (this.LoopKind == AnimationLoopKind.None) {
+                        this._currentStepIndex = this.Animation.Steps.Count - 1;
+                        isAnimationOver = true;
+                    }
+                    else if (this.LoopKind == AnimationLoopKind.Repeating) {
+                        this._currentStepIndex = 0;
+                    }
+                    else if (this.LoopKind == AnimationLoopKind.PingPong) {
+                        this._currentStepIndex = this.Animation.Steps.Count - 2;
+                        this._isReversed = true;
+                    }
+                }
+            }
+            else {
+                this._currentStepIndex--;
+
+                if (this._currentStepIndex < 0) {
+                    if (this.LoopKind == AnimationLoopKind.NoneReverse) {
+                        this._currentStepIndex = 0;
+                        isAnimationOver = true;
+                    }
+                    else if (this.LoopKind is AnimationLoopKind.RepeatingReverse) {
+                        this._currentStepIndex = this.Animation.Steps.Count - 1;
+                    }
+                    else if (this.LoopKind == AnimationLoopKind.PingPong) {
+                        this._currentStepIndex = 1;
+                        this._isReversed = !this._isReversed;
+                    }
+                }
+            }
+        }
+
+        this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
+    }
 }

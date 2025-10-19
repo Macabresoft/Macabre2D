@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 /// </summary>
 public class LoopingSpriteAnimator : BaseSpriteAnimator {
     private QueueableSpriteAnimation? _queueableAnimation;
+    private AnimationLoopKind _loopKind = AnimationLoopKind.Repeating;
 
     /// <summary>
     /// Gets the animation reference.
@@ -21,6 +22,22 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
     /// </summary>
     [DataMember]
     public bool StartPlaying { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the kind of loop this will use.
+    /// </summary>
+    [DataMember]
+    public AnimationLoopKind LoopKind {
+        get => this._loopKind;
+        private set {
+            if (value != this._loopKind) {
+                this._loopKind = value;
+                if (this.IsInitialized) {
+                    this.TryResetAnimation();
+                }
+            }
+        }
+    }
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -76,7 +93,7 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
 
     private bool TryResetAnimation() {
         if (this.AnimationReference.PackagedAsset is { } animation) {
-            this._queueableAnimation = new QueueableSpriteAnimation(this.AnimationReference.PackagedAsset, true);
+            this._queueableAnimation = new QueueableSpriteAnimation(animation, this.LoopKind);
         }
         else {
             this._queueableAnimation = null;

@@ -11,7 +11,7 @@ public class PositionalSpriteAnimation : QueueableSpriteAnimation {
     /// Initializes a new instance of the <see cref="PositionalSpriteAnimation" /> class.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    public PositionalSpriteAnimation(SpriteAnimation animation) : base(animation, false) {
+    public PositionalSpriteAnimation(SpriteAnimation animation) : base(animation, AnimationLoopKind.None) {
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public class PositionalSpriteAnimation : QueueableSpriteAnimation {
     public Vector2 Velocity { get; set; }
     
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should be flipped horizontally when rendering.
+    /// Gets or sets a value indicating whether this should be flipped horizontally when rendering.
     /// </summary>
     public SpriteEffects Orientation { get; set; }
 

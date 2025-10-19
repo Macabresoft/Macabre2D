@@ -402,11 +402,11 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+    public void Enqueue(SpriteAnimation animation, bool shouldLoop) {
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop) {
     }
 
     /// <inheritdoc />

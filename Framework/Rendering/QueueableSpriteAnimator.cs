@@ -24,21 +24,21 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// Enqueues the specified animation.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoopIndefinitely">
+    /// <param name="shouldLoop">
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
     /// animation has been queued.
     /// </param>
-    void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely);
+    void Enqueue(SpriteAnimation animation, bool shouldLoop);
 
     /// <summary>
     /// Enqueues the specified animation.
     /// </summary>
     /// <param name="animationReference">The animation reference.</param>
-    /// <param name="shouldLoopIndefinitely">
+    /// <param name="shouldLoop">
     /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
     /// animation has been queued.
     /// </param>
-    void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely);
+    void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop);
 
     /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
@@ -104,16 +104,16 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
     public QueueableSpriteAnimation? QueuedAnimation { get; private set; }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+    public void Enqueue(SpriteAnimation animation, bool shouldLoop) {
         if (animation.SpriteSheet != null) {
-            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
+            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoop ? AnimationLoopKind.Repeating : AnimationLoopKind.None));
         }
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop) {
         if (animationReference.PackagedAsset is { } animation) {
-            this.Enqueue(animation, shouldLoopIndefinitely);
+            this.Enqueue(animation, shouldLoop);
         }
     }
 
@@ -123,7 +123,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
             this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation.Animation);
         }
 
-        this.QueuedAnimation = new QueueableSpriteAnimation(animation, shouldLoop);
+        this.QueuedAnimation = new QueueableSpriteAnimation(animation, shouldLoop ? AnimationLoopKind.Repeating : AnimationLoopKind.None);
         this._queuedSpriteAnimations.Clear();
         this.IsEnabled = true;
         this.IsPlaying = true;
@@ -197,7 +197,7 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
             this.QueuedAnimation.MillisecondsPassed = millisecondsPassed;
             this.OnAnimationFinished.SafeInvoke(this, finishedAnimation);
         }
-        else if (this.QueuedAnimation?.ShouldLoopIndefinitely == false) {
+        else if (this.QueuedAnimation?.LoopKind == AnimationLoopKind.None) {
             var finishedAnimation = this.QueuedAnimation?.Animation;
             this.QueuedAnimation = null;
             this.OnAnimationFinished.SafeInvoke(this, finishedAnimation);

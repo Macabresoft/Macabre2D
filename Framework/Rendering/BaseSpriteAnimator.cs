@@ -70,7 +70,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
     public ByteOverride FrameRateOverride { get; } = new();
 
     /// <inheritdoc />
-    public bool IsLooping => this.GetCurrentAnimation() is { ShouldLoopIndefinitely: true };
+    public bool IsLooping => this.GetCurrentAnimation() is { IsLooping: true };
 
     /// <inheritdoc />
     public bool IsPlaying {

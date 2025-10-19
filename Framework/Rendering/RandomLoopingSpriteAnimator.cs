@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 /// Loops all the animations associated with a <see cref="SpriteSheet" />, choosing a new animation every time the current animation finishes.
 /// </summary>
 public class RandomLoopingSpriteAnimator : BaseSpriteAnimator {
-    private readonly List<QueueableSpriteAnimation> _availableAnimations = new();
+    private readonly List<QueueableSpriteAnimation> _availableAnimations = [];
     private readonly Random _random = new();
     private QueueableSpriteAnimation? _currentAnimation;
 
@@ -128,14 +128,14 @@ public class RandomLoopingSpriteAnimator : BaseSpriteAnimator {
 
         if (this.SpriteSheetReference.Asset is { } spriteSheet) {
             foreach (var animation in spriteSheet.GetAssets<SpriteAnimation>()) {
-                this._availableAnimations.Add(new QueueableSpriteAnimation(animation, false));
+                this._availableAnimations.Add(new QueueableSpriteAnimation(animation, AnimationLoopKind.None));
             }
         }
     }
 
     private bool TrySetFirstAnimation() {
         if (this.FirstAnimationReference.PackagedAsset is { } firstAnimation) {
-            this._currentAnimation = new QueueableSpriteAnimation(firstAnimation, false);
+            this._currentAnimation = new QueueableSpriteAnimation(firstAnimation, AnimationLoopKind.None);
             this._currentAnimation.Reset();
             return true;
         }
