@@ -24,21 +24,27 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// Enqueues the specified animation.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoop">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    void Enqueue(SpriteAnimation animation, bool shouldLoop);
+    /// <param name="loopKind">The kind of loop this animation should perform on, if any.</param>
+    void Enqueue(SpriteAnimation animation, AnimationLoopKind loopKind);
+
+    /// <summary>
+    /// Enqueues the specified animation with no looping.
+    /// </summary>
+    /// <param name="animation">The animation.</param>
+    void Enqueue(SpriteAnimation animation);
 
     /// <summary>
     /// Enqueues the specified animation.
     /// </summary>
     /// <param name="animationReference">The animation reference.</param>
-    /// <param name="shouldLoop">
-    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
-    /// animation has been queued.
-    /// </param>
-    void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop);
+    /// <param name="loopKind">The kind of loop this animation should perform on, if any.</param>
+    void Enqueue(SpriteAnimationReference animationReference, AnimationLoopKind loopKind);
+
+    /// <summary>
+    /// Enqueues the specified animation with no looping.
+    /// </summary>
+    /// <param name="animationReference">The animation reference.</param>
+    void Enqueue(SpriteAnimationReference animationReference);
 
     /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
@@ -47,8 +53,8 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// pause on the final frame.
     /// </summary>
     /// <param name="animation">The animation.</param>
-    /// <param name="shouldLoop">A value indicating whether the animation should loop.</param>
-    void Play(SpriteAnimation animation, bool shouldLoop);
+    /// <param name="loopKind">The kind of loop this animation should perform on, if any.</param>
+    void Play(SpriteAnimation animation, AnimationLoopKind loopKind);
 
     /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
@@ -57,8 +63,22 @@ public interface IQueueableSpriteAnimator : ISpriteAnimator {
     /// pause on the final frame.
     /// </summary>
     /// <param name="animationReference">The animation reference.</param>
-    /// <param name="shouldLoop">A value indicating whether the animation should loop.</param>
-    void Play(SpriteAnimationReference animationReference, bool shouldLoop);
+    /// <param name="loopKind">The kind of loop this animation should perform on, if any.</param>
+    void Play(SpriteAnimationReference animationReference, AnimationLoopKind loopKind);
+
+    /// <summary>
+    /// Plays the specified animation, which clears out the current queue and replaces the
+    /// previous animation. This will not loop.
+    /// </summary>
+    /// <param name="animation">The animation.</param>
+    void Play(SpriteAnimation animation);
+
+    /// <summary>
+    /// Plays the specified animation, which clears out the current queue and replaces the
+    /// previous animation. This will not loop.
+    /// </summary>
+    /// <param name="animationReference">The animation reference.</param>
+    void Play(SpriteAnimationReference animationReference);
 
     /// <summary>
     /// Sets the percentage complete of the current animation to a value between 0 and 1.
@@ -104,36 +124,56 @@ public class QueueableSpriteAnimator : BaseSpriteAnimator, IQueueableSpriteAnima
     public QueueableSpriteAnimation? QueuedAnimation { get; private set; }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimation animation, bool shouldLoop) {
+    public void Enqueue(SpriteAnimation animation, AnimationLoopKind loopKind) {
         if (animation.SpriteSheet != null) {
-            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoop ? AnimationLoopKind.Repeating : AnimationLoopKind.None));
+            this.Enqueue(new QueueableSpriteAnimation(animation, loopKind));
         }
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop) {
+    public void Enqueue(SpriteAnimation animation) {
+        this.Enqueue(animation, AnimationLoopKind.None);
+    }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimationReference animationReference, AnimationLoopKind loopKind) {
         if (animationReference.PackagedAsset is { } animation) {
-            this.Enqueue(animation, shouldLoop);
+            this.Enqueue(animation, loopKind);
         }
     }
 
     /// <inheritdoc />
-    public void Play(SpriteAnimation animation, bool shouldLoop) {
+    public void Enqueue(SpriteAnimationReference animationReference) {
+        this.Enqueue(animationReference, AnimationLoopKind.None);
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimation animation, AnimationLoopKind loopKind) {
         if (this.QueuedAnimation != null) {
             this.OnAnimationFinished.SafeInvoke(this, this.QueuedAnimation.Animation);
         }
 
-        this.QueuedAnimation = new QueueableSpriteAnimation(animation, shouldLoop ? AnimationLoopKind.Repeating : AnimationLoopKind.None);
+        this.QueuedAnimation = new QueueableSpriteAnimation(animation, loopKind);
         this._queuedSpriteAnimations.Clear();
         this.IsEnabled = true;
         this.IsPlaying = true;
     }
 
     /// <inheritdoc />
-    public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
+    public void Play(SpriteAnimationReference animationReference, AnimationLoopKind loopKind) {
         if (animationReference.PackagedAsset is { } animation) {
-            this.Play(animation, shouldLoop);
+            this.Play(animation, loopKind);
         }
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimation animation) {
+        this.Play(animation, AnimationLoopKind.None);
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimationReference animationReference) {
+        this.Play(animationReference, AnimationLoopKind.None);
     }
 
     /// <inheritdoc />

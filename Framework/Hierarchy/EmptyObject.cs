@@ -402,11 +402,19 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimation animation, bool shouldLoop) {
+    public void Enqueue(SpriteAnimation animation, AnimationLoopKind loopKind) {
     }
 
     /// <inheritdoc />
-    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoop) {
+    public void Enqueue(SpriteAnimation animation) {
+    }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimationReference animationReference, AnimationLoopKind loopKind) {
+    }
+
+    /// <inheritdoc />
+    public void Enqueue(SpriteAnimationReference animationReference) {
     }
 
     /// <inheritdoc />
@@ -556,11 +564,19 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
-    public void Play(SpriteAnimation animation, bool shouldLoop) {
+    public void Play(SpriteAnimation animation, AnimationLoopKind loopKind) {
     }
 
     /// <inheritdoc />
-    public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
+    public void Play(SpriteAnimationReference animationReference, AnimationLoopKind loopKind) {
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimation animation) {
+    }
+
+    /// <inheritdoc />
+    public void Play(SpriteAnimationReference animationReference) {
     }
 
     /// <inheritdoc />

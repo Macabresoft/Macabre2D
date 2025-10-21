@@ -149,7 +149,7 @@ public static class QueueableSpriteAnimatorTests {
 
         using (new AssertionScope()) {
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
-            animator.Play(secondAnimation, false);
+            animator.Play(secondAnimation);
             isFinished.Should().BeTrue();
             finishedAnimation.Should().Be(animation);
         }
@@ -202,7 +202,7 @@ public static class QueueableSpriteAnimatorTests {
     [TestCase(25)]
     [Category("Unit Tests")]
     public static void SetPercentageComplete_ShouldWork_WithOneStep(byte frames) {
-        CreateAnimation(1, frames, false, out var animator, out var gameTime, out var frameTime);
+        CreateAnimation(1, frames, false, out var animator, out _, out _);
 
         using (new AssertionScope()) {
             for (var i = 0; i <= frames; i++) {
@@ -266,7 +266,7 @@ public static class QueueableSpriteAnimatorTests {
 
         frameTime = new FrameTime(gameTime, 1f);
 
-        animator.Play(animation, isLooping);
+        animator.Play(animation, isLooping ? AnimationLoopKind.Repeating : AnimationLoopKind.None);
         return animation;
     }
 
