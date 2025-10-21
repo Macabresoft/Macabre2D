@@ -10,8 +10,8 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 
 public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where TFiltered : class, INameable {
-    private readonly ObservableCollectionExtended<TFiltered> _filteredNodes = new();
-    private readonly List<TFiltered> _nodesAvailableToFilter = new();
+    private readonly ObservableCollectionExtended<TFiltered> _filteredNodes = [];
+    private readonly List<TFiltered> _nodesAvailableToFilter = [];
 
     private TFiltered _filteredSelection;
     private string _filterText;
@@ -79,12 +79,12 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not this is filtered.
+    /// Gets a value indicating whether this is filtered.
     /// </summary>
     public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
 
     /// <summary>
-    /// Gets the object that is selected outside of the filter.
+    /// Gets the object that is selected outside the filter.
     /// </summary>
     /// <returns>The selected object.</returns>
     protected abstract TFiltered GetActualSelected();
@@ -102,7 +102,7 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     }
 
     /// <summary>
-    /// Sets the selection outside of the filter context.
+    /// Sets the selection outside the filter context.
     /// </summary>
     /// <param name="selected">The selected value.</param>
     protected abstract void SetActualSelected(TFiltered selected);

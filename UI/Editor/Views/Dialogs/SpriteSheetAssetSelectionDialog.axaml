@@ -96,8 +96,8 @@
                                 <Grid ColumnDefinitions="Auto, *"
                                       Margin="{StaticResource StandardMarginVertical}">
                                     <Image Source="{Binding Image}"
-                                           MaxWidth="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                           MaxHeight="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxWidth="{Binding $parent[local:SpriteSheetAssetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxHeight="{Binding $parent[local:SpriteSheetAssetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
                                            Stretch="Uniform"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
@@ -111,7 +111,8 @@
 
                                     <ListBox Grid.Column="1"
                                              ItemsSource="{Binding Assets}"
-                                             SelectedItem="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedAsset}"
+                                             SelectedItem="{Binding $parent[local:SpriteSheetAssetSelectionDialog].ViewModel.SelectedAsset, Mode=TwoWay}"
+                                             SelectionMode="Single"
                                              Margin="{StaticResource StandardMarginLeft}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>

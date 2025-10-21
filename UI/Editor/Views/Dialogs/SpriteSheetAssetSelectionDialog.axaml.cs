@@ -17,7 +17,7 @@ public partial class SpriteSheetAssetSelectionDialog : BaseDialog {
         this.InitializeComponent();
     }
 
-    public FilterableViewModel<FilteredContentWrapper> ViewModel => this.DataContext as FilterableViewModel<FilteredContentWrapper>;
+    public SpriteSheetAssetSelectionViewModel ViewModel => this.DataContext as SpriteSheetAssetSelectionViewModel;
 
     protected override void OnLoaded(RoutedEventArgs e) {
         base.OnLoaded(e);

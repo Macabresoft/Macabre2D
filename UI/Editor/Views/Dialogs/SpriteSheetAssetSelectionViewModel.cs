@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Avalonia.Threading;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
@@ -134,6 +135,13 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
 
                     break;
                 }
+            }
+
+            if (this._spriteSheets.Count == 1 && this._spriteSheets.FirstOrDefault() is { Count: 1 } displayCollection) {
+                this.SelectedAsset = displayCollection.Assets.FirstOrDefault();
+            }
+            else {
+                this.SelectedAsset = null;
             }
         }
     }
