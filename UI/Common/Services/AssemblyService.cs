@@ -87,6 +87,7 @@ public sealed class AssemblyService : IAssemblyService {
         assemblies.Add(Assembly.Load("Macabre2D.Framework"));
         assemblies.Add(Assembly.Load("Macabre2D.Project.Gameplay"));
         assemblies.Add(Assembly.Load("Macabre2D.Project.Common"));
+        assemblies.Add(Assembly.Load("Macabre2D.Project.UI"));
         assemblies.Add(Assembly.Load("Macabre2D.UI.Common"));
         this._assemblies = assemblies;
     }
