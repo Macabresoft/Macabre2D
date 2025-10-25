@@ -25,7 +25,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private readonly IEditorService _editorService;
     private readonly IFileSystemService _fileSystem;
     private readonly ISaveService _saveService;
-    private readonly ISceneService _sceneService;
+
     private readonly IUndoService _undoService;
 
     /// <summary>
@@ -68,7 +68,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this._fileSystem = fileSystem;
         this.ProjectService = projectService;
         this._saveService = saveService;
-        this._sceneService = sceneService;
+        this.SceneService = sceneService;
         this._undoService = undoService;
 
         this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
@@ -79,7 +79,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(this.AddDirectory, whenIsContentDirectory);
-        this.AddSceneCommand = ReactiveCommand.Create<object>(this.AddScene, whenIsContentDirectory);
+        this.AddSceneCommand = ReactiveCommand.Create<SceneTemplate>(this.AddScene, whenIsContentDirectory);
 
         this.FindContentUsagesCommand = ReactiveCommand.CreateFromTask<IContentNode>(
             this.FindContentUsages,
@@ -112,6 +112,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, this.AssetSelectionService.WhenAny(
             x => x.Selected,
             x => !this.IsFiltered && CanClone(x.Value)));
+
+        this.AddSceneModels = this.SceneService.Templates.OrderBy(x => x.Name)
+            .Select(x => new MenuItemModel(x.Name, x.GetType().FullName, this.AddSceneCommand, x)).ToList();
     }
 
     /// <summary>
@@ -128,6 +131,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the add scene command.
     /// </summary>
     public ICommand AddSceneCommand { get; }
+
+    /// <summary>
+    /// Gets a collection of <see cref="MenuItemModel" /> for adding scenes from templates.
+    /// </summary>
+    public IReadOnlyCollection<MenuItemModel> AddSceneModels { get; }
 
     /// <summary>
     /// Gets the asset selection service.
@@ -208,6 +216,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets a command for renaming content.
     /// </summary>
     public ICommand RenameContentCommand { get; }
+
+    /// <summary>
+    /// Gets the scene service.
+    /// </summary>
+    public ISceneService SceneService { get; }
 
     /// <summary>
     /// Moves the source content node to be a child of the target directory.
@@ -332,8 +345,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
-    private void AddScene(object parent) {
-        if (parent is IContentDirectory directory && this.ContentService.AddScene(directory) is { } scene) {
+    private void AddScene(SceneTemplate sceneTemplate) {
+        if (this.AssetSelectionService.Selected is IContentDirectory directory && this.ContentService.AddScene(directory, sceneTemplate) is { } scene) {
             this.SetActualSelected(scene);
         }
     }
@@ -395,7 +408,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         node != null &&
         node is not RootContentDirectory &&
         node is not INameableCollection &&
-        (this._sceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId));
+        (this.SceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this.SceneService.CurrentSceneMetadata.ContentId));
 
     private void Clone(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection && member.TryClone(out var clonedMember)) {
@@ -456,14 +469,14 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private async Task FindContentUsages(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
-            if (this._sceneService.CurrentScene.GetDescendantsWithContent(node.Id).Any()) {
+            if (this.SceneService.CurrentScene.GetDescendantsWithContent(node.Id).Any()) {
                 var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id, "Select an Entity");
 
                 if (!Entity.IsNullOrEmpty(entity, out var found)) {
                     Dispatcher.UIThread.Post(() =>
                     {
                         this._editorService.SelectedTab = EditorTabs.Scene;
-                        this._sceneService.Selected = found;
+                        this.SceneService.Selected = found;
                     });
                 }
             }
@@ -564,13 +577,13 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     }
 
     private async Task OpenSelectedContent(IContentNode node) {
-        if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel && this._sceneService.TryLoadScene(node.Id, out _)) {
+        if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel && this.SceneService.TryLoadScene(node.Id, out _)) {
             this._editorService.SelectedTab = EditorTabs.Scene;
         }
     }
 
     private void RemoveContent(object node) {
-        var openSceneMetadataId = this._sceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
+        var openSceneMetadataId = this.SceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
         switch (node) {
             case RootContentDirectory:
                 this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete the root.");
@@ -629,7 +642,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                         }
                         else {
                             var originalNodeName = node.Name;
-                            var isCurrentScene = node.Id == this._sceneService.CurrentSceneMetadata.ContentId;
+                            var isCurrentScene = node.Id == this.SceneService.CurrentSceneMetadata.ContentId;
 
                             if (!isCurrentScene) {
                                 this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });

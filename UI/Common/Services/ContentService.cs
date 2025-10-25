@@ -30,7 +30,8 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Adds a scene to the selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
-    IContentNode AddScene(IContentDirectory parent);
+    /// <param name="template">The template</param>
+    IContentNode AddScene(IContentDirectory parent, SceneTemplate template);
 
     /// <summary>
     /// Creates a prefab from the given entity.
@@ -132,13 +133,19 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public IContentDirectory AddDirectory(IContentDirectory parent) => parent != null ? this.CreateDirectory("New Directory", parent) : null;
 
     /// <inheritdoc />
-    public IContentNode AddScene(IContentDirectory parent) {
+    public IContentNode AddScene(IContentDirectory parent, SceneTemplate template) {
         ContentFile contentFile = null;
         if (parent != null) {
             var name = this.CreateSafeName("New Scene", parent);
             var scene = new Scene {
                 Name = name
             };
+
+            foreach (var systemType in template.DefaultSystems) {
+                if (Activator.CreateInstance(systemType) is IGameSystem system) {
+                    scene.AddSystem(system);
+                }
+            }
 
             var fileName = $"{name}{SceneAsset.FileExtension}";
             var fullPath = Path.Combine(parent.GetFullPath(), fileName);
@@ -276,7 +283,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             file.HasChanges = false;
         }
 
-        this.RefreshMGCBFiles();
+        this.RefreshMgcbFiles();
     }
 
     /// <inheritdoc />
@@ -328,10 +335,9 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
     }
 
-    private bool CreateContentFile(IContentDirectory parent, string fileName) => this.CreateContentFile(parent, fileName, out _);
+    private void CreateContentFile(IContentDirectory parent, string fileName) => this.CreateContentFile(parent, fileName, out _);
 
-    private bool CreateContentFile(IContentDirectory parent, string fileName, out ContentFile contentFile) {
-        var result = false;
+    private void CreateContentFile(IContentDirectory parent, string fileName, out ContentFile contentFile) {
         var extension = Path.GetExtension(fileName);
         contentFile = null;
 
@@ -345,11 +351,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 this.SaveMetadata(metadata);
                 contentFile = this.AssemblyService.CreateContentFileObject(parent, metadata);
                 this._assetManager.RegisterMetadata(contentFile.Metadata);
-                result = true;
             }
         }
-
-        return result;
     }
 
     private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
@@ -373,7 +376,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
 
-    private void RefreshMGCBFiles() {
+    private void RefreshMgcbFiles() {
         this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
     }
 

@@ -16,7 +16,6 @@ public interface ISceneService : ISelectionService<object> {
     /// <summary>
     /// Gets the current scene.
     /// </summary>
-    /// <value>The current scene.</value>
     IScene CurrentScene { get; }
 
     /// <summary>
@@ -25,14 +24,24 @@ public interface ISceneService : ISelectionService<object> {
     ContentMetadata CurrentSceneMetadata { get; }
 
     /// <summary>
+    /// Gets the default scene template.
+    /// </summary>
+    DefaultSceneTemplate DefaultSceneTemplate { get; }
+
+    /// <summary>
     /// Gets the implied selected object.
     /// </summary>
     object ImpliedSelected { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not the state of the program is in an entity context.
+    /// Gets a value indicating whether the state of the program is in an entity context.
     /// </summary>
     bool IsEntityContext { get; }
+
+    /// <summary>
+    /// Gets a list of available scene templates.
+    /// </summary>
+    IReadOnlyCollection<SceneTemplate> Templates { get; }
 
     /// <summary>
     /// Raises the property changed event for the selected object.
@@ -64,10 +73,10 @@ public interface ISceneService : ISelectionService<object> {
 public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly IEntityService _entityService;
     private readonly IFileSystemService _fileSystem;
-    private readonly ISystemService _systemService;
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
+    private readonly ISystemService _systemService;
     private ContentMetadata _currentSceneMetadata;
     private object _impliedSelected;
     private bool _isEntityContext;
@@ -76,6 +85,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <summary>
     /// Initializes a new instance of the <see cref="SceneService" /> class.
     /// </summary>
+    /// <param name="assemblyService">The assembly service.</param>
     /// <param name="entityService">The entity service.</param>
     /// <param name="fileSystem">The file system service.</param>
     /// <param name="pathService">The path service.</param>
@@ -83,6 +93,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <param name="settingsService">The settings service.</param>
     /// <param name="systemService">The system service.</param>
     public SceneService(
+        IAssemblyService assemblyService,
         IEntityService entityService,
         IFileSystemService fileSystem,
         IPathService pathService,
@@ -95,11 +106,26 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         this._serializer = serializer;
         this._settingsService = settingsService;
         this._systemService = systemService;
+
+        var templateTypes = assemblyService.LoadTypes(typeof(SceneTemplate)).Where(x => x.GetConstructor(Type.EmptyTypes) != null).ToList();
+        this.Templates = templateTypes.Select(type => Activator.CreateInstance(type) as SceneTemplate).ToList();
+        this.DefaultSceneTemplate = new DefaultSceneTemplate();
     }
 
     /// <inheritdoc />
     public IScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
 
+    /// <inheritdoc />
+    public ContentMetadata CurrentSceneMetadata {
+        get => this._currentSceneMetadata;
+        private set {
+            this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
+            this.RaisePropertyChanged(nameof(this.CurrentScene));
+        }
+    }
+
+    /// <inheritdoc />
+    public DefaultSceneTemplate DefaultSceneTemplate { get; }
 
     /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> Editors {
@@ -109,15 +135,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                 IGameSystem => this._systemService.Editors,
                 _ => null
             };
-        }
-    }
-
-    /// <inheritdoc />
-    public ContentMetadata CurrentSceneMetadata {
-        get => this._currentSceneMetadata;
-        private set {
-            this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
-            this.RaisePropertyChanged(nameof(this.CurrentScene));
         }
     }
 
@@ -166,12 +183,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case EntityCollection:
-                    this._entityService.Selected = null;
-                    this._systemService.Selected = null;
-                    this.IsEntityContext = true;
-                    this._entityService.Selected = null;
-                    this.ImpliedSelected = this.CurrentScene;
-                    break;
                 case null:
                     this._entityService.Selected = null;
                     this._systemService.Selected = null;
@@ -184,6 +195,9 @@ public sealed class SceneService : ReactiveObject, ISceneService {
             this.RaisePropertyChanged(nameof(this.Editors));
         }
     }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<SceneTemplate> Templates { get; }
 
     /// <inheritdoc />
     public void RaiseSelectedChanged() {

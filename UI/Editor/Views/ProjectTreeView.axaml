@@ -79,8 +79,16 @@
 
             <MenuItem Header="Add Scene"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
-                      CommandParameter="{Binding}"
+                      CommandParameter="{Binding $parent[local:ProjectTreeView].ViewModel.SceneService.DefaultSceneTemplate}"
                       ToolTip.Tip="Adds a scene as the child of the current node" />
+            
+            <MenuItem Header="Scene Templates"
+                      Classes="MenuItemParent"
+                      ItemsSource="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneModels}">
+                <MenuItem.Styles>
+                    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
+                </MenuItem.Styles>
+            </MenuItem>
 
             <MenuItem Header="Import Content"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
@@ -141,8 +149,16 @@
 
                                 <MenuItem Header="Add Scene"
                                           Command="{Binding AddSceneCommand}"
-                                          CommandParameter="{Binding AssetSelectionService.Selected}"
+                                          CommandParameter="{Binding SceneService.DefaultSceneTemplate}"
                                           ToolTip.Tip="Adds a scene as the child of the current node" />
+                                
+                                <MenuItem Header="Scene Templates"
+                                          Classes="MenuItemParent"
+                                          ItemsSource="{Binding AddSceneModels}">
+                                    <MenuItem.Styles>
+                                        <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
+                                    </MenuItem.Styles>
+                                </MenuItem>
 
                                 <MenuItem Header="Import Content"
                                           Command="{Binding ImportCommand}"
