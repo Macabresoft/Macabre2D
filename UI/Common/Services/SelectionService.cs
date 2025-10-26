@@ -88,17 +88,19 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
     }
 
     private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+        if (sender is IValueEditor { Owner: not null } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
             var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
             var newValue = e.UpdatedValue;
+            var owner = valueEditor.Owner;
+            var propertyName = valueEditor.ValuePropertyName;
 
             this._undoService.Do(() =>
             {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                owner.SetProperty(propertyName, newValue);
                 valueEditor.SetValue(newValue, true);
             }, () =>
             {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                owner.SetProperty(propertyName, originalValue);
                 valueEditor.SetValue(originalValue, true);
             });
         }

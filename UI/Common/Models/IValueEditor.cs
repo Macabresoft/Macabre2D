@@ -28,7 +28,7 @@ public interface IValueEditor : IValueControl {
     /// </summary>
     /// <param name="newValue">The new value.</param>
     /// <param name="ignoreUpdates">
-    /// A value indicating whether or not the control should ignore update notifications for this
+    /// A value indicating whether the control should ignore update notifications for this
     /// operation.
     /// </param>
     void SetValue(object newValue, bool ignoreUpdates);
