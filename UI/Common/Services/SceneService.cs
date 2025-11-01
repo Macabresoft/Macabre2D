@@ -14,15 +14,16 @@ using ReactiveUI;
 /// Interface for a service which handles the <see cref="IScene" /> open in the editor.
 /// </summary>
 public interface ISceneService : ISelectionService<object> {
-    /// <summary>
-    /// Gets the current scene.
-    /// </summary>
-    IScene CurrentScene { get; }
 
     /// <summary>
     /// Gets the current scene metadata.
     /// </summary>
     ContentMetadata CurrentMetadata { get; }
+
+    /// <summary>
+    /// Gets the current scene.
+    /// </summary>
+    IScene CurrentScene { get; }
 
     /// <summary>
     /// Gets the default scene template.
@@ -60,19 +61,19 @@ public interface ISceneService : ISelectionService<object> {
     void SaveScene(ContentMetadata metadata, IScene scene);
 
     /// <summary>
+    /// Tries to load a prefab.
+    /// </summary>
+    /// <param name="contentId">The content identifier of the prefab.</param>
+    /// <returns>A value indicating whether the prefab was loaded.</returns>
+    bool TryLoadPrefab(Guid contentId);
+
+    /// <summary>
     /// Tries to load a scene.
     /// </summary>
     /// <param name="contentId">The content identifier of the scene.</param>
     /// <param name="sceneAsset">The scene asset.</param>
     /// <returns>A value indicating whether the scene was loaded.</returns>
     bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset);
-    
-    /// <summary>
-    /// Tries to load a prefab.
-    /// </summary>
-    /// <param name="contentId">The content identifier of the prefab.</param>
-    /// <returns>A value indicating whether the prefab was loaded.</returns>
-    bool TryLoadPrefab(Guid contentId);
 }
 
 /// <summary>
@@ -121,9 +122,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     /// <inheritdoc />
-    public IScene CurrentScene => (this._currentMetadata?.Asset as SceneAsset)?.Content;
-
-    /// <inheritdoc />
     public ContentMetadata CurrentMetadata {
         get => this._currentMetadata;
         private set {
@@ -131,6 +129,9 @@ public sealed class SceneService : ReactiveObject, ISceneService {
             this.RaisePropertyChanged(nameof(this.CurrentScene));
         }
     }
+
+    /// <inheritdoc />
+    public IScene CurrentScene => (this._currentMetadata?.Asset as SceneAsset)?.Content;
 
     /// <inheritdoc />
     public DefaultSceneTemplate DefaultSceneTemplate { get; }
@@ -223,15 +224,15 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public void SaveScene() {
-        if (this.CurrentMetadata.Asset is SceneAsset) {
-            this.SaveScene(this.CurrentMetadata, this.CurrentScene);
-        }
-        else if (this.CurrentMetadata.Asset is PrefabAsset) {
-            
+        switch (this.CurrentMetadata.Asset) {
+            case SceneAsset sceneAsset:
+                this.SaveScene(this.CurrentMetadata, sceneAsset.Content);
+                break;
+            case PrefabAsset prefabAsset:
+                this.SavePrefab(this.CurrentMetadata, prefabAsset.Content);
+                break;
         }
     }
-    
-    private void SaveMetadata(ContentMetadata metadata, IEntity prefab)
 
     /// <inheritdoc />
     public void SaveScene(ContentMetadata metadata, IScene scene) {
@@ -245,8 +246,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     public bool TryLoadPrefab(Guid contentId) {
-        if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity, out var contentPath)) {
-
+        if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity)) {
+            // TODO: gotta do something
             return true;
         }
 
@@ -255,7 +256,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset) {
-        if (this.TryGetMetadata<SceneAsset, Scene>(contentId, out var metadata, out sceneAsset, out var scene, out var contentPath)) {
+        if (this.TryGetMetadata<SceneAsset, Scene>(contentId, out var metadata, out sceneAsset, out var scene)) {
             this.CurrentMetadata = metadata;
             this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
             this._entityService.Selected = scene;
@@ -269,23 +270,31 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         return sceneAsset != null;
     }
 
+    private void SavePrefab(ContentMetadata metadata, IEntity prefab) {
+        if (metadata != null && prefab != null && metadata.Asset is IAsset<Entity>) {
+            var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
+            this._serializer.Serialize(metadata, metadataPath);
+
+            var filePath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+            this._serializer.Serialize(prefab, filePath);
+        }
+    }
+
     private bool TryGetMetadata<TAsset, TContent>(
         Guid contentId,
         [NotNullWhen(true)] out ContentMetadata metadata,
         [NotNullWhen(true)] out TAsset asset,
-        [NotNullWhen(true)] out TContent content,
-        [NotNullWhen(true)] out string contentPath)
+        [NotNullWhen(true)] out TContent content)
         where TAsset : class, IAsset<TContent>
         where TContent : class {
         metadata = null;
         asset = null;
         content = null;
-        contentPath = string.Empty;
 
         if (contentId == Guid.Empty) {
             return false;
         }
-        
+
         var metadataFilePath = this._pathService.GetMetadataFilePath(contentId);
         if (this._fileSystem.DoesFileExist(metadataFilePath)) {
             metadata = this._serializer.Deserialize<ContentMetadata>(metadataFilePath);
@@ -294,8 +303,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                 asset = metadata.Asset as TAsset;
 
                 if (asset != null) {
-                    contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
-            
+                    var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+
                     if (this._fileSystem.DoesFileExist(contentPath)) {
                         try {
                             content = this._serializer.Deserialize<TContent>(contentPath);
@@ -311,7 +320,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     }
                 }
             }
-
         }
 
         return metadata != null && asset != null && content != null;
