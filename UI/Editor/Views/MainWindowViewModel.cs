@@ -161,7 +161,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
             using (busyClaim) {
                 var result = await this._saveService.RequestSave();
                 if (result != YesNoCancelResult.Cancel) {
-                    var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
+                    var sceneContentId = this._sceneService.CurrentMetadata?.ContentId;
                     if (sceneContentId != null) {
                         this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
                     }

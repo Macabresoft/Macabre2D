@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
@@ -21,7 +22,7 @@ public interface ISceneService : ISelectionService<object> {
     /// <summary>
     /// Gets the current scene metadata.
     /// </summary>
-    ContentMetadata CurrentSceneMetadata { get; }
+    ContentMetadata CurrentMetadata { get; }
 
     /// <summary>
     /// Gets the default scene template.
@@ -63,8 +64,15 @@ public interface ISceneService : ISelectionService<object> {
     /// </summary>
     /// <param name="contentId">The content identifier of the scene.</param>
     /// <param name="sceneAsset">The scene asset.</param>
-    /// <returns>A value indicating whether or not the scene was loaded.</returns>
+    /// <returns>A value indicating whether the scene was loaded.</returns>
     bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset);
+    
+    /// <summary>
+    /// Tries to load a prefab.
+    /// </summary>
+    /// <param name="contentId">The content identifier of the prefab.</param>
+    /// <returns>A value indicating whether the prefab was loaded.</returns>
+    bool TryLoadPrefab(Guid contentId);
 }
 
 /// <summary>
@@ -77,7 +85,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
     private readonly ISystemService _systemService;
-    private ContentMetadata _currentSceneMetadata;
+    private ContentMetadata _currentMetadata;
     private object _impliedSelected;
     private bool _isEntityContext;
     private object _selected;
@@ -113,13 +121,13 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     /// <inheritdoc />
-    public IScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
+    public IScene CurrentScene => (this._currentMetadata?.Asset as SceneAsset)?.Content;
 
     /// <inheritdoc />
-    public ContentMetadata CurrentSceneMetadata {
-        get => this._currentSceneMetadata;
+    public ContentMetadata CurrentMetadata {
+        get => this._currentMetadata;
         private set {
-            this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
+            this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
             this.RaisePropertyChanged(nameof(this.CurrentScene));
         }
     }
@@ -215,8 +223,15 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public void SaveScene() {
-        this.SaveScene(this.CurrentSceneMetadata, this.CurrentScene);
+        if (this.CurrentMetadata.Asset is SceneAsset) {
+            this.SaveScene(this.CurrentMetadata, this.CurrentScene);
+        }
+        else if (this.CurrentMetadata.Asset is PrefabAsset) {
+            
+        }
     }
+    
+    private void SaveMetadata(ContentMetadata metadata, IEntity prefab)
 
     /// <inheritdoc />
     public void SaveScene(ContentMetadata metadata, IScene scene) {
@@ -229,44 +244,76 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         }
     }
 
+    public bool TryLoadPrefab(Guid contentId) {
+        if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity, out var contentPath)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
     /// <inheritdoc />
     public bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset) {
-        if (contentId == Guid.Empty) {
-            sceneAsset = null;
+        if (this.TryGetMetadata<SceneAsset, Scene>(contentId, out var metadata, out sceneAsset, out var scene, out var contentPath)) {
+            this.CurrentMetadata = metadata;
+            this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
+            this._entityService.Selected = scene;
+            this._systemService.Selected = scene.Systems.FirstOrDefault();
+            this._impliedSelected = scene;
         }
         else {
-            var metadataFilePath = this._pathService.GetMetadataFilePath(contentId);
-            if (this._fileSystem.DoesFileExist(metadataFilePath)) {
-                var metadata = this._serializer.Deserialize<ContentMetadata>(metadataFilePath);
-                sceneAsset = metadata?.Asset as SceneAsset;
+            sceneAsset = null;
+        }
 
-                if (metadata != null && sceneAsset != null) {
-                    var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+        return sceneAsset != null;
+    }
 
+    private bool TryGetMetadata<TAsset, TContent>(
+        Guid contentId,
+        [NotNullWhen(true)] out ContentMetadata metadata,
+        [NotNullWhen(true)] out TAsset asset,
+        [NotNullWhen(true)] out TContent content,
+        [NotNullWhen(true)] out string contentPath)
+        where TAsset : class, IAsset<TContent>
+        where TContent : class {
+        metadata = null;
+        asset = null;
+        content = null;
+        contentPath = string.Empty;
+
+        if (contentId == Guid.Empty) {
+            return false;
+        }
+        
+        var metadataFilePath = this._pathService.GetMetadataFilePath(contentId);
+        if (this._fileSystem.DoesFileExist(metadataFilePath)) {
+            metadata = this._serializer.Deserialize<ContentMetadata>(metadataFilePath);
+
+            if (metadata != null) {
+                asset = metadata.Asset as TAsset;
+
+                if (asset != null) {
+                    contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+            
                     if (this._fileSystem.DoesFileExist(contentPath)) {
                         try {
-                            var scene = this._serializer.Deserialize<Scene>(contentPath);
-                            if (scene != null) {
-                                sceneAsset.LoadContent(scene);
-                                this.CurrentSceneMetadata = metadata;
-                                this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
-                                this._entityService.Selected = scene;
-                                this._systemService.Selected = scene.Systems.FirstOrDefault();
-                                this._impliedSelected = scene;
+                            content = this._serializer.Deserialize<TContent>(contentPath);
+                            if (content != null) {
+                                asset.LoadContent(content);
                             }
                         }
                         catch {
                             // TODO: might be good to show or log an error message here
-                            sceneAsset = null;
+                            asset = null;
+                            content = null;
                         }
                     }
                 }
             }
-            else {
-                sceneAsset = null;
-            }
+
         }
 
-        return sceneAsset != null;
+        return metadata != null && asset != null && content != null;
     }
 }

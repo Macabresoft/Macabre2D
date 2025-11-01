@@ -408,7 +408,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         node != null &&
         node is not RootContentDirectory &&
         node is not INameableCollection &&
-        (this.SceneService.CurrentSceneMetadata == null || !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this.SceneService.CurrentSceneMetadata.ContentId));
+        (this.SceneService.CurrentMetadata == null || !(node is ContentFile { Asset: { } asset } && asset.ContentId == this.SceneService.CurrentMetadata.ContentId));
 
     private void Clone(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection && member.TryClone(out var clonedMember)) {
@@ -583,7 +583,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     }
 
     private void RemoveContent(object node) {
-        var openSceneMetadataId = this.SceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
+        var openSceneMetadataId = this.SceneService.CurrentMetadata?.ContentId ?? Guid.Empty;
         switch (node) {
             case RootContentDirectory:
                 this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete the root.");
@@ -642,7 +642,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                         }
                         else {
                             var originalNodeName = node.Name;
-                            var isCurrentScene = node.Id == this.SceneService.CurrentSceneMetadata.ContentId;
+                            var isCurrentScene = node.Id == this.SceneService.CurrentMetadata.ContentId;
 
                             if (!isCurrentScene) {
                                 this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });
