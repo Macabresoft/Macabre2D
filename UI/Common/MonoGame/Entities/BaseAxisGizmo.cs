@@ -230,7 +230,14 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         }
     }
 
-    private float GetAxisLength() => this._camera.BoundingArea.Height * 0.1f;
+    private float GetAxisLength() {
+        var result = 0.1f;
+        if (this._camera != null) {
+            result *= this._camera.BoundingArea.Height;
+        }
+
+        return result;
+    }
 
     private void ResetIsEnabled() {
         this.IsEnabled = this.ShouldBeEnabled();

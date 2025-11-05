@@ -46,12 +46,12 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
             var shadowOffset = lineThickness * this.Project.UnitsPerPixel * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
-            var boundingAreas = this._sceneService.CurrentScene.GetDescendants<IBoundable>().Select(x => x.BoundingArea);
+            var boundingAreas = this._sceneService.CurrentlyEditing.GetDescendants<IBoundable>().Select(x => x.BoundingArea);
             foreach (var boundingArea in boundingAreas) {
                 this.DrawBoundingArea(boundingArea, spriteBatch, primitiveDrawer, shadowOffsetVector, lineThickness);
             }
 
-            var colliders = this._sceneService.CurrentScene.GetDescendants<ISimplePhysicsBody>().Select(x => x.Collider);
+            var colliders = this._sceneService.CurrentlyEditing.GetDescendants<ISimplePhysicsBody>().Select(x => x.Collider);
             foreach (var collider in colliders) {
                 this.DrawCollider(collider, spriteBatch, primitiveDrawer, shadowOffsetVector, lineThickness);
             }

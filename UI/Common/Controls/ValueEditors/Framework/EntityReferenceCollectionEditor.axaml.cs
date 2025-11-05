@@ -133,7 +133,7 @@ public partial class EntityReferenceCollectionEditor : ValueEditorControl<IEntit
         var entities = new List<IEntity>();
 
         foreach (var entityId in entityIds) {
-            if (this._sceneService.CurrentScene.FindChild(entityId) is { } entity) {
+            if (this._sceneService.CurrentlyEditing.FindChild(entityId) is { } entity) {
                 entities.Add(entity);
             }
         }

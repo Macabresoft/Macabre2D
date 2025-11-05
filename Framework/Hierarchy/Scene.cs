@@ -479,6 +479,24 @@ public sealed class Scene : GridContainer, IScene {
     /// </returns>
     public static bool IsNullOrEmpty(IScene? scene) => scene == null || scene == Empty;
 
+    /// <summary>
+    /// Determines whether the specified scene is null or <see cref="Scene.Empty" />.
+    /// </summary>
+    /// <param name="scene">The scene.</param>
+    /// <param name="nonNullScene">The non-null scene.</param>
+    /// <returns>
+    /// <c>true</c> if the specified scene is null or <see cref="Scene.Empty" />; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsNullOrEmpty(IScene? scene, [NotNullWhen(false)] out IScene? nonNullScene) {
+        if (scene == null || scene == Empty) {
+            nonNullScene = null;
+            return true;
+        }
+
+        nonNullScene = scene;
+        return false;
+    }
+
     /// <inheritdoc />
     public override void OnSceneTreeLoaded() {
         foreach (var system in this.Systems) {

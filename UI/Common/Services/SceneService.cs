@@ -21,9 +21,19 @@ public interface ISceneService : ISelectionService<object> {
     ContentMetadata CurrentMetadata { get; }
 
     /// <summary>
-    /// Gets the current scene.
+    /// Gets the object currently being edited. This is either a prefab or a scene.
+    /// </summary>
+    IEntity CurrentlyEditing { get; }
+    
+    /// <summary>
+    /// Gets the current scene if editing a scene.
     /// </summary>
     IScene CurrentScene { get; }
+    
+    /// <summary>
+    /// Gets the current prefab if editing a prefab.
+    /// </summary>
+    IEntity CurrentPrefab { get; }
 
     /// <summary>
     /// Gets the default scene template.
@@ -126,12 +136,31 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get => this._currentMetadata;
         private set {
             this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
-            this.RaisePropertyChanged(nameof(this.CurrentScene));
+            this.RaisePropertyChanged(nameof(this.CurrentlyEditing));
         }
     }
 
     /// <inheritdoc />
-    public IScene CurrentScene => (this._currentMetadata?.Asset as SceneAsset)?.Content;
+    public IEntity CurrentlyEditing {
+        get {
+            if (this._currentMetadata != null) {
+                switch (this._currentMetadata.Asset) {
+                    case SceneAsset sceneAsset:
+                        return sceneAsset.Content;
+                    case PrefabAsset prefabAsset:
+                        return prefabAsset.Content;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    /// <inheritdoc />
+    public IScene CurrentScene => this.CurrentlyEditing as IScene ?? (this.CurrentlyEditing is { } entity ? entity.Scene : null);
+    
+    /// <inheritdoc />
+    public IEntity CurrentPrefab => this.CurrentlyEditing is not IScene ? this.CurrentlyEditing : null;
 
     /// <inheritdoc />
     public DefaultSceneTemplate DefaultSceneTemplate { get; }
@@ -189,7 +218,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this._systemService.Selected = null;
                     this.IsEntityContext = false;
                     this._entityService.Selected = null;
-                    this.ImpliedSelected = this.CurrentScene;
+                    this.ImpliedSelected = this.CurrentlyEditing;
                     break;
                 case EntityCollection:
                 case null:
@@ -197,7 +226,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this._systemService.Selected = null;
                     this.IsEntityContext = true;
                     this._entityService.Selected = null;
-                    this.ImpliedSelected = this.CurrentScene;
+                    this.ImpliedSelected = this.CurrentlyEditing;
                     break;
             }
 
@@ -247,7 +276,9 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     public bool TryLoadPrefab(Guid contentId) {
         if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity)) {
-            // TODO: gotta do something
+            var tempScene = new Scene();
+            tempScene.AddChild(entity);
+            this.SelectAndOpen(entity, metadata);
             return true;
         }
 
@@ -257,17 +288,27 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <inheritdoc />
     public bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset) {
         if (this.TryGetMetadata<SceneAsset, Scene>(contentId, out var metadata, out sceneAsset, out var scene)) {
-            this.CurrentMetadata = metadata;
-            this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
-            this._entityService.Selected = scene;
-            this._systemService.Selected = scene.Systems.FirstOrDefault();
-            this._impliedSelected = scene;
+            this.SelectAndOpen(scene, metadata);
         }
         else {
             sceneAsset = null;
         }
 
         return sceneAsset != null;
+    }
+
+    private void SelectAndOpen(IEntity entity, ContentMetadata metadata) {
+        this.CurrentMetadata = metadata;
+        this._settingsService.SetPreviouslyOpenedContent(metadata);
+        this._entityService.Selected = entity;
+        this._impliedSelected = entity;
+
+        if (entity is IScene scene) {
+            this._systemService.Selected = scene.Systems.FirstOrDefault();
+        }
+        else {
+            this._systemService.Selected = null;
+        }
     }
 
     private void SavePrefab(ContentMetadata metadata, IEntity prefab) {

@@ -22,6 +22,8 @@
         <AvaloniaResource Include="icon.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </AvaloniaResource>
+        <AvaloniaXaml Remove="Theme\Theme.axaml" />
+        <AvaloniaResource Include="Theme\Theme.axaml" />
     </ItemGroup>
     <ItemGroup>
         <Compile Update="Dialogs\BaseDialog.axaml.cs">

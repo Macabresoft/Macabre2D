@@ -114,7 +114,7 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
     private void ResetPath() {
         this.PathText = null;
 
-        if (this.Value != Guid.Empty && !Entity.IsNullOrEmpty(this._sceneService?.CurrentScene, out var scene)) {
+        if (this.Value != Guid.Empty && !Entity.IsNullOrEmpty(this._sceneService?.CurrentlyEditing, out var scene)) {
             this.PathText = scene.FindChild(this.Value).Name;
         }
     }

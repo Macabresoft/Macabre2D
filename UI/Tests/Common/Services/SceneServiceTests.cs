@@ -51,7 +51,7 @@ public class SceneServiceTests {
             result.Should().BeTrue();
             loadedSceneAsset.Should().Be(sceneAsset);
             loadedSceneAsset.Content.Should().Be(scene);
-            sceneService.CurrentScene.Should().Be(loadedSceneAsset.Content);
+            sceneService.CurrentlyEditing.Should().Be(loadedSceneAsset.Content);
         }
     }
 

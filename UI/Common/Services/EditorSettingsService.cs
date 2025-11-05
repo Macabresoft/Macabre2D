@@ -20,6 +20,12 @@ public interface IEditorSettingsService {
     void Initialize();
 
     /// <summary>
+    /// Sets the previously opened content.
+    /// </summary>
+    /// <param name="metadata"></param>
+    void SetPreviouslyOpenedContent(ContentMetadata metadata);
+
+    /// <summary>
     /// Saves the settings.
     /// </summary>
     void Save();
@@ -56,6 +62,14 @@ public sealed class EditorSettingsService : IEditorSettingsService {
         var filePath = this.GetSettingsFilePath();
         if (this._fileSystem.DoesFileExist(filePath)) {
             this.Settings = this._serializer.Deserialize<EditorSettings>(filePath) ?? new EditorSettings();
+        }
+    }
+
+    /// <inheritdoc />
+    public void SetPreviouslyOpenedContent(ContentMetadata metadata) {
+        if (metadata != null) {
+            this.Settings.LastContentOpenedId = metadata.ContentId;
+            this.Settings.WasSceneOpenedLast = metadata.Asset is SceneAsset;
         }
     }
 

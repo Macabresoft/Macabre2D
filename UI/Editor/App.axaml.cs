@@ -37,7 +37,7 @@ public class App : Application {
             editorSettingsService.Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
             
-            if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
+            if (Resolver.Resolve<ISceneService>().CurrentlyEditing == null) {
                 Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
             }
 

@@ -66,7 +66,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this._sceneService = sceneService;
         this._settingsService = settingsService;
 
-        var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentScene, x => x.Value != null);
+        var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentlyEditing, x => x.Value != null);
         this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
         this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
         this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
@@ -161,11 +161,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
             using (busyClaim) {
                 var result = await this._saveService.RequestSave();
                 if (result != YesNoCancelResult.Cancel) {
-                    var sceneContentId = this._sceneService.CurrentMetadata?.ContentId;
-                    if (sceneContentId != null) {
-                        this._settingsService.Settings.LastSceneOpened = sceneContentId.Value;
-                    }
-
+                    this._settingsService.SetPreviouslyOpenedContent(this._sceneService.CurrentMetadata);
                     this._assetSelectionService.Selected = null;
                     await Task.Run(() => this._contentService.RefreshContent(true));
                     this._projectService.ReloadProject();

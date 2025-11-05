@@ -36,10 +36,9 @@ public class SelectorGizmo : Entity, IGizmo {
     public bool Update(FrameTime frameTime, InputState inputState) {
         var result = false;
         if (this._camera != null &&
-            !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
+            this._sceneService.CurrentScene is {} scene &&
             inputState.IsMouseButtonNewlyReleased(MouseButton.Left)) {
             IEntity selected = null;
-            var scene = this._sceneService.CurrentScene;
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
             var potentials = scene.RenderableEntities
                 .Where(x => x.ShouldRender && x.BoundingArea.Contains(mousePosition))
@@ -80,7 +79,7 @@ public class SelectorGizmo : Entity, IGizmo {
         var result = false;
         var potential = selected;
 
-        while (potential.Parent != EmptyObject.Entity && potential.Parent != this._sceneService.CurrentScene) {
+        while (potential.Parent != EmptyObject.Entity && potential.Parent != this._sceneService.CurrentlyEditing) {
             potential = potential.Parent;
 
             if (potential is PrefabContainer && !this.CheckForPrefab(potential, out finalSelected)) {

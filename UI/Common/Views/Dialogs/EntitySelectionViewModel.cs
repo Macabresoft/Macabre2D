@@ -25,7 +25,7 @@ public class EntitySelectionViewModel : BaseDialogViewModel {
     /// <param name="title">The title of the window.</param>
     public EntitySelectionViewModel(ISceneService sceneService, Type desiredAssetType, string title) : this() {
         this.Title = title;
-        this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, desiredAssetType);
+        this.Scene = new FilteredEntityWrapper(sceneService.CurrentlyEditing, desiredAssetType);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class EntitySelectionViewModel : BaseDialogViewModel {
     /// <param name="title">The title of the window.</param>
     public EntitySelectionViewModel(ISceneService sceneService, Guid contentId, string title) : this() {
         this.Title = title;
-        this.Scene = new FilteredEntityWrapper(sceneService.CurrentScene, contentId);
+        this.Scene = new FilteredEntityWrapper(sceneService.CurrentlyEditing, contentId);
     }
     
     /// <summary>

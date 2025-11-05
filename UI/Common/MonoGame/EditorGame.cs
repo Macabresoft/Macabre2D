@@ -80,8 +80,8 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (!this._busyService.IsBusy && this.GraphicsDevice != null) {
-            if (this.CurrentScene.Children.OfType<IScene>().Any() && Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this.CurrentScene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
+            if (this.CurrentScene.Children.OfType<IScene>().Any() && this._sceneService.CurrentScene is { } scene) {
+                this.CurrentScene.BackgroundColor = scene.BackgroundColor;
             }
 
             this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
@@ -95,10 +95,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
             try {
                 base.Initialize();
 
-                if (!Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
-                }
-
+                this.InitializeCurrent();
                 this.ResetGizmo();
                 this.Camera.LayersToRender = this._editorService.LayersToRender;
                 this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -146,6 +143,19 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
         }
     }
 
+    private void InitializeCurrent() {
+        var scene = this._sceneService.CurrentScene;
+        if (this._sceneService.CurrentPrefab is { } prefab) {
+            scene = new Scene {
+                BackgroundColor = this.Project.Fallbacks.BackgroundColor
+            };
+
+            scene.AddChild(prefab);
+        }
+
+        scene?.Initialize(this, this.CreateAssetManager());
+    }
+
     private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (this.IsInitialized && e.PropertyName == nameof(IProjectService.CurrentProject)) {
             this.Project = this._projectService.CurrentProject;
@@ -158,9 +168,8 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (this.IsInitialized &&
-            e.PropertyName == nameof(ISceneService.CurrentScene) &&
-            !Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-            this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
+            e.PropertyName == nameof(ISceneService.CurrentlyEditing)) {
+            this.InitializeCurrent();
         }
     }
 

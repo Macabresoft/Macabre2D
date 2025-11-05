@@ -159,7 +159,7 @@
                       Grid.Row="2"
                       IsVisible="{Binding !IsFiltered}"
                       Name="_treeView"
-                      ItemsSource="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
+                      ItemsSource="{Binding SceneService.CurrentlyEditing, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"
                       LostFocus="TreeView_OnLostFocus"
                       Padding="{StaticResource VerticalScrollBarMargin}"

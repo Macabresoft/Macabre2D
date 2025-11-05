@@ -64,10 +64,16 @@ public class EditorSettings {
     public GizmoKind LastGizmoSelected { get; set; }
 
     /// <summary>
-    /// Gets or sets the last scene opened.
+    /// Gets or sets the identifier for the last content opened.
     /// </summary>
     [DataMember]
-    public Guid LastSceneOpened { get; set; }
+    public Guid LastContentOpenedId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether a prefab was opened last. If false, a prefab was open.
+    /// </summary>
+    [DataMember]
+    public bool WasSceneOpenedLast { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the last tab selected.

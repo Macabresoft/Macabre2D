@@ -402,7 +402,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         return result;
     }
 
-    private static bool CanOpenContent(IContentNode node) => node is ContentFile { Asset: SceneAsset };
+    private static bool CanOpenContent(IContentNode node) => node is ContentFile { Asset: SceneAsset or PrefabAsset };
 
     private bool CanRemoveContent(object node) =>
         node != null &&
@@ -469,7 +469,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private async Task FindContentUsages(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
-            if (this.SceneService.CurrentScene.GetDescendantsWithContent(node.Id).Any()) {
+            if (this.SceneService.CurrentlyEditing.GetDescendantsWithContent(node.Id).Any()) {
                 var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id, "Select an Entity");
 
                 if (!Entity.IsNullOrEmpty(entity, out var found)) {
@@ -577,8 +577,16 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     }
 
     private async Task OpenSelectedContent(IContentNode node) {
-        if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel && this.SceneService.TryLoadScene(node.Id, out _)) {
-            this._editorService.SelectedTab = EditorTabs.Scene;
+        if (node is ContentFile file && CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel) {
+            var result = file.Asset switch {
+                SceneAsset => this.SceneService.TryLoadScene(file.Id, out _),
+                PrefabAsset => this.SceneService.TryLoadPrefab(file.Id),
+                _ => false
+            };
+
+            if (result) {
+                this._editorService.SelectedTab = EditorTabs.Scene;
+            }
         }
     }
 

@@ -22,18 +22,19 @@ public class EditorRenderSystem : RenderSystem {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime) {
         if (this.Game is IEditorGame { SpriteBatch: { } spriteBatch, Camera: { } camera } sceneEditor) {
-            this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
-            spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
+            var scene = this._sceneService.CurrentScene ?? this._sceneService.CurrentlyEditing?.Scene ?? EmptyObject.Scene;
+            this.Scene.BackgroundColor = scene.BackgroundColor;
+            spriteBatch.GraphicsDevice.Clear(scene.BackgroundColor);
             this._renderTree.Clear();
 
             foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => x is EditorGrid)) {
                 this._renderTree.Insert(component);
             }
-
-            foreach (var component in this._sceneService.CurrentScene.RenderableEntities) {
+            
+            foreach (var component in scene.RenderableEntities) {
                 this._renderTree.Insert(component);
             }
-
+            
             foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                 this._renderTree.Insert(component);
             }

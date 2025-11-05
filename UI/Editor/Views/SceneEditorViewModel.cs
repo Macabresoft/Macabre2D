@@ -137,8 +137,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     }
 
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ISceneService.CurrentScene) && !Scene.IsNullOrEmpty(this.SceneService.CurrentScene)) {
-            this.SceneService.CurrentScene.Initialize(this._game, this._game.Assets);
+        if (e.PropertyName == nameof(ISceneService.CurrentlyEditing) && this.SceneService.CurrentScene is { } scene) {
+            scene.Initialize(this._game, this._game.Assets);
         }
     }
 

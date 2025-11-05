@@ -74,7 +74,7 @@ public partial class SceneTreeView : UserControl {
                         this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, targetEntity);
                         break;
                     case EntityCollection when this.DraggedObject is IEntity:
-                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene);
+                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentlyEditing);
                         break;
                 }
             }
@@ -92,16 +92,19 @@ public partial class SceneTreeView : UserControl {
                         break;
                     }
                     case EntityCollection when this.DraggedObject is IEntity draggedEntity:
-                        this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentScene, 0);
+                        this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentlyEditing, 0);
                         break;
                     case IGameSystem targetSystem when this.DraggedObject is IGameSystem draggedSystem:
-                        index = this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(targetSystem);
+                        if (this.ViewModel.SceneService.CurrentScene is { } scene) {
+                            index = scene.Systems.IndexOf(targetSystem);
 
-                        if (index < this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(draggedSystem)) {
-                            index++;
+                            if (index < scene.Systems.IndexOf(draggedSystem)) {
+                                index++;
+                            }
+
+                            this.ViewModel.MoveSystem(draggedSystem, index);
                         }
 
-                        this.ViewModel.MoveSystem(draggedSystem, index);
                         break;
                     case SystemCollection when this.DraggedObject is IGameSystem draggedSystem:
                         this.ViewModel.MoveSystem(draggedSystem, 0);

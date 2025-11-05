@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -270,7 +268,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// <param name="gameSystem">The system.</param>
     /// <param name="newIndex">The new index.</param>
     public void MoveSystem(IGameSystem gameSystem, int newIndex) {
-        if (this.SceneService.CurrentScene.Systems is SystemCollection collection) {
+        if (this.SceneService.CurrentScene is { Systems: SystemCollection collection }) {
             var originalIndex = collection.IndexOf(gameSystem);
             this._undoService.Do(() =>
             {
@@ -289,17 +287,17 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     /// <inheritdoc />
     protected override IEnumerable<INameable> GetNodesAvailableToFilter() {
-        if (!Scene.IsNullOrEmpty(this.SceneService.CurrentScene)) {
+        if (!Scene.IsNullOrEmpty(this.SceneService.CurrentScene, out var scene)) {
             var nodes = new List<INameable> {
-                this.SceneService.CurrentScene
+                this.SceneService.CurrentlyEditing
             };
 
-            nodes.AddRange(this.SceneService.CurrentScene.Systems);
-            nodes.AddRange(this.SceneService.CurrentScene.GetDescendants<IEntity>());
+            nodes.AddRange(scene.Systems);
+            nodes.AddRange(this.SceneService.CurrentlyEditing.GetDescendants<IEntity>());
             return nodes;
         }
 
-        return Enumerable.Empty<INameable>();
+        return [];
     }
 
     /// <inheritdoc />
@@ -331,7 +329,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         if (type != null && Activator.CreateInstance(type) is IEntity child) {
             child.Name = type.ToPresentableName();
-            var parent = this.EntityService.Selected ?? this.SceneService.CurrentScene;
+            var parent = this.EntityService.Selected ?? this.SceneService.CurrentlyEditing;
 
             if (parent != null) {
                 this._undoService.Do(() =>
@@ -382,7 +380,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private bool CanAdd() => !this.IsFiltered;
 
-    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity.Id != this.SceneService.CurrentScene?.Id || selected is IGameSystem);
+    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity.Id != this.SceneService.CurrentlyEditing?.Id || selected is IGameSystem);
 
     private bool CanMoveDown(object selected) {
         if (this.IsFiltered) {
@@ -391,7 +389,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
-            IGameSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) < this.SceneService.CurrentScene.Systems.Count - 1,
+            IGameSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) < scene.Systems.Count - 1,
             _ => false
         };
     }
@@ -409,7 +407,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) != 0,
-            IGameSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) != 0,
+            IGameSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) != 0,
             _ => false
         };
     }
@@ -418,7 +416,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private void Clone(object selected) {
         if (selected is IEntity entity) {
-            if (entity != this.SceneService.CurrentScene && entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
+            if (entity != this.SceneService.CurrentlyEditing && entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
                 this._undoService.Do(() =>
                 {
                     parent.AddChild(clone);
@@ -430,15 +428,15 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 });
             }
         }
-        else if (selected is IGameSystem system) {
+        else if (selected is IGameSystem system && this.SceneService.CurrentScene is { } scene) {
             if (system.TryClone(out var clone)) {
                 this._undoService.Do(() =>
                 {
-                    this.SceneService.CurrentScene.AddSystem(clone);
+                    scene.AddSystem(clone);
                     this.SceneService.Selected = clone;
                 }, () =>
                 {
-                    this.SceneService.CurrentScene.RemoveSystem(clone);
+                    scene.RemoveSystem(clone);
                     this.SceneService.Selected = system;
                 });
             }
@@ -487,8 +485,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 break;
             }
             case IGameSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, index + 1); }, () => { this.MoveSystemByIndex(system, index); });
+                if (this.SceneService.CurrentScene is { } scene) {
+                    var index = scene.Systems.IndexOf(system);
+                    this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, index + 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
+                }
+
                 break;
             }
         }
@@ -499,8 +500,8 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.SceneService.RaiseSelectedChanged();
     }
 
-    private void MoveSystemByIndex(IGameSystem gameSystem, int index) {
-        this.SceneService.CurrentScene.ReorderSystem(gameSystem, index);
+    private void MoveSystemByIndex(IScene scene, IGameSystem gameSystem, int index) {
+        scene.ReorderSystem(gameSystem, index);
         this.SceneService.RaiseSelectedChanged();
     }
 
@@ -512,8 +513,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 break;
             }
             case IGameSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, this.SceneService.CurrentScene.Systems.Count - 1); }, () => { this.MoveSystemByIndex(system, index); });
+                if (this.SceneService.CurrentScene is { } scene) {
+                    var index = scene.Systems.IndexOf(system);
+                    this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, scene.Systems.Count - 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
+                }
+
                 break;
             }
         }
@@ -527,8 +531,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 break;
             }
             case IGameSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, 0); }, () => { this.MoveSystemByIndex(system, index); });
+                if (this.SceneService.CurrentScene is { } scene) {
+                    var index = scene.Systems.IndexOf(system);
+                    this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, 0); }, () => { this.MoveSystemByIndex(scene, system, index); });
+                }
+
                 break;
             }
         }
@@ -542,8 +549,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 break;
             }
             case IGameSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, index - 1); }, () => { this.MoveSystemByIndex(system, index); });
+                if (this.SceneService.CurrentScene is { } scene) {
+                    var index = scene.Systems.IndexOf(system);
+                    this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, index - 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
+                }
+
                 break;
             }
         }

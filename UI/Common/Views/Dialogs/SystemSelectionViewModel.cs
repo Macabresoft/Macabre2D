@@ -30,18 +30,13 @@ public class SystemSelectionViewModel : BaseDialogViewModel {
     [InjectionConstructor]
     public SystemSelectionViewModel(ISceneService sceneService, Type desiredAssetType, string title) : this() {
         this.Title = title;
-        this.Systems = sceneService.CurrentScene.Systems.Where(x => x.GetType().IsAssignableTo(desiredAssetType)).ToList();
+        if (sceneService.CurrentScene is { } scene) {
+            this.Systems = scene.Systems.Where(x => x.GetType().IsAssignableTo(desiredAssetType)).ToList();
+        }
+        else {
+            this.Systems = [];
+        }
     }
-    
-    /// <summary>
-    /// Gets the title.
-    /// </summary>
-    public string Title { get; }
-
-    /// <summary>
-    /// Gets the systems.
-    /// </summary>
-    public IEnumerable<IGameSystem> Systems { get; }
 
     /// <summary>
     /// Gets the selected system.
@@ -53,4 +48,14 @@ public class SystemSelectionViewModel : BaseDialogViewModel {
             this.IsOkEnabled = this._selectedGameSystem != null;
         }
     }
+
+    /// <summary>
+    /// Gets the systems.
+    /// </summary>
+    public IEnumerable<IGameSystem> Systems { get; }
+
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 }
