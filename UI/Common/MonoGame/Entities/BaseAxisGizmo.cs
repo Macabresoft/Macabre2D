@@ -233,7 +233,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     private float GetAxisLength() {
         var result = 0.1f;
         if (this._camera != null) {
-            result *= this._camera.BoundingArea.Height;
+            result *= this._camera.ActualViewHeight;
         }
 
         return result;
