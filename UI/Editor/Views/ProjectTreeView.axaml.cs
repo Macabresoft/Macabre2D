@@ -32,7 +32,7 @@ public partial class ProjectTreeView : UserControl {
 
     private async void Drop(object sender, DragEventArgs e) {
         if (e.Source is Control { DataContext: IContentDirectory targetDirectory } &&
-            e.Data.Get(string.Empty) is IContentNode sourceNode) {
+            e.DataTransfer is GenericDataObject { GenericObject: IContentNode sourceNode }) {
             await this.ViewModel.MoveNode(sourceNode, targetDirectory);
         }
 

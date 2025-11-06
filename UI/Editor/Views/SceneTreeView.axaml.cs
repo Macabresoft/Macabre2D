@@ -183,7 +183,7 @@ public partial class SceneTreeView : UserControl {
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
-            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+            await DragDrop.DoDragDropAsync(e, dragData, DragDropEffects.Move);
         }
     }
 
