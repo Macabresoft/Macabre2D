@@ -47,7 +47,7 @@ public partial class ProjectTreeView : UserControl {
         if (this._dragTarget != Guid.Empty && sender is Control { DataContext: IContentNode sourceNode } && sourceNode.Id == this._dragTarget) {
             this._dragTarget = sourceNode.Id;
             var dragData = new GenericDataObject(sourceNode, sourceNode.Name);
-            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+            await DragDrop.DoDragDropAsync(e, dragData, DragDropEffects.Move);
         }
     }
 
