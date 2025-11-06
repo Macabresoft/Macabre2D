@@ -412,7 +412,13 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         };
     }
 
-    private bool CanRemove(object value) => !this.IsFiltered && value is not IScene;
+    private bool CanRemove(object value) {
+        if (!this.IsFiltered && value is IEntity entity && this.SceneService.CurrentlyEditing is { } currentlyEditing) {
+            return entity.Id != currentlyEditing.Id;
+        }
+
+        return false;
+    }
 
     private void Clone(object selected) {
         if (selected is IEntity entity) {
