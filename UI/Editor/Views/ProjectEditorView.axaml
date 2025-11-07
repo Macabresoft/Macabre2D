@@ -40,7 +40,7 @@
                             Margin="{StaticResource StandardMarginAll}">
                     <TextBlock Classes="Label"
                                Text="Background" />
-                    <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
+                    <common:ColorPalette SelectedColor="{Binding SettingsService.Settings.BackgroundColor}" />
                 </StackPanel>
             </Border>
 

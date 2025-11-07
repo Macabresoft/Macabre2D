@@ -37,6 +37,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     private readonly IProjectService _projectService;
     private readonly CurrentSceneRenderStep _renderStep = new();
     private readonly ISceneService _sceneService;
+    private readonly IEditorSettingsService _settingsService;
     private bool _isInitialized;
 
     /// <summary>
@@ -48,17 +49,20 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <param name="pathService">The path service.</param>
     /// <param name="projectService">The project service.</param>
     /// <param name="sceneService">The scene service.</param>
+    /// <param name="settingsService">The editor settings service.</param>
     public EditorGame(
         IAssetManager assetManager,
         IBusyService busyService,
         IEditorService editorService,
         IPathService pathService,
         IProjectService projectService,
-        ISceneService sceneService) : base(assetManager) {
+        ISceneService sceneService,
+        IEditorSettingsService settingsService) : base(assetManager) {
         this._busyService = busyService;
         this._editorService = editorService;
         this._projectService = projectService;
         this._sceneService = sceneService;
+        this._settingsService = settingsService;
         this._renderStep.Initialize(assetManager, this);
         this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
     }
@@ -80,7 +84,10 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     /// <inheritdoc />
     protected override void Draw(GameTime gameTime) {
         if (!this._busyService.IsBusy && this.GraphicsDevice != null) {
-            if (this.CurrentScene.Children.OfType<IScene>().Any() && this._sceneService.CurrentScene is { } scene) {
+            if (this._sceneService.IsEditingPrefab || this._editorService.SelectedTab == EditorTabs.Project) {
+                this.CurrentScene.BackgroundColor = this._settingsService.Settings.BackgroundColor;
+            }
+            else if (this._sceneService.CurrentScene is { } scene) {
                 this.CurrentScene.BackgroundColor = scene.BackgroundColor;
             }
 

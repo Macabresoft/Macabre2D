@@ -20,7 +20,6 @@ public class ProjectEditorViewModel : BaseViewModel {
     private readonly IEditorService _editorService;
     private readonly IEditorGame _game;
     private readonly IScene _scene;
-    private readonly IEditorSettingsService _settingsService;
     private EditorCamera _camera;
     private EditorGrid _grid;
     private Rect _overallSceneArea;
@@ -44,7 +43,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         this.AssetSelectionService = assetSelectionService;
         this._editorService = editorService;
         this._game = game;
-        this._settingsService = settingsService;
+        this.SettingsService = settingsService;
 
         this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
         this._scene = this.CreateScene();
@@ -61,6 +60,18 @@ public class ProjectEditorViewModel : BaseViewModel {
     }
 
     /// <summary>
+    /// Gets or sets the animation preview frame rate.
+    /// </summary>
+    public byte AnimationPreviewFrameRate {
+        get => this.SettingsService.Settings.AnimationPreviewFrameRate;
+        set {
+            this._spriteAnimator.FrameRateOverride.Value = value;
+            this.SettingsService.Settings.AnimationPreviewFrameRate = value;
+            this.RaisePropertyChanged();
+        }
+    }
+
+    /// <summary>
     /// Gets the asset selection service.
     /// </summary>
     public IAssetSelectionService AssetSelectionService { get; }
@@ -69,6 +80,14 @@ public class ProjectEditorViewModel : BaseViewModel {
     /// Gets a value indicating whether or not an animation is showing.
     /// </summary>
     public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
+
+    /// <summary>
+    /// Gets or sets the overall area of the scene.
+    /// </summary>
+    public Rect OverallSceneArea {
+        get => this._overallSceneArea;
+        set => this.ResetSize(value, this.ViewableSceneArea);
+    }
 
     /// <summary>
     /// Gets the pause command.
@@ -81,45 +100,14 @@ public class ProjectEditorViewModel : BaseViewModel {
     public ICommand PlayCommand { get; }
 
     /// <summary>
+    /// Gets the settings service.
+    /// </summary>
+    public IEditorSettingsService SettingsService { get; }
+
+    /// <summary>
     /// Gets the stop command.
     /// </summary>
     public ICommand StopCommand { get; }
-
-    /// <summary>
-    /// Gets or sets the animation preview frame rate.
-    /// </summary>
-    public byte AnimationPreviewFrameRate {
-        get => this._settingsService.Settings.AnimationPreviewFrameRate;
-        set {
-            this._spriteAnimator.FrameRateOverride.Value = value;
-            this._settingsService.Settings.AnimationPreviewFrameRate = value;
-            this.RaisePropertyChanged();
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the background color.
-    /// </summary>
-    public Color BackgroundColor {
-        get => this._settingsService.Settings.BackgroundColor;
-        set {
-            if (value != this.BackgroundColor) {
-                this._settingsService.Settings.BackgroundColor = value;
-
-                if (!Scene.IsNullOrEmpty(this._scene)) {
-                    this._scene.BackgroundColor = this.BackgroundColor;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the overall area of the scene.
-    /// </summary>
-    public Rect OverallSceneArea {
-        get => this._overallSceneArea;
-        set => this.ResetSize(value, this.ViewableSceneArea);
-    }
 
     /// <summary>
     /// Gets or sets the viewable area of the scene.
@@ -158,7 +146,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
     private IScene CreateScene() {
         var scene = new Scene {
-            BackgroundColor = this.BackgroundColor
+            BackgroundColor = this.SettingsService.Settings.BackgroundColor
         };
 
         scene.AddSystem<RenderSystem>();
@@ -237,13 +225,13 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._tileMap.AddTile(new Point(8, 6));
         this._tileMap.AddTile(new Point(8, 7));
         this._tileMap.AddTile(new Point(8, 8));
-        
+
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
         this._spriteAnimator.IsEnabled = false;
         this._spriteAnimator.FrameRateOverride.IsEnabled = true;
 
         // This applies the frame rate to the sprite animator and also insures the frame rate is valid.
-        this.AnimationPreviewFrameRate = this._settingsService.Settings.AnimationPreviewFrameRate;
+        this.AnimationPreviewFrameRate = this.SettingsService.Settings.AnimationPreviewFrameRate;
 
         return scene;
     }

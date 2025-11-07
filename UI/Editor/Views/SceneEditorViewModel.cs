@@ -16,9 +16,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
     private readonly IEditorGame _game;
-    private readonly ISystemService _systemService;
     private readonly IScene _scene;
-    private readonly IEditorSettingsService _settingsService;
+    private readonly ISystemService _systemService;
     private readonly IUndoService _undoService;
     private ICamera _camera;
 
@@ -53,7 +52,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this._game = game ?? throw new ArgumentNullException(nameof(game));
         this._systemService = systemService;
         this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-        this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        this.SettingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         this._undoService = undoService ?? throw new ArgumentNullException(nameof(undoService));
 
         this._scene = this.CreateScene();
@@ -74,14 +73,19 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     /// </summary>
     public ISceneService SceneService { get; }
 
+    /// <summary>
+    /// Gets the settings service.
+    /// </summary>
+    public IEditorSettingsService SettingsService { get; }
+
     private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(ICamera.ActualViewHeight)) {
-            this._settingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
+            this.SettingsService.Settings.CameraViewHeight = this._camera.ActualViewHeight;
         }
     }
 
     private void Camera_TransformChanged(object sender, EventArgs e) {
-        this._settingsService.Settings.CameraPosition = this._camera.WorldPosition;
+        this.SettingsService.Settings.CameraPosition = this._camera.WorldPosition;
     }
 
     private IScene CreateScene() {
@@ -89,8 +93,8 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         scene.AddSystem(new EditorRenderSystem(this.SceneService));
         var camera = scene.AddChild<EditorCamera>();
         this._camera = camera;
-        this._camera.ViewHeight = this._settingsService.Settings.CameraViewHeight;
-        this._camera.SetWorldPosition(this._settingsService.Settings.CameraPosition);
+        this._camera.ViewHeight = this.SettingsService.Settings.CameraViewHeight;
+        this._camera.SetWorldPosition(this.SettingsService.Settings.CameraPosition);
         this._camera.AddChild(new CameraController(this._editorService));
         this._camera.AddChild(new EditorGrid(this._editorService, this._entityService));
         this._camera.AddChild(new BoundingAreaAndColliderDrawer(this._editorService, this.SceneService));

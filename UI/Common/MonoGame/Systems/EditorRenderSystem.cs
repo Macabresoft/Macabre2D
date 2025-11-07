@@ -23,8 +23,6 @@ public class EditorRenderSystem : RenderSystem {
     public override void Render(FrameTime frameTime) {
         if (this.Game is IEditorGame { SpriteBatch: { } spriteBatch, Camera: { } camera } sceneEditor) {
             var scene = this._sceneService.CurrentScene ?? this._sceneService.CurrentlyEditing?.Scene ?? EmptyObject.Scene;
-            this.Scene.BackgroundColor = scene.BackgroundColor;
-            spriteBatch.GraphicsDevice.Clear(scene.BackgroundColor);
             this._renderTree.Clear();
 
             foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => x is EditorGrid)) {

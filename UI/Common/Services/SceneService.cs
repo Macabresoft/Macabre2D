@@ -49,6 +49,11 @@ public interface ISceneService : ISelectionService<object> {
     /// Gets a value indicating whether the state of the program is in an entity context.
     /// </summary>
     bool IsEntityContext { get; }
+    
+    /// <summary>
+    /// Gets a value indicating whether this is editing a prefab.
+    /// </summary>
+    bool IsEditingPrefab { get; }
 
     /// <summary>
     /// Gets a list of available scene templates.
@@ -137,6 +142,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         private set {
             this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
             this.RaisePropertyChanged(nameof(this.CurrentlyEditing));
+            this.IsEditingPrefab = this.CurrentMetadata?.Asset is PrefabAsset;
         }
     }
 
@@ -186,6 +192,14 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     public bool IsEntityContext {
         get => this._isEntityContext;
         private set => this.RaiseAndSetIfChanged(ref this._isEntityContext, value);
+    }
+
+    private bool _isEditingPrefab;
+
+    /// <inheritdoc />
+    public bool IsEditingPrefab {
+        get => this._isEditingPrefab;
+        private set => this.RaiseAndSetIfChanged(ref this._isEditingPrefab, value);
     }
 
     /// <inheritdoc />

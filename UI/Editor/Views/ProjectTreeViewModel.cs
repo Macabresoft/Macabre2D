@@ -25,7 +25,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private readonly IEditorService _editorService;
     private readonly IFileSystemService _fileSystem;
     private readonly ISaveService _saveService;
-
     private readonly IUndoService _undoService;
 
     /// <summary>

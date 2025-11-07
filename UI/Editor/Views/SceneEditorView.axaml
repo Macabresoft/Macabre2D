@@ -54,11 +54,26 @@
 
             </Border>
         </Panel>
-
-        <local:GizmoSelectionView Grid.Row="0"
-                                  Grid.Column="2"
-                                  HorizontalAlignment="Right"
-                                  Margin="{StaticResource StandardMarginAll}" />
+        
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    HorizontalAlignment="Right">
+            <local:GizmoSelectionView HorizontalAlignment="Right"
+                                      Margin="{StaticResource StandardMarginAll}" />
+            
+            <Border Classes="Card"
+                    HorizontalAlignment="Right"
+                    Margin="{StaticResource DoubleMarginAll}"
+                    IsVisible="{Binding SceneService.IsEditingPrefab}">
+                <StackPanel Orientation="Horizontal"
+                            Margin="{StaticResource StandardMarginAll}">
+                    <TextBlock Classes="Label"
+                               Text="Background" />
+                    <common:ColorPalette SelectedColor="{Binding SettingsService.Settings.BackgroundColor}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
 
         <GridSplitter Grid.Row="0"
                       Grid.RowSpan="3"
