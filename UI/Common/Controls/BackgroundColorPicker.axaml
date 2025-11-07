@@ -1,0 +1,21 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.Common.BackgroundColorPicker">
+    <Border DataContext="{Binding $parent[local:BackgroundColorPicker]}"
+            Classes="Card"
+            HorizontalAlignment="{Binding HorizontalAlignment}"
+            Margin="{StaticResource DoubleMarginAll}"
+            IsVisible="{Binding IsVisible}">
+        <Design.DataContext>
+            <local:BackgroundColorPicker />
+        </Design.DataContext>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="{StaticResource StandardMarginAll}">
+            <TextBlock Classes="Label"
+                       Text="Background" />
+            <local:ColorPalette SelectedColor="{Binding BackgroundColor}" />
+        </StackPanel>
+    </Border>
+</UserControl>

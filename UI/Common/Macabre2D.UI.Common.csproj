@@ -197,6 +197,10 @@
           <DependentUpon>ColorSettingsEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\BackgroundColorPicker.axaml.cs">
+          <DependentUpon>BackgroundColorPicker.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>

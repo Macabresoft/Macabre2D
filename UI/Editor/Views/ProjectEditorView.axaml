@@ -33,16 +33,8 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Orientation="Vertical">
-            <Border Classes="Card"
-                    HorizontalAlignment="Stretch"
-                    Margin="{StaticResource DoubleMarginAll}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="{StaticResource StandardMarginAll}">
-                    <TextBlock Classes="Label"
-                               Text="Background" />
-                    <common:ColorPalette SelectedColor="{Binding SettingsService.Settings.BackgroundColor}" />
-                </StackPanel>
-            </Border>
+            <common:BackgroundColorPicker HorizontalAlignment="Stretch"
+                                          BackgroundColor="{Binding SettingsService.Settings.BackgroundColor}"/>
 
             <Border Classes="Card"
                     HorizontalAlignment="Stretch"
