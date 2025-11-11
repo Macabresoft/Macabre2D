@@ -163,7 +163,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     /// <inheritdoc />
-    public bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
+    public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
 
     /// <inheritdoc />
     [DataMember]
@@ -267,7 +267,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public virtual void Update(FrameTime frameTime, InputState inputState) {
         if (this.ScrollWaitTime.State == TimerState.Running) {
             this.ScrollWaitTime.Increment(frameTime);
         }
