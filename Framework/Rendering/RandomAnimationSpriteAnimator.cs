@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// Loops all the animations associated with a <see cref="SpriteSheet" />, choosing a new animation every time the current animation finishes.
 /// </summary>
-public class LoopingSpriteSheetSpriteAnimator : BaseSpriteAnimator {
+public class RandomAnimationSpriteAnimator : BaseSpriteAnimator {
     private readonly List<QueueableSpriteAnimation> _availableAnimations = [];
     private readonly Random _random = new();
     private QueueableSpriteAnimation? _currentAnimation;

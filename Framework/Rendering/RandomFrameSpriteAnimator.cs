@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// A looping sprite animator which picks a random sprite out of the animation for each new frame.
 /// </summary>
-public class RandomFrameLoopingSpriteAnimator : LoopingSpriteAnimator {
+public class RandomFrameSpriteAnimator : LoopingSpriteAnimator {
     private const byte MinimumFramesToHold = 1;
     private readonly Random _random = new();
     private byte _framesHeld;
