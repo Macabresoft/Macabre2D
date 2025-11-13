@@ -38,7 +38,7 @@ public class LoopingSpriteAnimator : BaseSpriteAnimator {
             }
         }
     }
-
+    
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();

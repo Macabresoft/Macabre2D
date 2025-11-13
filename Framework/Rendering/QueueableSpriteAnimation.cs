@@ -35,11 +35,6 @@ public class QueueableSpriteAnimation {
     }
 
     /// <summary>
-    /// Gets a value indicating whether this is looping.
-    /// </summary>
-    public bool IsLooping => this.LoopKind is AnimationLoopKind.Repeating or AnimationLoopKind.RepeatingReverse or AnimationLoopKind.PingPong;
-
-    /// <summary>
     /// Gets the animation.
     /// </summary>
     /// <value>The animation.</value>
@@ -54,6 +49,11 @@ public class QueueableSpriteAnimation {
     /// Gets the identifier for this animation.
     /// </summary>
     public Guid Id { get; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Gets a value indicating whether this is looping.
+    /// </summary>
+    public bool IsLooping => this.LoopKind is AnimationLoopKind.Repeating or AnimationLoopKind.RepeatingReverse or AnimationLoopKind.PingPong;
 
     /// <summary>
     /// Gets or sets the kind of loop this performs.
@@ -101,9 +101,19 @@ public class QueueableSpriteAnimation {
     /// Resets this instance.
     /// </summary>
     public void Reset() {
-        this.MillisecondsPassed = 0;
-        this._currentFrameIndex = 0;
-        this._currentStepIndex = 0;
+        this.Reset(0, 0, 0d);
+    }
+
+    /// <summary>
+    /// Resets this instance.
+    /// </summary>
+    /// <param name="stepIndex">The step index.</param>
+    /// <param name="frameIndex">The frame index of the current step.</param>
+    /// <param name="millisecondsPassed">The milliseconds passed in the current frame.</param>
+    public void Reset(int stepIndex, int frameIndex, double millisecondsPassed) {
+        this.MillisecondsPassed = millisecondsPassed;
+        this._currentFrameIndex = frameIndex;
+        this._currentStepIndex = stepIndex;
         this.CurrentSpriteIndex = this.GetCurrentStep()?.SpriteIndex;
         this._isReversed = this.LoopKind == AnimationLoopKind.RepeatingReverse;
     }

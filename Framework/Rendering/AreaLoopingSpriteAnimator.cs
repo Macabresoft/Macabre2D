@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Renders a sprite repeatedly over an area.
 /// </summary>
-public class MultiLoopingSpriteAnimator : LoopingSpriteAnimator {
+public class AreaLoopingSpriteAnimator : LoopingSpriteAnimator {
     private int _height = 1;
     private int _width = 1;
 
