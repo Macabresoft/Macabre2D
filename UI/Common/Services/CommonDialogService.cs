@@ -115,6 +115,14 @@ public interface ICommonDialogService : IBaseDialogService {
     /// <param name="title">The title of the window.</param>
     /// <returns>The path of the selected file.</returns>
     Task<string> ShowSingleFileSelectionDialog(string title);
+
+    /// <summary>
+    /// Shows a dialog with the provided list of items.
+    /// </summary>
+    /// <param name="title">The title of the dialog/</param>
+    /// <param name="items">The items to display.</param>
+    /// <returns>A task.</returns>
+    Task ShowTextList(string title, IEnumerable<string> items);
 }
 
 /// <summary>
@@ -278,5 +286,12 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         }
 
         return null;
+    }
+
+    /// <inheritdoc />
+    public async Task ShowTextList(string title, IEnumerable<string> items) {
+        var window = Resolver.Resolve<TextListDialog>(new ParameterOverride(typeof(IEnumerable<string>), items));
+        window.Title = title;
+        await window.ShowDialog(this.MainWindow);
     }
 }

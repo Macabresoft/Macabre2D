@@ -56,7 +56,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     private readonly ISceneService _sceneService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
-    private readonly ObservableCollection<object> _treeRoot = new();
+    private readonly ObservableCollection<object> _treeRoot = [];
     private GameProject _currentProject;
 
     /// <summary>

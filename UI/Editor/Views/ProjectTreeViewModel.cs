@@ -80,9 +80,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(this.AddDirectory, whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<SceneTemplate>(this.AddScene, whenIsContentDirectory);
 
-        this.FindContentUsagesCommand = ReactiveCommand.CreateFromTask<IContentNode>(
-            this.FindContentUsages,
-            this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null));
+        var whenSelectedIsNotFiltered = this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null);
+        this.FindContentUsagesInCurrentSceneCommand = ReactiveCommand.CreateFromTask<IContentNode>(this.FindContentUsagesInCurrentScene, whenSelectedIsNotFiltered);
+        this.FindContentUsagesInProjectFilesCommand = ReactiveCommand.CreateFromTask<IContentNode>(this.FindContentUsagesInProjectFiles, whenSelectedIsNotFiltered);
 
         this.ForceSaveCommand = ReactiveCommand.Create<IContentNode>(
             this.ForceSave,
@@ -94,9 +94,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             this.OpenSelectedContent,
             this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && CanOpenContent(y.Value)));
 
-        this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode>(
-            this.OpenContentLocation,
-            this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null));
+        this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode>(this.OpenContentLocation, whenSelectedIsNotFiltered);
 
         this.RemoveContentCommand = ReactiveCommand.Create<object>(
             this.RemoveContent,
@@ -159,7 +157,12 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// <summary>
     /// Gets a command that finds usages of the selected content in the current scene.
     /// </summary>
-    public ICommand FindContentUsagesCommand { get; }
+    public ICommand FindContentUsagesInCurrentSceneCommand { get; }
+    
+    /// <summary>
+    /// Gets a command that finds usages of the selected content in scenes and prefabs.
+    /// </summary>
+    public ICommand FindContentUsagesInProjectFilesCommand { get; }
 
     /// <summary>
     /// Forces the current asset to be saved.
@@ -466,7 +469,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
-    private async Task FindContentUsages(IContentNode node) {
+    private async Task FindContentUsagesInCurrentScene(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
             if (this.SceneService.CurrentlyEditing.GetDescendantsWithContent(node.Id).Any()) {
                 var entity = await this._dialogService.OpenEntitySelectionDialog(node.Id, "Select an Entity");
@@ -481,6 +484,34 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             }
             else {
                 await this._dialogService.ShowWarningDialog("No Usages Found", "This content is not used in the current scene. It may still be used by unopened scenes.");
+            }
+        }
+    }
+    
+    private async Task FindContentUsagesInProjectFiles(IContentNode node) {
+        if (node is ContentFile && node.Id != Guid.Empty) {
+            var usages = await Task.Run(() =>
+            {
+                var usages = new List<string>();
+                var root = this.ContentService.RootContentDirectory;
+                var filesToCheck = root.GetAllContentFiles().Where(file => file.Asset is SceneAsset or PrefabAsset && file.Id != node.Id).ToList();
+
+                foreach (var file in filesToCheck) {
+                    var contents = File.ReadAllText(file.GetFullPath());
+                    if (contents.Contains(node.Id.ToString(), StringComparison.OrdinalIgnoreCase)) {
+                        usages.Add(file.Name);
+                    }
+                }
+
+                return usages;
+            });
+
+
+            if (usages.Any()) {
+                await this._dialogService.ShowTextList($"Usages of '{node.NameWithoutExtension}'", usages);
+            }
+            else {
+                await this._dialogService.ShowWarningDialog("No Usages Found", "This content is not used in any scene or prefab.");
             }
         }
     }

@@ -35,9 +35,14 @@
                       ToolTip.Tip="Open the directory which contains the selected file" />
 
             <MenuItem Header="Find Usages in Current Scene"
-                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesCommand}"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesInCurrentSceneCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Find all entities in the current scene that use this content" />
+            
+            <MenuItem Header="Find Usages in Project Files"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesInProjectFilesCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Find all instances of this content being used in scenes and prefabs from this project" />
 
             <Separator />
             
