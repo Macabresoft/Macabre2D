@@ -46,6 +46,11 @@ public interface ICamera : IBoundableEntity {
     OffsetOptions OffsetOptions { get; }
 
     /// <summary>
+    /// Gets all entities rendered in the most recent frame.
+    /// </summary>
+    IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; }
+
+    /// <summary>
     /// Gets the render order.
     /// </summary>
     /// <value>The render order.</value>
@@ -87,6 +92,7 @@ public interface ICamera : IBoundableEntity {
 /// </summary>
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private readonly List<IRenderableEntity> _renderedLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private bool _overrideCommonViewHeight = true;
@@ -151,6 +157,9 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
+
+    /// <inheritdoc />
     [DataMember]
     public int RenderOrder {
         get => this._renderOrder;
@@ -212,6 +221,8 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
+
+        this._renderedLastFrame.Clear();
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
         this.Game.UserSettings.Rendering.ShaderChanged -= this.RenderOptions_ShaderChanged;
@@ -221,6 +232,7 @@ public class Camera : Entity, ICamera {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
+        this._renderedLastFrame.Clear();
         this.OffsetOptions.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
         this.ResetZoom();
@@ -356,6 +368,7 @@ public class Camera : Entity, ICamera {
         Layers layersToRender,
         Layers layersToExclude,
         ShaderReference? fallbackShaderReference) {
+        this._renderedLastFrame.Clear();
         var groupings = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => x.ShouldRender && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
@@ -385,11 +398,13 @@ public class Camera : Entity, ICamera {
             if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
                 foreach (var entity in entities) {
                     entity.Render(frameTime, viewBoundingArea, color);
+                    this._renderedLastFrame.Add(entity);
                 }
             }
             else {
                 foreach (var entity in entities) {
                     entity.Render(frameTime, viewBoundingArea);
+                    this._renderedLastFrame.Add(entity);
                 }
             }
 

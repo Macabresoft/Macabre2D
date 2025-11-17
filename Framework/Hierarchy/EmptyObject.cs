@@ -247,6 +247,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public OffsetOptions OffsetOptions { get; } = new();
 
     /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; } = [];
+
+    /// <inheritdoc />
     public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
 
     /// <inheritdoc />

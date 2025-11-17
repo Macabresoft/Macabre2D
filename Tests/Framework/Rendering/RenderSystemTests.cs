@@ -125,6 +125,7 @@ public class RenderSystemTests {
         public Layers LayersToExcludeFromRender => (Layers)2;
         public Layers LayersToRender { get; set; } = (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
+        public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; } = [];
         public BoundingArea SafeArea => this.BoundingArea;
         public float ViewHeight { get; set; } = 4f;
         public float ViewWidth => 4f;
