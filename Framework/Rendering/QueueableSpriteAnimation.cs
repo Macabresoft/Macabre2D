@@ -11,7 +11,9 @@ public enum AnimationLoopKind {
     NoneReverse,
     Repeating,
     RepeatingReverse,
-    PingPong
+    PingPong,
+    PauseAfter,
+    ReversePauseAfter
 }
 
 /// <summary>
@@ -202,7 +204,7 @@ public class QueueableSpriteAnimation {
                 this._currentStepIndex++;
 
                 if (this._currentStepIndex >= this.Animation.Steps.Count) {
-                    if (this.LoopKind == AnimationLoopKind.None) {
+                    if (this.LoopKind is AnimationLoopKind.None or AnimationLoopKind.PauseAfter) {
                         this._currentStepIndex = this.Animation.Steps.Count - 1;
                         isAnimationOver = true;
                     }
@@ -219,7 +221,7 @@ public class QueueableSpriteAnimation {
                 this._currentStepIndex--;
 
                 if (this._currentStepIndex < 0) {
-                    if (this.LoopKind == AnimationLoopKind.NoneReverse) {
+                    if (this.LoopKind is AnimationLoopKind.NoneReverse or AnimationLoopKind.ReversePauseAfter) {
                         this._currentStepIndex = 0;
                         isAnimationOver = true;
                     }
