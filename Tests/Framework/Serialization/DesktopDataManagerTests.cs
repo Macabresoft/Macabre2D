@@ -9,11 +9,11 @@ using Macabresoft.Macabre2D.Common;
 using NUnit.Framework;
 
 [TestFixture]
-public static class WindowsDataManagerTests {
+public static class DesktopDataManagerTests {
     [Test]
     [Category("Integration Tests")]
-    public static void WindowsSaveDataManager_DeleteTest() {
-        var saveDataManager = new WindowsDataManager();
+    public static void DesktopDataManager_DeleteTest() {
+        var saveDataManager = new DesktopDataManager();
         saveDataManager.Save(SaveDataFileName, new TestSaveData());
 
         var found = saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData);
@@ -31,8 +31,8 @@ public static class WindowsDataManagerTests {
 
     [Test]
     [Category("Integration Tests")]
-    public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
-        var saveDataManager = new WindowsDataManager();
+    public static void DesktopDataManager_LoadEmptyData_ThrowsExceptionTest() {
+        var saveDataManager = new DesktopDataManager();
         saveDataManager.Delete(SaveDataFileName);
 
         var found = saveDataManager.TryLoad(SaveDataFileName, out TestSaveData loadedData);
@@ -45,8 +45,8 @@ public static class WindowsDataManagerTests {
 
     [Test]
     [Category("Integration Tests")]
-    public static void WindowsSaveDataManager_OverwriteSaveTest() {
-        var saveDataManager = new WindowsDataManager();
+    public static void DesktopDataManager_OverwriteSaveTest() {
+        var saveDataManager = new DesktopDataManager();
 
         var saveData1 = new TestSaveData();
         saveDataManager.Save(SaveDataFileName, saveData1);
@@ -76,8 +76,8 @@ public static class WindowsDataManagerTests {
 
     [Test]
     [Category("Integration Tests")]
-    public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
-        var saveDataManager = new WindowsDataManager();
+    public static void DesktopDataManager_SuccessfulSaveAndLoadTest() {
+        var saveDataManager = new DesktopDataManager();
 
         var saveData1 = new TestSaveData();
         saveDataManager.Save(SaveDataFileName, saveData1);

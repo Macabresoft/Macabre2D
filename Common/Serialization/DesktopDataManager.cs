@@ -1,9 +1,9 @@
 namespace Macabresoft.Macabre2D.Common;
 
 /// <summary>
-/// Manages the loading and saving of data in Windows.
+/// Manages the loading and saving of data on a desktop PC.
 /// </summary>
-public sealed class WindowsDataManager : IDataManager {
+public sealed class DesktopDataManager : IDataManager {
     private string _companyName = string.Empty;
     private string _projectName = string.Empty;
 

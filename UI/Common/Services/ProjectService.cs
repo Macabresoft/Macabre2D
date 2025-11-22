@@ -84,13 +84,13 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<object> TreeRoot => this._treeRoot;
-
-    /// <inheritdoc />
     public GameProject CurrentProject {
         get => this._currentProject;
         private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
     }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<object> TreeRoot => this._treeRoot;
 
     /// <inheritdoc />
     public GameProject LoadProject() {

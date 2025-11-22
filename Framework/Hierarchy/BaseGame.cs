@@ -95,7 +95,7 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public IDataManager DataManager { get; } = new WindowsDataManager();
+    public IDataManager DataManager { get; } = new DesktopDataManager();
 
     /// <inheritdoc />
     public InputDevice DesiredInputDevice {
@@ -491,14 +491,6 @@ public class BaseGame : Game, IGame {
     private InputState CreateInputStateForFrame() => new(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
 
     private RenderTarget2D GetGameRenderTarget(GraphicsDevice device) => this._gameRenderTarget ??= device.CreateRenderTarget(this.Project);
-
-    private void RenderScenes() {
-        foreach (var scene in this._sceneStack.Reverse()) {
-            scene.Render(this.FrameTime, this.InputState);
-        }
-
-        this.Overlay.Render(this.FrameTime, this.InputState);
-    }
 
     private void ResetViewPort() {
         this.ViewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);

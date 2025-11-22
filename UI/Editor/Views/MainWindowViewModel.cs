@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
+using Path = System.IO.Path;
 
 /// <summary>
 /// The view model for the main window.
@@ -16,6 +18,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly IFileSystemService _fileSystemService;
     private readonly IProjectService _projectService;
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
@@ -37,6 +40,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="game">The game.</param>
+    /// <param name="fileSystemService">The file system service.</param>
     /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
@@ -50,6 +54,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         ICommonDialogService dialogService,
         IEditorService editorService,
         IEditorGame game,
+        IFileSystemService fileSystemService,
         IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
@@ -60,6 +65,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
+        this._fileSystemService = fileSystemService;
         this.Game = game;
         this._projectService = projectService;
         this._saveService = saveService;
@@ -67,6 +73,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
         this._settingsService = settingsService;
 
         var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentlyEditing, x => x.Value != null);
+        this.ClearGameUserSettingsCommand = ReactiveCommand.Create(this.ClearGameUserSettings);
         this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
         this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
         this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
@@ -82,6 +89,11 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Gets the busy service.
     /// </summary>
     public IBusyService BusyService { get; }
+
+    /// <summary>
+    /// Gets the command to clear the game's user settings.
+    /// </summary>
+    public ICommand ClearGameUserSettingsCommand { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -137,6 +149,15 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Gets the command to view the source code.
     /// </summary>
     public ICommand ViewSourceCommand { get; }
+
+    private void ClearGameUserSettings() {
+        if (this._projectService.CurrentProject is { } project) {
+            var dataManager = new DesktopDataManager();
+            dataManager.Initialize(project.CompanyName, project.Name);
+            var path = Path.Combine(dataManager.GetPathToDataDirectory(), UserSettings.FileName);
+            this._fileSystemService.DeleteFile(path);
+        }
+    }
 
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose(window) != YesNoCancelResult.Cancel) {

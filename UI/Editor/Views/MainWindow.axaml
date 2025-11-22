@@ -62,6 +62,11 @@
             <MenuItem Header="_Project">
                 <MenuItem Header="_Rebuild Content"
                           Command="{Binding RebuildContentCommand}" />
+                
+                <Separator />
+                
+                <MenuItem Header="_Clear Game's User Settings"
+                          Command="{Binding ClearGameUserSettingsCommand}" />
             </MenuItem>
 
             <MenuItem Header="_View">

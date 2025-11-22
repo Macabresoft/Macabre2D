@@ -4,8 +4,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
 using Macabresoft.Macabre2D.UI.Common;
 using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
 using Unity;
@@ -36,7 +34,7 @@ public class App : Application {
             var editorSettingsService = Resolver.Resolve<IEditorSettingsService>();
             editorSettingsService.Initialize();
             Resolver.Resolve<IProjectService>().LoadProject();
-            
+
             if (Resolver.Resolve<ISceneService>().CurrentlyEditing == null) {
                 Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
             }
