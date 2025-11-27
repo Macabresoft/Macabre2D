@@ -4,10 +4,10 @@ using System;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A material which describes the physical attributes of a collider.
+/// A material which describes the physical attributes of a physics body.
 /// </summary>
 [DataContract]
-public readonly struct PhysicsMaterial {
+public class PhysicsMaterial {
     /// <summary>
     /// The default physics material.
     /// </summary>
@@ -17,20 +17,6 @@ public readonly struct PhysicsMaterial {
     /// An empty physics material with zero for both values.
     /// </summary>
     public static readonly PhysicsMaterial Empty = new(0f, 0f);
-
-    /// <summary>
-    /// A multiplier used when another collider hits the collider with this physics material. A
-    /// value of 0 means this object has no bounce.
-    /// </summary>
-    [DataMember]
-    public readonly float Bounce;
-
-    /// <summary>
-    /// A multiplier used when two colliders are touching one another for an extended period.
-    /// Friction will slow down a moving object.
-    /// </summary>
-    [DataMember]
-    public readonly float Friction;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PhysicsMaterial" /> struct.
@@ -55,4 +41,24 @@ public readonly struct PhysicsMaterial {
         this.Bounce = bounce;
         this.Friction = friction;
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PhysicsMaterial" /> struct.
+    /// </summary>
+    public PhysicsMaterial() : this(Default.Bounce, Default.Friction) {
+    }
+
+    /// <summary>
+    /// Gets or sets a multiplier used when another collider hits the collider with this physics material. A
+    /// value of 0 means this object has no bounce.
+    /// </summary>
+    [DataMember]
+    public float Bounce { get; set; }
+
+    /// <summary>
+    /// Gets or sets a multiplier used when two colliders are touching one another for an extended period.
+    /// Friction will slow down a moving object.
+    /// </summary>
+    [DataMember]
+    public float Friction { get; set; }
 }

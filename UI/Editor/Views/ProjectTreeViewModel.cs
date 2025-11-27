@@ -78,6 +78,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(this.AddDirectory, whenIsContentDirectory);
+        this.AddPhysicsMaterialCommand = ReactiveCommand.Create(this.AddPhysicsMaterial, whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<SceneTemplate>(this.AddScene, whenIsContentDirectory);
 
         var whenSelectedIsNotFiltered = this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null);
@@ -123,6 +124,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the add directory command.
     /// </summary>
     public ICommand AddDirectoryCommand { get; }
+    
+    /// <summary>
+    /// Gets a command to add a new physics material.
+    /// </summary>
+    public ICommand AddPhysicsMaterialCommand { get; }
 
     /// <summary>
     /// Gets the add scene command.
@@ -158,7 +164,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets a command that finds usages of the selected content in the current scene.
     /// </summary>
     public ICommand FindContentUsagesInCurrentSceneCommand { get; }
-    
+
     /// <summary>
     /// Gets a command that finds usages of the selected content in scenes and prefabs.
     /// </summary>
@@ -347,9 +353,15 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
+    private void AddPhysicsMaterial() {
+        if (this.AssetSelectionService.Selected is IContentDirectory directory && this.ContentService.AddPhysicsMaterial(directory) is { } node) {
+            this.SetActualSelected(node);
+        }
+    }
+
     private void AddScene(SceneTemplate sceneTemplate) {
-        if (this.AssetSelectionService.Selected is IContentDirectory directory && this.ContentService.AddScene(directory, sceneTemplate) is { } scene) {
-            this.SetActualSelected(scene);
+        if (this.AssetSelectionService.Selected is IContentDirectory directory && this.ContentService.AddScene(directory, sceneTemplate) is { } node) {
+            this.SetActualSelected(node);
         }
     }
 
@@ -487,7 +499,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             }
         }
     }
-    
+
     private async Task FindContentUsagesInProjectFiles(IContentNode node) {
         if (node is ContentFile && node.Id != Guid.Empty) {
             var usages = await Task.Run(() =>
@@ -680,7 +692,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                         }
                         else {
                             var originalNodeName = node.Name;
-                            var isCurrentScene = node.Id == this.SceneService.CurrentMetadata.ContentId;
+                            var isCurrentScene = node.Id == this.SceneService.CurrentMetadata?.ContentId;
 
                             if (!isCurrentScene) {
                                 this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });

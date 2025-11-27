@@ -55,7 +55,7 @@ public class BuildService : IBuildService {
     /// Maps file extensions to asset types.
     /// </summary>
     public static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
-
+    
     private readonly IAssemblyService _assemblyService;
     private readonly IFileSystemService _fileSystem;
     private readonly IPathService _pathService;
@@ -78,6 +78,7 @@ public class BuildService : IBuildService {
         }
 
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
+        FileExtensionToAssetType.Add(PhysicsMaterialAsset.FileExtension, typeof(PhysicsMaterialAsset));
     }
 
     /// <summary>

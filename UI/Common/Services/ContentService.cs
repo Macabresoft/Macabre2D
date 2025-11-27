@@ -27,10 +27,18 @@ public interface IContentService : ISelectionService<IContentNode> {
     IContentDirectory AddDirectory(IContentDirectory parent);
 
     /// <summary>
+    /// Adds a physics material to the selected directory.
+    /// </summary>
+    /// <param name="parent">The parent directory.</param>
+    /// <returns>The content node for the physics material.</returns>
+    IContentNode AddPhysicsMaterial(IContentDirectory parent);
+
+    /// <summary>
     /// Adds a scene to the selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
     /// <param name="template">The template</param>
+    /// <returns>The content node for the scene.</returns>
     IContentNode AddScene(IContentDirectory parent, SceneTemplate template);
 
     /// <summary>
@@ -133,12 +141,25 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public IContentDirectory AddDirectory(IContentDirectory parent) => parent != null ? this.CreateDirectory("New Directory", parent) : null;
 
     /// <inheritdoc />
+    public IContentNode AddPhysicsMaterial(IContentDirectory parent) {
+        ContentFile contentFile = null;
+        if (parent != null) {
+            contentFile = this.CreateAndBuildContentFile(
+                new PhysicsMaterial(),
+                parent,
+                "New Physics Material",
+                PhysicsMaterialAsset.FileExtension);
+        }
+
+        return contentFile;
+    }
+
+    /// <inheritdoc />
     public IContentNode AddScene(IContentDirectory parent, SceneTemplate template) {
         ContentFile contentFile = null;
         if (parent != null) {
-            var name = this.CreateSafeName("New Scene", parent);
             var scene = new Scene {
-                Name = name
+                Name = "New Scene"
             };
 
             foreach (var systemType in template.DefaultSystems) {
@@ -147,16 +168,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 }
             }
 
-            var fileName = $"{name}{SceneAsset.FileExtension}";
-            var fullPath = Path.Combine(parent.GetFullPath(), fileName);
-            this._serializer.Serialize(scene, fullPath);
-            this.CreateContentFile(parent, fileName, out contentFile);
-
-            if (contentFile != null) {
-                this.CopyToEditorBin(parent, contentFile);
-                this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
-                this._settingsService.Settings.ShouldRebuildContent = true;
-            }
+            contentFile = this.CreateAndBuildContentFile(scene, parent, scene.Name, SceneAsset.FileExtension);
         }
 
         return contentFile;
@@ -184,7 +196,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 ContentFile contentFile = null;
                 switch (result) {
                     case IContentDirectory: {
-                        this.CreateContentFile(parent, fileName, out contentFile);
+                        contentFile = this.CreateContentFile(parent, fileName);
                         break;
                     }
                     case ContentFile { Asset: PrefabAsset asset } file:
@@ -234,7 +246,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
                 await Task.Run(() => { this._fileSystem.CopyFile(filePath, newFilePath); });
 
-                this.CreateContentFile(parent, fileName);
+                this.ImportContentFile(parent, fileName);
             }
         }
     }
@@ -335,11 +347,26 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
     }
 
-    private void CreateContentFile(IContentDirectory parent, string fileName) => this.CreateContentFile(parent, fileName, out _);
+    private ContentFile CreateAndBuildContentFile<TContent>(TContent content, IContentDirectory parent, string name, string fileExtension) {
+        name = this.CreateSafeName(name, parent);
 
-    private void CreateContentFile(IContentDirectory parent, string fileName, out ContentFile contentFile) {
+        var fileName = $"{name}{fileExtension}";
+        var fullPath = Path.Combine(parent.GetFullPath(), fileName);
+        this._serializer.Serialize(content, fullPath);
+        var contentFile = this.CreateContentFile(parent, fileName);
+
+        if (contentFile != null) {
+            this.CopyToEditorBin(parent, contentFile);
+            this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
+            this._settingsService.Settings.ShouldRebuildContent = true;
+        }
+
+        return contentFile;
+    }
+
+    private ContentFile CreateContentFile(IContentDirectory parent, string fileName) {
         var extension = Path.GetExtension(fileName);
-        contentFile = null;
+        ContentFile contentFile = null;
 
         if (BuildService.FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
             var parentPath = parent.GetContentPath();
@@ -353,6 +380,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 this._assetManager.RegisterMetadata(contentFile.Metadata);
             }
         }
+
+        return contentFile;
     }
 
     private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
@@ -374,6 +403,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         this._fileSystem.CreateDirectory(fullPath);
         return new ContentDirectory(name, parent);
     }
+
+    private void ImportContentFile(IContentDirectory parent, string fileName) => this.CreateContentFile(parent, fileName);
 
 
     private void RefreshMgcbFiles() {

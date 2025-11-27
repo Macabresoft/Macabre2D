@@ -1,7 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
-/// An asset which contains a <see cref="IScene" />.
+/// An asset which contains a <see cref="Scene" />.
 /// </summary>
 public class SceneAsset : Asset<Scene> {
     /// <summary>
