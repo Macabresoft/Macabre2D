@@ -125,7 +125,7 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
     protected ICamera GetCamera() => this.CameraReference.Entity ?? EmptyObject.Instance;
 
     /// <inheritdoc />
-    protected override IEnumerable<IEntityReference> GetEntityReferences() {
+    protected override IEnumerable<IGameObjectReference> GetGameObjectReferences() {
         yield return this.CameraReference;
     }
 

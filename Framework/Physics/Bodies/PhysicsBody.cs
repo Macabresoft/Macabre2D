@@ -9,7 +9,7 @@ using Macabresoft.Core;
 /// <summary>
 /// Represents a physics body that handles interactions with <see cref="Collider" />.
 /// </summary>
-public interface IPhysicsBody : IEntity, IBoundableEntity {
+public interface IPhysicsBody : IBoundableEntity {
     /// <summary>
     /// Occurs when a collision occurs involving this body.
     /// </summary>
@@ -31,19 +31,16 @@ public interface IPhysicsBody : IEntity, IBoundableEntity {
     /// reacting within the physics system, it will simply notify that a collision has occured
     /// and do nothing else.
     /// </summary>
-    /// <value><c>true</c> if this instance is trigger; otherwise, <c>false</c>.</value>
     bool IsTrigger { get; }
 
     /// <summary>
     /// Gets or sets the physics material.
     /// </summary>
-    /// <value>The physics material.</value>
     PhysicsMaterial PhysicsMaterial { get; }
 
     /// <summary>
     /// Gets the update order.
     /// </summary>
-    /// <value>The update order.</value>
     int UpdateOrder { get; }
 
     /// <summary>
@@ -88,8 +85,13 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     public bool IsTrigger { get; set; }
 
     /// <inheritdoc />
-    [DataMember(Order = 2, Name = "Physics Material")]
-    public PhysicsMaterial PhysicsMaterial { get; set; } = PhysicsMaterial.Default;
+    public PhysicsMaterial PhysicsMaterial => this.PhysicsMaterialReference.Material;
+
+    /// <summary>
+    /// Gets the reference to a physics material.
+    /// </summary>
+    [DataMember]
+    public PhysicsMaterialReference PhysicsMaterialReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -108,5 +110,10 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     /// <inheritdoc />
     public void NotifyCollisionOccured(CollisionEventArgs eventArgs) {
         this.CollisionOccured.SafeInvoke(this, eventArgs);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IGameObjectReference> GetGameObjectReferences() {
+        yield return this.PhysicsMaterialReference;
     }
 }

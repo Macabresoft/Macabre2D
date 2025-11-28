@@ -78,7 +78,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory && !this.IsFiltered);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(this.AddDirectory, whenIsContentDirectory);
-        this.AddPhysicsMaterialCommand = ReactiveCommand.Create(this.AddPhysicsMaterial, whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<SceneTemplate>(this.AddScene, whenIsContentDirectory);
 
         var whenSelectedIsNotFiltered = this.ContentService.WhenAny(x => x.Selected, y => !this.IsFiltered && y.Value != null);
@@ -124,11 +123,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     /// Gets the add directory command.
     /// </summary>
     public ICommand AddDirectoryCommand { get; }
-    
-    /// <summary>
-    /// Gets a command to add a new physics material.
-    /// </summary>
-    public ICommand AddPhysicsMaterialCommand { get; }
 
     /// <summary>
     /// Gets the add scene command.
@@ -350,12 +344,6 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             case RenderStepCollection:
                 await this.AddNewRenderStep();
                 break;
-        }
-    }
-
-    private void AddPhysicsMaterial() {
-        if (this.AssetSelectionService.Selected is IContentDirectory directory && this.ContentService.AddPhysicsMaterial(directory) is { } node) {
-            this.SetActualSelected(node);
         }
     }
 

@@ -78,6 +78,11 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the screen shaders for this project.
     /// </summary>
     RenderStepCollection RenderSteps { get; }
+    
+    /// <summary>
+    /// Gets the physics materials.
+    /// </summary>
+    PhysicsMaterialCollection PhysicsMaterials { get; }
 
     /// <summary>
     /// Gets the identifier of the scene to load on a debug startup.
@@ -239,7 +244,11 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public RenderStepCollection RenderSteps { get; } = new();
+    public RenderStepCollection RenderSteps { get; } = [];
+
+    /// <inheritdoc />
+    [DataMember]
+    public PhysicsMaterialCollection PhysicsMaterials { get; } = [];
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]

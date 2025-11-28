@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using Macabresoft.Core;
 
 /// <summary>
-/// A collection of <see cref="IRenderStep" /> stored at the project level.
+/// A collection of <see cref="PhysicsMaterial" /> stored at the project level.
 /// </summary>
-public class RenderStepCollection : ObservableCollectionExtended<IRenderStep>, INameableCollection {
+public class PhysicsMaterialCollection  : ObservableCollectionExtended<PhysicsMaterial>, INameableCollection, IEnumerable<PhysicsMaterial> {
 
     /// <inheritdoc />
-    public string Name => "Render Steps";
+    public string Name => "Physics Materials";
 
     /// <inheritdoc />
     IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => this.Items.GetEnumerator();

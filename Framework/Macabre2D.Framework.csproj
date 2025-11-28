@@ -65,4 +65,8 @@
         <ProjectReference Include="..\Common\Macabre2D.Common.csproj" />
         <ProjectReference Include="..\Project\Common\Macabre2D.Project.Common.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Physics\Assets\" />
+    </ItemGroup>
 </Project>

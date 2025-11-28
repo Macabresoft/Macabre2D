@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 /// A material which describes the physical attributes of a physics body.
 /// </summary>
 [DataContract]
-public class PhysicsMaterial {
+public sealed class PhysicsMaterial : IIdentifiable, INameable {
     /// <summary>
     /// The default physics material.
     /// </summary>
@@ -61,4 +61,12 @@ public class PhysicsMaterial {
     /// </summary>
     [DataMember]
     public float Friction { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string Name { get; set; } = "New Physics Material";
+
+    /// <inheritdoc />
+    [DataMember]
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

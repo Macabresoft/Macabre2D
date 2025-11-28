@@ -7,23 +7,12 @@ using Macabresoft.Core;
 /// <summary>
 /// Interface for a reference to an entity.
 /// </summary>
-public interface IEntityReference {
+public interface IEntityReference : IGameObjectReference {
 
     /// <summary>
     /// Gets the type of the entity referenced.
     /// </summary>
     Type Type { get; }
-
-    /// <summary>
-    /// Deinitializes this instance.
-    /// </summary>
-    void Deinitialize();
-
-    /// <summary>
-    /// Initializes this instance.
-    /// </summary>
-    /// <param name="scene">The scene.</param>
-    void Initialize(IScene scene);
 }
 
 /// <summary>

@@ -27,13 +27,6 @@ public interface IContentService : ISelectionService<IContentNode> {
     IContentDirectory AddDirectory(IContentDirectory parent);
 
     /// <summary>
-    /// Adds a physics material to the selected directory.
-    /// </summary>
-    /// <param name="parent">The parent directory.</param>
-    /// <returns>The content node for the physics material.</returns>
-    IContentNode AddPhysicsMaterial(IContentDirectory parent);
-
-    /// <summary>
     /// Adds a scene to the selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
@@ -139,20 +132,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
     /// <inheritdoc />
     public IContentDirectory AddDirectory(IContentDirectory parent) => parent != null ? this.CreateDirectory("New Directory", parent) : null;
-
-    /// <inheritdoc />
-    public IContentNode AddPhysicsMaterial(IContentDirectory parent) {
-        ContentFile contentFile = null;
-        if (parent != null) {
-            contentFile = this.CreateAndBuildContentFile(
-                new PhysicsMaterial(),
-                parent,
-                "New Physics Material",
-                PhysicsMaterialAsset.FileExtension);
-        }
-
-        return contentFile;
-    }
 
     /// <inheritdoc />
     public IContentNode AddScene(IContentDirectory parent, SceneTemplate template) {

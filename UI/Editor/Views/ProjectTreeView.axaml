@@ -81,10 +81,6 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Adds a directory as the child of the current node" />
-            
-            <MenuItem Header="Add Physics Material"
-                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddPhysicsMaterialCommand}"
-                      ToolTip.Tip="Adds a physics material as the child of the current node" />
 
             <MenuItem Header="Add Scene"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
@@ -155,10 +151,6 @@
                                           Command="{Binding AddDirectoryCommand}"
                                           CommandParameter="{Binding AssetSelectionService.Selected}"
                                           ToolTip.Tip="Adds a directory as the child of the current node" />
-                                
-                                <MenuItem Header="Add Physics Material"
-                                          Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddPhysicsMaterialCommand}"
-                                          ToolTip.Tip="Adds a physics material as the child of the current node" />
 
                                 <MenuItem Header="Add Scene"
                                           Command="{Binding AddSceneCommand}"

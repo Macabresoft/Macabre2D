@@ -337,7 +337,7 @@ public class Entity : Transformable, IEntity {
                 assetReference.Deinitialize();
             }
 
-            foreach (var entityReference in this.GetEntityReferences()) {
+            foreach (var entityReference in this.GetGameObjectReferences()) {
                 entityReference.Deinitialize();
             }
 
@@ -449,7 +449,7 @@ public class Entity : Transformable, IEntity {
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
 
-            foreach (var entityReference in this.GetEntityReferences()) {
+            foreach (var entityReference in this.GetGameObjectReferences()) {
                 entityReference.Initialize(this.Scene);
             }
 
@@ -572,7 +572,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <summary>
-    /// Gets the asset references for initalization and deinitialization.
+    /// Gets the asset references for initialization and deinitialization.
     /// </summary>
     /// <returns>The asset references</returns>
     protected virtual IEnumerable<IAssetReference> GetAssetReferences() {
@@ -580,10 +580,10 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <summary>
-    /// Gets the entity references for initalization and deinitialization.
+    /// Gets the game object references for initialization and deinitialization.
     /// </summary>
     /// <returns></returns>
-    protected virtual IEnumerable<IEntityReference> GetEntityReferences() {
+    protected virtual IEnumerable<IGameObjectReference> GetGameObjectReferences() {
         yield break;
     }
 

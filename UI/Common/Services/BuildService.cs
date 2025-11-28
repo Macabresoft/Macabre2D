@@ -78,7 +78,6 @@ public class BuildService : IBuildService {
         }
 
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
-        FileExtensionToAssetType.Add(PhysicsMaterialAsset.FileExtension, typeof(PhysicsMaterialAsset));
     }
 
     /// <summary>
