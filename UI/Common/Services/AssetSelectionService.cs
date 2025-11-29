@@ -16,8 +16,7 @@ public enum ProjectSelectionType {
     None,
     File,
     Directory,
-    Asset,
-    Shader
+    Asset
 }
 
 /// <summary>
@@ -96,8 +95,6 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 IContentDirectory => ProjectSelectionType.Directory,
                 IContentNode => ProjectSelectionType.File,
                 SpriteSheetMember => ProjectSelectionType.Asset,
-                RenderStepCollection => ProjectSelectionType.Shader,
-                ScreenShaderRenderStep => ProjectSelectionType.Shader,
                 _ => ProjectSelectionType.None
             };
 
@@ -180,7 +177,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         else if (this._selected is IContentNode) {
             this._editors.AddRange(this._contentService.Editors);
         }
-        else if (this._selected is ScreenShaderRenderStep) {
+        else if (this._selected is ScreenShaderRenderStep or PhysicsMaterial) {
             var editors = this._valueControlService.CreateControls(this._selected);
             this._editors.AddRange(editors);
 

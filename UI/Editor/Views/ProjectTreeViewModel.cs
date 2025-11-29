@@ -272,6 +272,22 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
+    private void AddNewPhysicsMaterial() {
+        var originalSelected = this.GetActualSelected();
+        var newMaterial = new PhysicsMaterial();
+        this._undoService.Do(
+            () =>
+            {
+                this.ProjectService.CurrentProject.PhysicsMaterials.Add(newMaterial);
+                this.AssetSelectionService.Selected = newMaterial;
+            },
+            () =>
+            {
+                this.ProjectService.CurrentProject.PhysicsMaterials.Remove(newMaterial);
+                this.AssetSelectionService.Selected = originalSelected;
+            });
+    }
+
     private async Task AddNewRenderStep() {
         Type type;
         var renderStepTypes = this._assemblyService.LoadTypes(typeof(IRenderStep)).ToList();
@@ -344,6 +360,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             case RenderStepCollection:
                 await this.AddNewRenderStep();
                 break;
+            case PhysicsMaterialCollection:
+                this.AddNewPhysicsMaterial();
+                break;
         }
     }
 
@@ -368,7 +387,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         SpriteSheetIconSetCollection or
         SpriteSheetMember or
         IRenderStep or
-        RenderStepCollection;
+        RenderStepCollection or
+        PhysicsMaterialCollection or
+        PhysicsMaterial;
 
     private static bool CanClone(object selected) => selected is SpriteSheetMember or IRenderStep or ContentFile;
 
@@ -385,6 +406,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             var maxIndex = this.ProjectService.CurrentProject.RenderSteps.Count;
             result = index < maxIndex;
         }
+        else if (selected is PhysicsMaterial material) {
+            var index = this.ProjectService.CurrentProject.PhysicsMaterials.IndexOf(material);
+            var maxIndex = this.ProjectService.CurrentProject.PhysicsMaterials.Count;
+            result = index < maxIndex;
+        }
 
         return result;
     }
@@ -398,6 +424,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
         else if (selected is IRenderStep step) {
             var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(step);
+            result = index > 0;
+        }
+        else if (selected is PhysicsMaterial material) {
+            var index = this.ProjectService.CurrentProject.PhysicsMaterials.IndexOf(material);
             result = index > 0;
         }
 
@@ -434,6 +464,18 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             {
                 steps.Remove(clonedStep);
                 this.AssetSelectionService.Selected = step;
+            });
+        }
+        else if (selected is PhysicsMaterial material && material.TryClone(out var clonedMaterial)) {
+            var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
+            this._undoService.Do(() =>
+            {
+                materials.Add(clonedMaterial);
+                this.AssetSelectionService.Selected = clonedMaterial;
+            }, () =>
+            {
+                materials.Remove(clonedMaterial);
+                this.AssetSelectionService.Selected = material;
             });
         }
         else if (selected is ContentFile { Asset: { } asset, Parent: { } directory } file) {
@@ -559,6 +601,24 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 });
             }
         }
+        else if (selected is PhysicsMaterial material) {
+            var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
+            var originalIndex = materials.IndexOf(material);
+            if (originalIndex < materials.Count - 1 && originalIndex >= 0) {
+                var newIndex = originalIndex + 1;
+                this._undoService.Do(() =>
+                {
+                    materials.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+                }, () =>
+                {
+                    materials.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+                });
+            }
+        }
     }
 
     private void MoveUp(object selected) {
@@ -592,6 +652,24 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }, () =>
                 {
                     steps.Move(newIndex, originalIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+                });
+            }
+        }
+        else if (selected is PhysicsMaterial material) {
+            var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
+            var originalIndex = materials.IndexOf(material);
+            if (originalIndex > 0) {
+                var newIndex = originalIndex - 1;
+                this._undoService.Do(() =>
+                {
+                    materials.Move(originalIndex, newIndex);
+                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+                }, () =>
+                {
+                    materials.Move(newIndex, originalIndex);
                     this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
                     this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
                 });
@@ -655,6 +733,16 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                     this._undoService.Do(
                         () => steps.Remove(step),
                         () => steps.Insert(index, step));
+                }
+
+                break;
+            case PhysicsMaterial material:
+                var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
+                if (materials.Contains(material)) {
+                    var index = materials.IndexOf(material);
+                    this._undoService.Do(
+                        () => materials.Remove(material),
+                        () => materials.Insert(index, material));
                 }
 
                 break;

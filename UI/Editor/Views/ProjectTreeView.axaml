@@ -296,6 +296,20 @@
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource RenderStepIcon}"
                                                                IsFileName="False" />
                         </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:PhysicsMaterialCollection"
+                                          ItemsSource="{Binding}">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource PhysicsMaterialCollectionIcon}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneTime}" />
+                        </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:PhysicsMaterial">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource PhysicsMaterialIcon}"
+                                                               IsFileName="False" />
+                        </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="common:SpriteSheetContentFile"
                                           ItemsSource="{Binding Children}">

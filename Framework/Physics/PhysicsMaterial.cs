@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 /// <summary>
@@ -68,5 +69,6 @@ public sealed class PhysicsMaterial : IIdentifiable, INameable {
 
     /// <inheritdoc />
     [DataMember]
+    [Browsable(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 }
