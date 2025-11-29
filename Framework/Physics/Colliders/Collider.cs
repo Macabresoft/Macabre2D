@@ -38,7 +38,7 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// <summary>
     /// Gets the body that this collider is attached to.
     /// </summary>
-    public IPhysicsBody? Body { get; private set; }
+    public IPhysicsBody Body { get; private set; } = EmptyObject.Instance;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
@@ -169,16 +169,22 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     public abstract Vector2 GetCenter();
 
     /// <summary>
-    /// Initializes the specified body.
+    /// Initializes this collider with the specified body.
     /// </summary>
     /// <param name="body">The body.</param>
     public void Initialize(IPhysicsBody body) {
-        if (this.Body != null) {
-            this.Body.TransformChanged -= this.Body_TransformChanged;
-        }
-
+        this.Body.TransformChanged -= this.Body_TransformChanged;
         this.Body = body;
         this.Body.TransformChanged += this.Body_TransformChanged;
+        this.Reset();
+    }
+
+    /// <summary>
+    /// Deinitializes this collider.
+    /// </summary>
+    public void Deinitialize() {
+        this.Body.TransformChanged -= this.Body_TransformChanged;
+        this.Body = EmptyObject.Instance;
         this.Reset();
     }
 

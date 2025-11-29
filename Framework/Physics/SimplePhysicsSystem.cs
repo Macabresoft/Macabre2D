@@ -154,9 +154,7 @@ public class SimplePhysicsSystem : FixedTimeStepSystem, ISimplePhysicsSystem {
         var bodies = new List<IPhysicsBody>();
         if (!boundingArea.IsEmpty) {
             foreach (var collider in this.GetFilteredColliders(boundingArea, layers).Where(x => !x.BoundingArea.IsEmpty && x.BoundingArea.Overlaps(boundingArea))) {
-                if (collider.Body is { } body) {
-                    bodies.Add(body);
-                }
+                bodies.Add(collider.Body);
             }
         }
 

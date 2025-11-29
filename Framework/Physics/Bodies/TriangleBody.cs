@@ -60,6 +60,22 @@ public class TriangleBody : PhysicsBody {
     public override bool HasCollider => this.GetColliders().Any();
 
     /// <summary>
+    /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
+    /// runtime if possible.
+    /// </summary>
+    [DataMember]
+    public float Height {
+        get => this._height;
+        set {
+            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
+                this._height = value;
+                this.ResetColliders();
+                this.RaisePropertyChanged();
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets the bottom edge's overriden layer.
     /// </summary>
     [DataMember(Name = "Bottom Layers", Order = 102)]
@@ -76,22 +92,6 @@ public class TriangleBody : PhysicsBody {
     /// </summary>
     [DataMember(Name = "Right Layers", Order = 101)]
     public LayersOverride OverrideLayersRightEdge { get; } = new();
-
-    /// <summary>
-    /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
-    /// runtime if possible.
-    /// </summary>
-    [DataMember]
-    public float Height {
-        get => this._height;
-        set {
-            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
-                this._height = value;
-                this.ResetColliders();
-                this.RaisePropertyChanged();
-            }
-        }
-    }
 
     /// <summary>
     /// Gets or sets the peak position of the triangle. Setting this is fairly expensive and should be avoided during
@@ -125,6 +125,15 @@ public class TriangleBody : PhysicsBody {
     }
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        this._leftCollider.Deinitialize();
+        this._rightCollider.Deinitialize();
+        this._bottomCollider.Deinitialize();
+    }
+
+    /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
         if (this._width > 0f && this._height > 0f) {
             var colliders = new List<Collider>();
@@ -144,7 +153,7 @@ public class TriangleBody : PhysicsBody {
             return colliders;
         }
 
-        return Enumerable.Empty<Collider>();
+        return [];
     }
 
     /// <inheritdoc />
@@ -159,12 +168,11 @@ public class TriangleBody : PhysicsBody {
         this.ResetColliders();
     }
 
-    private BoundingArea CreateBoundingArea() {
-        return BoundingArea.Combine(
+    private BoundingArea CreateBoundingArea() =>
+        BoundingArea.Combine(
             this._leftCollider.BoundingArea,
             this._rightCollider.BoundingArea,
             this._bottomCollider.BoundingArea);
-    }
 
     private void OnLayerOverrideChanged(object? sender, PropertyChangedEventArgs e) {
         this.ResetColliders();

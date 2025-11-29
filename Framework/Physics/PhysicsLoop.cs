@@ -117,27 +117,25 @@ public class PhysicsSystem : SimplePhysicsSystem, IPhysicsSystem {
             foreach (var collider in body.GetColliders()) {
                 var potentials = this.ColliderTree.RetrievePotentialCollisions(collider);
                 foreach (var otherCollider in potentials.Where(c => c != collider && this.CollisionMap.GetShouldCollide(c.Layers, collider.Layers))) {
-                    if (otherCollider.Body != null) {
-                        var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
-                                                          collisions.Contains(body.Id);
+                    var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
+                                                      collisions.Contains(body.Id);
 
-                        if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision) && collision != null) {
-                            if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
-                                this.CollisionResolver.ResolveCollision(collision, this.TimeStep);
-                            }
-
-                            body.NotifyCollisionOccured(collision);
-
-                            var otherCollision = new CollisionEventArgs(
-                                collision.SecondCollider,
-                                collision.FirstCollider,
-                                collision.Normal,
-                                -collision.MinimumTranslationVector,
-                                collision.SecondContainsFirst,
-                                collision.FirstContainsSecond);
-                            otherCollider.Body.NotifyCollisionOccured(otherCollision);
-                            collisionsOccured.Add(otherCollider.Body.Id);
+                    if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision) && collision != null) {
+                        if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
+                            this.CollisionResolver.ResolveCollision(collision, this.TimeStep);
                         }
+
+                        body.NotifyCollisionOccured(collision);
+
+                        var otherCollision = new CollisionEventArgs(
+                            collision.SecondCollider,
+                            collision.FirstCollider,
+                            collision.Normal,
+                            -collision.MinimumTranslationVector,
+                            collision.SecondContainsFirst,
+                            collision.FirstContainsSecond);
+                        otherCollider.Body.NotifyCollisionOccured(otherCollision);
+                        collisionsOccured.Add(otherCollider.Body.Id);
                     }
                 }
 

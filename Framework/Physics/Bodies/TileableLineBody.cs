@@ -21,9 +21,6 @@ public class TileableLineBody : PhysicsBody {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? BoundingArea.Empty;
 
-    /// <inheritdoc />
-    public override bool HasCollider => this._colliders.Any();
-
     /// <summary>
     /// Gets or sets the orientation of this collider.
     /// </summary>
@@ -42,8 +39,15 @@ public class TileableLineBody : PhysicsBody {
     }
 
     /// <inheritdoc />
+    public override bool HasCollider => this._colliders.Any();
+
+    /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
+
+        foreach (var collider in this._colliders) {
+            collider.Deinitialize();
+        }
 
         if (this._tileable != null) {
             this._tileable.TilesChanged -= this.OnRequestReset;

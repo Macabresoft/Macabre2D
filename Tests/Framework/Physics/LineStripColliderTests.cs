@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics; 
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics;
 
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
@@ -57,12 +57,12 @@ public static class LineStripColliderTests {
     }
 
     private static LineStripCollider GetLineStripCollider() {
-        var lineStripCollider = new LineStripCollider(new[] {
+        var lineStripCollider = new LineStripCollider([
             Vector2.Zero,
             Vector2.One,
-            new(5f, 2f),
-            new(3f, -5f)
-        });
+            new Vector2(5f, 2f),
+            new Vector2(3f, -5f)
+        ]);
 
         var physicsBody = Substitute.For<IPhysicsBody>();
         physicsBody.GetWorldPosition(Arg.Any<Vector2>()).Returns(x => (Vector2)x[0]);

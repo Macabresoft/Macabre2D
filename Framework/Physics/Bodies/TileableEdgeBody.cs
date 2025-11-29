@@ -2,8 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -14,7 +12,7 @@ using Microsoft.Xna.Framework;
 /// and creates colliders based on the available grid.
 /// </summary>
 public sealed class TileableEdgeBody : QuadBody {
-    private readonly List<Collider> _colliders = new();
+    private readonly List<Collider> _colliders = [];
     private ITileableEntity? _tileable;
 
     /// <inheritdoc />
@@ -24,9 +22,16 @@ public sealed class TileableEdgeBody : QuadBody {
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
 
     /// <inheritdoc />
-    public override IEnumerable<Collider> GetColliders() {
-        return this._colliders;
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        foreach (var collider in this._colliders) {
+            collider.Deinitialize();
+        }
     }
+
+    /// <inheritdoc />
+    public override IEnumerable<Collider> GetColliders() => this._colliders;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -182,13 +187,13 @@ public sealed class TileableEdgeBody : QuadBody {
             }
         }
 
+        public Point EndPoint { get; private set; }
+
         public bool IsHorizontal => this.StartPoint.Y == this.EndPoint.Y;
 
         public bool IsVertical => this.StartPoint.X == this.EndPoint.X;
 
         public Layers Layers { get; }
-
-        public Point EndPoint { get; private set; }
 
         public Point StartPoint { get; private set; }
 

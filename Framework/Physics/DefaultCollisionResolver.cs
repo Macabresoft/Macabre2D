@@ -42,8 +42,8 @@ public sealed class DefaultCollisionResolver : ICollisionResolver {
                     firstBody.Velocity = massRatio * firstReflection + averageMagnitude * inverseMassRatio * e.Normal;
                     otherBody.Velocity = inverseMassRatio * otherReflection + averageMagnitude * massRatio * -e.Normal;
                 }
-                else if (e.SecondCollider.Body is IPhysicsBody secondBody) {
-                    firstBody.Velocity = this.GetNewVelocity(firstBody, secondBody, e.Normal, normalPerpendicular, timeStep);
+                else {
+                    firstBody.Velocity = this.GetNewVelocity(firstBody, e.SecondCollider.Body, e.Normal, normalPerpendicular, timeStep);
                 }
             }
         }

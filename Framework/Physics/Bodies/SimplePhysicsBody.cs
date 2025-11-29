@@ -44,9 +44,13 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     public override bool HasCollider => true;
 
     /// <inheritdoc />
-    public override IEnumerable<Collider> GetColliders() {
-        return [this.Collider];
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this._collider.Deinitialize();
     }
+
+    /// <inheritdoc />
+    public override IEnumerable<Collider> GetColliders() => [this.Collider];
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {

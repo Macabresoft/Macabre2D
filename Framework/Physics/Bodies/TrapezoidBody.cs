@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -20,6 +19,9 @@ public class TrapezoidBody : QuadBody {
     private float _bottomWidth = 2f;
     private float _height = 1f;
     private float _topWidth = 1f;
+
+    /// <inheritdoc />
+    public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
     /// Initializes a new instance of <see cref="TrapezoidBody" />.
@@ -59,9 +61,6 @@ public class TrapezoidBody : QuadBody {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
-    /// <inheritdoc />
-    public override event EventHandler? BoundingAreaChanged;
-
     /// <summary>
     /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
     /// runtime if possible.
@@ -94,6 +93,15 @@ public class TrapezoidBody : QuadBody {
         }
     }
 
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        this._leftCollider.Deinitialize();
+        this._topCollider.Deinitialize();
+        this._rightCollider.Deinitialize();
+        this._bottomCollider.Deinitialize();
+    }
+
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
         if (this.CheckIsValid()) {
@@ -118,7 +126,7 @@ public class TrapezoidBody : QuadBody {
             return colliders;
         }
 
-        return Enumerable.Empty<Collider>();
+        return [];
     }
 
     /// <inheritdoc />
@@ -169,15 +177,12 @@ public class TrapezoidBody : QuadBody {
         }
     }
 
-    private bool CheckIsValid() {
-        return this._topWidth > 0f && this._bottomWidth > 0f && this._height > 0f;
-    }
+    private bool CheckIsValid() => this._topWidth > 0f && this._bottomWidth > 0f && this._height > 0f;
 
-    private BoundingArea CreateBoundingArea() {
-        return BoundingArea.Combine(
+    private BoundingArea CreateBoundingArea() =>
+        BoundingArea.Combine(
             this._leftCollider.BoundingArea,
             this._topCollider.BoundingArea,
             this._rightCollider.BoundingArea,
             this._bottomCollider.BoundingArea);
-    }
 }
