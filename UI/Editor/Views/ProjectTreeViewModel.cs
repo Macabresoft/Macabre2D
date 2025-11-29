@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -403,12 +404,12 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
         else if (selected is IRenderStep step) {
             var index = this.ProjectService.CurrentProject.RenderSteps.IndexOf(step);
-            var maxIndex = this.ProjectService.CurrentProject.RenderSteps.Count;
+            var maxIndex = this.ProjectService.CurrentProject.RenderSteps.Count - 1;
             result = index < maxIndex;
         }
         else if (selected is PhysicsMaterial material) {
             var index = this.ProjectService.CurrentProject.PhysicsMaterials.IndexOf(material);
-            var maxIndex = this.ProjectService.CurrentProject.PhysicsMaterials.Count;
+            var maxIndex = this.ProjectService.CurrentProject.PhysicsMaterials.Count - 1;
             result = index < maxIndex;
         }
 
@@ -566,114 +567,64 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     }
 
     private void MoveDown(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            var originalIndex = collection.IndexOf(member);
-            if (originalIndex < collection.Count - 1 && originalIndex >= 0) {
-                var newIndex = originalIndex + 1;
-                this._undoService.Do(() =>
-                {
-                    collection.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    collection.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member &&
+            spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            this.MoveUp(collection, member, collection.Count);
         }
         else if (selected is IRenderStep step) {
-            var steps = this.ProjectService.CurrentProject.RenderSteps;
-            var originalIndex = steps.IndexOf(step);
-            if (originalIndex < steps.Count - 1 && originalIndex >= 0) {
-                var newIndex = originalIndex + 1;
-                this._undoService.Do(() =>
-                {
-                    steps.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    steps.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+            this.MoveUp(this.ProjectService.CurrentProject.RenderSteps, step, this.ProjectService.CurrentProject.RenderSteps.Count);
         }
         else if (selected is PhysicsMaterial material) {
-            var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
-            var originalIndex = materials.IndexOf(material);
-            if (originalIndex < materials.Count - 1 && originalIndex >= 0) {
-                var newIndex = originalIndex + 1;
-                this._undoService.Do(() =>
-                {
-                    materials.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    materials.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+            this.MoveUp(this.ProjectService.CurrentProject.PhysicsMaterials, material, this.ProjectService.CurrentProject.PhysicsMaterials.Count);
+        }
+    }
+
+    private void MoveDown<T>(IIndexedCollection collection, T value) {
+        var originalIndex = collection.IndexOfUntyped(value);
+        if (originalIndex > 0) {
+            var newIndex = originalIndex - 1;
+            this._undoService.Do(() =>
+            {
+                collection.Move(originalIndex, newIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            }, () =>
+            {
+                collection.Move(newIndex, originalIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            });
+        }
+    }
+
+    private void MoveUp<T>(IIndexedCollection collection, T value, int count) {
+        var originalIndex = collection.IndexOfUntyped(value);
+        if (originalIndex < count - 1 && originalIndex >= 0) {
+            var newIndex = originalIndex + 1;
+            this._undoService.Do(() =>
+            {
+                collection.Move(originalIndex, newIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            }, () =>
+            {
+                collection.Move(newIndex, originalIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            });
         }
     }
 
     private void MoveUp(object selected) {
-        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            var originalIndex = collection.IndexOf(member);
-            if (originalIndex > 0) {
-                var newIndex = originalIndex - 1;
-                this._undoService.Do(() =>
-                {
-                    collection.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    collection.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+        if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member &&
+            spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
+            this.MoveDown(collection, member);
         }
         else if (selected is IRenderStep step) {
-            var steps = this.ProjectService.CurrentProject.RenderSteps;
-            var originalIndex = steps.IndexOf(step);
-            if (originalIndex > 0) {
-                var newIndex = originalIndex - 1;
-                this._undoService.Do(() =>
-                {
-                    steps.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    steps.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+            this.MoveDown(this.ProjectService.CurrentProject.RenderSteps, step);
         }
         else if (selected is PhysicsMaterial material) {
-            var materials = this.ProjectService.CurrentProject.PhysicsMaterials;
-            var originalIndex = materials.IndexOf(material);
-            if (originalIndex > 0) {
-                var newIndex = originalIndex - 1;
-                this._undoService.Do(() =>
-                {
-                    materials.Move(originalIndex, newIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                }, () =>
-                {
-                    materials.Move(newIndex, originalIndex);
-                    this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                    this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-                });
-            }
+            this.MoveDown(this.ProjectService.CurrentProject.PhysicsMaterials, material);
         }
     }
 

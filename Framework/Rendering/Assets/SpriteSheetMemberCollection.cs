@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 /// <summary>
 /// Interface for a collection of <see cref="SpriteSheetMember" />.
 /// </summary>
-public interface ISpriteSheetMemberCollection : INameableCollection, INotifyCollectionChanged, INotifyPropertyChanged {
+public interface ISpriteSheetMemberCollection : IIndexedCollection, INameableCollection, INotifyCollectionChanged, INotifyPropertyChanged {
 
     /// <summary>
     /// Gets the type of members in this collection.
@@ -27,13 +27,6 @@ public interface ISpriteSheetMemberCollection : INameableCollection, INotifyColl
     /// <param name="index">The index to insert the member at.</param>
     /// <param name="member">The member.</param>
     void InsertMember(int index, SpriteSheetMember member);
-
-    /// <summary>
-    /// Moves the specified item to the new index.
-    /// </summary>
-    /// <param name="originalIndex">The original index.</param>
-    /// <param name="newIndex">The new index.</param>
-    void Move(int originalIndex, int newIndex);
 
     /// <summary>
     /// Removes a member if it is the correct type.
@@ -64,6 +57,15 @@ public abstract class SpriteSheetMemberCollection<TMember> : NameableCollection<
         if (member is TMember actualMember) {
             this.Add(actualMember);
         }
+    }
+
+    /// <inheritdoc />
+    public int IndexOfUntyped(object item) {
+        if (item is TMember member) {
+            return this.IndexOf(member);
+        }
+
+        return -1;
     }
 
     /// <inheritdoc />
