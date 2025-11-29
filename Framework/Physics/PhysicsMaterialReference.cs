@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
@@ -41,7 +42,20 @@ public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObj
         this.ResetReference();
     }
 
+    /// <summary>
+    /// Clears the reference.
+    /// </summary>
+    public void Clear() {
+        this.Id = Guid.Empty;
+        this.Material = PhysicsMaterial.Default;
+    }
+
     private void ResetReference() {
-        this.Material = this._scene.Project.PhysicsMaterials.FirstOrDefault<PhysicsMaterial>(x => x.Id == this.Id) ?? PhysicsMaterial.Default;
+        if (this.Id == Guid.Empty) {
+            this.Material = PhysicsMaterial.Default;
+        }
+        else {
+            this.Material = this._scene.Project.PhysicsMaterials.FirstOrDefault<PhysicsMaterial>(x => x.Id == this.Id) ?? PhysicsMaterial.Default;
+        }
     }
 }

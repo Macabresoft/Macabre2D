@@ -1,0 +1,40 @@
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           x:TypeArguments="framework:PhysicsMaterialReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.PhysicsMaterialReferenceEditor">
+    <Grid ColumnDefinitions="Auto, *, Auto"
+          DataContext="{Binding $parent[local:PhysicsMaterialReferenceEditor]}">
+        <Design.DataContext>
+            <local:PhysicsMaterialReferenceEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <ComboBox Grid.Column="1"
+                  ItemsSource="{Binding AvailableMaterials}"
+                  SelectedItem="{Binding SelectedMaterial}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock HorizontalAlignment="Stretch"
+                               Text="{Binding Name}"
+                               TextAlignment="Left"
+                               ToolTip.Tip="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Button Grid.Column="2"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear the reference">
+            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
+    </Grid>
+</common:ValueEditorControl>

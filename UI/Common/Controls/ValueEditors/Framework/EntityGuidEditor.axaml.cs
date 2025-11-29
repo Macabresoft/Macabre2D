@@ -33,7 +33,6 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
     private readonly ISceneService _sceneService;
     private readonly IUndoService _undoService;
 
-    private ICommand _clearCommand;
     private string _pathText;
 
     public EntityGuidEditor() : this(
@@ -53,8 +52,8 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
         this._sceneService = sceneService;
         this._undoService = undoService;
 
-        if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(SpriteSheet.ContentId) }) {
-            this._entityType = assetReference.AssetType;
+        if (dependencies is { Owner: EntityReference entityReference, ValuePropertyName: nameof(EntityReference.EntityId) }) {
+            this._entityType = entityReference.Type;
         }
         else if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
@@ -73,17 +72,14 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
         this.ResetPath();
     }
 
-    public ICommand SelectCommand { get; }
-
-    public ICommand ClearCommand {
-        get => this._clearCommand;
-        private set => this.SetAndRaise(ClearCommandProperty, ref this._clearCommand, value);
-    }
+    public ICommand ClearCommand { get; }
 
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
         base.OnValueChanged(args);

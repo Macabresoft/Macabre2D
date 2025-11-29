@@ -3,21 +3,30 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// A material which describes the physical attributes of a physics body.
 /// </summary>
 [DataContract]
-public sealed class PhysicsMaterial : IIdentifiable, INameable {
+public sealed class PhysicsMaterial : PropertyChangedNotifier, IIdentifiable, INameable {
     /// <summary>
     /// The default physics material.
     /// </summary>
-    public static readonly PhysicsMaterial Default = new(0.5f, 1f);
+    public static readonly PhysicsMaterial Default = new(0.5f, 1f) {
+        Id = Guid.Empty,
+        Name = "Default"
+    };
 
     /// <summary>
     /// An empty physics material with zero for both values.
     /// </summary>
-    public static readonly PhysicsMaterial Empty = new(0f, 0f);
+    public static readonly PhysicsMaterial Empty = new(0f, 0f) {
+        Id = Guid.Empty,
+        Name = "Empty"
+    };
+
+    private string _name = "New Physics Material";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PhysicsMaterial" /> struct.
@@ -65,10 +74,13 @@ public sealed class PhysicsMaterial : IIdentifiable, INameable {
 
     /// <inheritdoc />
     [DataMember]
-    public string Name { get; set; } = "New Physics Material";
+    [Browsable(false)]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <inheritdoc />
     [DataMember]
-    [Browsable(false)]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Name {
+        get => this._name;
+        set => this.Set(ref this._name, value);
+    }
 }
