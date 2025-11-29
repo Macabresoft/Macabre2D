@@ -392,7 +392,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         PhysicsMaterialCollection or
         PhysicsMaterial;
 
-    private static bool CanClone(object selected) => selected is SpriteSheetMember or IRenderStep or ContentFile;
+    private static bool CanClone(object selected) => selected is SpriteSheetMember or IRenderStep or ContentFile or PhysicsMaterial;
 
     private bool CanMoveDown(object selected) {
         var result = false;
