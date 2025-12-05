@@ -7,16 +7,19 @@
                            x:TypeArguments="framework:PhysicsMaterialReference"
                            x:Class="Macabresoft.Macabre2D.UI.Common.PhysicsMaterialReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto"
+          RowDefinitions="Auto, Auto"
           DataContext="{Binding $parent[local:PhysicsMaterialReferenceEditor]}">
         <Design.DataContext>
             <local:PhysicsMaterialReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
+                   Grid.Row="0"
                    Classes="Label"
                    Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
+                  Grid.Row="0"
                   ItemsSource="{Binding AvailableMaterials}"
                   SelectedItem="{Binding SelectedMaterial}">
             <ComboBox.ItemTemplate>
@@ -30,11 +33,19 @@
         </ComboBox>
 
         <Button Grid.Column="2"
+                Grid.Row="0"
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
                 ToolTip.Tip="Clear the reference">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
+        
+        <TextBlock Grid.Column="0"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Classes="Caption"
+                   HorizontalAlignment="Center"
+                   Text="{Binding SelectedMaterial, Converter={x:Static local:PhysicsMaterialToCaptionConverter.Instance}}" />
     </Grid>
 </common:ValueEditorControl>
