@@ -440,6 +440,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private bool CanRemoveContent(object node) =>
         node != null &&
         node is not RootContentDirectory &&
+        node is not ProjectNode &&
         node is not INameableCollection &&
         (this.SceneService.CurrentMetadata == null || !(node is ContentFile { Asset: { } asset } && asset.ContentId == this.SceneService.CurrentMetadata.ContentId));
 
@@ -652,7 +653,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private void RemoveContent(object node) {
         var openSceneMetadataId = this.SceneService.CurrentMetadata?.ContentId ?? Guid.Empty;
         switch (node) {
-            case RootContentDirectory:
+            case RootContentDirectory or ProjectNode or RenderStepCollection or PhysicsMaterialCollection:
                 this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete the root.");
                 break;
             case IContentDirectory directory when directory.ContainsMetadata(openSceneMetadataId):
@@ -702,7 +703,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
     private async Task RenameContent(string updatedName) {
         switch (this.AssetSelectionService.Selected) {
-            case RootContentDirectory:
+            case RootContentDirectory or ProjectNode or RenderStepCollection or PhysicsMaterialCollection:
                 return;
             case IContentNode node when node.Name != updatedName:
                 var typeName = node is IContentDirectory ? "Directory" : "File";

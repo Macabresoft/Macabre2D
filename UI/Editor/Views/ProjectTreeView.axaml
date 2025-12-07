@@ -271,15 +271,26 @@
                         </Style>
                     </TreeView.Styles>
                     <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="common:ProjectNode"
+                                          ItemsSource="{Binding Children}">
+                            <avaloniaEx:EditableSelectableItem Classes="Directory"
+                                                               Icon="{StaticResource ProjectIcon}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="Project" />
+                        </TreeDataTemplate>
+                        
+                        
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop">
                                 <avaloniaEx:EditableSelectableItem Classes="Directory"
-                                                                   Icon="{StaticResource ProjectIcon}"
+                                                                   Icon="{StaticResource DirectoryIcon}"
                                                                    IconForeground="{StaticResource PurpleBrush}"
                                                                    IsEditable="False"
                                                                    IsFileName="False"
-                                                                   Text="Project / Content" />
+                                                                   Text="Content" />
                             </Border>
                         </TreeDataTemplate>
 

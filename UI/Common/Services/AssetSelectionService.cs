@@ -166,7 +166,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
 
         this._editors.Clear();
 
-        if (this._selected is RootContentDirectory) {
+        if (this._selected is ProjectNode) {
             var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject);
             this._editors.AddRange(editors);
 
