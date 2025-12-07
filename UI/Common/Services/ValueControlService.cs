@@ -158,6 +158,14 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType == typeof(Guid) && (owner is PhysicsMaterialReference && member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id) || memberType.GetCustomAttribute<PhysicsMaterialGuidAttribute>() != null)) {
+            var editor = this.CreateValueEditorFromType(typeof(PhysicsMaterialGuidEditor), owner, value, memberType, member, propertyPath);
+
+            if (editor != null) {
+                editor.Title = $"Physics Material Id ({propertyPath})";
+                result.Add(editor);
+            }
+        }
         else if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
             if (editor != null) {

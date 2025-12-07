@@ -204,7 +204,7 @@
           <DependentUpon>TextListDialog.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\PhysicsMaterialReferenceEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\Framework\PhysicsMaterialGuidEditor.axaml.cs">
           <DependentUpon>PhysicsMaterialReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>

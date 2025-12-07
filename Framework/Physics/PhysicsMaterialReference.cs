@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common.Attributes;
 
 /// <summary>
 /// A reference to a <see cref="PhysicsMaterial"/>.
@@ -15,6 +16,7 @@ public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObj
 
     /// <inheritdoc />
     [DataMember]
+    [PhysicsMaterialGuid]
     public Guid Id {
         get => this._id;
         set {

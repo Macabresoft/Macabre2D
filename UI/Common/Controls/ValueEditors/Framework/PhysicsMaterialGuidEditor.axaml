@@ -3,14 +3,14 @@
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                            xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           x:TypeArguments="framework:PhysicsMaterialReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.PhysicsMaterialReferenceEditor">
+                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                           x:TypeArguments="system:Guid"
+                           x:Class="Macabresoft.Macabre2D.UI.Common.PhysicsMaterialGuidEditor">
     <Grid ColumnDefinitions="Auto, *, Auto"
           RowDefinitions="Auto, Auto"
-          DataContext="{Binding $parent[local:PhysicsMaterialReferenceEditor]}">
+          DataContext="{Binding $parent[local:PhysicsMaterialGuidEditor]}">
         <Design.DataContext>
-            <local:PhysicsMaterialReferenceEditor />
+            <local:PhysicsMaterialGuidEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
@@ -40,7 +40,7 @@
                 ToolTip.Tip="Clear the reference">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
-        
+
         <TextBlock Grid.Column="0"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"

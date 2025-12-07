@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// A <see cref="PhysicsBody" /> which reacts to a <see cref="ITileableEntity" /> parent
 /// and creates colliders based on the available grid.
 /// </summary>
-public sealed class TileableEdgeBody : QuadBody {
+public class TileableEdgeBody : QuadBody {
     private readonly List<Collider> _colliders = [];
     private ITileableEntity? _tileable;
 

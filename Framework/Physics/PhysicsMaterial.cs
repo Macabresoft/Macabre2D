@@ -14,7 +14,7 @@ public sealed class PhysicsMaterial : PropertyChangedNotifier, IIdentifiable, IN
     /// The default physics material.
     /// </summary>
     public static readonly PhysicsMaterial Default = new(0.5f, 1f) {
-        Id = Guid.Empty,
+        Id = new Guid("cb78d13e-b7d4-4877-bb8b-bdf910f0e839"),
         Name = "Default"
     };
 
