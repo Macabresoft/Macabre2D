@@ -13,18 +13,13 @@ public class PhysicsMaterialCollection : ObservableCollectionExtended<PhysicsMat
     /// <inheritdoc />
     public string Name => "Physics Materials";
 
-    /// <inheritdoc />
-    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => this.Items.GetEnumerator();
-
     /// <summary>
     /// Gets the physics material or the default value.
     /// </summary>
     /// <param name="id">The identifier.</param>
     /// <returns>The physics material.</returns>
-    public PhysicsMaterial Get(Guid id) {
-        return this.Items.FirstOrDefault(x => x.Id == id) ?? PhysicsMaterial.Default;
-    }
-    
+    public PhysicsMaterial? Get(Guid id) => id == Guid.Empty ? null : this.Items.FirstOrDefault(x => x.Id == id);
+
     /// <inheritdoc />
     public int IndexOfUntyped(object item) {
         if (item is PhysicsMaterial material) {
@@ -33,4 +28,7 @@ public class PhysicsMaterialCollection : ObservableCollectionExtended<PhysicsMat
 
         return -1;
     }
+
+    /// <inheritdoc />
+    IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() => this.Items.GetEnumerator();
 }

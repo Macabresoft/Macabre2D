@@ -146,23 +146,32 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         else if (memberType == typeof(Guid) && (owner is IAssetReference && member.MemberInfo.Name == nameof(SpriteSheet.ContentId) || HasAssetGuidReference(memberType))) {
             var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
             if (editor != null) {
-                editor.Title = $"Content Id ({propertyPath})";
+                if (member.MemberInfo.Name == nameof(SpriteSheet.ContentId)) {
+                    editor.Title = $"Content Id ({propertyPath})";
+                }
+                
                 result.Add(editor);
             }
         }
-        else if (memberType == typeof(Guid) && (owner is EntityReference && member.MemberInfo.Name == nameof(EntityReference.EntityId) || memberType.GetCustomAttribute<EntityGuidAttribute>() != null)) {
+        else if (memberType == typeof(Guid) && (owner is EntityReference && member.MemberInfo.Name == nameof(EntityReference.EntityId) || member.MemberInfo.GetCustomAttribute<EntityGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(EntityGuidEditor), owner, value, memberType, member, propertyPath);
 
             if (editor != null) {
-                editor.Title = $"Entity Id ({propertyPath})";
+                if (member.MemberInfo.Name == nameof(EntityReference.EntityId)) {
+                    editor.Title = $"Entity Id ({propertyPath})";
+                }
+                
                 result.Add(editor);
             }
         }
-        else if (memberType == typeof(Guid) && (owner is PhysicsMaterialReference && member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id) || memberType.GetCustomAttribute<PhysicsMaterialGuidAttribute>() != null)) {
+        else if (memberType == typeof(Guid) && (owner is PhysicsMaterialReference && member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id) || member.MemberInfo.GetCustomAttribute<PhysicsMaterialGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(PhysicsMaterialGuidEditor), owner, value, memberType, member, propertyPath);
 
             if (editor != null) {
-                editor.Title = $"Physics Material Id ({propertyPath})";
+                if (member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id)) {
+                    editor.Title = $"Physics Material Id ({propertyPath})";
+                }
+                
                 result.Add(editor);
             }
         }

@@ -10,6 +10,7 @@ using Macabresoft.Macabre2D.Common.Attributes;
 /// <summary>
 /// A reference to a <see cref="PhysicsMaterial"/>.
 /// </summary>
+[DataContract]
 public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObjectReference, IIdentifiable {
     private Guid _id = Guid.Empty;
     private IScene _scene = EmptyObject.Scene;

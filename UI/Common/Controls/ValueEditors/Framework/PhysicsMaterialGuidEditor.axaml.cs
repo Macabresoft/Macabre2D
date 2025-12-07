@@ -102,7 +102,7 @@ public partial class PhysicsMaterialGuidEditor : ValueEditorControl<Guid> {
             try {
                 this._shouldUpdate = false;
                 var originalValue = this._selectedMaterial;
-                this._selectedMaterial = this._projectService.CurrentProject.PhysicsMaterials.Get(this.Value);
+                this._selectedMaterial = this._projectService.CurrentProject.PhysicsMaterials.Get(this.Value) ?? PhysicsMaterial.Default;
                 this.RaisePropertyChanged(SelectedMaterialProperty, this.SelectedMaterial, originalValue);
             }
             finally {
