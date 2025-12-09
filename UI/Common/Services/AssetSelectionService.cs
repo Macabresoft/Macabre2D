@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Avalonia.Controls;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using ReactiveUI;
@@ -189,27 +190,6 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             }
         }
         else if (this._selected is INameableSettings nameableSettings) {
-            /*var typesToIgnore = UserSettings.UserSettingsTypes.ToList();
-            typesToIgnore.Remove(nameableSettings.GetType());
-            var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject.DefaultUserSettings, typesToIgnore.ToArray());
-
-            foreach (var editor in editors) {
-                if (!editor.ValueControls.All(x => x.Owner is UserSettings)) {
-                    this._editors.Add(editor);
-                }
-            }*/
-
-            /*
-             *
-             *     public static readonly List<Type> UserSettingsTypes = [
-        typeof(UserSettings),
-        typeof(AudioSettings),
-        typeof(GameplaySettings),
-        typeof(DisplaySettings),
-        typeof(InputSettings),
-        typeof(RenderSettings)
-             */
-
             object wrapper = nameableSettings switch {
                 AudioSettings audioSettings => new NameableSettingsWrapper<AudioSettings>(audioSettings),
                 DisplaySettings displaySettings => new NameableSettingsWrapper<DisplaySettings>(displaySettings),

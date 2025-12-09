@@ -4,7 +4,7 @@
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:projectCommon="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+             xmlns:frameworkCommon="clr-namespace:Macabresoft.Macabre2D.Common;assembly=Macabre2D.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.RenameCommand}"
@@ -290,7 +290,7 @@
                                                                Text="Default User Settings" />
                         </TreeDataTemplate>
                         
-                        <TreeDataTemplate DataType="projectCommon:INameableSettings">
+                        <TreeDataTemplate DataType="frameworkCommon:INameableSettings">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource SettingsIcon}"
                                                                IsFileName="False"
                                                                Text="{Binding Name}" />
