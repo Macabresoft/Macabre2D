@@ -12,8 +12,8 @@ using Newtonsoft.Json;
 /// Settings for audio.
 /// </summary>
 [DataContract]
-[Category(CommonCategories.Audio)]
-public class AudioSettings : CopyableSettings<AudioSettings> {
+[Category("Audio Settings")]
+public class AudioSettings : CopyableSettings<AudioSettings>, INameableSettings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<VolumeCategory, float> _categoryToVolume = new();
 
@@ -21,6 +21,9 @@ public class AudioSettings : CopyableSettings<AudioSettings> {
     /// Raised when the volume is changed.
     /// </summary>
     public event EventHandler<VolumeCategory>? VolumeChanged;
+
+    /// <inheritdoc />
+    public string Name => "Audio Settings";
 
     /// <summary>
     /// Changes the volume given an <see cref="VolumeCategory" /> and the amount to change..

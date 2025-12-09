@@ -20,8 +20,8 @@ public enum DisplayMode : byte {
 /// DefaultGraphics settings such as resolution and display mode.
 /// </summary>
 [DataContract]
-[Category(CommonCategories.Display)]
-public sealed class DisplaySettings {
+[Category("Display Settings")]
+public sealed class DisplaySettings : INameableSettings {
     private const byte MinimumWindowScale = 1;
 
     [DataMember]
@@ -57,6 +57,9 @@ public sealed class DisplaySettings {
     /// </summary>
     [DataMember]
     public DisplayMode DisplayMode { get; set; } = DisplayMode.Windowed;
+
+    /// <inheritdoc />
+    public string Name => "Display Settings";
 
     /// <summary>
     /// Gets or sets the window scale.

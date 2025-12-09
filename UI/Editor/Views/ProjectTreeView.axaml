@@ -4,6 +4,7 @@
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+             xmlns:projectCommon="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.RenameCommand}"
@@ -273,21 +274,33 @@
                     <TreeView.DataTemplates>
                         <TreeDataTemplate DataType="common:ProjectNode"
                                           ItemsSource="{Binding Children}">
-                            <avaloniaEx:EditableSelectableItem Classes="Directory"
-                                                               Icon="{StaticResource ProjectIcon}"
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource ProjectIcon}"
                                                                IconForeground="{StaticResource PurpleBrush}"
                                                                IsEditable="False"
                                                                IsFileName="False"
                                                                Text="Project" />
                         </TreeDataTemplate>
                         
+                        <TreeDataTemplate DataType="common:UserSettingsNode"
+                                          ItemsSource="{Binding Children}">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource UserSettingsIcon}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="Default User Settings" />
+                        </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="projectCommon:INameableSettings">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource SettingsIcon}"
+                                                               IsFileName="False"
+                                                               Text="{Binding Name}" />
+                        </TreeDataTemplate>
                         
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop">
                                 <avaloniaEx:EditableSelectableItem Classes="Directory"
                                                                    Icon="{StaticResource DirectoryIcon}"
-                                                                   IconForeground="{StaticResource PurpleBrush}"
                                                                    IsEditable="False"
                                                                    IsFileName="False"
                                                                    Text="Content" />

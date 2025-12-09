@@ -14,6 +14,7 @@ public class ProjectNode {
     /// <param name="project">The project.</param>
     public ProjectNode(IContentDirectory rootContentDirectory, IGameProject project) {
         this.Children = [
+            new UserSettingsNode(project.DefaultUserSettings),
             project.RenderSteps,
             project.PhysicsMaterials,
             rootContentDirectory

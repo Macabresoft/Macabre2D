@@ -1,5 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Project.Common;
@@ -10,6 +12,18 @@ using Macabresoft.Macabre2D.Project.Common;
 [DataContract]
 [Category("User Settings")]
 public class UserSettings : CopyableSettings<UserSettings> {
+    /// <summary>
+    /// Gets the types of the various settings.
+    /// </summary>
+    public static readonly List<Type> UserSettingsTypes = [
+        typeof(UserSettings),
+        typeof(AudioSettings),
+        typeof(GameplaySettings),
+        typeof(DisplaySettings),
+        typeof(InputSettings),
+        typeof(RenderSettings)
+    ];
+    
     /// <summary>
     /// The settings file name.
     /// </summary>

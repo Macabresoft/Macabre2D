@@ -85,9 +85,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
 
     private IReadOnlyCollection<IValueControl> CreateControls(string currentPath, object owner, object originalObject, params Type[] typesToIgnore) {
         var result = new List<IValueControl>();
-        var editableObjectType = owner.GetType();
-        var members = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute))
-            .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<BrowsableAttribute>() is not { Browsable: false });
+        var members = this.GetMembers(owner, typesToIgnore);
 
         var membersWithAttributes = members
             .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))
@@ -149,7 +147,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 if (member.MemberInfo.Name == nameof(SpriteSheet.ContentId)) {
                     editor.Title = $"Content Id ({propertyPath})";
                 }
-                
+
                 result.Add(editor);
             }
         }
@@ -160,7 +158,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 if (member.MemberInfo.Name == nameof(EntityReference.EntityId)) {
                     editor.Title = $"Entity Id ({propertyPath})";
                 }
-                
+
                 result.Add(editor);
             }
         }
@@ -171,7 +169,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 if (member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id)) {
                     editor.Title = $"Physics Material Id ({propertyPath})";
                 }
-                
+
                 result.Add(editor);
             }
         }
@@ -251,6 +249,30 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         return null;
     }
 
+    private IEnumerable<MemberInfo> GetMembers(object owner, params Type[] typesToIgnore) {
+        var editableObjectType = owner.GetType();
+        var allMembers = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).ToList();
+        var members = allMembers.Where(x => IsValidType(x, typesToIgnore)).ToList();
+        return members;
+    }
+
+    private bool IsValidType(MemberInfo member, params Type[] typesToIgnore) {
+        var result = true;
+        if (member.GetCustomAttribute<BrowsableAttribute>() is { Browsable: false }) {
+            result = false;
+        }
+        else if (typesToIgnore != null) {
+            if (member is PropertyInfo property) {
+                result = !typesToIgnore.Contains(property.PropertyType);
+            }
+            else if (member is FieldInfo field) {
+                result = !typesToIgnore.Contains(field.FieldType);
+            }
+        }
+
+        return result;
+    }
+
     private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
 
     private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
@@ -271,7 +293,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
             if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
                 editor.Category = classCategory.Category;
             }
-            else if (GetPropertyName(propertyPath) is {} propertyName && !string.Equals(propertyName, propertyPath)) {
+            else if (GetPropertyName(propertyPath) is { } propertyName && !string.Equals(propertyName, propertyPath)) {
                 editor.Category = propertyPath.Replace(propertyName, string.Empty).TrimEnd('.');
             }
             else {

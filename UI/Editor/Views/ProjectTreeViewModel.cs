@@ -441,7 +441,9 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         node != null &&
         node is not RootContentDirectory &&
         node is not ProjectNode &&
+        node is not UserSettingsNode &&
         node is not INameableCollection &&
+        !UserSettings.UserSettingsTypes.Contains(node.GetType()) &&
         (this.SceneService.CurrentMetadata == null || !(node is ContentFile { Asset: { } asset } && asset.ContentId == this.SceneService.CurrentMetadata.ContentId));
 
     private void Clone(object selected) {

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -13,7 +14,8 @@ using Newtonsoft.Json;
 /// , and <see cref="MouseButton" />.
 /// </summary>
 [DataContract]
-public class InputSettings : CopyableSettings<InputSettings> {
+[Category("Input Settings")]
+public class InputSettings : CopyableSettings<InputSettings>, INameableSettings {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<InputAction, Keys> _keyBindings = new();
@@ -74,6 +76,9 @@ public class InputSettings : CopyableSettings<InputSettings> {
     /// </summary>
     [DataMember]
     public bool IsMouseEnabled { get; set; } = true;
+
+    /// <inheritdoc />
+    public string Name => "Input Settings";
 
     /// <summary>
     /// Clears all bindings for the specified action.

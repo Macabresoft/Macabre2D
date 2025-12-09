@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Project.Common;
@@ -13,7 +14,8 @@ using Newtonsoft.Json;
 /// Settings for rendering. This includes colors and shaders.
 /// </summary>
 [DataContract]
-public class RenderSettings : CopyableSettings<RenderSettings> {
+[Category("Render Settings")]
+public class RenderSettings : CopyableSettings<RenderSettings>, INameableSettings {
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, BlendStateType> _renderPriorityToBlendStateType = [];
@@ -33,6 +35,9 @@ public class RenderSettings : CopyableSettings<RenderSettings> {
     /// Called when a shader changes for a specific <see cref="RenderPriority" />.
     /// </summary>
     public event EventHandler<RenderPriority>? ShaderChanged;
+
+    /// <inheritdoc />
+    public string Name => "Render Settings";
 
     /// <summary>
     /// Clears color overrides for all render priorities.
