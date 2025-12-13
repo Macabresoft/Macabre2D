@@ -12,8 +12,8 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.9" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
-        <PackageReference Include="Macabresoft.AvaloniaEx" Version="2.0.30" />
-        <PackageReference Include="Macabresoft.Core" Version="2.0.1" />
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="2.0.31" />
+        <PackageReference Include="Macabresoft.Core" Version="2.0.2" />
         <PackageReference Include="Unity" Version="5.11.10"/>
     </ItemGroup>
     <ItemGroup>
