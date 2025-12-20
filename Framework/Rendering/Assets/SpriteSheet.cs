@@ -24,7 +24,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// </summary>
     public static readonly string[] ValidFileExtensions = [".jpg", ".png"];
 
-    private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
+    private readonly Dictionary<byte, Point> _spriteIndexToLocation = [];
 
     [DataMember]
     [Category("Auto Tile Sets")]

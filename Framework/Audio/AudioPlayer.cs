@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Audio;
 
@@ -11,9 +10,6 @@ using Microsoft.Xna.Framework.Audio;
 /// </summary>
 public sealed class AudioPlayer : Entity {
     private IAudioClipInstance _instance = AudioClipInstance.Empty;
-    private float _pan;
-    private float _pitch;
-    private float _volume;
 
     /// <summary>
     /// Gets the audio clip reference.
@@ -22,17 +18,12 @@ public sealed class AudioPlayer : Entity {
     public AudioClipReference AudioClipReference { get; } = new();
 
     /// <summary>
-    /// Gets the state.
-    /// </summary>
-    public SoundState State => this._instance.State;
-
-    /// <summary>
     /// Gets or sets the pan.
     /// </summary>
     public float Pan {
-        get => this._pan;
+        get;
         set {
-            this._pan = value;
+            field = value;
             this._instance.Pan = value;
         }
     }
@@ -42,9 +33,9 @@ public sealed class AudioPlayer : Entity {
     /// </summary>
     [DataMember(Order = 4, Name = "Pitch")]
     public float Pitch {
-        get => this._pitch;
+        get;
         set {
-            this._pitch = value;
+            field = value;
             this._instance.Pitch = value;
         }
     }
@@ -57,14 +48,19 @@ public sealed class AudioPlayer : Entity {
     public bool ShouldLoop { get; private set; }
 
     /// <summary>
+    /// Gets the state.
+    /// </summary>
+    public SoundState State => this._instance.State;
+
+    /// <summary>
     /// Gets or sets the volume.
     /// </summary>
     /// <value>The volume.</value>
     [DataMember(Order = 2, Name = "Volume")]
     public float Volume {
-        get => this._volume;
+        get;
         set {
-            this._volume = value;
+            field = value;
             this._instance.Volume = value;
         }
     }

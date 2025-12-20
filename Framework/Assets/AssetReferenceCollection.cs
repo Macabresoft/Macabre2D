@@ -56,10 +56,10 @@ public interface IAssetReferenceCollection<TAsset> : IAssetReferenceCollection w
 /// <typeparam name="TAsset">The type of asset.</typeparam>
 /// <typeparam name="TContent">The type of content.</typeparam>
 public class AssetReferenceCollection<TAsset, TContent> : AssetReference, IAssetReferenceCollection<TAsset> where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
-    private readonly List<TAsset> _assets = new();
+    private readonly List<TAsset> _assets = [];
 
     [DataMember]
-    private readonly HashSet<Guid> _contentIds = new();
+    private readonly HashSet<Guid> _contentIds = [];
 
     private bool _isInitialized;
 

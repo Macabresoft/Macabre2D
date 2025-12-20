@@ -18,23 +18,13 @@ public sealed class AudioClip : Asset<SoundEffect> {
     /// </summary>
     public static readonly string[] ValidFileExtensions = [".wav", ".mp3", ".wma"];
 
-    private VolumeCategory _category;
-
-    private float _defaultPan;
-    private float _defaultPitch;
-    private bool _defaultShouldLoop;
-    private float _defaultVolume = 1f;
-
-    /// <inheritdoc />
-    public override bool IncludeFileExtensionInContentPath => false;
-
     /// <summary>
     /// Gets or sets the category.
     /// </summary>
     [DataMember(Order = 1)]
     public VolumeCategory Category {
-        get => this._category;
-        set => this.Set(ref this._category, value);
+        get;
+        set => this.Set(ref field, value);
     }
 
 
@@ -44,8 +34,8 @@ public sealed class AudioClip : Asset<SoundEffect> {
     [Category("Defaults")]
     [DataMember(Order = 3)]
     public float DefaultPan {
-        get => this._defaultPan;
-        set => this.Set(ref this._defaultPan, MathHelper.Clamp(value, -1f, 1f));
+        get;
+        set => this.Set(ref field, MathHelper.Clamp(value, -1f, 1f));
     }
 
     /// <summary>
@@ -54,8 +44,8 @@ public sealed class AudioClip : Asset<SoundEffect> {
     [Category("Defaults")]
     [DataMember(Order = 2)]
     public float DefaultPitch {
-        get => this._defaultPitch;
-        set => this.Set(ref this._defaultPitch, MathHelper.Clamp(value, -1f, 1f));
+        get;
+        set => this.Set(ref field, MathHelper.Clamp(value, -1f, 1f));
     }
 
     /// <summary>
@@ -64,8 +54,8 @@ public sealed class AudioClip : Asset<SoundEffect> {
     [Category("Defaults")]
     [DataMember(Order = 0)]
     public bool DefaultShouldLoop {
-        get => this._defaultShouldLoop;
-        set => this.Set(ref this._defaultShouldLoop, value);
+        get;
+        set => this.Set(ref field, value);
     }
 
     /// <summary>
@@ -74,9 +64,12 @@ public sealed class AudioClip : Asset<SoundEffect> {
     [Category("Defaults")]
     [DataMember(Order = 1)]
     public float DefaultVolume {
-        get => this._defaultVolume;
-        set => this.Set(ref this._defaultVolume, MathHelper.Clamp(value, -1f, 1f));
-    }
+        get;
+        set => this.Set(ref field, MathHelper.Clamp(value, -1f, 1f));
+    } = 1f;
+
+    /// <inheritdoc />
+    public override bool IncludeFileExtensionInContentPath => false;
 
     /// <inheritdoc />
     public override string GetContentBuildCommands(string contentPath, string fileExtension) {
@@ -113,9 +106,7 @@ public sealed class AudioClip : Asset<SoundEffect> {
     /// </summary>
     /// <param name="settings">The audio settings.</param>
     /// <returns>An audio clip instance.</returns>
-    public IAudioClipInstance GetInstance(AudioSettings settings) {
-        return this.GetInstance(settings, this.DefaultVolume, this.DefaultPan, this.DefaultPitch, this.DefaultShouldLoop);
-    }
+    public IAudioClipInstance GetInstance(AudioSettings settings) => this.GetInstance(settings, this.DefaultVolume, this.DefaultPan, this.DefaultPitch, this.DefaultShouldLoop);
 
     private static string GetImporterName(string fileExtension) {
         // TODO: can we support OGG? I'd like to do that just to be cool.

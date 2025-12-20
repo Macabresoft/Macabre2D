@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework;
 
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 

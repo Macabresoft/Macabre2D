@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,14 +16,14 @@ public interface ISpriteSheetAssetReference : IAssetReference<SpriteSheet> {
     string AssetName { get; }
 
     /// <summary>
-    /// Gets or sets the packaged asset type.
-    /// </summary>
-    Type PackagedAssetType { get; }
-
-    /// <summary>
     /// Gets or sets the packaged asset identifier.
     /// </summary>
     Guid PackagedAssetId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the packaged asset type.
+    /// </summary>
+    Type PackagedAssetType { get; }
 }
 
 /// <summary>
@@ -32,32 +31,28 @@ public interface ISpriteSheetAssetReference : IAssetReference<SpriteSheet> {
 /// </summary>
 /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
 public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet, Texture2D>, ISpriteSheetAssetReference where TPackagedAsset : SpriteSheetMember {
-    private TPackagedAsset? _packagedAsset;
     private Guid _packagedAssetId;
 
     /// <inheritdoc />
     public string AssetName => this.PackagedAsset?.Name ?? string.Empty;
 
-    /// <inheritdoc />
-    public Type PackagedAssetType => typeof(TPackagedAsset);
-
     /// <summary>
     /// Gets the packaged asset.
     /// </summary>
     public TPackagedAsset? PackagedAsset {
-        get => this._packagedAsset;
+        get;
         private set {
-            var originalAsset = this._packagedAsset;
+            var originalAsset = field;
 
-            if (this.Set(ref this._packagedAsset, value)) {
+            if (this.Set(ref field, value)) {
                 if (originalAsset != null) {
                     originalAsset.PropertyChanged -= this.SpriteSheet_OnPropertyChanged;
                 }
 
-                if (this._packagedAsset != null) {
-                    this._packagedAsset.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
+                if (field != null) {
+                    field.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
                 }
-                
+
                 this.RaisePropertyChanged(nameof(this.AssetName));
             }
         }
@@ -73,6 +68,9 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
             }
         }
     }
+
+    /// <inheritdoc />
+    public Type PackagedAssetType => typeof(TPackagedAsset);
 
     /// <inheritdoc />
     public override void Clear() {

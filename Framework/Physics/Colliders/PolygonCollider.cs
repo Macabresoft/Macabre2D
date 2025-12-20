@@ -18,7 +18,7 @@ public abstract class PolygonCollider : Collider {
 
     [DataMember]
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly List<Vector2> _vertices = new();
+    private readonly List<Vector2> _vertices = [];
 
     private readonly ResettableLazy<List<Vector2>> _worldPoints;
 
@@ -184,9 +184,7 @@ public abstract class PolygonCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override Vector2 GetCenter() {
-        return this._center.Value;
-    }
+    public override Vector2 GetCenter() => this._center.Value;
 
     /// <inheritdoc />
     public override bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
@@ -240,18 +238,14 @@ public abstract class PolygonCollider : Collider {
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
-        return this.Normals;
-    }
+    protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) => this.Normals;
 
     /// <summary>
     /// Gets the next world point based on the given index.
     /// </summary>
     /// <param name="current">The current.</param>
     /// <returns>Gets the next world point.</returns>
-    protected Vector2 GetNextWorldPoint(int current) {
-        return this._worldPoints.Value[current + 1 == this.WorldPoints.Count ? 0 : current + 1];
-    }
+    protected Vector2 GetNextWorldPoint(int current) => this._worldPoints.Value[current + 1 == this.WorldPoints.Count ? 0 : current + 1];
 
     /// <summary>
     /// Gets this polygon's normals.
@@ -269,9 +263,7 @@ public abstract class PolygonCollider : Collider {
     }
 
     /// <inheritdoc />
-    protected override Projection GetProjection(Vector2 axis) {
-        return Projection.CreatePolygonProjection(axis, this.WorldPoints);
-    }
+    protected override Projection GetProjection(Vector2 axis) => Projection.CreatePolygonProjection(axis, this.WorldPoints);
 
     /// <inheritdoc />
     protected override void ResetLazyFields() {
@@ -321,7 +313,7 @@ public abstract class PolygonCollider : Collider {
         result = hasIntersection ? new RaycastHit(this, contactPoint, normal) : RaycastHit.Empty;
         return hasIntersection;
     }
-    
+
     private List<Vector2> CreateWorldPoints() {
         var worldPoints = new List<Vector2>();
         if (this.Body != null) {

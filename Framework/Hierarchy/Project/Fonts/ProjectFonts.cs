@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 [DataContract]
 public class ProjectFonts {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<ProjectFontKey, ProjectFontDefinition> _categoryAndCultureToFontDefinition = new();
+    private readonly Dictionary<ProjectFontKey, ProjectFontDefinition> _categoryAndCultureToFontDefinition = [];
 
     /// <summary>
     /// Removes the font with the given <see cref="FontCategory" /> and <see cref="ResourceCulture" />.

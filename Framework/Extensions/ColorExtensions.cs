@@ -6,32 +6,30 @@ using Microsoft.Xna.Framework;
 /// Extension methods for <see cref="Color" />.
 /// </summary>
 public static class ColorExtensions {
-    /// <summary>
-    /// Gets either black or white depending on which contrasts with the provided color.
-    /// </summary>
     /// <param name="color">The color.</param>
-    /// <returns>Black or white depending on which contrasts with the provided color.</returns>
-    public static Color GetContrastingBlackOrWhite(this Color color) {
-        var luma = color.GetLuma();
-        return luma < 127 ? Color.White : Color.Black;
-    }
+    extension(Color color) {
+        /// <summary>
+        /// Gets either black or white depending on which contrasts with the provided color.
+        /// </summary>
+        /// <returns>Black or white depending on which contrasts with the provided color.</returns>
+        public Color GetContrastingBlackOrWhite() {
+            var luma = color.GetLuma();
+            return luma < 127 ? Color.White : Color.Black;
+        }
 
-    /// <summary>
-    /// Gets the luma value for the provided color.
-    /// </summary>
-    /// <param name="color">The color.</param>
-    /// <returns>The luma value.</returns>
-    public static float GetLuma(this Color color) {
-        color.Deconstruct(out var red, out var green, out byte blue);
-        return 0.2126f * red + 0.7152f * green + 0.0722f * blue;
-    }
+        /// <summary>
+        /// Gets the luma value for the provided color.
+        /// </summary>
+        /// <returns>The luma value.</returns>
+        public float GetLuma() {
+            color.Deconstruct(out var red, out var green, out byte blue);
+            return 0.2126f * red + 0.7152f * green + 0.0722f * blue;
+        }
 
-    /// <summary>
-    /// Converts the color to a hex code.
-    /// </summary>
-    /// <param name="color">The color.</param>
-    /// <returns>The hex code.</returns>
-    public static string ToHex(this Color color) {
-        return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+        /// <summary>
+        /// Converts the color to a hex code.
+        /// </summary>
+        /// <returns>The hex code.</returns>
+        public string ToHex() => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
     }
 }

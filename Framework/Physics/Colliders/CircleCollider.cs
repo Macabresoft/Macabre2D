@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -12,7 +11,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 /// <seealso cref="Collider" />
 public sealed class CircleCollider : Collider {
-    private float _radius = 1f;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircleCollider" /> class.
@@ -40,18 +38,17 @@ public sealed class CircleCollider : Collider {
     /// <value>The radius.</value>
     [DataMember]
     public float Radius {
-        get => this._radius;
+        get;
         set {
-            this._radius = value;
+            field = value;
             this.ResetLazyFields();
         }
-    }
+    } = 1f;
 
     /// <inheritdoc />
-    public override bool Contains(Vector2 point) {
+    public override bool Contains(Vector2 point) =>
         // Do we want to do <= here?
-        return Vector2.Distance(point, this.Center) <= this.Radius;
-    }
+        Vector2.Distance(point, this.Center) <= this.Radius;
 
     /// <inheritdoc />
     public override bool Contains(Collider other) {
@@ -74,18 +71,15 @@ public sealed class CircleCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override Vector2 GetCenter() {
-        return this.Center;
-    }
+    public override Vector2 GetCenter() => this.Center;
 
     /// <inheritdoc />
-    protected override BoundingArea CreateBoundingArea() {
-        return new BoundingArea(
+    protected override BoundingArea CreateBoundingArea() =>
+        new(
             this.Center.X - this.Radius,
             this.Center.X + this.Radius,
             this.Center.Y - this.Radius,
             this.Center.Y + this.Radius);
-    }
 
     /// <inheritdoc />
     protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {

@@ -23,11 +23,6 @@ public class SpriteSheetFont : SpriteSheetKeyedMember<char> {
 
     private readonly Dictionary<char, float> _characterToWidth = new();
 
-    [DataMember]
-    private string _characterLayout = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.?!,-=+: ";
-
-    private int _kerning;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteSheetFont" /> class.
     /// </summary>
@@ -36,33 +31,34 @@ public class SpriteSheetFont : SpriteSheetKeyedMember<char> {
     }
 
     /// <summary>
-    /// Gets the font characters and their settings.
-    /// </summary>
-    public IReadOnlyCollection<SpriteSheetFontCharacter> FontCharacters => this._characterIndexToCharacter.Values;
-
-    /// <summary>
     /// The character layout of this sprite sheet.
     /// </summary>
+    [field: DataMember]
     public string CharacterLayout {
-        get => this._characterLayout;
+        get;
         set {
-            this._characterLayout = new string(value.Distinct().ToArray());
+            field = new string(value.Distinct().ToArray());
 
-            foreach (var character in this._characterToIndex.Keys.Where(x => !this._characterLayout.Contains(x))) {
+            foreach (var character in this._characterToIndex.Keys.Where(x => !field.Contains(x))) {
                 this.ClearSprite(character);
             }
         }
-    }
+    } = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.?!,-=+: ";
+
+    /// <summary>
+    /// Gets the font characters and their settings.
+    /// </summary>
+    public IReadOnlyCollection<SpriteSheetFontCharacter> FontCharacters => this._characterIndexToCharacter.Values;
 
     /// <summary>
     /// Gets or sets the default kerning for this.
     /// </summary>
     [DataMember]
     public int Kerning {
-        get => this._kerning;
+        get;
         set {
-            if (this._kerning != value) {
-                this._kerning = value;
+            if (field != value) {
+                field = value;
                 this._characterToWidth.Clear();
             }
         }

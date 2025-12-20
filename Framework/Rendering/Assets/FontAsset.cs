@@ -18,12 +18,6 @@ public enum FontStyle {
 /// A font to be used by the <see cref="TextRenderer" />.
 /// </summary>
 public sealed class FontAsset : Asset<SpriteFont> {
-    private bool _premultiplyAlpha = true;
-    private float _size = 12;
-    private float _spacing;
-    private FontStyle _style = FontStyle.Regular;
-    private TextureProcessorOutputFormat _textureFormat = TextureProcessorOutputFormat.Compressed;
-    private bool _useKerning = true;
 
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
@@ -33,28 +27,28 @@ public sealed class FontAsset : Asset<SpriteFont> {
     /// </summary>
     [DataMember]
     public bool PremultiplyAlpha {
-        get => this._premultiplyAlpha;
+        get;
 
-        set => this.Set(ref this._premultiplyAlpha, value);
-    }
+        set => this.Set(ref field, value);
+    } = true;
 
     /// <summary>
     /// Gets or sets the size of the sprite font.
     /// </summary>
     public float Size {
-        get => this._size;
+        get;
 
-        set => this.Set(ref this._size, value);
-    }
+        set => this.Set(ref field, value);
+    } = 12;
 
     /// <summary>
     /// Gets or sets the spacing for the sprite font.
     /// </summary>
     public float Spacing {
-        get => this._spacing;
+        get;
 
         set {
-            if (this.Set(ref this._spacing, value) && this.Content != null) {
+            if (this.Set(ref field, value) && this.Content != null) {
                 this.Content.Spacing = this.Spacing;
             }
         }
@@ -64,29 +58,29 @@ public sealed class FontAsset : Asset<SpriteFont> {
     /// Gets or sets the style of the sprite font.
     /// </summary>
     public FontStyle Style {
-        get => this._style;
+        get;
 
-        set => this.Set(ref this._style, value);
-    }
+        set => this.Set(ref field, value);
+    } = FontStyle.Regular;
 
     /// <summary>
     /// Gets or sets the texture format of the sprite font.
     /// </summary>
     [DataMember]
     public TextureProcessorOutputFormat TextureFormat {
-        get => this._textureFormat;
+        get;
 
-        set => this.Set(ref this._textureFormat, value);
-    }
+        set => this.Set(ref field, value);
+    } = TextureProcessorOutputFormat.Compressed;
 
     /// <summary>
     /// Gets or sets a value indicating whether or not to use kerning for this sprite font.
     /// </summary>
     public bool UseKerning {
-        get => this._useKerning;
+        get;
 
-        set => this.Set(ref this._useKerning, value);
-    }
+        set => this.Set(ref field, value);
+    } = true;
 
     /// <inheritdoc />
     public override string GetContentBuildCommands(string contentPath, string fileExtension) {

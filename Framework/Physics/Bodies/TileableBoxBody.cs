@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -11,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// A tileable body that creates rectangle colliders to fill out the active tiles on a <see cref="ITileableEntity" />.
 /// </summary>
 public class TileableBoxBody : PhysicsBody {
-    private readonly List<Collider> _colliders = new();
+    private readonly List<Collider> _colliders = [];
     private Orientation _colliderOrientation;
     private ITileableEntity? _tileable;
 
@@ -20,9 +19,6 @@ public class TileableBoxBody : PhysicsBody {
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? BoundingArea.Empty;
-
-    /// <inheritdoc />
-    public override bool HasCollider => this._colliders.Any();
 
     /// <summary>
     /// Gets or sets the orientation of this collider.
@@ -40,6 +36,9 @@ public class TileableBoxBody : PhysicsBody {
             }
         }
     }
+
+    /// <inheritdoc />
+    public override bool HasCollider => this._colliders.Any();
 
     /// <inheritdoc />
     public override void Deinitialize() {

@@ -34,7 +34,7 @@ public interface IAssetPackage {
 [DataContract]
 public abstract class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
     [DataMember]
-    private readonly ObservableCollectionExtended<IIdentifiable> _packagedObjects = new();
+    private readonly ObservableCollectionExtended<IIdentifiable> _packagedObjects = [];
 
     /// <inheritdoc />
     public bool HasPackagedAsset(Guid packagedAssetId) {

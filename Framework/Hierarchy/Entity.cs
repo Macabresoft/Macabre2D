@@ -225,9 +225,6 @@ public class Entity : Transformable, IEntity {
     [DataMember]
     private readonly EntityCollection _children = [];
 
-    private bool _isEnabled = true;
-    private string _name = string.Empty;
-
     /// <inheritdoc />
     public event EventHandler? IsEnabledChanged;
 
@@ -252,13 +249,13 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     [DataMember]
     public bool IsEnabled {
-        get => this._isEnabled;
+        get;
         set {
-            if (this.Set(ref this._isEnabled, value)) {
+            if (this.Set(ref field, value)) {
                 this.OnIsEnableChanged();
             }
         }
-    }
+    } = true;
 
     /// <inheritdoc />
     [DataMember]
@@ -267,15 +264,15 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     [DataMember]
     public string Name {
-        get => this._name;
+        get;
         set {
-            this._name = value;
+            field = value;
 
             if (BaseGame.IsDesignMode) {
                 this.RaisePropertyChanged();
             }
         }
-    }
+    } = string.Empty;
 
     /// <inheritdoc />
     public IEntity Parent { get; private set; } = EmptyObject.Entity;

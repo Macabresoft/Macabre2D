@@ -28,7 +28,6 @@ public interface IUpdateableEntity : IEntity, IUpdateableGameObject {
 [Category("Updateable")]
 public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     private bool _shouldUpdate = true;
-    private int _updateOrder;
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
@@ -51,9 +50,9 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     [DataMember]
     [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
     public int UpdateOrder {
-        get => this._updateOrder;
+        get;
         set {
-            if (this.Set(ref this._updateOrder, value) && this.IsInitialized) {
+            if (this.Set(ref field, value) && this.IsInitialized) {
                 this.UpdateOrderChanged.SafeInvoke(this);
             }
         }

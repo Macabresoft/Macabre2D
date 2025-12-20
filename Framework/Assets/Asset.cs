@@ -67,8 +67,6 @@ public interface IAsset<TContent> : IAsset {
 [Category("Asset")]
 [DataContract]
 public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent> {
-    private bool _ignoreInBuild;
-    private string _notes = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
@@ -88,8 +86,8 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     /// <inheritdoc />
     [DataMember]
     public bool IgnoreInBuild {
-        get => this._ignoreInBuild;
-        set => this.Set(ref this._ignoreInBuild, value);
+        get;
+        set => this.Set(ref field, value);
     }
 
     /// <inheritdoc />
@@ -98,9 +96,9 @@ public abstract class Asset<TContent> : PropertyChangedNotifier, IAsset<TContent
     /// <inheritdoc />
     [DataMember]
     public string Notes {
-        get => this._notes;
-        set => this.Set(ref this._notes, value);
-    }
+        get;
+        set => this.Set(ref field, value);
+    } = string.Empty;
 
     /// <inheritdoc />
     public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {

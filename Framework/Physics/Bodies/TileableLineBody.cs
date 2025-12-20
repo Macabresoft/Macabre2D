@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// and creates horizontal line colliders based on the grid.
 /// </summary>
 public class TileableLineBody : PhysicsBody {
-    private readonly List<Collider> _colliders = new();
+    private readonly List<Collider> _colliders = [];
     private Orientation _colliderOrientation;
     private ITileableEntity? _tileable;
 

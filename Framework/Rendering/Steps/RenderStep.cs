@@ -46,8 +46,6 @@ public interface IRenderStep : IEnableable, IIdentifiable, INameable {
 /// </summary>
 [DataContract]
 public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
-    private bool _isEnabled = true;
-    private string _name = "Render Step";
 
     /// <inheritdoc />
     [DataMember]
@@ -57,21 +55,21 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
     /// <inheritdoc />
     [DataMember]
     public bool IsEnabled {
-        get => this._isEnabled;
-        set => this.Set(ref this._isEnabled, value);
-    }
-
-    /// <summary>
-    /// Gets the current <see cref="IGame"/>.
-    /// </summary>
-    protected IGame Game { get; private set; } = BaseGame.Empty;
+        get;
+        set => this.Set(ref field, value);
+    } = true;
 
     /// <inheritdoc />
     [DataMember]
     public string Name {
-        get => this._name;
-        set => this.Set(ref this._name, value);
-    }
+        get;
+        set => this.Set(ref field, value);
+    } = "Render Step";
+
+    /// <summary>
+    /// Gets the current <see cref="IGame" />.
+    /// </summary>
+    protected IGame Game { get; private set; } = BaseGame.Empty;
 
     /// <inheritdoc />
     public virtual void Initialize(IAssetManager assets, IGame game) {
@@ -87,6 +85,5 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
 
     /// <inheritdoc />
     public virtual void Reset() {
-        
     }
 }

@@ -281,7 +281,6 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
 
-    private BoundingArea _boundingArea = BoundingArea.Empty;
     private IGame _game = BaseGame.Empty;
     private bool _isBusy;
     private bool _isInitialized;
@@ -321,14 +320,14 @@ public sealed class Scene : GridContainer, IScene {
     /// <inheritdoc />
     [DataMember]
     public BoundingArea BoundingArea {
-        get => this._boundingArea;
+        get;
         set {
-            this._boundingArea = value;
+            field = value;
             if (this.IsInitialized) {
                 this.BoundingAreaChanged.SafeInvoke(this);
             }
         }
-    }
+    } = BoundingArea.Empty;
 
     /// <inheritdoc />
     public IReadOnlyCollection<ICamera> Cameras => this._cameras;

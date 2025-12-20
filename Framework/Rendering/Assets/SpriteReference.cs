@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// A reference to a sprite on a <see cref="SpriteSheet" />.
 /// </summary>
 public class SpriteReference : AssetReference<SpriteSheet, Texture2D> {
-    private byte _spriteIndex;
 
     /// <summary>
     /// Gets or sets the sprite index on a <see cref="SpriteSheet" />. The sprite sheet is read from left to right, top to
@@ -16,8 +15,8 @@ public class SpriteReference : AssetReference<SpriteSheet, Texture2D> {
     /// </summary>
     [DataMember]
     public byte SpriteIndex {
-        get => this._spriteIndex;
-        set => this.Set(ref this._spriteIndex, value);
+        get;
+        set => this.Set(ref field, value);
     }
 
     /// <inheritdoc />

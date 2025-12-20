@@ -8,8 +8,15 @@ using Macabresoft.Core;
 /// </summary>
 [DataContract]
 public abstract class SpriteSheetIcon : PropertyChangedNotifier {
-    private int _kerning;
-    private byte? _spriteIndex;
+
+    /// <summary>
+    /// Gets or sets the kerning for this character.
+    /// </summary>
+    [DataMember]
+    public int Kerning {
+        get;
+        set => this.Set(ref field, value);
+    }
 
     /// <summary>
     /// Gets the name of this icon.
@@ -17,21 +24,12 @@ public abstract class SpriteSheetIcon : PropertyChangedNotifier {
     public abstract string Name { get; }
 
     /// <summary>
-    /// Gets or sets the kerning for this character.
-    /// </summary>
-    [DataMember]
-    public int Kerning {
-        get => this._kerning;
-        set => this.Set(ref this._kerning, value);
-    }
-
-    /// <summary>
     /// Gets or sets the sprite index.
     /// </summary>
     [DataMember]
     public byte? SpriteIndex {
-        get => this._spriteIndex;
-        set => this.Set(ref this._spriteIndex, value);
+        get;
+        set => this.Set(ref field, value);
     }
 }
 

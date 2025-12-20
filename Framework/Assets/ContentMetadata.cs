@@ -44,7 +44,7 @@ public class ContentMetadata {
     public ContentMetadata(IAsset asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
         this.Asset = asset;
         this.ContentFileExtension = contentFileExtension;
-        this._splitContentPath = splitContentPath?.ToList() ?? new List<string>();
+        this._splitContentPath = splitContentPath.ToList();
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class ContentMetadata {
     /// <summary>
     /// Gets the content identifier.
     /// </summary>
-    public Guid ContentId => this.Asset?.ContentId ?? Guid.Empty;
+    public Guid ContentId => this.Asset.ContentId;
 
     /// <summary>
     /// Gets the content's path.

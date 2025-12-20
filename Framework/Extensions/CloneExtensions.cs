@@ -13,7 +13,7 @@ public static class CloneExtensions {
     /// </summary>
     /// <param name="entity">The entity to clone.</param>
     /// <param name="clone">The cloned entity.</param>
-    /// <returns>A value indicating whether or not the clone was successful.</returns>
+    /// <returns>A value indicating whether the clone was successful.</returns>
     public static bool TryClone(this IEntity entity, [NotNullWhen(true)] out IEntity? clone) {
         var result = false;
         var json = Serializer.Instance.SerializeToString(entity);

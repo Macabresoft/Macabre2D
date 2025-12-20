@@ -7,20 +7,19 @@ using Macabresoft.Core;
 /// A key for a sprite animation in a <see cref="SpriteAnimationKey" />.
 /// </summary>
 public abstract class SpriteAnimationKey : PropertyChangedNotifier {
-    private Guid _animationId;
-
-    /// <summary>
-    /// Gets the name of this animation key.
-    /// </summary>
-    public abstract string Name { get; }
 
     /// <summary>
     /// Gets or sets the animation identifier.
     /// </summary>
     public Guid AnimationId {
-        get => this._animationId;
-        set => this.Set(ref this._animationId, value);
+        get;
+        set => this.Set(ref field, value);
     }
+
+    /// <summary>
+    /// Gets the name of this animation key.
+    /// </summary>
+    public abstract string Name { get; }
 }
 
 /// <summary>

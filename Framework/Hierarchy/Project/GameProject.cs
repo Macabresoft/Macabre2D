@@ -70,6 +70,11 @@ public interface IGameProject : INotifyPropertyChanged {
     Guid PersistentOverlaySceneId { get; }
 
     /// <summary>
+    /// Gets the physics materials.
+    /// </summary>
+    PhysicsMaterialCollection PhysicsMaterials { get; }
+
+    /// <summary>
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort PixelsPerUnit { get; set; }
@@ -78,11 +83,6 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the screen shaders for this project.
     /// </summary>
     RenderStepCollection RenderSteps { get; }
-    
-    /// <summary>
-    /// Gets the physics materials.
-    /// </summary>
-    PhysicsMaterialCollection PhysicsMaterials { get; }
 
     /// <summary>
     /// Gets the identifier of the scene to load on a debug startup.
@@ -154,8 +154,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
 
     private Point _internalRenderResolution = new(800, 600);
-    private ushort _pixelsPerUnit = 32;
-    private float _viewHeight = 10f;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
@@ -227,28 +225,28 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
+    public PhysicsMaterialCollection PhysicsMaterials { get; } = [];
+
+    /// <inheritdoc />
+    [DataMember]
     public ushort PixelsPerUnit {
-        get => this._pixelsPerUnit;
+        get;
         set {
             if (value < 1) {
                 throw new ArgumentOutOfRangeException($"{nameof(this.PixelsPerUnit)} must be greater than 0!");
             }
 
-            if (value != this._pixelsPerUnit) {
-                this._pixelsPerUnit = value;
-                this.UnitsPerPixel = 1f / this._pixelsPerUnit;
+            if (value != field) {
+                field = value;
+                this.UnitsPerPixel = 1f / field;
                 this.ResetViewSize();
             }
         }
-    }
+    } = 32;
 
     /// <inheritdoc />
     [DataMember]
     public RenderStepCollection RenderSteps { get; } = [];
-
-    /// <inheritdoc />
-    [DataMember]
-    public PhysicsMaterialCollection PhysicsMaterials { get; } = [];
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]
@@ -265,9 +263,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     public float ViewHeight {
-        get => this._viewHeight;
-        private set => this._viewHeight = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
-    }
+        get;
+        private set => field = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
+    } = 10f;
 
     /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);

@@ -46,7 +46,6 @@ public interface IFixedUpdateableEntity : INotifyPropertyChanged, IEnableable {
 /// </summary>
 public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
     private bool _shouldUpdate;
-    private int _updateOrder;
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
@@ -68,9 +67,9 @@ public abstract class FixedUpdateableEntity : Entity, IFixedUpdateableEntity {
     /// <inheritdoc />
     [DataMember]
     public int UpdateOrder {
-        get => this._updateOrder;
+        get;
         set {
-            if (this.Set(ref this._updateOrder, value)) {
+            if (this.Set(ref field, value)) {
                 this.UpdateOrderChanged.SafeInvoke(this);
             }
         }

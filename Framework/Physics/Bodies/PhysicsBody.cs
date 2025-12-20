@@ -63,7 +63,6 @@ public interface IPhysicsBody : IBoundableEntity {
 /// </summary>
 [Category("Body")]
 public abstract class PhysicsBody : Entity, IPhysicsBody {
-    private int _updateOrder;
 
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
@@ -96,9 +95,9 @@ public abstract class PhysicsBody : Entity, IPhysicsBody {
     /// <inheritdoc />
     [DataMember]
     public int UpdateOrder {
-        get => this._updateOrder;
+        get;
         set {
-            if (this.Set(ref this._updateOrder, value)) {
+            if (this.Set(ref field, value)) {
                 this.UpdateOrderChanged.SafeInvoke(this);
             }
         }

@@ -8,8 +8,6 @@ using Macabresoft.Core;
 /// </summary>
 [DataContract]
 public sealed class SpriteAnimationStep : PropertyChangedNotifier {
-    private int _frames = 1;
-    private byte? _spriteIndex;
 
     /// <summary>
     /// Gets or sets the number of frames this sprite will be seen.
@@ -17,13 +15,13 @@ public sealed class SpriteAnimationStep : PropertyChangedNotifier {
     /// <value>The number of frames.</value>
     [DataMember]
     public int Frames {
-        get => this._frames;
+        get;
         set {
             if (value > 0) {
-                this.Set(ref this._frames, value);
+                this.Set(ref field, value);
             }
         }
-    }
+    } = 1;
 
     /// <summary>
     /// Gets or sets the sprite.
@@ -31,7 +29,7 @@ public sealed class SpriteAnimationStep : PropertyChangedNotifier {
     /// <value>The sprite.</value>
     [DataMember]
     public byte? SpriteIndex {
-        get => this._spriteIndex;
-        set => this.Set(ref this._spriteIndex, value);
+        get;
+        set => this.Set(ref field, value);
     }
 }

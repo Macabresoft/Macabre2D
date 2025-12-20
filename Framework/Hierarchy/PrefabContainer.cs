@@ -27,7 +27,7 @@ public interface IPrefabContainer : IEntity {
 /// An entity which loads a <see cref="PrefabAsset" />.
 /// </summary>
 public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntity {
-    private IEntity? _prefabChild;
+    private Entity? _prefabChild;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;

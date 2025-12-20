@@ -52,7 +52,7 @@ public interface IEntityReferenceCollection : IEntityReference {
 [DataContract]
 public abstract class EntityReferenceCollection : PropertyChangedNotifier, IEntityReferenceCollection {
     [DataMember]
-    private readonly HashSet<Guid> _entityIds = new();
+    private readonly HashSet<Guid> _entityIds = [];
 
     /// <inheritdoc />
     public IReadOnlyCollection<Guid> EntityIds => this._entityIds;

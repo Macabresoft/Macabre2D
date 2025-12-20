@@ -27,7 +27,6 @@ public class TriangleBody : PhysicsBody {
     private readonly LineCollider _leftCollider = new();
     private readonly LineCollider _rightCollider = new();
     private float _height = 1f;
-    private TrianglePeakPosition _peakPosition = TrianglePeakPosition.Center;
     private float _width = 1f;
 
     /// <inheritdoc />
@@ -99,14 +98,14 @@ public class TriangleBody : PhysicsBody {
     /// </summary>
     [DataMember]
     public TrianglePeakPosition PeakPosition {
-        get => this._peakPosition;
+        get;
         set {
-            if (value != this._peakPosition) {
-                this._peakPosition = value;
+            if (value != field) {
+                field = value;
                 this.ResetColliders();
             }
         }
-    }
+    } = TrianglePeakPosition.Center;
 
     /// <summary>
     /// Gets or sets the width. Setting this is fairly expensive and should be avoided during

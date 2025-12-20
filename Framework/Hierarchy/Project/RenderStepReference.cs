@@ -5,12 +5,11 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A reference to a <see cref="ScreenShaderRenderStep"/>.
+/// A reference to a <see cref="ScreenShaderRenderStep" />.
 /// </summary>
 [DataContract]
 public class RenderStepReference {
-    private RenderStep? _step;
-    
+
     /// <summary>
     /// Gets or sets the screen shader identifier.
     /// </summary>
@@ -21,13 +20,13 @@ public class RenderStepReference {
     /// Gets the render step.
     /// </summary>
     public RenderStep? Step {
-        get => this._step;
+        get;
         set {
-            this._step = value;
-            this.Id = this._step?.Id ?? Guid.Empty;
+            field = value;
+            this.Id = field?.Id ?? Guid.Empty;
         }
     }
-    
+
     /// <summary>
     /// Initializes this instance.
     /// </summary>

@@ -24,14 +24,10 @@ public class BaseGame : Game, IGame {
     private readonly List<GameTransition> _runningTransitions = [];
     private readonly Stack<IScene> _sceneStack = new();
     private bool _canToggleFullscreen = true;
-    private InputDevice _desiredInputDevice = InputDevice.Auto;
     private Rectangle _finalRenderBounds;
     private RenderTarget2D? _gameRenderTarget;
-    private double _gameSpeed = 1d;
     private GameTime _gameTime = new();
     private Point _intermediateRenderResolution;
-    private IGameProject _project = new GameProject();
-    private UserSettings _userSettings = new();
 
     /// <inheritdoc />
     public event EventHandler<ResourceCulture>? CultureChanged;
@@ -99,14 +95,14 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public InputDevice DesiredInputDevice {
-        get => this._desiredInputDevice;
+        get;
         protected set {
-            if (value != this._desiredInputDevice && value != InputDevice.Auto) {
-                this._desiredInputDevice = value;
-                this.InputDeviceChanged.SafeInvoke(this, this._desiredInputDevice);
+            if (value != field && value != InputDevice.Auto) {
+                field = value;
+                this.InputDeviceChanged.SafeInvoke(this, field);
             }
         }
-    }
+    } = InputDevice.Auto;
 
     /// <inheritdoc />
     public DisplaySettings DisplaySettings => this.UserSettings.Display;
@@ -116,15 +112,15 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public double GameSpeed {
-        get => this._gameSpeed;
+        get;
 
         set {
-            if (value >= 0f && Math.Abs(this._gameSpeed - value) > 0.001f) {
-                this._gameSpeed = value;
-                this.GameSpeedChanged.SafeInvoke(this, this._gameSpeed);
+            if (value >= 0f && Math.Abs(field - value) > 0.001f) {
+                field = value;
+                this.GameSpeedChanged.SafeInvoke(this, field);
             }
         }
-    }
+    } = 1d;
 
     /// <inheritdoc />
     public IInputActionIconResolver InputActionIconResolver { get; } = new InputActionIconResolver();
@@ -150,12 +146,12 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public IGameProject Project {
-        get => this._project;
+        get;
         protected set {
-            this._project = value;
+            field = value;
             this.ApplyDisplaySettings();
         }
-    }
+    } = new GameProject();
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
@@ -168,12 +164,12 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public UserSettings UserSettings {
-        get => this._userSettings;
+        get;
         private set {
-            this._userSettings = value;
+            field = value;
             this.ApplyDisplaySettings();
         }
-    }
+    } = new();
 
     /// <inheritdoc />
     public Point ViewportSize { get; private set; }

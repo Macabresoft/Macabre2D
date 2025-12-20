@@ -12,9 +12,9 @@ using Microsoft.Xna.Framework.Graphics;
 /// Reference for a <see cref="SpriteSheet" /> which aids in emitting animations.
 /// </summary>
 public class AnimationEmitterReference : SpriteSheetReference {
-    private readonly List<PositionalSpriteAnimation> _availableAnimations = new();
+    private readonly List<PositionalSpriteAnimation> _availableAnimations = [];
     private readonly Random _randomizer = new();
-    private readonly List<PositionalSpriteAnimation> _runningAnimations = new();
+    private readonly List<PositionalSpriteAnimation> _runningAnimations = [];
 
     /// <summary>
     /// Gets or sets the emission offset.

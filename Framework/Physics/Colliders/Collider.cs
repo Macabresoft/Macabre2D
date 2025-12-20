@@ -20,9 +20,6 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
 
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _worldPosition;
-    private Vector2 _offset;
-
-    private Layers _overrideLayers = Layers.None;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -48,20 +45,20 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     /// </summary>
     [DataMember(Name = "Collider Layers")]
     public Layers Layers {
-        get => this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Layers ?? Layers.None;
-        set => this._overrideLayers = value;
-    }
+        get => field != Layers.None ? field : this.Body?.Layers ?? Layers.None;
+        set;
+    } = Layers.None;
 
     /// <summary>
     /// Gets the offset.
     /// </summary>
     [DataMember]
     public Vector2 Offset {
-        get => this._offset;
+        get;
 
         set {
-            if (this._offset != value) {
-                this._offset = value;
+            if (field != value) {
+                field = value;
                 this.Reset();
             }
         }
@@ -163,6 +160,15 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
     public abstract bool Contains(Vector2 point);
 
     /// <summary>
+    /// Deinitializes this collider.
+    /// </summary>
+    public void Deinitialize() {
+        this.Body.TransformChanged -= this.Body_TransformChanged;
+        this.Body = EmptyObject.Instance;
+        this.Reset();
+    }
+
+    /// <summary>
     /// Gets the center of the collider.
     /// </summary>
     /// <returns>The center of the collider.</returns>
@@ -176,15 +182,6 @@ public abstract class Collider : PropertyChangedNotifier, IBoundable {
         this.Body.TransformChanged -= this.Body_TransformChanged;
         this.Body = body;
         this.Body.TransformChanged += this.Body_TransformChanged;
-        this.Reset();
-    }
-
-    /// <summary>
-    /// Deinitializes this collider.
-    /// </summary>
-    public void Deinitialize() {
-        this.Body.TransformChanged -= this.Body_TransformChanged;
-        this.Body = EmptyObject.Instance;
         this.Reset();
     }
 

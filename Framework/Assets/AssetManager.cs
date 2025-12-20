@@ -120,7 +120,7 @@ public sealed class AssetManager : IAssetManager {
     /// </summary>
     public static readonly IAssetManager Empty = new EmptyAssetManager();
 
-    private readonly HashSet<ContentMetadata> _loadedMetadata = new();
+    private readonly HashSet<ContentMetadata> _loadedMetadata = [];
     private ContentManager? _contentManager;
     private ISerializer? _serializer;
 

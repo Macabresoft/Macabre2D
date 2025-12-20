@@ -20,7 +20,22 @@ public interface IEntityReference : IGameObjectReference {
 /// </summary>
 [DataContract]
 public abstract class EntityReference : PropertyChangedNotifier, IEntityReference {
-    private Guid _entityId;
+
+    /// <summary>
+    /// Gets or sets the entity identifier.
+    /// </summary>
+    [DataMember]
+    [EntityGuid]
+    public Guid EntityId {
+        get;
+        set {
+            if (field != value) {
+                field = value;
+                this.ResetEntity();
+                this.RaisePropertyChanged();
+            }
+        }
+    }
 
     /// <inheritdoc />
     public abstract Type Type { get; }
@@ -29,22 +44,6 @@ public abstract class EntityReference : PropertyChangedNotifier, IEntityReferenc
     /// Gets an untyped version of the entity.
     /// </summary>
     public abstract IEntity? UntypedEntity { get; }
-
-    /// <summary>
-    /// Gets or sets the entity identifier.
-    /// </summary>
-    [DataMember]
-    [EntityGuid]
-    public Guid EntityId {
-        get => this._entityId;
-        set {
-            if (this._entityId != value) {
-                this._entityId = value;
-                this.ResetEntity();
-                this.RaisePropertyChanged();
-            }
-        }
-    }
 
     /// <summary>
     /// Gets the scene.
@@ -75,12 +74,6 @@ public abstract class EntityReference : PropertyChangedNotifier, IEntityReferenc
 public class EntityReference<TEntity> : EntityReference where TEntity : class, IEntity {
     private TEntity? _entity;
 
-    /// <inheritdoc />
-    public override Type Type => typeof(TEntity);
-
-    /// <inheritdoc />
-    public override IEntity? UntypedEntity => this.Entity;
-
     /// <summary>
     /// Gets the entity.
     /// </summary>
@@ -88,6 +81,12 @@ public class EntityReference<TEntity> : EntityReference where TEntity : class, I
         get => this._entity;
         private set => this.Set(ref this._entity, value);
     }
+
+    /// <inheritdoc />
+    public override Type Type => typeof(TEntity);
+
+    /// <inheritdoc />
+    public override IEntity? UntypedEntity => this.Entity;
 
     /// <inheritdoc />
     public override void Deinitialize() {
