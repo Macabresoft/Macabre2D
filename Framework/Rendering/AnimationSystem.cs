@@ -11,15 +11,6 @@ using Macabresoft.Macabre2D.Project.Common;
 public class AnimationSystem : UpdateSystem {
     private byte _frameRate = 30;
 
-    /// <inheritdoc />
-    public override UpdateSystemKind Kind => UpdateSystemKind.PostUpdate;
-
-    /// <summary>
-    /// Gets the bottom edge's overriden layer.
-    /// </summary>
-    [DataMember(Name = "Layers to Animate")]
-    public LayersOverride LayersToUpdate { get; } = new();
-
     /// <summary>
     /// Gets or sets the frame rate. This is represented in frames per second.
     /// </summary>
@@ -34,6 +25,9 @@ public class AnimationSystem : UpdateSystem {
             }
         }
     }
+
+    /// <inheritdoc />
+    public override UpdateSystemKind Kind => UpdateSystemKind.PostUpdate;
 
     /// <summary>
     /// Gets or sets the milliseconds that have passed for this animation.

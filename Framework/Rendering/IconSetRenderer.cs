@@ -12,8 +12,6 @@ using Microsoft.Xna.Framework;
 /// <typeparam name="TIconSetReference">The type of icon set reference.</typeparam>
 public abstract class IconSetRenderer<TKey, TIconSet, TIconSetReference> : BaseSpriteEntity where TKey : struct where TIconSet : SpriteSheetIconSet<TKey> where TIconSetReference : SpriteSheetAssetReference<TIconSet>, new() {
     private int _currentKerning;
-    private int _kerning;
-    private TKey _key;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
 
@@ -23,18 +21,15 @@ public abstract class IconSetRenderer<TKey, TIconSet, TIconSetReference> : BaseS
     [DataMember]
     public TIconSetReference IconSetReference { get; } = new();
 
-    /// <inheritdoc />
-    public override byte? SpriteIndex => this._spriteIndex;
-
     /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
     /// </summary>
     [DataMember]
     public int Kerning {
-        get => this._kerning;
+        get;
         set {
-            if (value != this._kerning) {
-                this._kerning = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
@@ -45,14 +40,17 @@ public abstract class IconSetRenderer<TKey, TIconSet, TIconSetReference> : BaseS
     /// </summary>
     [DataMember]
     public TKey Key {
-        get => this._key;
+        get;
         set {
-            if (!value.Equals(this._key)) {
-                this._key = value;
+            if (!value.Equals(field)) {
+                field = value;
                 this.ResetSprite();
             }
         }
     }
+
+    /// <inheritdoc />
+    public override byte? SpriteIndex => this._spriteIndex;
 
     /// <inheritdoc />
     protected override SpriteSheet? SpriteSheet => this._spriteSheet;

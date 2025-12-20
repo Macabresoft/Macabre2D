@@ -57,7 +57,6 @@ public interface ISpriteAnimator : IAnimatableEntity, ISpriteEntity {
 /// A base class for sprite animators.
 /// </summary>
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
-    private bool _isPlaying;
 
     /// <inheritdoc />
     public event EventHandler? ShouldAnimateChanged;
@@ -74,9 +73,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, ISpriteAnimator {
 
     /// <inheritdoc />
     public bool IsPlaying {
-        get => this._isPlaying;
+        get;
         protected set {
-            if (this.Set(ref this._isPlaying, value) && this.IsEnabled) {
+            if (this.Set(ref field, value) && this.IsEnabled) {
                 this.ShouldAnimateChanged.SafeInvoke(this);
             }
         }

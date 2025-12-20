@@ -9,11 +9,24 @@ using Microsoft.Xna.Framework.Input;
 /// Renders a game pad button.
 /// </summary>
 public class GamePadButtonRenderer : BaseSpriteEntity {
-    private Buttons _button = Buttons.A;
     private int _currentKerning;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
+
+    /// <summary>
+    /// Gets and sets the button. Please don't use multiple values, it won't work.
+    /// </summary>
+    [DataMember]
+    public Buttons Button {
+        get;
+        set {
+            if (value != field) {
+                field = value;
+                this.ResetSprite();
+            }
+        }
+    } = Buttons.A;
 
     /// <summary>
     /// Gets the <see cref="GamePadIconSetReference" /> for "Game Pad N".
@@ -35,20 +48,6 @@ public class GamePadButtonRenderer : BaseSpriteEntity {
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this._spriteIndex;
-
-    /// <summary>
-    /// Gets and sets the button. Please don't use multiple values, it won't work.
-    /// </summary>
-    [DataMember]
-    public Buttons Button {
-        get => this._button;
-        set {
-            if (value != this._button) {
-                this._button = value;
-                this.ResetSprite();
-            }
-        }
-    }
 
     /// <inheritdoc />
     protected override SpriteSheet? SpriteSheet => this._spriteSheet;

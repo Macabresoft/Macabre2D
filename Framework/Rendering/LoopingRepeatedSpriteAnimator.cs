@@ -8,40 +8,37 @@ using Microsoft.Xna.Framework;
 /// Renders a sprite repeatedly over an area.
 /// </summary>
 public class LoopingRepeatedSpriteAnimator : LoopingSpriteAnimator {
-    private int _height = 1;
-    private int _width = 1;
-
     /// <summary>
     /// Gets or sets the height of the area to render this animation. This is how many copies of the animation will be shown, not the number of units.
     /// </summary>
     [DataMember]
     public int Height {
-        get => this._height;
+        get;
         set {
-            if (value != this._height) {
-                this._height = Math.Max(1, value);
+            if (value != field) {
+                field = Math.Max(1, value);
                 if (this.IsInitialized) {
                     this.Reset();
                 }
             }
         }
-    }
+    } = 1;
 
     /// <summary>
     /// Gets or sets the width of the area to render this animation. This is how many copies of the animation will be shown, not the number of units.
     /// </summary>
     [DataMember]
     public int Width {
-        get => this._width;
+        get;
         set {
-            if (value != this._width) {
-                this._width = Math.Max(1, value);
+            if (value != field) {
+                field = Math.Max(1, value);
                 if (this.IsInitialized) {
                     this.Reset();
                 }
             }
         }
-    }
+    } = 1;
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
@@ -55,7 +52,7 @@ public class LoopingRepeatedSpriteAnimator : LoopingSpriteAnimator {
                     this.RenderAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, new Vector2(xPosition, yPosition), colorOverride);
                     yPosition += spriteHeight;
                 }
-                
+
                 yPosition = this.BoundingArea.Minimum.Y;
                 xPosition += spriteWidth;
             }

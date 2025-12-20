@@ -32,10 +32,7 @@ public interface IRenderSystem : IGameSystem {
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
 public class RenderSystem : GameSystem, IRenderSystem {
-
-
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
-    private bool _shouldRender = true;
 
     /// <inheritdoc />
     public event EventHandler? ShouldRenderChanged;
@@ -43,13 +40,13 @@ public class RenderSystem : GameSystem, IRenderSystem {
     /// <inheritdoc />
     [DataMember]
     public bool ShouldRender {
-        get => this._shouldRender;
+        get;
         set {
-            if (this.Set(ref this._shouldRender, value)) {
+            if (this.Set(ref field, value)) {
                 this.ShouldRenderChanged.SafeInvoke(this);
             }
         }
-    }
+    } = true;
 
 
     /// <inheritdoc />

@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// An entity that renders a <see cref="Texture2D" /> provided at runtime.
 /// </summary>
 public sealed class Texture2DRenderer : BaseSpriteEntity {
-    private Texture2D? _texture;
 
     /// <inheritdoc />
     public override byte? SpriteIndex => 0;
@@ -15,11 +14,11 @@ public sealed class Texture2DRenderer : BaseSpriteEntity {
     /// Gets or sets the texture.
     /// </summary>
     public Texture2D? Texture {
-        get => this._texture;
+        get;
         set {
-            this._texture = value;
-            if (this._texture != null) {
-                this.SpriteSheet.LoadContent(this._texture);
+            field = value;
+            if (field != null) {
+                this.SpriteSheet.LoadContent(field);
             }
             else {
                 this.SpriteSheet.UnloadContent();

@@ -15,7 +15,6 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
     private bool _shouldUpdate = true;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
-    private int _updateOrder;
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
@@ -66,9 +65,9 @@ public class MouseCursorRenderer : BaseSpriteEntity, IUpdateableEntity {
     [DataMember]
     [PredefinedInteger(PredefinedIntegerKind.UpdateOrder)]
     public int UpdateOrder {
-        get => this._updateOrder;
+        get;
         set {
-            if (this.Set(ref this._updateOrder, value)) {
+            if (this.Set(ref field, value)) {
                 this.UpdateOrderChanged.SafeInvoke(this);
             }
         }

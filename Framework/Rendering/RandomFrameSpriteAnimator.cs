@@ -10,16 +10,15 @@ public class RandomFrameSpriteAnimator : LoopingSpriteAnimator {
     private const byte MinimumFramesToHold = 1;
     private readonly Random _random = new();
     private byte _framesHeld;
-    private byte _numberOfFramesToHold = 1;
 
     /// <summary>
     /// Gets or sets the number of frames to hold onto a given sprite.
     /// </summary>
     [DataMember]
     public byte NumberOfFramesToHold {
-        get => this._numberOfFramesToHold;
-        set => this._numberOfFramesToHold = Math.Max(value, MinimumFramesToHold);
-    }
+        get;
+        set => field = Math.Max(value, MinimumFramesToHold);
+    } = 1;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {

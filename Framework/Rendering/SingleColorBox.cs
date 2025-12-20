@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class SingleColorBox : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private Vector2 _size;
     private Texture2D? _texture;
 
     /// <inheritdoc />
@@ -45,9 +44,9 @@ public class SingleColorBox : RenderableEntity {
     /// </summary>
     [DataMember]
     public Vector2 Size {
-        get => this._size;
+        get;
         set {
-            this._size = value;
+            field = value;
             this.Reset();
         }
     }

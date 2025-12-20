@@ -27,8 +27,6 @@ public enum PixelOffsetType {
 [DataContract]
 [Category(CommonCategories.Rendering)]
 public sealed class RenderOptions : OffsetOptions {
-    private bool _flipHorizontal;
-    private bool _flipVertical;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RenderOptions" /> class.
@@ -56,13 +54,13 @@ public sealed class RenderOptions : OffsetOptions {
     /// <value><c>true</c> if the render should be flipped horizontally; otherwise, <c>false</c>.</value>
     [DataMember(Name = "Flip Horizontal")]
     public bool FlipHorizontal {
-        get => this._flipHorizontal;
+        get;
 
         set {
-            if (value != this._flipHorizontal) {
-                this._flipHorizontal = value;
+            if (value != field) {
+                field = value;
 
-                if (this._flipHorizontal) {
+                if (field) {
                     this.Orientation |= SpriteEffects.FlipHorizontally;
                 }
                 else {
@@ -78,15 +76,15 @@ public sealed class RenderOptions : OffsetOptions {
     /// <value><c>true</c> if the render should be flipped vertically; otherwise, <c>false</c>.</value>
     [DataMember(Name = "Flip Vertical")]
     public bool FlipVertical {
-        get => this._flipVertical;
+        get;
 
         set {
-            if (value != this._flipVertical) {
-                this._flipVertical = value;
+            if (value != field) {
+                field = value;
 
                 // Since the default state is to flip vertically, this looks a little backwards,
                 // but just trust it!
-                if (this._flipVertical) {
+                if (field) {
                     this.Orientation &= ~SpriteEffects.FlipVertically;
                 }
                 else {

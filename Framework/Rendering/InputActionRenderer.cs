@@ -22,12 +22,8 @@ public enum InputActionDisplayMode {
 /// to render <see cref="Buttons" />,  <see cref="Keys" />, and <see cref="MouseButton" /> associated with actions.
 /// </summary>
 public class InputActionRenderer : BaseSpriteEntity {
-    private InputAction _action;
     private int _currentKerning;
-    private InputActionDisplayMode _displayMode;
     private GamePadDisplay _gamePadDisplay = GamePadDisplay.X;
-    private InputDevice _inputDeviceToRender = InputDevice.Auto;
-    private int _kerning;
     private byte? _spriteIndex;
     private SpriteSheet? _spriteSheet;
 
@@ -41,10 +37,10 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// </summary>
     [DataMember]
     public InputAction Action {
-        get => this._action;
+        get;
         set {
-            if (value != this._action) {
-                this._action = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
@@ -55,10 +51,10 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// </summary>
     [DataMember]
     public InputActionDisplayMode DisplayMode {
-        get => this._displayMode;
+        get;
         set {
-            if (this._displayMode != value) {
-                this._displayMode = value;
+            if (field != value) {
+                field = value;
                 if (this.IsInitialized) {
                     this.ResetSprite();
                 }
@@ -89,24 +85,24 @@ public class InputActionRenderer : BaseSpriteEntity {
     /// </summary>
     [DataMember]
     public InputDevice InputDeviceToRender {
-        get => this._inputDeviceToRender;
+        get;
         set {
-            if (value != this._inputDeviceToRender) {
-                this._inputDeviceToRender = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
-    }
+    } = InputDevice.Auto;
 
     /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
     /// </summary>
     [DataMember]
     public int Kerning {
-        get => this._kerning;
+        get;
         set {
-            if (value != this._kerning) {
-                this._kerning = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }

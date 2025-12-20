@@ -4,7 +4,6 @@
 /// Represents a single character in a <see cref="TextWord" />.
 /// </summary>
 public readonly record struct TextCharacter {
-
     /// <summary>
     /// The sprite index.
     /// </summary>
