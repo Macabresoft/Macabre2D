@@ -28,7 +28,6 @@ public enum TileFilter {
 /// </summary>
 public class FilteredAutoTileMap : Entity, IRenderableEntity, IActiveTileableEntity {
     private readonly ResettableLazy<IReadOnlyDictionary<Point, byte>> _activeTileToIndex;
-    private TileFilter _filter;
     private bool _shouldRender = true;
     private ITileableEntity _tileEntity = EmptyObject.Instance;
 
@@ -59,10 +58,10 @@ public class FilteredAutoTileMap : Entity, IRenderableEntity, IActiveTileableEnt
     /// </summary>
     [DataMember]
     public TileFilter Filter {
-        get => this._filter;
+        get;
         set {
-            if (this._filter != value) {
-                this._filter = value;
+            if (field != value) {
+                field = value;
                 this._activeTileToIndex.Reset();
             }
         }

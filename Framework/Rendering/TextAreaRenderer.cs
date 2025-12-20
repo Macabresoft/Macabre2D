@@ -13,19 +13,14 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly List<TextLine> _textLines = new();
+    private readonly List<TextLine> _textLines = [];
     private bool _constrainHeight = true;
     private SpriteSheetFont? _font;
-    private FontCategory _fontCategory = FontCategory.None;
     private float _height;
-    private TextAlignment _horizontalAlignment;
-    private int _kerning;
     private Vector2 _renderStartPosition;
-    private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
     private string _stringFormat = string.Empty;
-    private string _text = string.Empty;
     private float _width;
 
     /// <inheritdoc />
@@ -65,15 +60,15 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
-        get => this._fontCategory;
+        get;
         set {
-            if (value != this._fontCategory) {
-                this._fontCategory = value;
+            if (value != field) {
+                field = value;
                 this.ReloadFontFromCategory();
                 this.RequestRefresh();
             }
         }
-    }
+    } = FontCategory.None;
 
     /// <summary>
     /// Gets the font asset reference.
@@ -110,10 +105,10 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// </summary>
     [DataMember]
     public TextAlignment HorizontalAlignment {
-        get => this._horizontalAlignment;
+        get;
         set {
-            if (value != this._horizontalAlignment) {
-                this._horizontalAlignment = value;
+            if (value != field) {
+                field = value;
                 this.ResetLines();
             }
         }
@@ -130,10 +125,10 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     /// </summary>
     [DataMember]
     public int Kerning {
-        get => this._kerning;
+        get;
         set {
-            if (value != this._kerning) {
-                this._kerning = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
@@ -173,27 +168,27 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     [ResourceName]
     [DataMember]
     public string ResourceName {
-        get => this._resourceName;
+        get;
         set {
-            this._resourceName = value;
+            field = value;
             this.ResetResource();
             this.RequestRefresh();
         }
-    }
+    } = string.Empty;
 
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
     [DataMember]
     public string Text {
-        get => this._text;
+        get;
         set {
-            if (value != this._text) {
-                this._text = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
-    }
+    } = string.Empty;
 
     /// <summary>
     /// Gets the height of the total text, including text that is not displayed within the <see cref="BoundingArea" />.

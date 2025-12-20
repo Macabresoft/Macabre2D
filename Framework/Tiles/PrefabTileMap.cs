@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity {
     [DataMember]
-    private readonly HashSet<Point> _activeTiles = new();
+    private readonly HashSet<Point> _activeTiles = [];
 
     private readonly Dictionary<Point, IEntity> _activeTileToEntity = new();
 

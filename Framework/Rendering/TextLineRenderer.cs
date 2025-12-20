@@ -14,17 +14,10 @@ using Microsoft.Xna.Framework;
 public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _characterHeight;
-    private FontCategory _fontCategory = FontCategory.None;
-    private SpriteSheetFontReference? _fontReference;
     private bool _isScrollingRight = true;
-    private int _kerning;
     private float _offset;
-    private string _resourceName = string.Empty;
     private string _resourceText = string.Empty;
-    private float _scrollVelocity = 3f;
-    private bool _shouldScroll;
     private string _stringFormat = string.Empty;
-    private string _text = string.Empty;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -48,15 +41,15 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
-        get => this._fontCategory;
+        get;
         set {
-            if (value != this._fontCategory) {
-                this._fontCategory = value;
+            if (value != field) {
+                field = value;
                 this.ReloadFontFromCategory();
                 this.RequestRefresh();
             }
         }
-    }
+    } = FontCategory.None;
 
     /// <inheritdoc />
     [DataMember]
@@ -83,10 +76,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     [DataMember]
     public int Kerning {
-        get => this._kerning;
+        get;
         set {
-            if (value != this._kerning) {
-                this._kerning = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
@@ -123,20 +116,20 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     [ResourceName]
     [DataMember]
     public string ResourceName {
-        get => this._resourceName;
+        get;
         set {
-            this._resourceName = value;
+            field = value;
             this.RequestRefresh();
         }
-    }
+    } = string.Empty;
 
     /// <summary>
     /// Gets or sets the velocity of the text scrolling.
     /// </summary>
     public float ScrollVelocity {
-        get => this._scrollVelocity;
-        set => this._scrollVelocity = Math.Abs(value);
-    }
+        get;
+        set => field = Math.Abs(value);
+    } = 3f;
 
     /// <summary>
     /// Gets a timer that determines how long this waits on each end of the scrolled text.
@@ -149,10 +142,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// </summary>
     [DataMember(Order = 1)]
     public bool ShouldScroll {
-        get => this._shouldScroll;
+        get;
         set {
-            if (this._shouldScroll != value) {
-                this._shouldScroll = value;
+            if (field != value) {
+                field = value;
                 this.ShouldUpdateChanged.SafeInvoke(this);
 
                 if (this.ShouldScroll) {
@@ -168,14 +161,14 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     [DataMember]
     public string Text {
-        get => this._text;
+        get;
         set {
-            if (value != this._text) {
-                this._text = value;
+            if (value != field) {
+                field = value;
                 this.RequestRefresh();
             }
         }
-    }
+    } = string.Empty;
 
     /// <summary>
     /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
@@ -410,12 +403,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this.TextLine = TextLine.Empty;
 
         if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
-            this._fontReference = this.FontReference;
             this.Font = this.FontReference.PackagedAsset;
             this.SpriteSheet = this.FontReference.Asset;
         }
         else if (this.Project.Fallbacks.Font is { PackagedAsset: not null, Asset: not null }) {
-            this._fontReference = this.Project.Fallbacks.Font;
             this.Font = this.Project.Fallbacks.Font.PackagedAsset;
             this.SpriteSheet = this.Project.Fallbacks.Font.Asset;
         }

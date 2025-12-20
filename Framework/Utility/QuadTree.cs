@@ -30,7 +30,7 @@ public interface IReadonlyQuadTree<T> where T : IBoundable {
 /// https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374
 /// </summary>
 public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
-    private readonly List<T> _boundables = new();
+    private readonly List<T> _boundables = [];
     private readonly int _depth;
     private readonly Vector2 _maximum;
     private readonly Vector2 _minimum;
@@ -117,13 +117,6 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
         }
     }
 
-    private bool HasNodes() {
-        // We only have to null check the first node, because we always add every node at once.
-        // NOTE: I'm breaking this contract and I don't care!!!
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        return this._nodes[0] != null;
-    }
-
     /// <summary>
     /// Inserts all provided items into their proper position in the quad tree.
     /// </summary>
@@ -135,9 +128,7 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> RetrievePotentialCollisions(T boundable) {
-        return this.RetrievePotentialCollisions(boundable.BoundingArea);
-    }
+    public IEnumerable<T> RetrievePotentialCollisions(T boundable) => this.RetrievePotentialCollisions(boundable.BoundingArea);
 
     /// <inheritdoc />
     public IEnumerable<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
@@ -188,6 +179,12 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
 
         return quadrant;
     }
+
+    private bool HasNodes() =>
+        // We only have to null check the first node, because we always add every node at once.
+        // NOTE: I'm breaking this contract and I don't care!!!
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        this._nodes[0] != null;
 
     private void Split() {
         var newWidth = (this._maximum.X - this._minimum.X) * 0.5f;

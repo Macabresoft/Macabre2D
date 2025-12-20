@@ -28,26 +28,23 @@ public class SpriteSheet : AssetPackage<Texture2D> {
 
     [DataMember]
     [Category("Auto Tile Sets")]
-    private AutoTileSetCollection _autoTileSets = new();
+    private AutoTileSetCollection _autoTileSets = [];
 
     private byte _columns = 1;
-    private RenderPriority _defaultRenderPriority;
 
     [DataMember]
     [Category("Fonts")]
-    private SpriteSheetFontCollection _fonts = new();
+    private SpriteSheetFontCollection _fonts = [];
 
     [DataMember]
     [Category("Icon Sets")]
-    private SpriteSheetIconSetCollection _iconSets = new();
+    private SpriteSheetIconSetCollection _iconSets = [];
 
     private byte _rows = 1;
 
     [DataMember]
     [Category("Animations")]
-    private SpriteAnimationCollection _spriteAnimations = new();
-
-    private Point _spriteSize;
+    private SpriteAnimationCollection _spriteAnimations = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteSheet" /> class.
@@ -86,8 +83,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// </summary>
     [DataMember]
     public RenderPriority DefaultRenderPriority {
-        get => this._defaultRenderPriority;
-        set => this.Set(ref this._defaultRenderPriority, value);
+        get;
+        set => this.Set(ref field, value);
     }
 
     /// <inheritdoc />
@@ -120,8 +117,8 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// Gets the size of a single sprite on this sprite sheet.
     /// </summary>
     public Point SpriteSize {
-        get => this._spriteSize;
-        private set => this.Set(ref this._spriteSize, value);
+        get;
+        private set => this.Set(ref field, value);
     }
 
     /// <summary>

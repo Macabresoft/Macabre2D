@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class BoundableCover : RenderableEntity {
     private IBoundableEntity _boundable = EmptyObject.Boundable;
-    private Vector2 _padding = Vector2.Zero;
     private Vector2 _paddingForScale = Vector2.Zero;
     private Texture2D? _texture;
 
@@ -34,12 +33,12 @@ public class BoundableCover : RenderableEntity {
     /// </summary>
     [DataMember]
     public Vector2 Padding {
-        get => this._padding;
+        get;
         set {
-            this._padding = value;
+            field = value;
             this._paddingForScale = value * 2f;
         }
-    }
+    } = Vector2.Zero;
 
     /// <inheritdoc />
     [DataMember]

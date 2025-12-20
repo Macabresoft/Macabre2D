@@ -23,8 +23,7 @@ public enum TileMapRenderStartingPoint {
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableTileMap : RenderableTileableEntity, IRenderableEntity {
-    private readonly List<Point> _orderedActiveTiles = new();
-    private TileMapRenderStartingPoint _renderStartingPoint = TileMapRenderStartingPoint.BottomLeft;
+    private readonly List<Point> _orderedActiveTiles = [];
 
     /// <inheritdoc />
     public override RenderPriority RenderPriority {
@@ -55,17 +54,17 @@ public abstract class RenderableTileMap : RenderableTileableEntity, IRenderableE
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public TileMapRenderStartingPoint RenderStartingPoint {
-        get => this._renderStartingPoint;
+        get;
         set {
-            if (this._renderStartingPoint != value) {
-                this._renderStartingPoint = value;
+            if (field != value) {
+                field = value;
 
                 if (this.IsInitialized) {
                     this.ReorderActiveTiles();
                 }
             }
         }
-    }
+    } = TileMapRenderStartingPoint.BottomLeft;
 
 
     /// <summary>

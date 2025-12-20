@@ -15,8 +15,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextRenderer : RenderableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    
-    private string _text = string.Empty;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -55,15 +53,15 @@ public class TextRenderer : RenderableEntity {
     /// <value>The text.</value>
     [DataMember(Order = 2)]
     public string Text {
-        get => this._text;
+        get;
         set {
-            if (value != this._text) {
-                this._text = value;
+            if (value != field) {
+                field = value;
                 this.ResetBoundingArea();
                 this.RenderOptions.InvalidateSize();
             }
         }
-    }
+    } = string.Empty;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
