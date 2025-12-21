@@ -41,10 +41,10 @@ public class ContentMetadata {
     /// <param name="asset">The asses which manages this content.</param>
     /// <param name="splitContentPath">The split path to the content file without its extension.</param>
     /// <param name="contentFileExtension"></param>
-    public ContentMetadata(IAsset asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
+    public ContentMetadata(IAsset asset, IEnumerable<string>? splitContentPath, string contentFileExtension) {
         this.Asset = asset;
         this.ContentFileExtension = contentFileExtension;
-        this._splitContentPath = splitContentPath.ToList();
+        this._splitContentPath = splitContentPath?.ToList() ?? [];    
     }
 
     /// <summary>
