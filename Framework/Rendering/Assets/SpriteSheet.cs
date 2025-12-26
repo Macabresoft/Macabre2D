@@ -385,6 +385,16 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     }
 
     /// <summary>
+    /// Gets the sprite size and location of specified index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    /// <returns>A rectangle representing the specified sprite.</returns>
+    public Rectangle GetSpriteSizeAndLocation(byte index) {
+        var location = this.GetSpriteLocation(index);
+        return new Rectangle(location, this.SpriteSize);
+    }
+
+    /// <summary>
     /// Gets the sprite size.
     /// </summary>
     /// <param name="imageSize">The image size in pixels.</param>
