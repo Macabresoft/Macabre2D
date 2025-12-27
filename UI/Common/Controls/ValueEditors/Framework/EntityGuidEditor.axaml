@@ -1,12 +1,11 @@
-<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                           x:TypeArguments="system:Guid"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.EntityGuidEditor">
-    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                          xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                          x:TypeArguments="system:Guid"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.EntityGuidEditor">
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto"
           DataContext="{Binding $parent[local:EntityGuidEditor]}">
         <Design.DataContext>
             <local:EntityGuidEditor />
@@ -33,8 +32,18 @@
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
+                IsVisible="{Binding Value, Converter={x:Static local:GuidToIsNotEmptyConverter.Instance}}"
                 ToolTip.Tip="Clear the entity">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
+        
+        <Button Grid.Column="4"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding LocateCommand}"
+                IsVisible="{Binding Value, Converter={x:Static local:GuidToIsNotEmptyConverter.Instance}}"
+                ToolTip.Tip="Locate the referenced entity">
+            <avaloniaEx:Icon Content="{StaticResource LocateIcon}" />
+        </Button>
     </Grid>
-</common:ValueEditorControl>
+</local:ValueEditorControl>

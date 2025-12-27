@@ -18,6 +18,11 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
             nameof(ClearCommand),
             editor => editor.ClearCommand);
 
+    public static readonly DirectProperty<EntityGuidEditor, ICommand> LocateCommandProperty =
+        AvaloniaProperty.RegisterDirect<EntityGuidEditor, ICommand>(
+            nameof(LocateCommand),
+            editor => editor.LocateCommand);
+
     public static readonly DirectProperty<EntityGuidEditor, string> PathTextProperty =
         AvaloniaProperty.RegisterDirect<EntityGuidEditor, string>(
             nameof(PathText),
@@ -32,8 +37,6 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
     private readonly Type _entityType = typeof(Entity);
     private readonly ISceneService _sceneService;
     private readonly IUndoService _undoService;
-
-    private string _pathText;
 
     public EntityGuidEditor() : this(
         null,
@@ -63,20 +66,21 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
         }
 
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
+        //var whenNotEmpty = this.WhenAny(x => x, y => y.Value.Value != Guid.Empty);
+        this.ClearCommand = ReactiveCommand.Create(this.Clear);
+        this.LocateCommand = ReactiveCommand.Create(this.Locate);
+        
         this.InitializeComponent();
-
-        this.ClearCommand = ReactiveCommand.Create(
-            this.Clear,
-            this.Value.WhenAny(x => x, y => y.Value != Guid.Empty));
-
         this.ResetPath();
     }
 
     public ICommand ClearCommand { get; }
 
+    public ICommand LocateCommand { get; }
+
     public string PathText {
-        get => this._pathText;
-        private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
+        get;
+        private set => this.SetAndRaise(PathTextProperty, ref field, value);
     }
 
     public ICommand SelectCommand { get; }
@@ -104,6 +108,15 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
                     this.Value = previousId;
                     this.PathText = originalPathText;
                 });
+        }
+    }
+
+    private void Locate() {
+        if (this.Value != Guid.Empty) {
+            var selected = this._sceneService.CurrentScene.Id == this.Value ? this._sceneService.CurrentScene : this._sceneService.CurrentScene.FindChild(this.Value);
+            if (selected != null) {
+                this._sceneService.Selected = selected;
+            }
         }
     }
 
