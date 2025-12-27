@@ -116,10 +116,7 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     /// <summary>
     /// Gets the size of a single sprite on this sprite sheet.
     /// </summary>
-    public Point SpriteSize {
-        get;
-        private set => this.Set(ref field, value);
-    }
+    public Point SpriteSize { get; private set; }
 
     /// <summary>
     /// Draws the specified sprite.
@@ -385,6 +382,15 @@ public class SpriteSheet : AssetPackage<Texture2D> {
     }
 
     /// <summary>
+    /// Gets the sprite size.
+    /// </summary>
+    /// <param name="imageSize">The image size in pixels.</param>
+    /// <param name="columns">The number of columns in the sprite sheet.</param>
+    /// <param name="rows">The number of rows in the sprite sheet.</param>
+    /// <returns>The sprite size.</returns>
+    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) => new(GetColumnWidth(imageSize.X, columns), GetRowHeight(imageSize.Y, rows));
+
+    /// <summary>
     /// Gets the sprite size and location of specified index.
     /// </summary>
     /// <param name="index">The index.</param>
@@ -393,15 +399,6 @@ public class SpriteSheet : AssetPackage<Texture2D> {
         var location = this.GetSpriteLocation(index);
         return new Rectangle(location, this.SpriteSize);
     }
-
-    /// <summary>
-    /// Gets the sprite size.
-    /// </summary>
-    /// <param name="imageSize">The image size in pixels.</param>
-    /// <param name="columns">The number of columns in the sprite sheet.</param>
-    /// <param name="rows">The number of rows in the sprite sheet.</param>
-    /// <returns>The sprite size.</returns>
-    public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) => new(GetColumnWidth(imageSize.X, columns), GetRowHeight(imageSize.Y, rows));
 
     /// <summary>
     /// Gets the sprite size and location.

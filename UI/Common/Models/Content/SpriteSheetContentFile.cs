@@ -7,7 +7,7 @@ using Macabresoft.Macabre2D.Framework;
 /// A <see cref="ContentFile" /> for <see cref="SpriteSheet" />.
 /// </summary>
 public class SpriteSheetContentFile : ContentFile<SpriteSheet> {
-    private readonly List<INameableCollection> _children = new();
+    private readonly List<INameableCollection> _children = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContentNode" /> class.

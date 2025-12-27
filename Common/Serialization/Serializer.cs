@@ -55,11 +55,10 @@ public interface ISerializer {
 }
 
 /// <summary>
-/// Serializes to Json.
+/// Serializes to JSON.
 /// </summary>
 public sealed class Serializer : ISerializer {
 #nullable disable
-    private static ISerializer _instance = new Serializer();
     private readonly JsonSerializer _jsonSerializer;
 
     /// <summary>
@@ -84,14 +83,7 @@ public sealed class Serializer : ISerializer {
     /// <summary>
     /// Gets the singleton instance of <see cref="ISerializer" />.
     /// </summary>
-    public static ISerializer Instance {
-        get => _instance;
-        set {
-            if (value != null) {
-                _instance = value;
-            }
-        }
-    }
+    public static ISerializer Instance { get; } = new Serializer();
 
     /// <inheritdoc />
     public T Deserialize<T>(string path) {
@@ -118,7 +110,7 @@ public sealed class Serializer : ISerializer {
     public object DeserializeFromString(string json, Type type) {
         using var stringReader = new StringReader(json);
         using var jsonReader = new JsonTextReader(stringReader);
-        return this._jsonSerializer.Deserialize(jsonReader, type);
+        return this._jsonSerializer.Deserialize(jsonReader, type) ?? new object();
     }
 
     /// <inheritdoc />
