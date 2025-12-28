@@ -57,7 +57,6 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
     private readonly ObservableCollection<object> _treeRoot = [];
-    private GameProject _currentProject;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectService" /> class.
@@ -85,8 +84,8 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     /// <inheritdoc />
     public GameProject CurrentProject {
-        get => this._currentProject;
-        private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
