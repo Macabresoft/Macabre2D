@@ -199,6 +199,22 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     void ReorderSystem(IGameSystem system, int newIndex);
 
     /// <summary>
+    /// Tries to find the specified entity.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="entity">The entity if found.</param>
+    /// <returns>A value indicating whether the entity was found.</returns>
+    bool TryFindEntity(Guid id, [NotNullWhen(true)] out IEntity? entity);
+
+    /// <summary>
+    /// Tries to find the specified entity.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="entity">The entity if found.</param>
+    /// <returns>A value indicating whether the entity was found.</returns>
+    bool TryFindEntity<TEntity>(Guid id, [NotNullWhen(true)] out TEntity? entity) where TEntity : class, IEntity;
+
+    /// <summary>
     /// Unregisters the entity from services.
     /// </summary>
     /// <param name="entity">The entity.</param>
@@ -232,6 +248,8 @@ public sealed class Scene : GridContainer, IScene {
         (u, handler) => u.UpdateOrderChanged += handler,
         (u, handler) => u.UpdateOrderChanged -= handler);
 
+    private readonly Dictionary<Guid, IEntity> _idToEntitiesInScene = [];
+
     private readonly List<INameableCollection> _namedChildren = [];
     private readonly List<Action> _pendingActions = [];
 
@@ -252,8 +270,6 @@ public sealed class Scene : GridContainer, IScene {
         a => a.ShouldUpdate,
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
-
-    private readonly HashSet<Guid> _registeredEntities = [];
 
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
         r => r.ShouldRender,
@@ -377,7 +393,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public bool ContainsEntity(Guid id) => this._registeredEntities.Contains(id);
+    public bool ContainsEntity(Guid id) => this._idToEntitiesInScene.ContainsKey(id);
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -427,6 +443,12 @@ public sealed class Scene : GridContainer, IScene {
                 this._game = game;
 
                 this.Project.Initialize(this.Assets, this.Game);
+
+                this._idToEntitiesInScene.Clear();
+                this._idToEntitiesInScene[this.Id] = this;
+                foreach (var child in this.GetAllDescendants()) {
+                    this._idToEntitiesInScene[child.Id] = child;
+                }
 
                 foreach (var system in this.Systems) {
                     system.Initialize(this);
@@ -525,7 +547,7 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Add(entity);
         this._updateableEntities.Add(entity);
         this._fixedUpdateableEntities.Add(entity);
-        this._registeredEntities.Add(entity.Id);
+        this._idToEntitiesInScene[entity.Id] = entity;
 
         if (this._isInitialized) {
             if (BaseGame.IsDesignMode) {
@@ -573,6 +595,21 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public bool TryFindEntity(Guid id, [NotNullWhen(true)] out IEntity? entity) => this._idToEntitiesInScene.TryGetValue(id, out entity);
+
+    /// <inheritdoc />
+    public bool TryFindEntity<TEntity>(Guid id, [NotNullWhen(true)] out TEntity? entity) where TEntity : class, IEntity {
+        if (this._idToEntitiesInScene.TryGetValue(id, out var untypedEntity)) {
+            entity = untypedEntity as TEntity;
+        }
+        else {
+            entity = null;
+        }
+
+        return entity != null;
+    }
+
+    /// <inheritdoc />
     public override bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity) where T : default {
         entity = default;
         return false;
@@ -586,7 +623,7 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Remove(entity);
         this._updateableEntities.Remove(entity);
         this._fixedUpdateableEntities.Remove(entity);
-        this._registeredEntities.Remove(entity.Id);
+        this._idToEntitiesInScene.Remove(entity.Id);
     }
 
     /// <inheritdoc />
@@ -626,6 +663,7 @@ public sealed class Scene : GridContainer, IScene {
         this._renderableEntities.Clear();
         this._updateableEntities.Clear();
         this._fixedUpdateableEntities.Clear();
+        this._idToEntitiesInScene.Clear();
 
         this._renderSystems.Clear();
         this._updateSystems.Clear();

@@ -96,11 +96,6 @@ public class EntityReference<TEntity> : EntityReference where TEntity : class, I
 
     /// <inheritdoc />
     protected override void ResetEntity() {
-        if (this.EntityId == Guid.Empty || Framework.Scene.IsNullOrEmpty(this.Scene)) {
-            this.Entity = null;
-        }
-        else {
-            this.Entity = this.Scene.FindEntity<TEntity>(this.EntityId);
-        }
+        this.Entity = this.Scene.TryFindEntity<TEntity>(this.EntityId, out var entity) ? entity : null;
     }
 }

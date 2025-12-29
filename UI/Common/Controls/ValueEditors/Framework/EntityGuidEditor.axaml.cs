@@ -69,7 +69,7 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
         //var whenNotEmpty = this.WhenAny(x => x, y => y.Value.Value != Guid.Empty);
         this.ClearCommand = ReactiveCommand.Create(this.Clear);
         this.LocateCommand = ReactiveCommand.Create(this.Locate);
-        
+
         this.InitializeComponent();
         this.ResetPath();
     }
@@ -112,11 +112,8 @@ public partial class EntityGuidEditor : ValueEditorControl<Guid> {
     }
 
     private void Locate() {
-        if (this.Value != Guid.Empty) {
-            var selected = this._sceneService.CurrentScene.Id == this.Value ? this._sceneService.CurrentScene : this._sceneService.CurrentScene.FindChild(this.Value);
-            if (selected != null) {
-                this._sceneService.Selected = selected;
-            }
+        if (this.Value != Guid.Empty && this._sceneService.CurrentScene.TryFindEntity(this.Value, out var selected)) {
+            this._sceneService.Selected = selected;
         }
     }
 

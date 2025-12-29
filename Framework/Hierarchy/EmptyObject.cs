@@ -247,13 +247,13 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public OffsetOptions OffsetOptions { get; } = new();
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; } = [];
-
-    /// <inheritdoc />
     public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
 
     /// <inheritdoc />
     public QueueableSpriteAnimation? QueuedAnimation => null;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; } = [];
 
     /// <summary>
     /// Gets the singleton instance as <see cref="IRenderableEntity" />.
@@ -431,6 +431,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
 
     /// <inheritdoc />
     public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem => null;
+
+    /// <inheritdoc />
+    public IEnumerable<IEntity> GetAllDescendants() => [];
 
     /// <inheritdoc />
     public IEnumerable<Collider> GetColliders() => [];
@@ -653,6 +656,18 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
 
     /// <inheritdoc />
     public void Swap(SpriteAnimationReference animationReference) {
+    }
+
+    /// <inheritdoc />
+    public bool TryFindEntity(Guid id, [NotNullWhen(true)] out IEntity? entity) {
+        entity = null;
+        return false;
+    }
+
+    /// <inheritdoc />
+    public bool TryFindEntity<TEntity>(Guid id, [NotNullWhen(true)] out TEntity? entity) where TEntity : class, IEntity {
+        entity = null;
+        return false;
     }
 
     /// <inheritdoc />

@@ -97,6 +97,12 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IEntity FindChild(string name);
 
     /// <summary>
+    /// Gets all descendants of this entity.
+    /// </summary>
+    /// <returns>All descendants.</returns>
+    IEnumerable<IEntity> GetAllDescendants();
+
+    /// <summary>
     /// Get all descendants of the specified type.
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
@@ -378,6 +384,16 @@ public class Entity : Transformable, IEntity {
         }
 
         return result;
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<IEntity> GetAllDescendants() {
+        var children = new List<IEntity>(this.Children);
+        foreach (var child in this.Children) {
+            children.AddRange(child.GetAllDescendants());
+        }
+
+        return children;
     }
 
     /// <inheritdoc />
