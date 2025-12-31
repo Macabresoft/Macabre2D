@@ -32,13 +32,13 @@ public class SpriteRenderer : BaseSpriteEntity, ISpriteRenderer {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
+        this.SpriteReference.AssetChanged -= this.SpriteReference_AssetChanged;
     }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
+        this.SpriteReference.AssetChanged += this.SpriteReference_AssetChanged;
     }
 
     /// <inheritdoc />
@@ -46,9 +46,7 @@ public class SpriteRenderer : BaseSpriteEntity, ISpriteRenderer {
         yield return this.SpriteReference;
     }
 
-    private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(this.SpriteSheet.SpriteSize)) {
-            this.Reset();
-        }
+    private void SpriteReference_AssetChanged(object? sender, bool e) {
+        this.Reset();
     }
 }

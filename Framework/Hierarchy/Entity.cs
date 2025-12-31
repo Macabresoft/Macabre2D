@@ -212,7 +212,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     bool TryGetAncestor<T>([NotNullWhen(true)] out T? entity);
 
     /// <summary>
-    /// Tries the get a child of the specific type. This is recursive.
+    /// Tries the get a child of the specific type.
     /// </summary>
     /// <typeparam name="T">The type of entity for which to search.</typeparam>
     /// <param name="entity">The child entity.</param>
