@@ -18,3 +18,25 @@ public enum CardinalDirections : byte {
     SouthWest = South | West,
     All = North | West | East | South
 }
+
+/// <summary>
+/// Extension methods for <see cref="CardinalDirections" />.
+/// </summary>
+public static class CardinalDirectionsExtensions {
+    /// <summary>
+    /// Gets the opposite direction if applicable.
+    /// </summary>
+    /// <param name="direction">The direction.</param>
+    /// <returns>The direction in the opposite direction if applicable, otherwise <see cref="CardinalDirections.None" />.</returns>
+    public static CardinalDirections ToOppositeDirection(this CardinalDirections direction) => direction switch {
+        CardinalDirections.West => CardinalDirections.East,
+        CardinalDirections.North => CardinalDirections.South,
+        CardinalDirections.East => CardinalDirections.West,
+        CardinalDirections.South => CardinalDirections.North,
+        CardinalDirections.NorthEast => CardinalDirections.SouthWest,
+        CardinalDirections.NorthWest => CardinalDirections.SouthEast,
+        CardinalDirections.SouthEast => CardinalDirections.NorthWest,
+        CardinalDirections.SouthWest => CardinalDirections.NorthEast,
+        _ => CardinalDirections.None
+    };
+}
