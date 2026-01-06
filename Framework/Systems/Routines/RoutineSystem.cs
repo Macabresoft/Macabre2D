@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework.Routines;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;

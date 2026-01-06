@@ -1,21 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Framework.Routines;
-
-using System;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// Represents a routine that can be run over multiple frames.
 /// </summary>
-public sealed class Routine {
-    private readonly Func<FrameTime, bool> _routine;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Routine" /> class.
-    /// </summary>
-    /// <param name="routine">The routine. This takes in a <see cref="FrameTime" /> and returns a <see cref="bool" /> indicating whether it is finished running.</param>
-    public Routine(Func<FrameTime, bool> routine) {
-        this._routine = routine;
-    }
-
+public abstract class Routine {
     /// <summary>
     /// Gets a value indicating whether this routine has been canceled.
     /// </summary>
@@ -33,5 +21,7 @@ public sealed class Routine {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <returns>A value indicating whether the routine was finished.</returns>
-    public bool Run(FrameTime frameTime) => this._routine(frameTime);
+    public bool Run(FrameTime frameTime) => this.IsCanceled || this.RunRoutine(frameTime);
+
+    protected abstract bool RunRoutine(FrameTime frameTime);
 }
