@@ -11,6 +11,12 @@ using Microsoft.Xna.Framework.Graphics;
 /// Interface for a render step.
 /// </summary>
 public interface IRenderStep : IEnableable, IIdentifiable, INameable {
+
+    /// <summary>
+    /// Deinitializes this instance.
+    /// </summary>
+    void Deinitialize();
+
     /// <summary>
     /// Initializes this instance.
     /// </summary>
@@ -23,14 +29,8 @@ public interface IRenderStep : IEnableable, IIdentifiable, INameable {
     /// </summary>
     /// <param name="spriteBatch">The current sprite batch.</param>
     /// <param name="previousRenderTarget">The previous render target.</param>
-    /// <param name="viewportSize">The viewport size.</param>
-    /// <param name="internalResolution">The internal resolution.</param>
     /// <returns>A new render target, if processing occurred; otherwise, the original render target.</returns>
-    RenderTarget2D RenderToTexture(
-        SpriteBatch spriteBatch,
-        RenderTarget2D previousRenderTarget,
-        Point viewportSize,
-        Point internalResolution);
+    RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget);
 
     /// <summary>
     /// Resets this instance.
@@ -71,19 +71,40 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
     /// </summary>
     protected IGame Game { get; private set; } = BaseGame.Empty;
 
+
+    protected Point InternalResolution { get; private set; }
+
+    protected Point ViewportSize { get; private set; }
+
     /// <inheritdoc />
-    public virtual void Initialize(IAssetManager assets, IGame game) {
-        this.Game = game;
+    public virtual void Deinitialize() {
+        this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
+        this.Game = BaseGame.Empty;
     }
 
     /// <inheritdoc />
-    public abstract RenderTarget2D RenderToTexture(
-        SpriteBatch spriteBatch,
-        RenderTarget2D previousRenderTarget,
-        Point viewportSize,
-        Point internalResolution);
+    public virtual void Initialize(IAssetManager assets, IGame game) {
+        this.Game = game;
+        this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        this.InternalResolution = this.Game.Project.InternalRenderResolution;
+        this.OnViewportSizeChanged();
+    }
+
+    /// <inheritdoc />
+    public abstract RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget);
 
     /// <inheritdoc />
     public virtual void Reset() {
+    }
+
+    /// <summary>
+    /// Called when the viewport size changes.
+    /// </summary>
+    protected virtual void OnViewportSizeChanged() {
+        this.ViewportSize = this.Game.CroppedViewportSize;
+    }
+
+    private void Game_ViewportSizeChanged(object? sender, Point e) {
+        this.OnViewportSizeChanged();
     }
 }

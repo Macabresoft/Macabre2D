@@ -48,6 +48,12 @@ public interface IGame {
     ContentManager? Content { get; }
 
     /// <summary>
+    /// Gets the cropped viewport size. This is like <see cref="ViewportSize" />, but smaller if there
+    /// are black bars due to the internal render resolution being a different ratio than the viewport.
+    /// </summary>
+    Point CroppedViewportSize { get; }
+
+    /// <summary>
     /// Gets the scene.
     /// </summary>
     IScene CurrentScene { get; }

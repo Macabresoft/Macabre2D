@@ -27,7 +27,6 @@ public class BaseGame : Game, IGame {
     private Rectangle _finalRenderBounds;
     private RenderTarget2D? _gameRenderTarget;
     private GameTime _gameTime = new();
-    private Point _intermediateRenderResolution;
 
     /// <inheritdoc />
     public event EventHandler<ResourceCulture>? CultureChanged;
@@ -74,6 +73,9 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public AudioSettings AudioSettings => this.UserSettings.Audio;
+
+    /// <inheritdoc />
+    public Point CroppedViewportSize { get; private set; }
 
     /// <inheritdoc />
     public IScene CurrentScene {
@@ -394,11 +396,7 @@ public class BaseGame : Game, IGame {
     protected virtual RenderTarget2D PerformRenderSteps(RenderTarget2D renderTarget, SpriteBatch spriteBatch) {
         foreach (var step in this.Project.RenderSteps) {
             if (step.IsEnabled && !this.DisplaySettings.DisabledRenderSteps.Contains(step.Id)) {
-                renderTarget = step.RenderToTexture(
-                    spriteBatch,
-                    renderTarget,
-                    this._intermediateRenderResolution,
-                    this.Project.InternalRenderResolution);
+                renderTarget = step.RenderToTexture(spriteBatch, renderTarget);
             }
         }
 
@@ -490,14 +488,6 @@ public class BaseGame : Game, IGame {
 
     private void ResetViewPort() {
         this.ViewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-        this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
-
-        this._gameRenderTarget?.Dispose();
-        this._gameRenderTarget = null;
-
-        foreach (var step in this.Project.RenderSteps) {
-            step.Reset();
-        }
 
         if (this.Project.InternalRenderResolution.X > 0f && this.Project.InternalRenderResolution.Y > 0f && this.ViewportSize.X > 0f && this.ViewportSize.Y > 0f) {
             var internalRatio = (double)this.Project.InternalRenderResolution.X / this.Project.InternalRenderResolution.Y;
@@ -518,11 +508,20 @@ public class BaseGame : Game, IGame {
                 horizontalOffset = (this.ViewportSize.X - width) / 2;
             }
 
-            this._intermediateRenderResolution = new Point(width, height);
+            this.CroppedViewportSize = new Point(width, height);
             this._finalRenderBounds = new Rectangle(horizontalOffset, verticalOffset, width, height);
         }
         else {
-            this._intermediateRenderResolution = this.ViewportSize;
+            this.CroppedViewportSize = this.ViewportSize;
+        }
+
+        this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
+
+        this._gameRenderTarget?.Dispose();
+        this._gameRenderTarget = null;
+
+        foreach (var step in this.Project.RenderSteps) {
+            step.Reset();
         }
     }
 
@@ -550,6 +549,7 @@ public class BaseGame : Game, IGame {
         public event EventHandler<Point>? ViewportSizeChanged;
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
+        public Point CroppedViewportSize => this.ViewportSize;
         public IScene CurrentScene => EmptyObject.Scene;
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;

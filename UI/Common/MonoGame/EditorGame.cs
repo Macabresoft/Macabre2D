@@ -129,7 +129,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
 
     /// <inheritdoc />
     protected override RenderTarget2D PerformRenderSteps(RenderTarget2D renderTarget, SpriteBatch spriteBatch) {
-        this._renderStep.RenderToTexture(spriteBatch, renderTarget, this.ViewportSize, this.Project.InternalRenderResolution);
+        this._renderStep.RenderToTexture(spriteBatch, renderTarget);
         return renderTarget;
     }
 

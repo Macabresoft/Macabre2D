@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,7 +29,15 @@ public enum ScreenShaderSizing {
 /// An instance of a shader that is used by the project as a whole and not specific scenes.
 /// </summary>
 public class ScreenShaderRenderStep : RenderStep {
+    private readonly ResettableLazy<Point> _renderSize;
+    private readonly ResettableLazy<Vector2> _renderSizeFloatingPoint;
+    private bool _isInitialized;
     private RenderTarget2D? _renderTarget;
+
+    public ScreenShaderRenderStep() : base() {
+        this._renderSize = new ResettableLazy<Point>(this.GetRenderSize);
+        this._renderSizeFloatingPoint = new ResettableLazy<Vector2>(this.GetRenderSizeFloatingPoint);
+    }
 
     /// <summary>
     /// Multiplies the render size after applying of <see cref="Sizing" />.
@@ -52,23 +61,37 @@ public class ScreenShaderRenderStep : RenderStep {
     /// Gets the sizing to use when creating a render target.
     /// </summary>
     [DataMember]
-    public ScreenShaderSizing Sizing { get; set; } = ScreenShaderSizing.FullScreen;
+    public ScreenShaderSizing Sizing {
+        get;
+        set {
+            if (value != field) {
+                field = value;
+                if (this._isInitialized) {
+                    this.ResetRenderSize();
+                }
+            }
+        }
+    } = ScreenShaderSizing.FullScreen;
+
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this._isInitialized = false;
+    }
 
     /// <inheritdoc />
     public override void Initialize(IAssetManager assets, IGame game) {
         base.Initialize(assets, game);
         this.Shader.Initialize(assets, game);
+        this._isInitialized = true;
     }
 
     /// <inheritdoc />
     public override RenderTarget2D RenderToTexture(
         SpriteBatch spriteBatch,
-        RenderTarget2D previousRenderTarget,
-        Point viewportSize,
-        Point internalResolution) {
-        var renderSize = this.GetRenderSize(viewportSize, internalResolution);
-        if (this.Shader.PrepareAndGetShader(renderSize.ToVector2(), this.Game, this.Game.CurrentScene) is { } effect) {
-            var renderTarget = this.GetRenderTarget(this.Game.GraphicsDevice, renderSize);
+        RenderTarget2D previousRenderTarget) {
+        if (this.Shader.PrepareAndGetShader(this._renderSizeFloatingPoint.Value, this.Game, this.Game.CurrentScene) is { } effect) {
+            var renderTarget = this.GetRenderTarget(this.Game.GraphicsDevice, this._renderSize.Value);
             this.Game.GraphicsDevice.SetRenderTarget(renderTarget);
             this.Game.GraphicsDevice.Clear(this.Game.CurrentScene.BackgroundColor);
             spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
@@ -87,6 +110,14 @@ public class ScreenShaderRenderStep : RenderStep {
         this._renderTarget = null;
     }
 
+    /// <inheritdoc />
+    protected override void OnViewportSizeChanged() {
+        base.OnViewportSizeChanged();
+        this.ResetRenderSize();
+    }
+
+    private Point GetRenderSize() => this.GetRenderSize(this.ViewportSize, this.InternalResolution);
+
     private Point GetRenderSize(Point viewPortSize, Point pixelRenderSize) {
         return this.Sizing switch {
             ScreenShaderSizing.PixelSize => new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier),
@@ -96,8 +127,15 @@ public class ScreenShaderRenderStep : RenderStep {
         };
     }
 
+    private Vector2 GetRenderSizeFloatingPoint() => this._renderSize.Value.ToVector2();
+
     private RenderTarget2D GetRenderTarget(GraphicsDevice device, Point renderSize) {
         this._renderTarget ??= device.CreateRenderTarget(renderSize);
         return this._renderTarget;
+    }
+
+    private void ResetRenderSize() {
+        this._renderSize.Reset();
+        this._renderSizeFloatingPoint.Reset();
     }
 }

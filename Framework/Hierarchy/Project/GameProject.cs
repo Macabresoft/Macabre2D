@@ -205,7 +205,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     [DataMember]
     public Point InternalRenderResolution {
         get => this._internalRenderResolution;
-        set {
+        private set {
             this._internalRenderResolution = new Point(Math.Max(1, value.X), Math.Max(1, value.Y));
             this.InternalRenderResolutionRatio = this._internalRenderResolution.X / (float)this._internalRenderResolution.Y;
             this.ResetViewSize();

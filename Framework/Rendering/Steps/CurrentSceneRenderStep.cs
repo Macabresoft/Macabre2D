@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
@@ -10,15 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 public class CurrentSceneRenderStep : RenderStep {
 
     /// <inheritdoc />
-    public override RenderTarget2D RenderToTexture(
-        SpriteBatch spriteBatch,
-        RenderTarget2D previousRenderTarget,
-        Point viewportSize,
-        Point internalResolution) {
+    public override RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget) {
         foreach (var scene in this.Game.OpenScenes.Reverse()) {
             scene.Render(this.Game.FrameTime, this.Game.InputState);
         }
-        
+
         return previousRenderTarget;
     }
 }
