@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common.Attributes;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Project.Common;
 using ReactiveUI;
@@ -162,6 +162,17 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                 result.Add(editor);
             }
         }
+        else if (memberType == typeof(Guid) && (owner is IRenderStepReference && member.MemberInfo.Name == nameof(RenderStepReference.Id) || member.MemberInfo.GetCustomAttribute<RenderStepGuidAttribute>() != null)) {
+            var editor = this.CreateValueEditorFromType(typeof(RenderStepGuidEditor), owner, value, memberType, member, propertyPath);
+
+            if (editor != null) {
+                if (member.MemberInfo.Name == nameof(RenderStepReference.Id)) {
+                    editor.Title = $"Render Step Id ({propertyPath})";
+                }
+
+                result.Add(editor);
+            }
+        }
         else if (memberType == typeof(Guid) && (owner is PhysicsMaterialReference && member.MemberInfo.Name == nameof(PhysicsMaterialReference.Id) || member.MemberInfo.GetCustomAttribute<PhysicsMaterialGuidAttribute>() != null)) {
             var editor = this.CreateValueEditorFromType(typeof(PhysicsMaterialGuidEditor), owner, value, memberType, member, propertyPath);
 
@@ -252,9 +263,19 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private IEnumerable<MemberInfo> GetMembers(object owner, params Type[] typesToIgnore) {
         var editableObjectType = owner.GetType();
         var allMembers = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).ToList();
-        var members = allMembers.Where(x => IsValidType(x, typesToIgnore)).ToList();
+        var members = allMembers.Where(x => this.IsValidType(x, typesToIgnore)).ToList();
         return members;
     }
+
+    private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
+
+    private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
+
+    private static bool HasAssetGuidReference(Type type) =>
+        type.GetCustomAttribute<AssetGuidAttribute>() != null ||
+        type.GetCustomAttribute<SceneGuidAttribute>() != null ||
+        type.GetCustomAttribute<SpriteSheetGuidAttribute>() != null ||
+        type.GetCustomAttribute<PrefabGuidAttribute>() != null;
 
     private bool IsValidType(MemberInfo member, params Type[] typesToIgnore) {
         var result = true;
@@ -272,16 +293,6 @@ public class ValueControlService : ReactiveObject, IValueControlService {
 
         return result;
     }
-
-    private static string GetPropertyName(string propertyPath) => !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
-
-    private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) => !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
-
-    private static bool HasAssetGuidReference(Type type) =>
-        type.GetCustomAttribute<AssetGuidAttribute>() != null ||
-        type.GetCustomAttribute<SceneGuidAttribute>() != null ||
-        type.GetCustomAttribute<SpriteSheetGuidAttribute>() != null ||
-        type.GetCustomAttribute<PrefabGuidAttribute>() != null;
 
     private void SetCategoryForEditor(IValueEditor editor, object owner, AttributeMemberInfo<DataMemberAttribute> member, string propertyPath) {
         editor.Category = DefaultCategoryName;

@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common.Attributes;
 
 /// <summary>
 /// A base asset for assets which are packaged in a <see cref="SpriteSheet" />.
@@ -14,6 +13,11 @@ public abstract class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable
     [DataMember]
     public Guid Id { get; set; } = Guid.NewGuid();
 
+    /// <summary>
+    /// Gets the initial sprite index.
+    /// </summary>
+    public virtual byte? InitialSpriteIndex => null;
+
     /// <inheritdoc />
     [DataMember]
     public string Name { get; set; } = string.Empty;
@@ -22,9 +26,4 @@ public abstract class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable
     /// Gets the sprite sheet.
     /// </summary>
     public SpriteSheet? SpriteSheet { get; internal set; }
-
-    /// <summary>
-    /// Gets the initial sprite index.
-    /// </summary>
-    public virtual byte? InitialSpriteIndex => null;
 }

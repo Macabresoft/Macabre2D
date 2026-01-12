@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Common.Attributes;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;

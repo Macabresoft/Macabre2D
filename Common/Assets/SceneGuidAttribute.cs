@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Common.Attributes;
+﻿namespace Macabresoft.Macabre2D.Common;
 
 /// <summary>
 /// Attribute for <see cref="Guid" /> scene references.

@@ -11,47 +11,57 @@ using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public partial class RenderStepReferenceEditor : ValueEditorControl<RenderStepReference> {
+public partial class RenderStepGuidEditor : ValueEditorControl<Guid> {
 
-    public static readonly DirectProperty<RenderStepReferenceEditor, IReadOnlyCollection<RenderStep>> AvailableStepsProperty =
-        AvaloniaProperty.RegisterDirect<RenderStepReferenceEditor, IReadOnlyCollection<RenderStep>>(
+    public static readonly DirectProperty<RenderStepGuidEditor, IReadOnlyCollection<RenderStep>> AvailableStepsProperty =
+        AvaloniaProperty.RegisterDirect<RenderStepGuidEditor, IReadOnlyCollection<RenderStep>>(
             nameof(AvailableSteps),
             editor => editor.AvailableSteps);
 
-    public static readonly DirectProperty<RenderStepReferenceEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<RenderStepReferenceEditor, ICommand>(
+    public static readonly DirectProperty<RenderStepGuidEditor, ICommand> ClearCommandProperty =
+        AvaloniaProperty.RegisterDirect<RenderStepGuidEditor, ICommand>(
             nameof(ClearCommand),
             editor => editor.ClearCommand);
 
-    public static readonly DirectProperty<RenderStepReferenceEditor, RenderStep> SelectedStepProperty =
-        AvaloniaProperty.RegisterDirect<RenderStepReferenceEditor, RenderStep>(
+    public static readonly DirectProperty<RenderStepGuidEditor, RenderStep> SelectedStepProperty =
+        AvaloniaProperty.RegisterDirect<RenderStepGuidEditor, RenderStep>(
             nameof(SelectedStep),
             editor => editor.SelectedStep,
             (editor, value) => editor.SelectedStep = value);
 
     private readonly ObservableCollectionExtended<RenderStep> _availableSteps = [];
-
+    private readonly IProjectService _projectService;
+    private readonly Type _renderStepType = typeof(RenderStep);
     private readonly IUndoService _undoService;
     private bool _canSetStep = true;
-    private RenderStep _selectedStep;
 
-    public RenderStepReferenceEditor() : this(
+    public RenderStepGuidEditor() : this(
         null,
         Resolver.Resolve<IProjectService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
     [InjectionConstructor]
-    public RenderStepReferenceEditor(
+    public RenderStepGuidEditor(
         ValueControlDependencies dependencies,
         IProjectService projectService,
         IUndoService undoService) : base(dependencies) {
+        this._projectService = projectService;
         this._undoService = undoService;
 
-        var steps = projectService.CurrentProject.RenderSteps.OfType<RenderStep>().ToList();
+        if (dependencies is { Owner: IRenderStepReference reference, ValuePropertyName: nameof(IRenderStepReference.Id) }) {
+            this._renderStepType = reference.Type;
+        }
+
+        var steps = this._projectService.CurrentProject.RenderSteps
+            .OfType<RenderStep>()
+            .Where(x => x.GetType().IsAssignableTo(this._renderStepType))
+            .ToList();
+
         steps.Insert(0, null);
         this._availableSteps.Reset(steps);
         this.ResetSelectedStep();
+
 
         this.ClearCommand = ReactiveCommand.Create(
             this.Clear,
@@ -65,29 +75,29 @@ public partial class RenderStepReferenceEditor : ValueEditorControl<RenderStepRe
     public ICommand ClearCommand { get; }
 
     public RenderStep SelectedStep {
-        get => this._selectedStep;
+        get;
         set {
-            this.SetAndRaise(SelectedStepProperty, ref this._selectedStep, value);
-            this.SetStep(this._selectedStep);
+            this.SetAndRaise(SelectedStepProperty, ref field, value);
+            this.SetStep(field);
         }
     }
 
-    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<RenderStepReference> args) {
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
         base.OnValueChanged(args);
 
-        if (this.Value != null && this.Value.Id != Guid.Empty) {
+        if (this.Value != Guid.Empty) {
             this.ResetSelectedStep();
         }
     }
 
     private void Clear() {
-        if (this.Value.Id != Guid.Empty) {
+        if (this.Value != Guid.Empty) {
             this.SelectedStep = null;
         }
         else {
             try {
                 this._canSetStep = false;
-                this.Value.Step = null;
+                this.Value = Guid.Empty;
                 this.SelectedStep = null;
             }
             finally {
@@ -99,7 +109,7 @@ public partial class RenderStepReferenceEditor : ValueEditorControl<RenderStepRe
     private void ResetSelectedStep() {
         try {
             this._canSetStep = false;
-            this.SelectedStep = this.AvailableSteps.FirstOrDefault(x => x != null && x.Id == this.Value.Id);
+            this.SelectedStep = this.AvailableSteps.FirstOrDefault(x => x != null && x.Id == this.Value);
         }
         finally {
             this._canSetStep = true;
@@ -108,13 +118,15 @@ public partial class RenderStepReferenceEditor : ValueEditorControl<RenderStepRe
 
     private void SetStep(RenderStep step) {
         if (this._canSetStep) {
-            var originalValue = this.Value.Step;
+            var originalValue = this.Value;
+            var originalStep = this._projectService.CurrentProject.RenderSteps.OfType<RenderStep>().FirstOrDefault(x => x.Id == originalValue);
+            var updatedValue = step?.Id ?? Guid.Empty;
             this._undoService.Do(
                 () =>
                 {
                     try {
                         this._canSetStep = false;
-                        this.Value.Step = step;
+                        this.Value = updatedValue;
                         this.SelectedStep = step;
                     }
                     finally {
@@ -125,8 +137,8 @@ public partial class RenderStepReferenceEditor : ValueEditorControl<RenderStepRe
                 {
                     try {
                         this._canSetStep = false;
-                        this.Value.Step = originalValue;
-                        this.SelectedStep = originalValue;
+                        this.Value = originalValue;
+                        this.SelectedStep = originalStep;
                     }
                     finally {
                         this._canSetStep = true;

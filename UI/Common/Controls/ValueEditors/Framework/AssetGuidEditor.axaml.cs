@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Common.Attributes;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
@@ -84,12 +84,12 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
 
     public ICommand ClearCommand { get; }
 
-    public ICommand SelectCommand { get; }
-
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
         base.OnValueChanged(args);

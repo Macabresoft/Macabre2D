@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Common.Attributes;
+using Macabresoft.Macabre2D.Common;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
@@ -73,12 +73,12 @@ public partial class SpriteSheetAssetGuidReferenceEditor : ValueEditorControl<Sp
 
     public ICommand ClearCommand { get; }
 
-    public ICommand SelectCommand { get; }
-
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SpriteSheetAssetGuidReference> args) {
         base.OnValueChanged(args);
@@ -93,17 +93,6 @@ public partial class SpriteSheetAssetGuidReferenceEditor : ValueEditorControl<Sp
                 () => this.Value = new SpriteSheetAssetGuidReference(),
                 () => this.Value = originalValue);
         }
-    }
-
-    private Type ConvertAssetKindToType(SpriteSheetAssetKind assetKind) {
-        return assetKind switch {
-            SpriteSheetAssetKind.Animation => typeof(SpriteAnimation),
-            SpriteSheetAssetKind.AutoTileSet => typeof(AutoTileSet),
-            SpriteSheetAssetKind.Font => typeof(SpriteSheetFont),
-            SpriteSheetAssetKind.GamePadIconSet => typeof(GamePadIconSet),
-            SpriteSheetAssetKind.KeyboardIconSet => typeof(KeyboardIconSet),
-            _ => throw new ArgumentOutOfRangeException(nameof(assetKind), assetKind, null)
-        };
     }
 
     private void ResetPath() {

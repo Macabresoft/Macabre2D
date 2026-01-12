@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Common.Attributes;
+﻿namespace Macabresoft.Macabre2D.Common;
 
 /// <summary>
 /// A reference to a sprite sheet and a sprite index.

@@ -136,7 +136,7 @@
           <DependentUpon>TypeEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\RenderStepReferenceEditor.axaml.cs">
+        <Compile Update="Controls\ValueEditors\Framework\RenderStepGuidEditor.axaml.cs">
           <DependentUpon>ScreenShaderReferenceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>

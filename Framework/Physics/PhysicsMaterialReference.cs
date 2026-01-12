@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common.Attributes;
+using Macabresoft.Macabre2D.Common;
 
 /// <summary>
 /// A reference to a <see cref="PhysicsMaterial" />.
