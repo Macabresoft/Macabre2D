@@ -71,9 +71,14 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
     /// </summary>
     protected IGame Game { get; private set; } = BaseGame.Empty;
 
-
+    /// <summary>
+    /// Gets the internal resolution at which the game is first rendered.
+    /// </summary>
     protected Point InternalResolution { get; private set; }
 
+    /// <summary>
+    /// Gets the resolution of the actual window within which the game is rendered.
+    /// </summary>
     protected Point ViewportSize { get; private set; }
 
     /// <inheritdoc />
