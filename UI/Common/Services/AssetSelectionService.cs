@@ -181,7 +181,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         else if (this._selected is IContentNode) {
             this._editors.AddRange(this._contentService.Editors);
         }
-        else if (this._selected is ScreenShaderRenderStep or PhysicsMaterial) {
+        else if (this._selected is RenderStep or PhysicsMaterial) {
             var editors = this._valueControlService.CreateControls(this._selected);
             this._editors.AddRange(editors);
 
