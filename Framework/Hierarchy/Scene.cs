@@ -450,6 +450,11 @@ public sealed class Scene : GridContainer, IScene {
                     this._idToEntitiesInScene[child.Id] = child;
                 }
 
+                // Reason for two loops: Load ALL assets before beginning initialization.
+                foreach (var system in this.Systems) {
+                    system.LoadAssets(this.Assets, this.Game);
+                }
+
                 foreach (var system in this.Systems) {
                     system.Initialize(this);
                     this.RegisterSystem(system);

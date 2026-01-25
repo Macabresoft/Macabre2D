@@ -187,7 +187,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Checks whether this instance references the specified content.
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
-    /// <returns>A value indicating whether or not this instance </returns>
+    /// <returns>A value indicating whether this instance </returns>
     bool ReferencesContent(Guid contentId);
 
     /// <summary>
