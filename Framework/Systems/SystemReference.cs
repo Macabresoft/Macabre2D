@@ -6,27 +6,26 @@ using Macabresoft.Core;
 /// <summary>
 /// Base class for system references.
 /// </summary>
-public abstract class SystemReference : PropertyChangedNotifier {
-    private Guid _systemId;
-
-    /// <summary>
-    /// Gets the type of the system referenced.
-    /// </summary>
-    public abstract Type Type { get; }
+public abstract class SystemReference : PropertyChangedNotifier, IGameObjectReference {
 
     /// <summary>
     /// Gets or sets the system identifier.
     /// </summary>
     public Guid SystemId {
-        get => this._systemId;
+        get;
         set {
-            if (this._systemId != value) {
-                this._systemId = value;
+            if (field != value) {
+                field = value;
                 this.ResetSystem();
                 this.RaisePropertyChanged();
             }
         }
     }
+
+    /// <summary>
+    /// Gets the type of the system referenced.
+    /// </summary>
+    public abstract Type Type { get; }
 
     /// <summary>
     /// Gets an untyped version of the system.
@@ -37,6 +36,12 @@ public abstract class SystemReference : PropertyChangedNotifier {
     /// Gets the scene.
     /// </summary>
     protected IScene Scene { get; private set; } = EmptyObject.Scene;
+
+    /// <inheritdoc />
+    public virtual void Deinitialize() {
+        this.Scene = EmptyObject.Scene;
+        this.UntypedSystem = null;
+    }
 
     /// <summary>
     /// Initializes this instance.
@@ -58,17 +63,22 @@ public abstract class SystemReference : PropertyChangedNotifier {
 /// </summary>
 /// <typeparam name="TSystem">The type of system.</typeparam>
 public class SystemReference<TSystem> : SystemReference where TSystem : class, IGameSystem {
-    private TSystem? _system;
-
-    /// <inheritdoc />
-    public override Type Type => typeof(TSystem);
 
     /// <summary>
     /// Gets the system.
     /// </summary>
     public TSystem? System {
-        get => this._system;
-        private set => this.Set(ref this._system, value);
+        get;
+        private set => this.Set(ref field, value);
+    }
+
+    /// <inheritdoc />
+    public override Type Type => typeof(TSystem);
+
+    /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        this.System = null;
     }
 
     /// <inheritdoc />
