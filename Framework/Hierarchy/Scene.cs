@@ -406,6 +406,7 @@ public sealed class Scene : GridContainer, IScene {
                 }
 
                 this.ClearFilterCaches();
+                this.State.Deinitialize();
             }
             finally {
                 this._isInitialized = false;
