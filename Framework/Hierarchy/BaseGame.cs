@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Common;
@@ -242,6 +243,18 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public void LoadScene(IScene scene) {
         this.CurrentScene = scene;
+    }
+
+    /// <inheritdoc />
+    public void LoadScene(Guid sceneId) {
+        var assets = this.CreateAssetManager();
+
+        if (assets.TryLoadContent<Scene>(sceneId, out var scene)) {
+            this.LoadScene(scene);
+        }
+        else {
+            throw new FileNotFoundException($"Could not find a scene with the ID: {sceneId}");
+        }
     }
 
     /// <inheritdoc />
@@ -590,6 +603,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void LoadScene(IScene scene) {
+        }
+
+        public void LoadScene(Guid sceneId) {
         }
 
         public void PushScene(IScene scene) {

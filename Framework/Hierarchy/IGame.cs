@@ -178,6 +178,12 @@ public interface IGame {
     void LoadScene(IScene scene);
 
     /// <summary>
+    /// Loads the scene.
+    /// </summary>
+    /// <param name="sceneId">The scene content identifier.</param>
+    void LoadScene(Guid sceneId);
+
+    /// <summary>
     /// Pushes a scene onto the scene stack. This becomes the current scene, but other scenes in the stack will still render underneath. Only the current scene will update.
     /// </summary>
     /// <param name="scene">The scene to push.</param>
