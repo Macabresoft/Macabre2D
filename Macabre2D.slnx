@@ -1,0 +1,35 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Project/">
+    <Project Path="Project/Common/Macabre2D.Project.Common.csproj" />
+    <Project Path="Project/Gameplay/Macabre2D.Project.Gameplay.csproj" />
+    <Project Path="Project/Tests/Macabre2D.Project.Tests.csproj" />
+    <Project Path="Project/UI/Macabre2D.Project.UI.csproj" />
+  </Folder>
+  <Folder Name="/Project/Platforms/">
+    <Project Path="Project/Platforms/DesktopGL/Macabre2D.Platforms.DesktopGL.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="UI/AvaloniaInterop/Macabre2D.UI.AvaloniaInterop.csproj" />
+    <Project Path="UI/Common/Macabre2D.UI.Common.csproj" />
+    <Project Path="UI/ContentBuilder/Macabre2D.UI.ContentBuilder.csproj" />
+    <Project Path="UI/Editor/Macabre2D.UI.Editor.csproj" />
+    <Project Path="UI/Tests/Macabre2D.UI.Tests.csproj" />
+  </Folder>
+  <Project Path="Common/Macabre2D.Common.csproj" />
+  <Project Path="Framework/Macabre2D.Framework.csproj" />
+  <Project Path="Tests/Macabre2D.Tests.csproj">
+    <Build Solution="Release|Any CPU" Project="false" />
+  </Project>
+</Solution>
