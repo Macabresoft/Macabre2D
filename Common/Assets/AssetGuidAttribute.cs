@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Common;
+﻿namespace Macabre2D.Common;
 
 /// <summary>
 /// Attribute for <see cref="Guid" /> asset references.

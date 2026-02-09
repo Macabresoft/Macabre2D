@@ -1,13 +1,13 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Input;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MouseButton = Macabresoft.Macabre2D.Framework.MouseButton;
+using MouseButton = Macabre2D.Framework.MouseButton;
 
 /// <summary>
 /// A gizmo/component that allows the user to translate entities in the editor.

@@ -1,10 +1,10 @@
 <local:ValueOverrideEditor xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabre2D.UI.Common"
+                           xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
                            xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                            x:TypeArguments="framework:ColorOverride, monoGame:Color"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.ColorOverrideEditor">
+                           x:Class="Macabre2D.UI.Common.ColorOverrideEditor">
     <Grid RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:ColorOverrideEditor]}">
         <Design.DataContext>

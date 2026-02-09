@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 /// <summary>
 /// A body with four colliders that comprises an equilateral triangle.

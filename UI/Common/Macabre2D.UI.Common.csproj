@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Nullable>disable</Nullable>
-        <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
+        <RootNamespace>Macabre2D.UI.Common</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>

@@ -1,9 +1,9 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                          xmlns:project="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+                          xmlns:local="clr-namespace:Macabre2D.UI.Common"
+                          xmlns:project="clr-namespace:Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
                           x:TypeArguments="project:InputAction"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.InputActionEditor">
+                          x:Class="Macabre2D.UI.Common.InputActionEditor">
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:InputActionEditor]}">
         <Design.DataContext>

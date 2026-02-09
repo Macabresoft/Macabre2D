@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Unity;
 
 public partial class PredefinedIntEditor : BaseNumericEditor<int> {

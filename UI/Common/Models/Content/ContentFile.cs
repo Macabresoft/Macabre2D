@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 /// <summary>
 /// A content file for the project.

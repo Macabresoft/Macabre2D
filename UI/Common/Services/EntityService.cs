@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 /// <summary>
 /// An interface for a service which handles the selection and loading of entities and their editors.

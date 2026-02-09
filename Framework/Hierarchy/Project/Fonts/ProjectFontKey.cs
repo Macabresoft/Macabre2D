@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 /// <summary>
 /// A key used internally by <see cref="ProjectFonts" /> to access <see cref="ProjectFontDefinition" />.

@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 /// <summary>
 /// Represents a single word in a <see cref="TextLine" />.

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;

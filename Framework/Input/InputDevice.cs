@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 /// <summary>
 /// The input device used when interacting with the game.

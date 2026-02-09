@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 /// <summary>
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.

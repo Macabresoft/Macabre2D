@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.UI.Common;
 
 public partial class SceneEditorView : UserControl {
     public SceneEditorView() {

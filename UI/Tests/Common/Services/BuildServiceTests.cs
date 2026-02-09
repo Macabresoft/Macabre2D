@@ -1,12 +1,12 @@
-namespace Macabresoft.Macabre2D.UI.Tests;
+namespace Macabre2D.UI.Tests;
 
 using System.IO;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Common;
+using Macabre2D.UI.Common;
 using NSubstitute;
 using NUnit.Framework;
 

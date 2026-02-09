@@ -1,11 +1,11 @@
-namespace Macabresoft.Macabre2D.Tests.Framework;
+namespace Macabre2D.Tests.Framework;
 
 using System;
 using System.Runtime.Serialization;
 using System.Threading;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Common;
+using Macabre2D.Common;
 using NUnit.Framework;
 
 [TestFixture]

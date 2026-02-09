@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Tests;
+﻿namespace Macabre2D.Tests;
 
 using System;
 using System.Collections.Generic;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using NUnit.Framework;
 
 [TestFixture]

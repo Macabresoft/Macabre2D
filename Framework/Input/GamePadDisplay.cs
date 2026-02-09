@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 /// <summary>
 /// Determines how game pad icons will be displayed.

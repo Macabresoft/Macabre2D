@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using Avalonia.Input;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+using Macabre2D.UI.AvaloniaInterop;
 using Microsoft.Xna.Framework.Input;
 
 public partial class KeySelectDialog : BaseDialog {

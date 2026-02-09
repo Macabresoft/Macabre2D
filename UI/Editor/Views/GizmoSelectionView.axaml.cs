@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor;
+﻿namespace Macabre2D.UI.Editor;
 
 using Avalonia.Controls;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.UI.Common;
 
 public partial class GizmoSelectionView : UserControl {
     public GizmoSelectionView() {

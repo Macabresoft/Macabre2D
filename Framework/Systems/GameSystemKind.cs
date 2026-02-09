@@ -1,2 +1,2 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabre2D.Framework;
 

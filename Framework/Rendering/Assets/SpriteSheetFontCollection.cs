@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Tests.Framework.Hierarchy;
+namespace Macabre2D.Tests.Framework.Hierarchy;
 
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using NSubstitute;
 using NUnit.Framework;
 

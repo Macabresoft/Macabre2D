@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common;
+using Macabre2D.Common;
 
 /// <summary>
 /// A reference to a <see cref="PhysicsMaterial" />.

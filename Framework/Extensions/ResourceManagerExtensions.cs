@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Resources;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 /// <summary>
 /// Extension methods for <see cref="ResourceManager" />.

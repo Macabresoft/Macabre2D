@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:monoGameInput="clr-namespace:Microsoft.Xna.Framework.Input;assembly=MonoGame.Framework"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Common.InputActionControl">
+             xmlns:local="clr-namespace:Macabre2D.UI.Common"
+             x:Class="Macabre2D.UI.Common.InputActionControl">
     <UserControl.Styles>
         <Style Selector="avaloniaEx|Icon">
             <Setter Property="Height" Value="24" />

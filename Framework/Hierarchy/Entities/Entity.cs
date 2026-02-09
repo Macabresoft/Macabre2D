@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>

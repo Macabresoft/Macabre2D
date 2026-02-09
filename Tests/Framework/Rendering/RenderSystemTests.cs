@@ -1,12 +1,12 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework;
+﻿namespace Macabre2D.Tests.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;

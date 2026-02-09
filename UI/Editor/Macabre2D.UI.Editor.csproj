@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <RootNamespace>Macabresoft.Macabre2D.UI.Editor</RootNamespace>
+        <RootNamespace>Macabre2D.UI.Editor</RootNamespace>
         <PackageId>Macabre2D.UI.Editor</PackageId>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <OutputPath>..\..\bin\$(Configuration)</OutputPath>

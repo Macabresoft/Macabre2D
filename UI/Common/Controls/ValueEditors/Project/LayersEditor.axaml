@@ -1,10 +1,10 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:local="clr-namespace:Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-                          xmlns:project="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+                          xmlns:project="clr-namespace:Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
                           x:TypeArguments="project:Layers"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.LayersEditor">
+                          x:Class="Macabre2D.UI.Common.LayersEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:LayersEditor]}">
         <Design.DataContext>

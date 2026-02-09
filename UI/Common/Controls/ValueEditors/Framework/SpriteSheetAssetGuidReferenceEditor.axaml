@@ -1,11 +1,11 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:local="clr-namespace:Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                          xmlns:frameworkCommon="clr-namespace:Macabresoft.Macabre2D.Common;assembly=Macabre2D.Common"
+                          xmlns:frameworkCommon="clr-namespace:Macabre2D.Common;assembly=Macabre2D.Common"
                           x:TypeArguments="frameworkCommon:SpriteSheetAssetGuidReference"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.SpriteSheetAssetGuidReferenceEditor">
+                          x:Class="Macabre2D.UI.Common.SpriteSheetAssetGuidReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:SpriteSheetAssetGuidReferenceEditor]}">
         <Design.DataContext>

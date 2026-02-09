@@ -3,7 +3,15 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Macabresoft.Macabre2D.Common</RootNamespace>
+        <RootNamespace>Macabre2D.Common</RootNamespace>
+        <IsPackable>false</IsPackable>
+        <PackageId />
+        <Version />
+        <Authors />
+        <Copyright />
+        <PackageProjectUrl />
+        <RepositoryType />
+        <PackageTags />
     </PropertyGroup>
 
     <ItemGroup>

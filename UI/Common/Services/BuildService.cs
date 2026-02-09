@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ using System.Linq;
 using System.Text;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Common;
+using Macabre2D.Framework;
 
 /// <summary>
 /// Interface that abstracts out building content and projects.

@@ -1,10 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:local="clr-namespace:Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
+             xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+             x:Class="Macabre2D.UI.Editor.SceneTreeView">
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.ViewModel.EditorService.RequestFocusCommand}"
                     Gesture="Ctrl + F" />

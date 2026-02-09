@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 
 public class ProjectFontModel : PropertyChangedNotifier {
     private readonly IAssetManager _assetManager;

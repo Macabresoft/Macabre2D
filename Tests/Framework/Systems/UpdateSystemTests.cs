@@ -1,11 +1,11 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems; 
+﻿namespace Macabre2D.Tests.Framework.Systems; 
 
 using System;
 using System.Collections.Generic;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using NSubstitute;
 using NUnit.Framework;
 

@@ -1,10 +1,10 @@
 <local:ValueOverrideEditor xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                           xmlns:commonFramework="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+                           xmlns:local="clr-namespace:Macabre2D.UI.Common"
+                           xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:commonFramework="clr-namespace:Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
                            x:TypeArguments="framework:LayersOverride, commonFramework:Layers"
-                           x:Class="Macabresoft.Macabre2D.UI.Common.LayersOverrideEditor">
+                           x:Class="Macabre2D.UI.Common.LayersOverrideEditor">
     <Grid ColumnDefinitions="Auto, Auto, *"
           DataContext="{Binding $parent[local:LayersOverrideEditor]}">
         <Design.DataContext>

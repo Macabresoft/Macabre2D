@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.Tests.Framework.Input;
+namespace Macabre2D.Tests.Framework.Input;
 
 using System.Linq;
 using AwesomeAssertions;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Microsoft.Xna.Framework.Input;
 using NUnit.Framework;
 

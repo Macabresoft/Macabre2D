@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.UI.Common;
 using Unity;
 
 public partial class SpriteSheetAssetSelectionDialog : BaseDialog {

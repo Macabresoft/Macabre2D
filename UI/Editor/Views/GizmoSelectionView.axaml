@@ -1,10 +1,10 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:local="clr-namespace:Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:commonFramework="clr-namespace:Macabresoft.Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.GizmoSelectionView">
+             xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:commonFramework="clr-namespace:Macabre2D.Project.Common;assembly=Macabre2D.Project.Common"
+             x:Class="Macabre2D.UI.Editor.GizmoSelectionView">
     <UserControl.Resources>
         <common:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>

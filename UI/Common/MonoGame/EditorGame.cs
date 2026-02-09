@@ -1,11 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+using Macabre2D.Common;
+using Macabre2D.Framework;
+using Macabre2D.UI.AvaloniaInterop;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

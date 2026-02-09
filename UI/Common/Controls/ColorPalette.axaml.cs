@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 public partial class ColorPalette : UserControl {

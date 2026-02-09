@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Common;
+namespace Macabre2D.Common;
 
 /// <summary>
 /// Manages the loading and saving of data on a desktop PC.

@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.SceneEditorView">
+             xmlns:local="clr-namespace:Macabre2D.UI.Editor"
+             xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             x:Class="Macabre2D.UI.Editor.SceneEditorView">
     <Grid RowDefinitions="0.4*, 0, 0.6*"
           DataContext="{Binding $parent[local:SceneEditorView].ViewModel, Mode=OneTime}">
         <Design.DataContext>

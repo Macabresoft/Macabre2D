@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System.Windows.Input;
 using Avalonia;

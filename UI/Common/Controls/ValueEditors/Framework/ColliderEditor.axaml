@@ -1,11 +1,11 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                 xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                                 xmlns:local="clr-namespace:Macabre2D.UI.Common"
+                                 xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 xmlns:valueEditors="clr-namespace:Macabre2D.UI.Common"
                                  x:TypeArguments="framework:Collider"
-                                 x:Class="Macabresoft.Macabre2D.UI.Common.ColliderEditor">
+                                 x:Class="Macabre2D.UI.Common.ColliderEditor">
     <Grid DataContext="{Binding $parent[local:ColliderEditor]}">
         <Design.DataContext>
             <local:ColliderEditor />

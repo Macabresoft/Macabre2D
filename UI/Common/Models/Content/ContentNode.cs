@@ -1,11 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 /// <summary>
 /// Interface for a node in the content tree.

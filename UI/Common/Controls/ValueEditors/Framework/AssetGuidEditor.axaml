@@ -1,10 +1,10 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:local="clr-namespace:Macabre2D.UI.Common"
                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
                           x:TypeArguments="system:Guid"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.AssetGuidEditor">
+                          x:Class="Macabre2D.UI.Common.AssetGuidEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:AssetGuidEditor]}">
         <Design.DataContext>

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Common;
+namespace Macabre2D.Common;
 
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;

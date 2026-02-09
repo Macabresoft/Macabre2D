@@ -1,9 +1,9 @@
-namespace Macabresoft.Macabre2D.Tests.Framework;
+namespace Macabre2D.Tests.Framework;
 
 using System;
 using System.Threading;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 internal class TestRenderableEntity : RenderableEntity {

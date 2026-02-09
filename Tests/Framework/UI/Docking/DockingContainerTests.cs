@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.UI.Docking;
+﻿namespace Macabre2D.Tests.Framework.UI.Docking;
 
 using System;
 using System.Collections.Generic;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;

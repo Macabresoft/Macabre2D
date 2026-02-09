@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using Avalonia.Controls;
 using Avalonia.Input;

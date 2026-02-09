@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Globalization;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Avalonia.Data.Converters;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 /// <summary>
 /// Converts from a <see cref="Type" /> or <see cref="Enum" /> to a display name.

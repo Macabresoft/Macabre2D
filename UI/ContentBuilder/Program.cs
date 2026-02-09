@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Common;
+using Macabre2D.UI.Common;
 using Unity;
 
 try {

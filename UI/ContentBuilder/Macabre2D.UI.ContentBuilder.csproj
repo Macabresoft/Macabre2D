@@ -8,6 +8,14 @@
         <AssemblyName>ContentBuilder</AssemblyName>
         <Product>Content Builder</Product>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <IsPackable>false</IsPackable>
+        <PackageId />
+        <Version />
+        <Authors />
+        <Copyright />
+        <PackageProjectUrl />
+        <RepositoryType />
+        <PackageTags />
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

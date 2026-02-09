@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;

@@ -1,9 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
+             xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:local="clr-namespace:Macabre2D.UI.Editor"
+             x:Class="Macabre2D.UI.Editor.ProjectEditorView">
     <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}"
           PropertyChanged="OverallGrid_OnPropertyChanged">
         <Grid.RowDefinitions>

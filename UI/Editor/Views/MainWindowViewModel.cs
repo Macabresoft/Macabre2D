@@ -1,12 +1,12 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Common;
+using Macabre2D.Framework;
+using Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
 using Path = System.IO.Path;

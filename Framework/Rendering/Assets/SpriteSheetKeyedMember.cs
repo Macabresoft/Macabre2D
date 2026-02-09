@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 /// <summary>
 /// A base class for <see cref="SpriteSheetMember" /> classes that operate as a dynamic dictionary with keys being related to sprite indexes.

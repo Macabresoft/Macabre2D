@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +6,9 @@ using System.Runtime.Serialization;
 using Avalonia.Controls;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using ReactiveUI;
 using Unity;
 using Unity.Resolution;

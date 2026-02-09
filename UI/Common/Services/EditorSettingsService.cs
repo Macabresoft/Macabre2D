@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System.IO;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Common;
+using Macabre2D.Framework;
 
 /// <summary>
 /// Interface for a service which handles editor settings and saved values

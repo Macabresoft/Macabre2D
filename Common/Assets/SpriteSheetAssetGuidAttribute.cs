@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Common;
+﻿namespace Macabre2D.Common;
 
 /// <summary>
 /// Enum representing a kind of spritesheet when there is no ability to reference the <see cref="Type"/>.

@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Unity;
 
 public partial class SpriteAnimationEditorView : UserControl {

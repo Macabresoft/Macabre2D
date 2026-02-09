@@ -1,9 +1,9 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          xmlns:local="clr-namespace:Macabre2D.UI.Common"
                           x:TypeArguments="framework:AudioSettings"
-                          x:Class="Macabresoft.Macabre2D.UI.Common.AudioSettingsEditor">
+                          x:Class="Macabre2D.UI.Common.AudioSettingsEditor">
     <UserControl.Styles>
         <Style Selector="local|FloatEditor">
             <Setter Property="ValueMaximum" Value="1" />

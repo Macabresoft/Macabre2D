@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System;
 using Avalonia;
 using Avalonia.Controls;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 public partial class VolumeCategoryEditor : UserControl, IObserver<AvaloniaPropertyChangedEventArgs<VolumeCategory>> {
     public static readonly StyledProperty<VolumeCategory> CategoryProperty =

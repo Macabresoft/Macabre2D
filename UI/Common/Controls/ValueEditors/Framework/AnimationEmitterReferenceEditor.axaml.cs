@@ -1,7 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Unity;
 
 public partial class AnimationEmitterReferenceEditor : BaseSpriteSheetReferenceEditor<AnimationEmitterReference> {

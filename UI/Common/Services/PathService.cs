@@ -1,9 +1,9 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.IO;
 using System.Reflection;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Unity;
 
 /// <summary>

@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Unity;
 
 public partial class TextListDialog : BaseDialog {

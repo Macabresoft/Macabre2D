@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <IsPackable>false</IsPackable>
-        <RootNamespace>Macabresoft.Macabre2D.UI.Tests</RootNamespace>
+        <RootNamespace>Macabre2D.UI.Tests</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 

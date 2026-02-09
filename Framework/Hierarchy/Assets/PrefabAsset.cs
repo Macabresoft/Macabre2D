@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabre2D.Framework;
 
 /// <summary>
 /// An asset for prefabricated <see cref="IEntity" />.

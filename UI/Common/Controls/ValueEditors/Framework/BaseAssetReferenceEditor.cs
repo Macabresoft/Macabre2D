@@ -1,12 +1,12 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Framework;
+using Macabre2D.UI.Common;
 using ReactiveUI;
 
 public abstract class BaseAssetReferenceEditor<TAssetReference, TAsset> : ValueEditorControl<TAssetReference> where TAssetReference : class, IAssetReference<TAsset> where TAsset : class, IAsset {

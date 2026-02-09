@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Common;
+namespace Macabre2D.Common;
 
 using System.Collections;
 using Newtonsoft.Json.Serialization;

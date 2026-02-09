@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabre2D.Framework; 
 
 /// <summary>
 /// Locations in a <see cref="DockingContainer"/> where a <see cref="IDockable"/> can be docked.

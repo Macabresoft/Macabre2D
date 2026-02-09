@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.Framework;
+namespace Macabre2D.Framework;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Macabresoft.Macabre2D.Common;
+using Macabre2D.Common;
 
 /// <summary>
 /// Clones objects using <see cref="ISerializer" />.

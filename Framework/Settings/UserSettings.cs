@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 
 /// <summary>
 /// User customizable settings.

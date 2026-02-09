@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.Tests.Framework;
+namespace Macabre2D.Tests.Framework;
 
 using System.IO;
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Common;
+using Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

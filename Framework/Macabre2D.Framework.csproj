@@ -1,17 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>A 2D game framework built on top of the MonoGame framework.</Description>
-        <RepositoryUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</RepositoryUrl>
-        <PackageIcon>icon.png</PackageIcon>
+        <Description></Description>
+        <RepositoryUrl></RepositoryUrl>
         <Nullable>enable</Nullable>
         <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <PackageId />
+        <Version />
+        <Authors />
+        <Copyright />
+        <PackageProjectUrl />
+        <RepositoryType />
+        <PackageTags />
+        <Company>macabrett</Company>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <Product>Macabresoft.Macabre2D.Core</Product>
-        <RootNamespace>Macabresoft.Macabre2D.Framework</RootNamespace>
+        <Product>Macabre2D.Framework</Product>
+        <RootNamespace>Macabre2D.Framework</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

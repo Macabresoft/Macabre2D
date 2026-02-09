@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Unity;
 
 /// <summary>

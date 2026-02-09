@@ -1,7 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
-using Macabresoft.Macabre2D.Common;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Common;
+using Macabre2D.Framework;
 using Unity;
 using Unity.Extension;
 using Unity.Lifetime;

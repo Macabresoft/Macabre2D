@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 /// <summary>
 /// An update system for <see cref="IFixedUpdateableEntity" /> updates on a fixed time step.

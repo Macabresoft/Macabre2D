@@ -1,7 +1,7 @@
-namespace Macabresoft.Macabre2D.Tests.Framework;
+namespace Macabre2D.Tests.Framework;
 
 using System.Threading;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 internal class TestUpdateableEntity : UpdateableEntity {
     public int SleepAmountInMilliseconds { get; set; } = 10;

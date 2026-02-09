@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System.ComponentModel;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 public abstract class ValueOverrideEditor<TValue, TOverride> : ValueEditorControl<TValue> where TValue : ValueOverride<TOverride> where TOverride : notnull {
     public static readonly DirectProperty<ValueOverrideEditor<TValue, TOverride>, bool> IsOverrideEnabledProperty =

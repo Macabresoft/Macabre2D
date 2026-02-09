@@ -1,11 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.UI.Common;
-using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
+using Macabre2D.UI.Common;
+using Macabre2D.UI.Editor.Views.Dialogs;
 using Unity;
 
 /// <summary>

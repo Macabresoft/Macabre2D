@@ -1,11 +1,11 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common;
+﻿namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Framework;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>

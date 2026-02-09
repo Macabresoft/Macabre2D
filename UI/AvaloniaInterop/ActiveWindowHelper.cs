@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.AvaloniaInterop;
+namespace Macabre2D.UI.AvaloniaInterop;
 
 using Avalonia.Controls;
 using Avalonia.Input;

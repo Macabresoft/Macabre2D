@@ -1,7 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Common.VolumeSlider">
+             xmlns:local="clr-namespace:Macabre2D.UI.Common"
+             x:Class="Macabre2D.UI.Common.VolumeSlider">
     <Slider Value="{Binding $parent[local:VolumeSlider].ValueDisplay}"
             Minimum="0"
             Maximum="1"

@@ -1,11 +1,11 @@
-namespace Macabresoft.Macabre2D.UI.Tests;
+namespace Macabre2D.UI.Tests;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.UI.Common;
 
 internal class TestFileSystemService : IFileSystemService {
     public TestFileSystemService() {

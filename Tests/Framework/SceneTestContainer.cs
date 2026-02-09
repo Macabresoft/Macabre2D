@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.Tests;
+namespace Macabre2D.Tests;
 
 using System.Linq;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Tests.Framework;
+using Macabre2D.Framework;
+using Macabre2D.Tests.Framework;
 using NSubstitute;
 
 internal class SceneTestContainer {

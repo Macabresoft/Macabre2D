@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework;
+﻿namespace Macabre2D.Tests.Framework;
 
 using System;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 
 public class TestableBoundable : Entity, IBoundableEntity {
     public event EventHandler BoundingAreaChanged;

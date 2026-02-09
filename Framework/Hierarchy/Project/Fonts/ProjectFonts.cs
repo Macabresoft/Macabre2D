@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Framework;
+﻿namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Newtonsoft.Json;
 
 /// <summary>

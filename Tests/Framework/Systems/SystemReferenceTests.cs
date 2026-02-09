@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Systems;
+﻿namespace Macabre2D.Tests.Framework.Systems;
 
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using NUnit.Framework;
 
 [TestFixture]

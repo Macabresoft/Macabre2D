@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Macabresoft.Macabre2D.Framework {
+namespace Macabre2D.Framework {
     using System;
     
     
@@ -38,7 +38,7 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Macabresoft.Macabre2D.Framework.Licenses", typeof(Licenses).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Macabre2D.Framework.Licenses", typeof(Licenses).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

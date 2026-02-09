@@ -1,9 +1,9 @@
-namespace Macabresoft.Macabre2D.UI.Common;
+namespace Macabre2D.UI.Common;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabresoft.Macabre2D.Project.Common;
+using Macabre2D.Project.Common;
 using Unity;
 
 public partial class InputActionEditor : ValueEditorControl<InputAction> {

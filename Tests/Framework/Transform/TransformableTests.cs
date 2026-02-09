@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Transform;
+﻿namespace Macabre2D.Tests.Framework.Transform;
 
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
+using Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;

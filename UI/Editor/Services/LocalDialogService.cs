@@ -1,10 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Editor;
+namespace Macabre2D.UI.Editor;
 
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Framework;
+using Macabre2D.UI.Common;
 using Unity;
 using Unity.Resolution;
 

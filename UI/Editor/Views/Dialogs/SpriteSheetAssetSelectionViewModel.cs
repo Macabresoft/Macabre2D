@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor;
+﻿namespace Macabre2D.UI.Editor;
 
 using System;
 using System.Collections.Generic;
@@ -6,8 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Avalonia.Threading;
 using Macabresoft.Core;
-using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabre2D.Framework;
+using Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
 

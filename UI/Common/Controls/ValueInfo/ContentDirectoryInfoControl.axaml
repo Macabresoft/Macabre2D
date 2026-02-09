@@ -1,9 +1,9 @@
 <local:ValueControl xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                    xmlns:content="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                    xmlns:local="clr-namespace:Macabre2D.UI.Common"
                     x:TypeArguments="content:ContentDirectory"
-                    x:Class="Macabresoft.Macabre2D.UI.Common.ContentDirectoryInfoControl">
+                    x:Class="Macabre2D.UI.Common.ContentDirectoryInfoControl">
     <Grid RowDefinitions="Auto, Auto"
           ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:ContentDirectoryInfoControl]}">
