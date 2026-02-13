@@ -198,6 +198,11 @@ public interface IGame {
     void RaiseCultureChanged();
 
     /// <summary>
+    /// Reloads user settings.
+    /// </summary>
+    void ReloadUserSettings();
+
+    /// <summary>
     /// Saves the applies graphics settings.
     /// </summary>
     void SaveAndApplyUserSettings();

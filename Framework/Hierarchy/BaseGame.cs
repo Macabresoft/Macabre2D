@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -278,6 +278,33 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public void ReloadUserSettings() {
+        if (IsDesignMode) {
+            this.UserSettings = new UserSettings(this.Project);
+        }
+        else {
+            this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
+
+            if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
+                this.UserSettings = userSettings;
+            }
+            else {
+                this.UserSettings = new UserSettings(this.Project);
+            }
+
+            this.State.Initialize(this.DataManager, this.UserSettings.Gameplay);
+
+            if (this.InputSettings.DesiredInputDevice == InputDevice.Auto) {
+                var gamePadState = GamePad.GetState(PlayerIndex.One);
+                this.DesiredInputDevice = gamePadState.IsConnected ? InputDevice.GamePad : InputDevice.KeyboardMouse;
+            }
+            else {
+                this.DesiredInputDevice = this.InputSettings.DesiredInputDevice;
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public void SaveAndApplyUserSettings() {
         this.SaveUserSettings();
         this.ApplyDisplaySettings();
@@ -335,30 +362,7 @@ public class BaseGame : Game, IGame {
         base.Initialize();
 
         this.ResetViewPort();
-
-        if (IsDesignMode) {
-            this.UserSettings = new UserSettings(this.Project);
-        }
-        else {
-            this.DataManager.Initialize(this.Project.CompanyName, this.Project.Name);
-
-            if (this.DataManager.TryLoad<UserSettings>(UserSettings.FileName, out var userSettings) && userSettings != null) {
-                this.UserSettings = userSettings;
-            }
-            else {
-                this.UserSettings = new UserSettings(this.Project);
-            }
-
-            this.State.Initialize(this.DataManager, this.UserSettings.Gameplay);
-
-            if (this.InputSettings.DesiredInputDevice == InputDevice.Auto) {
-                var gamePadState = GamePad.GetState(PlayerIndex.One);
-                this.DesiredInputDevice = gamePadState.IsConnected ? InputDevice.GamePad : InputDevice.KeyboardMouse;
-            }
-            else {
-                this.DesiredInputDevice = this.InputSettings.DesiredInputDevice;
-            }
-        }
+        this.ReloadUserSettings();
 
         this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
@@ -612,6 +616,9 @@ public class BaseGame : Game, IGame {
         }
 
         public void RaiseCultureChanged() {
+        }
+
+        public void ReloadUserSettings() {
         }
 
         public void SaveAndApplyUserSettings() {
