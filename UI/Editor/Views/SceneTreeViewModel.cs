@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
 using DynamicData;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using ReactiveUI;
 using Unity;
 
@@ -79,6 +79,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, canClone);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
+        this.ConvertToPrefabContainerCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.ConvertToPrefabContainer(x));
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
         this.DisassociateFromParentCommand = ReactiveCommand.Create<IEntity>(this.DisassociateFromParent, canClone);
         this.EnableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, true));
@@ -116,6 +117,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// Gets a command to convert a prefab into an instance.
     /// </summary>
     public ICommand ConvertToInstanceCommand { get; }
+
+    /// <summary>
+    /// Gets a command to convert an entity into a prefab container.
+    /// </summary>
+    public ICommand ConvertToPrefabContainerCommand { get; }
 
     /// <summary>
     /// Gets a command to create a prefab.
@@ -464,6 +470,33 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
             {
                 parent.AddChild(entity);
                 parent.RemoveChild(clone);
+            });
+        }
+    }
+
+    private async Task ConvertToPrefabContainer(IEntity entity) {
+        var prefab = await this._contentService.CreatePrefab(entity);
+        if (prefab != null && entity.Parent is { } parent) {
+            var prefabContainer = new PrefabContainer();
+            prefabContainer.Name = entity.Name;
+            prefabContainer.PrefabReference.LoadAsset(prefab);
+            prefabContainer.LocalPosition = entity.LocalPosition;
+            var index = entity.Parent.Children.IndexOf(entity);
+
+            this._undoService.Do(() =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    parent.InsertChild(index, prefabContainer);
+                    parent.RemoveChild(entity);
+                });
+            }, () =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    parent.InsertChild(index, entity);
+                    parent.RemoveChild(prefabContainer);
+                });
             });
         }
     }

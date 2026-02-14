@@ -39,7 +39,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>A task.</returns>
-    Task CreatePrefab(IEntity entity);
+    Task<PrefabAsset> CreatePrefab(IEntity entity);
 
     /// <summary>
     /// Creates a safe name for the given directory.
@@ -154,7 +154,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     /// <inheritdoc />
-    public async Task CreatePrefab(IEntity entity) {
+    public async Task<PrefabAsset> CreatePrefab(IEntity entity) {
+        PrefabAsset prefabAsset = null;
         if (entity?.TryClone(out var prefabChild) == true) {
             prefabChild.LocalPosition = Vector2.Zero;
 
@@ -189,9 +190,12 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                     this.CopyToEditorBin(parent, contentFile);
                     this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
+                    prefabAsset = contentFile.Asset as PrefabAsset;
                 }
             }
         }
+
+        return prefabAsset;
     }
 
     /// <inheritdoc />

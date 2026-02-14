@@ -16,7 +16,7 @@ public interface IPrefabContainer : IEntity {
     /// Gets a value indicating whether the other entity is a descendent of this container's prefab.
     /// </summary>
     /// <remarks>
-    /// This can be very slow and it is recommended to avoid calling this during active gameplay.
+    /// This can be very slow. It is recommended to avoid calling this during active gameplay.
     /// </remarks>
     /// <param name="otherEntity">The other entity.</param>
     /// <returns>A value indicating whether the other entity is a descendent of this container's prefab.</returns>
