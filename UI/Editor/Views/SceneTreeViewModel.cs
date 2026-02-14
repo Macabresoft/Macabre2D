@@ -461,14 +461,15 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
             entity is PrefabContainer { PrefabReference.Asset.Content: IEntity content } &&
             content.TryClone(out var clone)) {
             clone.LocalPosition = entity.LocalPosition;
+            var index = entity.Parent.Children.IndexOf(entity);
 
             this._undoService.Do(() =>
             {
-                parent.AddChild(clone);
+                parent.InsertChild(index, clone);
                 parent.RemoveChild(entity);
             }, () =>
             {
-                parent.AddChild(entity);
+                parent.InsertChild(index, entity);
                 parent.RemoveChild(clone);
             });
         }
