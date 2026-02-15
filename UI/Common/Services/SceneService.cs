@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
 using ReactiveUI;
 
 /// <summary>
@@ -16,24 +16,24 @@ using ReactiveUI;
 public interface ISceneService : ISelectionService<object> {
 
     /// <summary>
+    /// Gets the object currently being edited. This is either a prefab or a scene.
+    /// </summary>
+    IEntity CurrentlyEditing { get; }
+
+    /// <summary>
     /// Gets the current scene metadata.
     /// </summary>
     ContentMetadata CurrentMetadata { get; }
 
     /// <summary>
-    /// Gets the object currently being edited. This is either a prefab or a scene.
+    /// Gets the current prefab if editing a prefab.
     /// </summary>
-    IEntity CurrentlyEditing { get; }
-    
+    IEntity CurrentPrefab { get; }
+
     /// <summary>
     /// Gets the current scene if editing a scene.
     /// </summary>
     IScene CurrentScene { get; }
-    
-    /// <summary>
-    /// Gets the current prefab if editing a prefab.
-    /// </summary>
-    IEntity CurrentPrefab { get; }
 
     /// <summary>
     /// Gets the default scene template.
@@ -46,14 +46,14 @@ public interface ISceneService : ISelectionService<object> {
     object ImpliedSelected { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the state of the program is in an entity context.
-    /// </summary>
-    bool IsEntityContext { get; }
-    
-    /// <summary>
     /// Gets a value indicating whether this is editing a prefab.
     /// </summary>
     bool IsEditingPrefab { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the state of the program is in an entity context.
+    /// </summary>
+    bool IsEntityContext { get; }
 
     /// <summary>
     /// Gets a list of available scene templates.
@@ -103,7 +103,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly ISystemService _systemService;
     private ContentMetadata _currentMetadata;
     private object _impliedSelected;
-    private bool _isEntityContext;
+
+    private bool _isEditingPrefab;
     private object _selected;
 
     /// <summary>
@@ -137,16 +138,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     /// <inheritdoc />
-    public ContentMetadata CurrentMetadata {
-        get => this._currentMetadata;
-        private set {
-            this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
-            this.RaisePropertyChanged(nameof(this.CurrentlyEditing));
-            this.IsEditingPrefab = this.CurrentMetadata?.Asset is PrefabAsset;
-        }
-    }
-
-    /// <inheritdoc />
     public IEntity CurrentlyEditing {
         get {
             if (this._currentMetadata != null) {
@@ -163,10 +154,20 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     /// <inheritdoc />
-    public IScene CurrentScene => this.CurrentlyEditing as IScene ?? (this.CurrentlyEditing is { } entity ? entity.Scene : null);
-    
+    public ContentMetadata CurrentMetadata {
+        get => this._currentMetadata;
+        private set {
+            this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
+            this.RaisePropertyChanged(nameof(this.CurrentlyEditing));
+            this.IsEditingPrefab = this.CurrentMetadata?.Asset is PrefabAsset;
+        }
+    }
+
     /// <inheritdoc />
     public IEntity CurrentPrefab => this.CurrentlyEditing is not IScene ? this.CurrentlyEditing : null;
+
+    /// <inheritdoc />
+    public IScene CurrentScene => this.CurrentlyEditing as IScene ?? (this.CurrentlyEditing is { } entity ? entity.Scene : null);
 
     /// <inheritdoc />
     public DefaultSceneTemplate DefaultSceneTemplate { get; }
@@ -189,17 +190,15 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     }
 
     /// <inheritdoc />
-    public bool IsEntityContext {
-        get => this._isEntityContext;
-        private set => this.RaiseAndSetIfChanged(ref this._isEntityContext, value);
-    }
-
-    private bool _isEditingPrefab;
-
-    /// <inheritdoc />
     public bool IsEditingPrefab {
         get => this._isEditingPrefab;
         private set => this.RaiseAndSetIfChanged(ref this._isEditingPrefab, value);
+    }
+
+    /// <inheritdoc />
+    public bool IsEntityContext {
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
@@ -288,6 +287,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         }
     }
 
+    /// <inheritdoc />
     public bool TryLoadPrefab(Guid contentId) {
         if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity)) {
             var tempScene = new Scene();
@@ -311,6 +311,16 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         return sceneAsset != null;
     }
 
+    private void SavePrefab(ContentMetadata metadata, IEntity prefab) {
+        if (metadata != null && prefab != null && metadata.Asset is IAsset<Entity>) {
+            var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
+            this._serializer.Serialize(metadata, metadataPath);
+
+            var filePath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+            this._serializer.Serialize(prefab, filePath);
+        }
+    }
+
     private void SelectAndOpen(IEntity entity, ContentMetadata metadata) {
         this.CurrentMetadata = metadata;
         this._settingsService.SetPreviouslyOpenedContent(metadata);
@@ -322,16 +332,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         }
         else {
             this._systemService.Selected = null;
-        }
-    }
-
-    private void SavePrefab(ContentMetadata metadata, IEntity prefab) {
-        if (metadata != null && prefab != null && metadata.Asset is IAsset<Entity>) {
-            var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
-            this._serializer.Serialize(metadata, metadataPath);
-
-            var filePath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
-            this._serializer.Serialize(prefab, filePath);
         }
     }
 

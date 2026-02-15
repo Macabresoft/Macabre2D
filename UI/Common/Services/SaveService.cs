@@ -33,6 +33,7 @@ public interface ISaveService : INotifyPropertyChanged {
 public class SaveService : ReactiveObject, ISaveService {
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly IEditorSettingsService _editorSettingsService;
     private readonly IProjectService _projectService;
     private readonly ISceneService _sceneService;
     private readonly IUndoService _undoService;
@@ -43,17 +44,20 @@ public class SaveService : ReactiveObject, ISaveService {
     /// </summary>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
+    /// <param name="editorSettingsService">The editor settings service.</param>
     /// <param name="projectService">The project service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="undoService">The undo service.</param>
     public SaveService(
         IContentService contentService,
         ICommonDialogService dialogService,
+        IEditorSettingsService editorSettingsService,
         IProjectService projectService,
         ISceneService sceneService,
         IUndoService undoService) {
         this._contentService = contentService;
         this._dialogService = dialogService;
+        this._editorSettingsService = editorSettingsService;
         this._projectService = projectService;
         this._sceneService = sceneService;
         this._undoService = undoService;
@@ -83,6 +87,7 @@ public class SaveService : ReactiveObject, ISaveService {
             this._sceneService.SaveScene();
             this._projectService.SaveProject();
             this._contentService.Save();
+            this._editorSettingsService.Save();
             this._savedChangeId = this._undoService.LatestChangeId;
             this.RaisePropertyChanged(nameof(this.HasChanges));
         }
