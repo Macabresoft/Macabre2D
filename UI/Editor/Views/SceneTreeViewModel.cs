@@ -460,7 +460,14 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
             !Entity.IsNullOrEmpty(parent, out _) &&
             entity is PrefabContainer { PrefabReference.Asset.Content: IEntity content } &&
             content.TryClone(out var clone)) {
+            if (clone.GetType() == typeof(Entity) && clone.Children.Count == 1) {
+                // We create an entity to store the clone in that we want to ignore when converting back
+                clone = clone.Children.First();
+            }
+
             clone.LocalPosition = entity.LocalPosition;
+
+
             var index = entity.Parent.Children.IndexOf(entity);
 
             this._undoService.Do(() =>
