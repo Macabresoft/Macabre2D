@@ -11,7 +11,7 @@ using ReactiveUI;
 /// </summary>
 public interface ISaveService : INotifyPropertyChanged {
     /// <summary>
-    /// Gets or sets a value indicating whether or not this has changes.
+    /// Gets or sets a value indicating whether this has changes.
     /// </summary>
     bool HasChanges { get; }
 

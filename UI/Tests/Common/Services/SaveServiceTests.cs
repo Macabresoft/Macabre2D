@@ -12,13 +12,7 @@ public class SaveServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void HasChanges_IsFalse_AfterSaving() {
-        var undoService = new UndoService();
-        var saveService = new SaveService(
-            Substitute.For<IContentService>(),
-            Substitute.For<ICommonDialogService>(),
-            Substitute.For<IProjectService>(),
-            Substitute.For<ISceneService>(),
-            undoService);
+        var saveService = this.CreateSaveService(out var undoService);
 
         undoService.Do(() => { }, () => { });
         saveService.Save();
@@ -38,13 +32,7 @@ public class SaveServiceTests {
     [TestCase(13)]
     [TestCase(50)]
     public void HasChanges_IsFalse_AfterUndoingChanges(int numberOfChanges) {
-        var undoService = new UndoService();
-        var saveService = new SaveService(
-            Substitute.For<IContentService>(),
-            Substitute.For<ICommonDialogService>(),
-            Substitute.For<IProjectService>(),
-            Substitute.For<ISceneService>(),
-            undoService);
+        var saveService = this.CreateSaveService(out var undoService);
 
         for (var i = 0; i < numberOfChanges; i++) {
             undoService.Do(() => { }, () => { });
@@ -69,13 +57,7 @@ public class SaveServiceTests {
     [TestCase(13)]
     [TestCase(50)]
     public void HasChanges_IsFalse_AfterUndoingChangesSinceSave(int numberOfChanges) {
-        var undoService = new UndoService();
-        var saveService = new SaveService(
-            Substitute.For<IContentService>(),
-            Substitute.For<ICommonDialogService>(),
-            Substitute.For<IProjectService>(),
-            Substitute.For<ISceneService>(),
-            undoService);
+        var saveService = this.CreateSaveService(out var undoService);
 
         undoService.Do(() => { }, () => { });
         saveService.Save();
@@ -103,13 +85,7 @@ public class SaveServiceTests {
     [TestCase(13)]
     [TestCase(50)]
     public void HasChanges_IsTrue_AfterChanges(int numberOfChanges) {
-        var undoService = new UndoService();
-        var saveService = new SaveService(
-            Substitute.For<IContentService>(),
-            Substitute.For<ICommonDialogService>(),
-            Substitute.For<IProjectService>(),
-            Substitute.For<ISceneService>(),
-            undoService);
+        var saveService = this.CreateSaveService(out var undoService);
 
         for (var i = 0; i < numberOfChanges; i++) {
             undoService.Do(() => { }, () => { });
@@ -123,18 +99,25 @@ public class SaveServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void HasChanges_IsTrue_WhenUndoServiceHasNewChange() {
-        var undoService = new UndoService();
-        var saveService = new SaveService(
-            Substitute.For<IContentService>(),
-            Substitute.For<ICommonDialogService>(),
-            Substitute.For<IProjectService>(),
-            Substitute.For<ISceneService>(),
-            undoService);
+        var saveService = this.CreateSaveService(out var undoService);
 
         undoService.Do(() => { }, () => { });
 
         using (new AssertionScope()) {
             saveService.HasChanges.Should().BeTrue();
         }
+    }
+
+    private SaveService CreateSaveService(out UndoService undoService) {
+        undoService = new UndoService();
+        var saveService = new SaveService(
+            Substitute.For<IContentService>(),
+            Substitute.For<ICommonDialogService>(),
+            Substitute.For<IEditorSettingsService>(),
+            Substitute.For<IProjectService>(),
+            Substitute.For<ISceneService>(),
+            undoService);
+
+        return saveService;
     }
 }

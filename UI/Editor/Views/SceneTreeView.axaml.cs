@@ -32,7 +32,6 @@ public partial class SceneTreeView : UserControl {
     private static readonly Thickness InsertBelowHighlightThickness = new(0D, 0D, 0D, 2D);
 
     private TreeViewItem _currentDropTarget;
-    private INameable _draggedObject;
     private bool _isDragging;
 
     public SceneTreeView() {
@@ -52,8 +51,8 @@ public partial class SceneTreeView : UserControl {
     public SceneTreeViewModel ViewModel { get; }
 
     public INameable DraggedObject {
-        get => this._draggedObject;
-        set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
+        get;
+        set => this.SetAndRaise(DraggedObjectProperty, ref field, value);
     }
 
     private bool CanInsert(Control target) =>
