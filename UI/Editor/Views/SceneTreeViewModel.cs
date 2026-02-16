@@ -11,6 +11,7 @@ using DynamicData;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 
@@ -75,7 +76,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.MoveToStartCommand = ReactiveCommand.Create<object>(this.MoveToStart, canMoveUp);
 
         var canClone = this.SceneService.WhenAny(x => x.ImpliedSelected, x => this.CanClone(x.Value));
-        this.RenameCommand = ReactiveCommand.Create<string>(this.RenameChild);
+        this.RenameCommand = ReactiveCommand.Create<ValueChangedEventArgs<string>>(this.RenameChild);
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, canClone);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
@@ -656,12 +657,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         }
     }
 
-    private void RenameChild(string updatedName) {
-        if (this.SceneService.ImpliedSelected is INameable nameable && nameable.Name != updatedName) {
-            var originalName = nameable.Name;
+    private void RenameChild(ValueChangedEventArgs<string> nameChangedEventArgs) {
+        if (this.SceneService.ImpliedSelected is INameable nameable && nameChangedEventArgs.OriginalValue != nameChangedEventArgs.UpdatedValue) {
             this._undoService.Do(
-                () => { nameable.Name = updatedName; },
-                () => { nameable.Name = originalName; });
+                () => { nameable.Name = nameChangedEventArgs.UpdatedValue; },
+                () => { nameable.Name = nameChangedEventArgs.OriginalValue; });
         }
     }
 

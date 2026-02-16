@@ -247,7 +247,7 @@
                     <TreeDataTemplate DataType="framework:IGameSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
-                                                           Text="{Binding Path=Name, Mode=TwoWay}"
+                                                           Text="{Binding Path=Name, Mode=OneWay}"
                                                            PointerPressed="TreeNode_OnPointerPressed"
                                                            PointerReleased="TreeNode_OnPointerReleased"
                                                            PointerMoved="TreeNode_OnPointerMoved">
@@ -279,7 +279,7 @@
                                       ItemsSource="{Binding Children}">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
-                                                           Text="{Binding Path=Name, Mode=TwoWay}"
+                                                           Text="{Binding Path=Name, Mode=OneWay}"
                                                            PointerPressed="TreeNode_OnPointerPressed"
                                                            PointerReleased="TreeNode_OnPointerReleased"
                                                            PointerMoved="TreeNode_OnPointerMoved">

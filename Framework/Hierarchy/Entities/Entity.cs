@@ -274,7 +274,7 @@ public class Entity : Transformable, IEntity {
         set {
             field = value;
 
-            if (BaseGame.IsDesignMode) {
+            if (BaseGame.IsDesignMode && this.IsInitialized) {
                 this.RaisePropertyChanged();
             }
         }
