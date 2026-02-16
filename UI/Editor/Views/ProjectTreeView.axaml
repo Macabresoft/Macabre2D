@@ -39,14 +39,14 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesInCurrentSceneCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Find all entities in the current scene that use this content" />
-            
+
             <MenuItem Header="Find Usages in Project Files"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.FindContentUsagesInProjectFilesCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Find all instances of this content being used in scenes and prefabs from this project" />
 
             <Separator />
-            
+
             <MenuItem Header="Clone"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.CloneCommand}"
                       CommandParameter="{Binding}"
@@ -56,7 +56,7 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Delete the content" />
-            
+
             <Separator />
 
             <MenuItem Header="Force Save"
@@ -87,7 +87,7 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
                       CommandParameter="{Binding $parent[local:ProjectTreeView].ViewModel.SceneService.DefaultSceneTemplate}"
                       ToolTip.Tip="Adds a scene as the child of the current node" />
-            
+
             <MenuItem Header="Scene Templates"
                       Classes="MenuItemParent"
                       ItemsSource="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneModels}">
@@ -125,7 +125,7 @@
                 <Setter Property="IsFileName" Value="True" />
                 <Setter Property="TextCommittedCommand"
                         Value="{Binding $parent[local:ProjectTreeView].ViewModel.RenameContentCommand}" />
-                <Setter Property="Text" Value="{Binding Name}" />
+                <Setter Property="Text" Value="{Binding Name, Mode=OneWay}" />
             </Style>
         </Grid.Styles>
         <Design.DataContext>
@@ -157,7 +157,7 @@
                                           Command="{Binding AddSceneCommand}"
                                           CommandParameter="{Binding SceneService.DefaultSceneTemplate}"
                                           ToolTip.Tip="Adds a scene as the child of the current node" />
-                                
+
                                 <MenuItem Header="Scene Templates"
                                           Classes="MenuItemParent"
                                           ItemsSource="{Binding AddSceneModels}">
@@ -280,7 +280,7 @@
                                                                IsFileName="False"
                                                                Text="Project" />
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="common:UserSettingsNode"
                                           ItemsSource="{Binding Children}">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource UserSettingsIcon}"
@@ -289,13 +289,14 @@
                                                                IsFileName="False"
                                                                Text="Default User Settings" />
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="frameworkCommon:INameableSettings">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource SettingsIcon}"
                                                                IsFileName="False"
-                                                               Text="{Binding Name}" />
+                                                               IsEditable="False"
+                                                               Text="{Binding Name, Mode=OneTime}" />
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop">
@@ -320,7 +321,7 @@
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource RenderStepIcon}"
                                                                IsFileName="False" />
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="framework:PhysicsMaterialCollection"
                                           ItemsSource="{Binding}">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource PhysicsMaterialCollectionIcon}"
@@ -329,7 +330,7 @@
                                                                IsFileName="False"
                                                                Text="{Binding Name, Mode=OneTime}" />
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="framework:PhysicsMaterial">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource PhysicsMaterialIcon}"
                                                                IsFileName="False" />

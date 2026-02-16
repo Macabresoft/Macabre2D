@@ -2,7 +2,6 @@ namespace Macabre2D.UI.Editor;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,10 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
 using DynamicData;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 
@@ -101,7 +101,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             this.RemoveContent,
             this.AssetSelectionService.WhenAny(x => x.Selected, y => !this.IsFiltered && this.CanRemoveContent(y.Value)));
 
-        this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
+        this.RenameContentCommand = ReactiveCommand.CreateFromTask<ValueChangedEventArgs<string>>(async x => await this.RenameContent(x));
 
         this.MoveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.WhenAny(x => x.IsMoveDownEnabled, x => x.Value));
 
@@ -703,7 +703,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
-    private async Task RenameContent(string updatedName) {
+    private async Task RenameContent(ValueChangedEventArgs<string> valueChangedEventArgs) {
+        var updatedName = valueChangedEventArgs.UpdatedValue;
         switch (this.AssetSelectionService.Selected) {
             case RootContentDirectory or ProjectNode or RenderStepCollection or PhysicsMaterialCollection:
                 return;
