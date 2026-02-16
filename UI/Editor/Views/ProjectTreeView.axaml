@@ -319,7 +319,8 @@
 
                         <TreeDataTemplate DataType="framework:IRenderStep">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource RenderStepIcon}"
-                                                               IsFileName="False" />
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneWay}" />
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="framework:PhysicsMaterialCollection"
@@ -333,7 +334,8 @@
 
                         <TreeDataTemplate DataType="framework:PhysicsMaterial">
                             <avaloniaEx:EditableSelectableItem Icon="{StaticResource PhysicsMaterialIcon}"
-                                                               IsFileName="False" />
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneWay}" />
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="common:SpriteSheetContentFile"
