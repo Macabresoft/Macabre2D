@@ -2,8 +2,8 @@
 
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using NSubstitute;
 using NUnit.Framework;
 
