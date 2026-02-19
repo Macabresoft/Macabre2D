@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Macabre2D.Common;
 using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 

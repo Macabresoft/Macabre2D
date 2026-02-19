@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Macabre2D.Common;
 using Macabresoft.AvaloniaEx;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;

@@ -3,9 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabresoft.AvaloniaEx;
+using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
 using Microsoft.Xna.Framework;
 
 /// <summary>

@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework;
 
 using System.Diagnostics.CodeAnalysis;
+using Macabre2D.Common;
 using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;
 

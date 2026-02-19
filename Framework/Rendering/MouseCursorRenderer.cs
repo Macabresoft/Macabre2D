@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabre2D.Common;
 using Macabresoft.Core;
 using Macabre2D.Project.Common;
 

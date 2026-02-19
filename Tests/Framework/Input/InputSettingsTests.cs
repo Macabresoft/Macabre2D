@@ -2,6 +2,7 @@
 
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
+using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework.Input;

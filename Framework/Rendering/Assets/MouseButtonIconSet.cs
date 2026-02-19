@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Macabre2D.Common;
 
 /// <summary>
 /// A set of icons corresponding to <see cref="MouseButton" />.

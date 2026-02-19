@@ -7,7 +7,7 @@ using Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MouseButton = Macabre2D.Framework.MouseButton;
+using MouseButton = Macabre2D.Common.MouseButton;
 
 /// <summary>
 /// A gizmo/component that allows the user to translate entities in the editor.

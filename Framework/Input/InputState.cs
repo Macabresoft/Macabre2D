@@ -1,6 +1,7 @@
 namespace Macabre2D.Framework;
 
 using System;
+using Macabre2D.Common;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
