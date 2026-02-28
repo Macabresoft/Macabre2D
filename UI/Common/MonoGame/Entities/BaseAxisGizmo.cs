@@ -242,6 +242,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     private void ResetIsEnabled() {
         this.IsEnabled = this.ShouldBeEnabled();
         this.ShouldRender = this.IsEnabled;
+        this.CurrentAxis = GizmoAxis.None;
 
         if (this.ShouldRender) {
             this.ResetEndPoints();

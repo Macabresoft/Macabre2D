@@ -149,6 +149,9 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                     result = true;
                 }
             }
+            else {
+                this.CurrentAxis = GizmoAxis.None;
+            }
         }
         else {
             var axis = this.GetAxisUnderMouse(mousePosition);
