@@ -95,9 +95,6 @@ public class Camera : Entity, ICamera {
     private readonly List<IRenderableEntity> _renderedLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
-    private bool _overrideCommonViewHeight = true;
-    private int _renderOrder;
-    private float _viewHeight = 10f;
     private float _zoom;
 
     /// <inheritdoc />
@@ -146,15 +143,15 @@ public class Camera : Entity, ICamera {
     /// </summary>
     [DataMember(Name = "Override Common View Height", Order = 10)]
     public bool OverrideCommonViewHeight {
-        get => this._overrideCommonViewHeight;
+        get;
         set {
-            if (value != this._overrideCommonViewHeight) {
-                this._overrideCommonViewHeight = value;
+            if (value != field) {
+                field = value;
                 this.CalculateActualViewHeight();
                 this.OnScreenAreaChanged();
             }
         }
-    }
+    } = true;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
@@ -162,9 +159,9 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     [DataMember]
     public int RenderOrder {
-        get => this._renderOrder;
+        get;
         set {
-            if (this.Set(ref this._renderOrder, value)) {
+            if (this.Set(ref field, value)) {
                 this.RenderOrderChanged.SafeInvoke(this);
             }
         }
@@ -185,7 +182,7 @@ public class Camera : Entity, ICamera {
     /// </summary>
     [DataMember(Name = "View Height", Order = 11)]
     public float ViewHeight {
-        get => this._viewHeight;
+        get;
         set {
             // This is kind of an arbitrary value, but imagine the chaos if we allowed the
             // camera to reach 0.
@@ -193,12 +190,12 @@ public class Camera : Entity, ICamera {
                 value = 0.1f;
             }
 
-            this._viewHeight = value;
+            field = value;
             this.CalculateActualViewHeight();
             this.OnScreenAreaChanged();
             this.ResetZoom();
         }
-    }
+    } = 10f;
 
     /// <inheritdoc />
     public float ViewWidth => this._viewWidth.Value;

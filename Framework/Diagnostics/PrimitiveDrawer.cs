@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 public sealed class PrimitiveDrawer {
     private static PrimitiveDrawer? _instance;
     private readonly Texture2D _pixel;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PrimitiveDrawer" /> class.
     /// </summary>
@@ -209,6 +209,28 @@ public sealed class PrimitiveDrawer {
 
         texture.SetData(pixels);
         return texture;
+    }
+
+    /// <summary>
+    /// Draws the bounding area.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="pixelsPerUnit">The pixels per unit.</param>
+    /// <param name="boundingArea">The bounding area</param>
+    /// <param name="color">The color.</param>
+    /// <param name="thickness">The thickness.</param>
+    public void DrawBoundingArea(SpriteBatch spriteBatch, ushort pixelsPerUnit, BoundingArea boundingArea, Color color, float thickness) {
+        var minimum = boundingArea.Minimum;
+        var maximum = boundingArea.Maximum;
+
+        var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
+        this.DrawPolygon(
+            spriteBatch,
+            pixelsPerUnit,
+            color,
+            thickness,
+            true,
+            points);
     }
 
     /// <summary>

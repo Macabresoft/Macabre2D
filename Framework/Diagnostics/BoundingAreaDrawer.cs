@@ -40,18 +40,8 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
         }
 
         if (this.SpriteBatch is { } spriteBatch && !this._boundingArea.IsEmpty) {
-            var minimum = this._boundingArea.Minimum;
-            var maximum = this._boundingArea.Maximum;
-            var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-
-            var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
-            this.PrimitiveDrawer.DrawPolygon(
-                spriteBatch,
-                this.Project.PixelsPerUnit,
-                colorOverride,
-                lineThickness,
-                true,
-                points);
+            var thickness = this.GetLineThickness(viewBoundingArea.Height);
+            this.PrimitiveDrawer.DrawBoundingArea(spriteBatch, this.Project.PixelsPerUnit, this._boundingArea, colorOverride, thickness);
         }
     }
 
