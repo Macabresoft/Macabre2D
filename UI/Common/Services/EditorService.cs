@@ -4,9 +4,9 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Input;
-using Macabresoft.Core;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using ReactiveUI;
 
@@ -33,26 +33,6 @@ public interface IEditorService : INotifyPropertyChanged {
     /// Requests the editor camera to zoom out.
     /// </summary>
     public event EventHandler ZoomOutRequested;
-
-    /// <summary>
-    /// Gets a command to request the camera to be centered on the scene.
-    /// </summary>
-    ICommand RequestCenterCameraCommand { get; }
-
-    /// <summary>
-    /// Gets a command to request focus of the currently selected entity.
-    /// </summary>
-    ICommand RequestFocusCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom in the camera.
-    /// </summary>
-    ICommand RequestZoomInCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom out the camera.
-    /// </summary>
-    ICommand RequestZoomOutCommand { get; }
 
     /// <summary>
     /// Gets or sets the color of selected colliders.
@@ -86,6 +66,26 @@ public interface IEditorService : INotifyPropertyChanged {
     Layers LayersToRender { get; set; }
 
     /// <summary>
+    /// Gets a command to request the camera to be centered on the scene.
+    /// </summary>
+    ICommand RequestCenterCameraCommand { get; }
+
+    /// <summary>
+    /// Gets a command to request focus of the currently selected entity.
+    /// </summary>
+    ICommand RequestFocusCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom in the camera.
+    /// </summary>
+    ICommand RequestZoomInCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom out the camera.
+    /// </summary>
+    ICommand RequestZoomOutCommand { get; }
+
+    /// <summary>
     /// Gets or sets the selected gizmo.
     /// </summary>
     GizmoKind SelectedGizmo { get; set; }
@@ -106,19 +106,29 @@ public interface IEditorService : INotifyPropertyChanged {
     bool ShowActiveTiles { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to show the editor grid.
-    /// </summary>
-    bool ShowGrid { get; set; }
-    
-    /// <summary>
     /// Gets or sets a value indicating whether to show all bounding areas and colliders.
     /// </summary>
     bool ShowBoundingAreasAndColliders { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether to show the editor grid.
+    /// </summary>
+    bool ShowGrid { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show the scene's bounding area.
+    /// </summary>
+    bool ShowSceneBounds { get; set; }
+
+    /// <summary>
     /// Gets or sets the color of the x-axis.
     /// </summary>
     Color XAxisColor { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the colors of the scene bounds.
+    /// </summary>
+    Color SceneBoundsColor { get; set; }
 
     /// <summary>
     /// Gets or sets the color of the y-axis.
@@ -132,17 +142,7 @@ public interface IEditorService : INotifyPropertyChanged {
 public class EditorService : ReactiveObject, IEditorService {
     private readonly IEntityService _entityService;
     private readonly IEditorSettingsService _settingsService;
-    private Color _colliderColor = Color.White;
-    private Color _dropShadowColor = Color.Black * 0.4f;
-    private byte _gridDivisions = 5;
     private Layers _layersToRender;
-    private Color _selectionColor = new(200, 171, 55);
-    private bool _showActiveTiles = true;
-    private bool _showGrid = true;
-    private bool _showBoundingAreasAndColliders;
-    private StandardCursorType _standardCursorType = StandardCursorType.None;
-    private Color _xAxisColor = new(113, 237, 100);
-    private Color _yAxisColor = new(130, 38, 38);
 
     /// <inheritdoc />
     public event EventHandler CenterCameraRequested;
@@ -178,40 +178,28 @@ public class EditorService : ReactiveObject, IEditorService {
     }
 
     /// <inheritdoc />
-    public ICommand RequestCenterCameraCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestFocusCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomInCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomOutCommand { get; }
-
-    /// <inheritdoc />
     public Color ColliderColor {
-        get => this._colliderColor;
-        set => this.RaiseAndSetIfChanged(ref this._colliderColor, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = Color.White;
 
     /// <inheritdoc />
     public StandardCursorType CursorType {
-        get => this._standardCursorType;
-        set => this.RaiseAndSetIfChanged(ref this._standardCursorType, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = StandardCursorType.None;
 
     /// <inheritdoc />
     public Color DropShadowColor {
-        get => this._dropShadowColor;
-        set => this.RaiseAndSetIfChanged(ref this._dropShadowColor, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = Color.Black * 0.4f;
 
     /// <inheritdoc />
     public byte GridDivisions {
-        get => this._gridDivisions;
-        set => this.RaiseAndSetIfChanged(ref this._gridDivisions, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = 5;
 
     /// <inheritdoc />
     public InputDevice InputDeviceDisplay {
@@ -230,6 +218,18 @@ public class EditorService : ReactiveObject, IEditorService {
             this._settingsService.Settings.LayersToRender = this._layersToRender;
         }
     }
+
+    /// <inheritdoc />
+    public ICommand RequestCenterCameraCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestFocusCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomInCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomOutCommand { get; }
 
     /// <inheritdoc />
     public GizmoKind SelectedGizmo {
@@ -251,39 +251,51 @@ public class EditorService : ReactiveObject, IEditorService {
 
     /// <inheritdoc />
     public Color SelectionColor {
-        get => this._selectionColor;
-        set => this.RaiseAndSetIfChanged(ref this._selectionColor, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = new(200, 171, 55);
 
     /// <inheritdoc />
     public bool ShowActiveTiles {
-        get => this._showActiveTiles;
-        set => this.RaiseAndSetIfChanged(ref this._showActiveTiles, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
+
+    /// <inheritdoc />
+    public bool ShowBoundingAreasAndColliders {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
     public bool ShowGrid {
-        get => this._showGrid;
-        set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
 
     /// <inheritdoc />
-    public bool ShowBoundingAreasAndColliders {
-        get => this._showBoundingAreasAndColliders;
-        set => this.RaiseAndSetIfChanged(ref this._showBoundingAreasAndColliders, value);
+    public bool ShowSceneBounds {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
     public Color XAxisColor {
-        get => this._xAxisColor;
-        set => this.RaiseAndSetIfChanged(ref this._xAxisColor, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = new(113, 237, 100);
+
+    /// <inheritdoc />
+    public Color SceneBoundsColor {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = new(38, 100, 255);
 
     /// <inheritdoc />
     public Color YAxisColor {
-        get => this._yAxisColor;
-        set => this.RaiseAndSetIfChanged(ref this._yAxisColor, value);
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = new(130, 38, 38);
 
     private void RequestCenterCamera() {
         this.CenterCameraRequested.SafeInvoke(this);

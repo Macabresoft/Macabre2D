@@ -80,6 +80,12 @@
                     <avaloniaEx:Icon Content="{StaticResource EyeIcon}" />
                 </ToggleButton>
                 <ToggleButton Classes="Icon"
+                              IsChecked="{Binding EditorService.ShowSceneBounds}"
+                              IsVisible="{Binding IsScene}"
+                              ToolTip.Tip="Show the current scene's bounds">
+                    <avaloniaEx:Icon Content="{StaticResource SceneIcon}" />
+                </ToggleButton>
+                <ToggleButton Classes="Icon"
                               IsChecked="{Binding EditorService.ShowActiveTiles}"
                               IsVisible="{Binding IsTileable}"
                               ToolTip.Tip="Highlight active tiles">
