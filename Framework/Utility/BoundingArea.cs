@@ -159,10 +159,10 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     /// <returns><c>true</c>, if this bounding area contains the position, <c>false</c> otherwise.</returns>
     public bool Contains(Vector2 position) {
         var (x, y) = position;
-        return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
-               (this.Minimum.Y <= y || this.Minimum.Y.HasMinimalDifference(y)) &&
-               (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x)) &&
-               (this.Maximum.Y >= y || this.Maximum.Y.HasMinimalDifference(y));
+        return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x, Defaults.FloatComparisonTolerance)) &&
+               (this.Minimum.Y <= y || this.Minimum.Y.HasMinimalDifference(y, Defaults.FloatComparisonTolerance)) &&
+               (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x, Defaults.FloatComparisonTolerance)) &&
+               (this.Maximum.Y >= y || this.Maximum.Y.HasMinimalDifference(y, Defaults.FloatComparisonTolerance));
     }
 
     /// <summary>

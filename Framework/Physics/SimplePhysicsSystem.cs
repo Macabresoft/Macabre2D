@@ -124,7 +124,8 @@ public class SimplePhysicsSystem : FixedTimeStepSystem, ISimplePhysicsSystem {
         var ray = new LineSegment(start, direction, distance);
         var hits = new List<RaycastHit>();
 
-        foreach (var collider in this.GetFilteredColliders(ray.BoundingArea, layers)) {
+        var potentialColliders = this.GetFilteredColliders(ray.BoundingArea, layers);
+        foreach (var collider in potentialColliders) {
             if (collider.IsHitBy(ray, out var hit)) {
                 hits.Add(hit);
             }
