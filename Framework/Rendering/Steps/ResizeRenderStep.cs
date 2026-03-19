@@ -136,7 +136,11 @@ public class ResizeRenderStep : RenderStep {
 
     private Vector2 GetRenderSizeFloatingPoint() => this._renderSize.Value.ToVector2();
 
-    private RenderTarget2D GetRenderTarget() {
+    /// <summary>
+    /// Gets the render target to use.
+    /// </summary>
+    /// <returns>The render target.</returns>
+    protected RenderTarget2D GetRenderTarget() {
         this._renderTarget ??= this.Game.GraphicsDevice.CreateRenderTarget(this.RenderSize);
         return this._renderTarget;
     }
