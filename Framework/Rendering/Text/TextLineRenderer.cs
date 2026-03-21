@@ -1,10 +1,8 @@
 ﻿namespace Macabre2D.Framework;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabre2D.Project.Common;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -87,10 +85,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     public override void Deinitialize() {
         base.Deinitialize();
 
-        this.FontReference.AssetChanged -= this.FontReference_AssetChanged;
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
-        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
-        this.Game.CultureChanged -= this.Game_CultureChanged;
     }
 
 
@@ -98,8 +93,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.ReloadFontFromCategory();
-        this.ResetResource();
         this.ResetIndexes();
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
@@ -108,10 +101,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
             this.ScrollWaitTime.Restart();
         }
 
-        this.FontReference.AssetChanged += this.FontReference_AssetChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
-        this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
-        this.Game.CultureChanged += this.Game_CultureChanged;
         this.WidthOverride.PropertyChanged += this.WidthOverride_PropertyChanged;
     }
 
@@ -187,11 +177,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
         return Vector2.Zero;
     }
 
-    /// <inheritdoc />
-    protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.FontReference;
-    }
-
     /// <summary>
     /// Gets the position to start rendering the text.
     /// </summary>
@@ -236,19 +221,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
         this.Font != null &&
         !string.IsNullOrEmpty(this.GetFullText());
 
-    private void FontReference_AssetChanged(object? sender, bool hasAsset) {
-        this.OnFontChanged();
-    }
-
-
-    private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        this.RenderOptions.InvalidateSize();
-    }
-
-    private void Game_CultureChanged(object? sender, ResourceCulture e) {
-        this.RequestRefresh();
-    }
-
     private void HandleScrolling(FrameTime frameTime) {
         if (this._isScrollingRight) {
             var distance = this.TextLine.Width - this.WidthOverride.Value;
@@ -266,7 +238,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
             }
         }
     }
-
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {

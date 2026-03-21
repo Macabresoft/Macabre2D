@@ -9,6 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 public interface ITextRenderer : ISpriteEntity {
 
     /// <summary>
+    /// Gets a value indicating whether this text renderer is allowed to render a <see cref="SpriteFont" /> in a situation where it has no <see cref="SpriteSheetFont" />.
+    /// </summary>
+    bool AllowSpriteFont { get; }
+
+    /// <summary>
     /// Gets or sets the font category.
     /// </summary>
     FontCategory FontCategory { get; set; }

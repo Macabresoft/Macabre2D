@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -100,30 +99,19 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     }
 
     /// <inheritdoc />
-    public override void Deinitialize() {
-        base.Deinitialize();
-        this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
-        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
-    }
-
-    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.VerticalOffset = 0f;
-        this.RenderOptions.Initialize(this.CreateSize);
-        this.ReloadFontFromCategory();
-        this.ResetResource();
         this.ResetLines();
         this.ResetStartPosition();
+        this.RenderOptions.Initialize(this.CreateSize);
+        this._boundingArea.Reset();
 
         if (!this._constrainHeight) {
             // Size will be based off of the lines added above, because height is not constrained.
             this.ResetSize();
         }
-
-        this.FontReference.AssetChanged += this.FontReferenceAssetChanged;
-        this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
     }
 
     /// <inheritdoc />
@@ -152,11 +140,6 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.FontReference;
-    }
-
-    /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
 
@@ -165,7 +148,6 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
             this.ResetStartPosition();
         }
     }
-
 
     /// <inheritdoc />
     protected override void RequestRefresh() {
@@ -197,14 +179,6 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
         }
 
         return Vector2.Zero;
-    }
-
-    private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        this.RequestRefresh();
-    }
-
-    private void FontReferenceAssetChanged(object? sender, bool hasAsset) {
-        this.RequestRefresh();
     }
 
     private void OnSizeChanged() {

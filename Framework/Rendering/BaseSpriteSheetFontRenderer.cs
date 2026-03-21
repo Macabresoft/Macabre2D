@@ -1,5 +1,6 @@
 namespace Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabre2D.Project.Common;
@@ -11,6 +12,10 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
 
     private string _resourceText = string.Empty;
     private string _stringFormat = string.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
+    public bool AllowSpriteFont { get; private set; }
 
     /// <inheritdoc />
     [DataMember]
@@ -133,9 +138,35 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     protected SpriteSheet? SpriteSheet { get; private set; }
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+
+        this.Game.CultureChanged -= this.Game_CultureChanged;
+        this.FontReference.AssetChanged -= this.FontReference_AssetChanged;
+        this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public virtual string GetFullText() {
         var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
         return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
+    }
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+
+        this.ReloadFontFromCategory();
+        this.ResetResource();
+
+        this.Game.CultureChanged += this.Game_CultureChanged;
+        this.FontReference.AssetChanged += this.FontReference_AssetChanged;
+        this.FontReference.PropertyChanged += this.FontReference_PropertyChanged;
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.FontReference;
     }
 
     /// <summary>
@@ -183,5 +214,17 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
                 this._resourceText = resource;
             }
         }
+    }
+
+    private void FontReference_AssetChanged(object? sender, bool hasAsset) {
+        this.OnFontChanged();
+    }
+
+    private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.RequestRefresh();
+    }
+
+    private void Game_CultureChanged(object? sender, ResourceCulture e) {
+        this.RequestRefresh();
     }
 }

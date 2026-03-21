@@ -120,6 +120,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public float ActualViewHeight => 1f;
 
     /// <inheritdoc />
+    public bool AllowSpriteFont => false;
+
+    /// <inheritdoc />
     public Color BackgroundColor {
         get => Color.HotPink;
         set { }
@@ -346,6 +349,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public int UpdateOrder => 0;
 
     /// <inheritdoc />
+    public bool UsesSpriteSheetFont => false;
+
+    /// <inheritdoc />
     public float VerticalAxis => 0f;
 
     /// <inheritdoc />
@@ -449,9 +455,6 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetDescendantsWithContent(Guid contentId) => [];
-
-    /// <inheritdoc />
-    public bool UsesSpriteSheetFont => true;
 
     /// <inheritdoc />
     public string GetFullText() => string.Empty;
