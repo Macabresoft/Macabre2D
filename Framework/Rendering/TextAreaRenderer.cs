@@ -5,22 +5,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Renders text over an area.
 /// </summary>
-public class TextAreaRenderer : RenderableEntity, ITextRenderer {
+public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<TextLine> _textLines = [];
+
+    private float _characterHeight;
     private bool _constrainHeight = true;
     private SpriteSheetFont? _font;
     private float _height;
     private Vector2 _renderStartPosition;
-    private string _resourceText = string.Empty;
     private SpriteSheet? _spriteSheet;
-    private string _stringFormat = string.Empty;
     private float _width;
 
     /// <inheritdoc />
@@ -37,11 +36,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
-    /// Gets the character height of this font.
-    /// </summary>
-    public float CharacterHeight { get; private set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether this should constrain height vertically.
     /// </summary>
     /// <remarks>
@@ -53,37 +47,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         set {
             if (this.Set(ref this._constrainHeight, value)) {
                 this.OnSizeChanged();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public FontCategory FontCategory {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.ReloadFontFromCategory();
-                this.RequestRefresh();
-            }
-        }
-    } = FontCategory.None;
-
-    /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    public string Format {
-        get => this._stringFormat;
-        set {
-            if (value != this._stringFormat) {
-                this._stringFormat = value;
-                this.RequestRefresh();
             }
         }
     }
@@ -115,82 +78,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether color should be ignored when rendering icons.
-    /// </summary>
-    [DataMember]
-    public bool IgnoreColorForIcons { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
-    /// </summary>
-    [DataMember]
-    public int Kerning {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.RequestRefresh();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the render options.
-    /// </summary>
-    /// <value>The render options.</value>
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; private set; } = new();
-
-    /// <inheritdoc />
-    public override RenderPriority RenderPriority {
-        get {
-            if (this.RenderPriorityOverride.IsEnabled) {
-                return this.RenderPriorityOverride.Value;
-            }
-
-            return this._spriteSheet?.DefaultRenderPriority ?? default;
-        }
-
-        set {
-            this.RenderPriorityOverride.IsEnabled = true;
-            this.RenderPriorityOverride.Value = value;
-        }
-    }
-
-    /// <summary>
-    /// Gets a render priority override.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
-
-    /// <inheritdoc />
-    [ResourceName]
-    [DataMember]
-    public string ResourceName {
-        get;
-        set {
-            field = value;
-            this.ResetResource();
-            this.RequestRefresh();
-        }
-    } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the text.
-    /// </summary>
-    [DataMember]
-    public string Text {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.RequestRefresh();
-            }
-        }
-    } = string.Empty;
-
-    /// <summary>
     /// Gets the height of the total text, including text that is not displayed within the <see cref="BoundingArea" />.
     /// </summary>
     public float TextHeight { get; private set; }
@@ -217,12 +104,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         base.Deinitialize();
         this.FontReference.AssetChanged -= this.FontReferenceAssetChanged;
         this.FontReference.PropertyChanged -= this.FontReference_PropertyChanged;
-    }
-
-    /// <inheritdoc />
-    public string GetFullText() {
-        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
     }
 
     /// <inheritdoc />
@@ -256,7 +137,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
             var currentPosition = new Vector2(this._renderStartPosition.X, this._renderStartPosition.Y + this.VerticalOffset);
             var topPosition = this.BoundingArea.Maximum.Y + Defaults.FloatComparisonTolerance;
             foreach (var line in this._textLines) {
-                if (currentPosition.Y >= this.BoundingArea.Minimum.Y && currentPosition.Y + this.CharacterHeight <= topPosition) {
+                if (currentPosition.Y >= this.BoundingArea.Minimum.Y && currentPosition.Y + this._characterHeight <= topPosition) {
                     line.Render(
                         spriteBatch,
                         colorOverride,
@@ -265,7 +146,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
                         this.RenderOptions.Orientation, this.IgnoreColorForIcons);
                 }
 
-                currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this.CharacterHeight);
+                currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this._characterHeight);
             }
         }
     }
@@ -282,6 +163,19 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         if (this.IsInitialized) {
             this.ResetSize();
             this.ResetStartPosition();
+        }
+    }
+
+
+    /// <inheritdoc />
+    protected override void RequestRefresh() {
+        if (this.IsInitialized) {
+            this.ResetLines();
+
+            if (!this._constrainHeight) {
+                this.ResetSize();
+                this.ResetStartPosition();
+            }
         }
     }
 
@@ -328,23 +222,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         }
     }
 
-    private void ReloadFontFromCategory() {
-        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
-            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
-        }
-    }
-
-    private void RequestRefresh() {
-        if (this.IsInitialized) {
-            this.ResetLines();
-
-            if (!this._constrainHeight) {
-                this.ResetSize();
-                this.ResetStartPosition();
-            }
-        }
-    }
-
     private void ResetLines() {
         this._textLines.Clear();
 
@@ -358,7 +235,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
         }
 
         if (this._font != null && this._spriteSheet != null) {
-            this.CharacterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             var textLines = TextLine.CreateTextLines(
                 this.Project,
                 this.Game.InputActionIconResolver,
@@ -369,15 +246,7 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
                 this.HorizontalAlignment);
 
             this._textLines.AddRange(textLines);
-            this.TextHeight = this.CharacterHeight * this._textLines.Count;
-        }
-    }
-
-    private void ResetResource() {
-        if (!string.IsNullOrEmpty(this.ResourceName)) {
-            if (Resources.ResourceManager.TryGetString(this.ResourceName, out var resource)) {
-                this._resourceText = resource;
-            }
+            this.TextHeight = this._characterHeight * this._textLines.Count;
         }
     }
 
@@ -388,6 +257,6 @@ public class TextAreaRenderer : RenderableEntity, ITextRenderer {
     }
 
     private void ResetStartPosition() {
-        this._renderStartPosition = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - this.CharacterHeight);
+        this._renderStartPosition = new Vector2(this.BoundingArea.Minimum.X, this.BoundingArea.Maximum.Y - this._characterHeight);
     }
 }

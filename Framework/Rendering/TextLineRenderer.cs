@@ -4,20 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEntity {
+public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _characterHeight;
     private bool _isScrollingRight = true;
     private float _offset;
-    private string _resourceText = string.Empty;
-    private string _stringFormat = string.Empty;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -38,94 +36,10 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
-    /// <inheritdoc />
-    [DataMember]
-    public FontCategory FontCategory {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.ReloadFontFromCategory();
-                this.RequestRefresh();
-            }
-        }
-    } = FontCategory.None;
-
-    /// <inheritdoc />
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
-    public string Format {
-        get => this._stringFormat;
-        set {
-            if (value != this._stringFormat) {
-                this._stringFormat = value;
-                this.RequestRefresh();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether color should be ignored when rendering icons.
-    /// </summary>
-    [DataMember]
-    public bool IgnoreColorForIcons { get; set; } = true;
-
-    /// <inheritdoc />
-    [DataMember]
-    public int Kerning {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.RequestRefresh();
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    [DataMember(Order = 4)]
-    public RenderOptions RenderOptions { get; } = new();
-
-    /// <inheritdoc />
-    public override RenderPriority RenderPriority {
-        get {
-            if (this.RenderPriorityOverride.IsEnabled) {
-                return this.RenderPriorityOverride.Value;
-            }
-
-            return this.SpriteSheet?.DefaultRenderPriority ?? default;
-        }
-
-        set {
-            this.RenderPriorityOverride.IsEnabled = true;
-            this.RenderPriorityOverride.Value = value;
-        }
-    }
-
-    /// <summary>
-    /// Gets a render priority override.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
-
-    /// <inheritdoc />
-    [ResourceName]
-    [DataMember]
-    public string ResourceName {
-        get;
-        set {
-            field = value;
-            this.RequestRefresh();
-        }
-    } = string.Empty;
-
     /// <summary>
     /// Gets or sets the velocity of the text scrolling.
     /// </summary>
+    [DataMember]
     public float ScrollVelocity {
         get;
         set => field = Math.Abs(value);
@@ -158,33 +72,11 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <inheritdoc />
     public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
 
-    /// <inheritdoc />
-    [DataMember]
-    public string Text {
-        get;
-        set {
-            if (value != field) {
-                field = value;
-                this.RequestRefresh();
-            }
-        }
-    } = string.Empty;
-
     /// <summary>
     /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
     /// </summary>
     [DataMember]
     public FloatOverride WidthOverride { get; } = new();
-
-    /// <summary>
-    /// Gets the font.
-    /// </summary>
-    protected SpriteSheetFont? Font { get; private set; }
-
-    /// <summary>
-    /// Gets the sprite sheet.
-    /// </summary>
-    protected SpriteSheet? SpriteSheet { get; private set; }
 
     /// <summary>
     /// Gets the text line this is rendering.
@@ -201,11 +93,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this.Game.CultureChanged -= this.Game_CultureChanged;
     }
 
-    /// <inheritdoc />
-    public virtual string GetFullText() {
-        var actualText = string.IsNullOrEmpty(this.ResourceName) ? this.Text : this._resourceText;
-        return !string.IsNullOrEmpty(this._stringFormat) ? string.Format(actualText, this._stringFormat) : actualText;
-    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -311,12 +198,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     /// <returns>The position to start rendering text.</returns>
     protected virtual Vector2 GetTextStartPosition() => this.BoundingArea.Minimum;
 
-    /// <summary>
-    /// Called when the font changes.
-    /// </summary>
-    protected virtual void OnFontChanged() {
-        this.RequestRefresh();
-    }
 
     /// <inheritdoc />
     protected override void OnTransformChanged() {
@@ -324,10 +205,8 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this.RequestRefresh();
     }
 
-    /// <summary>
-    /// Requests a reset that will be performed if this has been initialized.
-    /// </summary>
-    protected void RequestRefresh() {
+    /// <inheritdoc />
+    protected override void RequestRefresh() {
         if (this.IsInitialized) {
             this.ResetResource();
             this.ResetIndexes();
@@ -361,6 +240,7 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         this.OnFontChanged();
     }
 
+
     private void FontReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.RenderOptions.InvalidateSize();
     }
@@ -387,11 +267,6 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
         }
     }
 
-    private void ReloadFontFromCategory() {
-        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
-            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
-        }
-    }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
@@ -402,26 +277,11 @@ public class TextLineRenderer : RenderableEntity, ITextRenderer, IUpdateableEnti
     private void ResetIndexes() {
         this.TextLine = TextLine.Empty;
 
-        if (this.FontReference is { PackagedAsset: not null, Asset: not null }) {
-            this.Font = this.FontReference.PackagedAsset;
-            this.SpriteSheet = this.FontReference.Asset;
-        }
-        else if (this.Project.Fallbacks.Font is { PackagedAsset: not null, Asset: not null }) {
-            this.Font = this.Project.Fallbacks.Font.PackagedAsset;
-            this.SpriteSheet = this.Project.Fallbacks.Font.Asset;
-        }
+        this.ResetFontAndSpriteSheet();
 
         if (this.Font != null) {
             var actualText = this.GetFullText();
             this.TextLine = TextLine.CreateTextLine(this.Project, this.Game.InputActionIconResolver, actualText, this.Font, this.Kerning);
-        }
-    }
-
-    private void ResetResource() {
-        if (!string.IsNullOrEmpty(this.ResourceName)) {
-            if (Resources.ResourceManager.TryGetString(this.ResourceName, out var resource)) {
-                this._resourceText = resource;
-            }
         }
     }
 

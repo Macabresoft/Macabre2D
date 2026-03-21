@@ -462,8 +462,8 @@ public class Entity : Transformable, IEntity {
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
 
-            foreach (var entityReference in this.GetGameObjectReferences()) {
-                entityReference.Initialize(this.Scene);
+            foreach (var gameObjectReference in this.GetGameObjectReferences()) {
+                gameObjectReference.Initialize(this.Scene);
             }
 
             foreach (var child in this.Children) {

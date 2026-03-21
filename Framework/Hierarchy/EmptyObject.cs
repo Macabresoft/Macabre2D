@@ -451,6 +451,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     public IEnumerable<IEntity> GetDescendantsWithContent(Guid contentId) => [];
 
     /// <inheritdoc />
+    public bool UsesSpriteSheetFont => true;
+
+    /// <inheritdoc />
     public string GetFullText() => string.Empty;
 
     /// <inheritdoc />

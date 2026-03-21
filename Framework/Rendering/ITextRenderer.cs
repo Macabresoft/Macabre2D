@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework;
 
 using Macabre2D.Project.Common;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.
@@ -8,14 +9,14 @@ using Macabre2D.Project.Common;
 public interface ITextRenderer : ISpriteEntity {
 
     /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
-    SpriteSheetFontReference FontReference { get; }
-
-    /// <summary>
     /// Gets or sets the font category.
     /// </summary>
     FontCategory FontCategory { get; set; }
+
+    /// <summary>
+    /// Gets the font asset reference.
+    /// </summary>
+    SpriteSheetFontReference FontReference { get; }
 
     /// <summary>
     /// Gets or sets the format of the <see cref="Text" /> or the text based on the <see cref="ResourceName" />.
@@ -39,6 +40,11 @@ public interface ITextRenderer : ISpriteEntity {
     /// Gets or sets the text.
     /// </summary>
     string Text { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this uses a <see cref="SpriteSheetFont" />. If not, it may be rendered as a <see cref="SpriteFont" /> in another render step.
+    /// </summary>
+    bool UsesSpriteSheetFont { get; }
 
     /// <summary>
     /// Gets the full text to be displayed by this renderer.
