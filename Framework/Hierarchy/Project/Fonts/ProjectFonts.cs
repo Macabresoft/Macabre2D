@@ -44,7 +44,15 @@ public class ProjectFonts {
     /// <param name="key">The key.</param>
     /// <param name="fontId">The font identifier.</param>
     /// <param name="spriteSheetId">The sprite sheet identifier.</param>
-    public void SetFont(ProjectFontKey key, Guid fontId, Guid spriteSheetId) => this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId));
+    public void SetFont(ProjectFontKey key, Guid fontId, Guid spriteSheetId) {
+        var monoGameFontId = Guid.Empty;
+
+        if (this.TryGetFont(key, out var fontDefinition)) {
+            monoGameFontId = fontDefinition.MonoGameFontId;
+        }
+
+        this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId, monoGameFontId));
+    }
 
     /// <summary>
     /// Sets a font for the given <see cref="ProjectFontKey" />.

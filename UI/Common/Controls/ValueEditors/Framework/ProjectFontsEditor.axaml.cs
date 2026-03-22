@@ -110,7 +110,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
         if (spriteSheet != null && packagedAssetId != Guid.Empty) {
             var contentId = spriteSheet.ContentId;
             var originalDefinition = font.Definition;
-            var newDefinition = new ProjectFontDefinition(contentId, packagedAssetId);
+            var newDefinition = new ProjectFontDefinition(contentId, packagedAssetId, font.Definition.MonoGameFontId);
             this._undoService.Do(
                 () => { font.Definition = newDefinition; },
                 () => { font.Definition = originalDefinition; });
