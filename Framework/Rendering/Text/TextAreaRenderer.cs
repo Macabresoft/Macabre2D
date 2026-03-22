@@ -32,6 +32,9 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     }
 
     /// <inheritdoc />
+    public override bool AllowSpriteFont => false;
+
+    /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>

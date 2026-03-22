@@ -11,6 +11,9 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+
+    [DataMember(Name = nameof(AllowSpriteFont))]
+    private bool _allowSpriteFont;
     private float _characterHeight;
     private bool _isScrollingRight = true;
     private float _offset;
@@ -30,6 +33,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     public TextLineRenderer() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
+
+    /// <inheritdoc />
+    public override bool AllowSpriteFont => this._allowSpriteFont;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;

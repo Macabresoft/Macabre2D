@@ -14,8 +14,7 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     private string _stringFormat = string.Empty;
 
     /// <inheritdoc />
-    [DataMember]
-    public bool AllowSpriteFont { get; private set; }
+    public abstract bool AllowSpriteFont { get; }
 
     /// <inheritdoc />
     [DataMember]
