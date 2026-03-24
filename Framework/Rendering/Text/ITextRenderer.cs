@@ -7,12 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.
 /// </summary>
 public interface ITextRenderer : ISpriteEntity {
-
-    /// <summary>
-    /// Gets a value indicating whether this text renderer is allowed to render a <see cref="SpriteFont" /> in a situation where it has no <see cref="SpriteSheetFont" />.
-    /// </summary>
-    bool AllowSpriteFont { get; }
-
+    
     /// <summary>
     /// Gets or sets the font category.
     /// </summary>
@@ -45,11 +40,6 @@ public interface ITextRenderer : ISpriteEntity {
     /// Gets or sets the text.
     /// </summary>
     string Text { get; set; }
-
-    /// <summary>
-    /// Gets a value indicating whether this uses a <see cref="SpriteSheetFont" />. If not, it may be rendered as a <see cref="SpriteFont" /> in another render step.
-    /// </summary>
-    bool UsesSpriteSheetFont { get; }
 
     /// <summary>
     /// Gets the full text to be displayed by this renderer.

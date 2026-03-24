@@ -14,9 +14,6 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     private string _stringFormat = string.Empty;
 
     /// <inheritdoc />
-    public abstract bool AllowSpriteFont { get; }
-
-    /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
         get;
@@ -122,10 +119,7 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
             }
         }
     } = string.Empty;
-
-    /// <inheritdoc />
-    public bool UsesSpriteSheetFont { get; private set; }
-
+    
     /// <summary>
     /// Gets the font.
     /// </summary>
@@ -178,12 +172,7 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     /// <summary>
     /// Reloads the font from the category.
     /// </summary>
-    protected void ReloadFontFromCategory() {
-        this.UsesSpriteSheetFont = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
-        if (this.UsesSpriteSheetFont) {
-            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
-        }
-    }
+    protected abstract void ReloadFontFromCategory();
 
     /// <summary>
     /// Requests a refresh of this renderer.

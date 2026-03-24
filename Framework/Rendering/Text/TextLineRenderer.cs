@@ -9,11 +9,9 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
+public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-
-    [DataMember(Name = nameof(AllowSpriteFont))]
-    private bool _allowSpriteFont;
+    
     private float _characterHeight;
     private bool _isScrollingRight = true;
     private float _offset;
@@ -26,6 +24,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
 
     /// <inheritdoc />
     public event EventHandler? UpdateOrderChanged;
+    
+    /// <inheritdoc />
+    public bool ShouldRenderMonoGameSpriteFont { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
@@ -33,9 +34,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     public TextLineRenderer() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
-
-    /// <inheritdoc />
-    public override bool AllowSpriteFont => this._allowSpriteFont;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
@@ -194,6 +192,14 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IUpdateableEntity {
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
         this.RequestRefresh();
+    }
+
+    /// <inheritdoc />
+    protected override void ReloadFontFromCategory() {
+        this.ShouldRenderMonoGameSpriteFont = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
+        if (this.ShouldRenderMonoGameSpriteFont) {
+            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
+        }
     }
 
     /// <inheritdoc />

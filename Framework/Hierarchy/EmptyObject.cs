@@ -11,7 +11,17 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSpriteAnimator, ITextRenderer, IScene, ISpriteRenderer, IRenderableBlinker, ITileableEntity {
+public class EmptyObject :
+    ICamera,
+    IInputSystem,
+    IMonoGameSpriteFontRenderer,
+    IPhysicsBody,
+    IQueueableSpriteAnimator,
+    IRenderableBlinker,
+    IScene,
+    ISpriteRenderer,
+    ITextRenderer,
+    ITileableEntity {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -118,9 +128,6 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
 
     /// <inheritdoc />
     public float ActualViewHeight => 1f;
-
-    /// <inheritdoc />
-    public bool AllowSpriteFont => false;
 
     /// <inheritdoc />
     public Color BackgroundColor {
@@ -305,6 +312,9 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
     }
 
     /// <inheritdoc />
+    public bool ShouldRenderMonoGameSpriteFont => false;
+
+    /// <inheritdoc />
     public bool ShouldUpdate => false;
 
     /// <inheritdoc />
@@ -347,9 +357,6 @@ public class EmptyObject : ICamera, IInputSystem, IPhysicsBody, IQueueableSprite
 
     /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
     public int UpdateOrder => 0;
-
-    /// <inheritdoc />
-    public bool UsesSpriteSheetFont => false;
 
     /// <inheritdoc />
     public float VerticalAxis => 0f;

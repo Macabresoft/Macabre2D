@@ -32,9 +32,6 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     }
 
     /// <inheritdoc />
-    public override bool AllowSpriteFont => false;
-
-    /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
@@ -149,6 +146,12 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
         if (this.IsInitialized) {
             this.ResetSize();
             this.ResetStartPosition();
+        }
+    }
+
+    protected override void ReloadFontFromCategory() {
+        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
+            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
         }
     }
 
