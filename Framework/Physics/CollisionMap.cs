@@ -18,7 +18,7 @@ public sealed class CollisionMap {
     private readonly List<Layers> _layers;
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new();
+    private readonly Dictionary<Layers, Layers> _layerToCollisionMask = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CollisionMap" /> class.
@@ -87,7 +87,7 @@ public sealed class CollisionMap {
     /// Toggles collisions.
     /// </summary>
     /// <param name="twoLayers">The two layers.</param>
-    /// <returns>A value indicating whether or not the layers collide.</returns>
+    /// <returns>A value indicating whether the layers collide.</returns>
     public bool ToggleShouldCollide(Layers twoLayers) {
         var rootLayer = Layers.None;
         var collisionBit = Layers.None;
@@ -103,7 +103,7 @@ public sealed class CollisionMap {
                 if (rootLayer == Layers.None) {
                     rootLayer = layer;
                 }
-                else if (collisionBit == Layers.None) {
+                else {
                     collisionBit = layer;
                     break;
                 }
