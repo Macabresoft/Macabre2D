@@ -640,6 +640,14 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    }
+
+    /// <inheritdoc />
+    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    }
+
+    /// <inheritdoc />
     public void ReorderChild(IEntity entity, int newIndex) {
     }
 

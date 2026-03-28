@@ -1,13 +1,12 @@
 ﻿namespace Macabre2D.Framework;
 
 using Macabre2D.Project.Common;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for a renderer which takes a <see cref="SpriteSheetFont" />.
 /// </summary>
 public interface ITextRenderer : ISpriteEntity {
-    
+
     /// <summary>
     /// Gets or sets the font category.
     /// </summary>

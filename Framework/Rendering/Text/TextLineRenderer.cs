@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    
+
     private float _characterHeight;
     private bool _isScrollingRight = true;
     private float _offset;
@@ -24,9 +24,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
 
     /// <inheritdoc />
     public event EventHandler? UpdateOrderChanged;
-    
-    /// <inheritdoc />
-    public bool ShouldRenderMonoGameSpriteFont { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
@@ -52,6 +49,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
     /// </summary>
     [DataMember]
     public GameTimer ScrollWaitTime { get; } = new(1f);
+
+    /// <inheritdoc />
+    public bool ShouldRenderMonoGameSpriteFont { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this scrolls.
@@ -138,6 +138,17 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
                     this.IgnoreColorForIcons);
             }
         }
+    }
+
+    /// <inheritdoc />
+    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderAsMonoGameSpriteFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    }
+
+    /// <inheritdoc />
+    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        // TODO: do a render here
+        Console.WriteLine($"Render as SpriteFont (Color: {colorOverride}): {this.GetFullText()}");
     }
 
     /// <inheritdoc />
