@@ -157,6 +157,21 @@ public class BaseGame : Game, IGame {
     } = new GameProject();
 
     /// <inheritdoc />
+    public float ScreenPixelsPerUnit {
+        get;
+        private set {
+            if (value < 1) {
+                throw new ArgumentOutOfRangeException($"{nameof(this.ScreenPixelsPerUnit)} must be greater than 0!");
+            }
+
+            if (value != field) {
+                field = value;
+                this.UnitsPerScreenPixel = 1f / field;
+            }
+        }
+    } = 32;
+
+    /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
 
     /// <inheritdoc />
@@ -164,6 +179,8 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public TimeSpan TimeSinceGameStart => this._gameTime.TotalGameTime;
+
+    public float UnitsPerScreenPixel { get; private set; }
 
     /// <inheritdoc />
     public UserSettings UserSettings {
@@ -532,6 +549,8 @@ public class BaseGame : Game, IGame {
             this.CroppedViewportSize = this.ViewportSize;
         }
 
+        this.ScreenPixelsPerUnit = this.CroppedViewportSize.Y / this.Project.ViewHeight;
+
         this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 
         this._gameRenderTarget?.Dispose();
@@ -588,9 +607,11 @@ public class BaseGame : Game, IGame {
         public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
+        public float ScreenPixelsPerUnit => 1f;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
+        public float UnitsPerScreenPixel => 1f;
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
 
