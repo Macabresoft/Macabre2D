@@ -1,17 +1,16 @@
 ﻿namespace Macabre2D.UI.Common;
 
 using System;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 
 public class ProjectFontModel : PropertyChangedNotifier {
     private readonly IAssetManager _assetManager;
     private readonly ProjectFonts _fonts;
     private readonly IUndoService _undoService;
     private ProjectFontDefinition _definition;
-    private string _path = string.Empty;
 
     public ProjectFontModel(ProjectFontKey key, IAssetManager assetManager, IUndoService undoService, ProjectFonts fonts) {
         this.Key = key;
@@ -24,8 +23,6 @@ public class ProjectFontModel : PropertyChangedNotifier {
     }
 
     public FontCategory Category => this.Key.Category;
-
-    public ProjectFontKey Key { get; }
 
     public ProjectFontDefinition Definition {
         get => this._definition;
@@ -47,17 +44,31 @@ public class ProjectFontModel : PropertyChangedNotifier {
         }
     }
 
-    public string Path {
-        get => this._path;
-        private set => this.Set(ref this._path, value);
-    }
+    public ProjectFontKey Key { get; }
+
+    public string MonoGameFontPath {
+        get;
+        private set => this.Set(ref field, value);
+    } = string.Empty;
+
+    public string SpriteSheetFontPath {
+        get;
+        private set => this.Set(ref field, value);
+    } = string.Empty;
 
     private void ResetFontName() {
         if (this._definition.FontId != Guid.Empty && this._definition.SpriteSheetId != Guid.Empty && this._assetManager.TryGetMetadata(this.Definition.SpriteSheetId, out var metadata)) {
-            this.Path = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
+            this.SpriteSheetFontPath = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
         else {
-            this.Path = string.Empty;
+            this.SpriteSheetFontPath = string.Empty;
+        }
+
+        if (this._definition.MonoGameFontId != Guid.Empty && this._assetManager.TryGetMetadata(this._definition.MonoGameFontId, out var monoGameFontMetadata)) {
+            this.MonoGameFontPath = $"{monoGameFontMetadata.GetContentPath()}{monoGameFontMetadata.ContentFileExtension}";
+        }
+        else {
+            this.MonoGameFontPath = string.Empty;
         }
     }
 }

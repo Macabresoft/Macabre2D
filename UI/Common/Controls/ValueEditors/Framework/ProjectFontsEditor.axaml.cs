@@ -6,10 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
+using Microsoft.Xna.Framework.Graphics;
 using ReactiveUI;
 using Unity;
 
@@ -20,10 +21,15 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
             nameof(AvailableCultures),
             editor => editor.AvailableCultures);
 
-    public static readonly DirectProperty<ProjectFontsEditor, ICommand> ClearCommandProperty =
+    public static readonly DirectProperty<ProjectFontsEditor, ICommand> ClearMonoGameFontCommandProperty =
         AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ICommand>(
-            nameof(ClearCommand),
-            editor => editor.ClearCommand);
+            nameof(ClearMonoGameFontCommand),
+            editor => editor.ClearMonoGameFontCommand);
+
+    public static readonly DirectProperty<ProjectFontsEditor, ICommand> ClearSpriteSheetFontCommandProperty =
+        AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ICommand>(
+            nameof(ClearSpriteSheetFontCommand),
+            editor => editor.ClearSpriteSheetFontCommand);
 
     public static readonly DirectProperty<ProjectFontsEditor, ResourceCulture> CurrentCultureProperty =
         AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ResourceCulture>(
@@ -36,16 +42,20 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
             nameof(FontsInCurrentCulture),
             editor => editor.FontsInCurrentCulture);
 
-    public static readonly DirectProperty<ProjectFontsEditor, ICommand> SelectCommandProperty =
+    public static readonly DirectProperty<ProjectFontsEditor, ICommand> SelectMonoGameFontCommandProperty =
         AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ICommand>(
-            nameof(SelectCommand),
-            editor => editor.SelectCommand);
+            nameof(SelectMonoGameFontCommand),
+            editor => editor.SelectMonoGameFontCommand);
+
+    public static readonly DirectProperty<ProjectFontsEditor, ICommand> SelectSpriteSheetFontCommandProperty =
+        AvaloniaProperty.RegisterDirect<ProjectFontsEditor, ICommand>(
+            nameof(SelectSpriteSheetFontCommand),
+            editor => editor.SelectSpriteSheetFontCommand);
 
     private readonly IAssetManager _assetManager;
     private readonly ICommonDialogService _dialogService;
-    private readonly ObservableCollectionExtended<ProjectFontModel> _fontsInCurrentCulture = new();
+    private readonly ObservableCollectionExtended<ProjectFontModel> _fontsInCurrentCulture = [];
     private readonly IUndoService _undoService;
-    private ResourceCulture _currentCulture = ResourceCulture.Default;
 
     public ProjectFontsEditor() : this(
         null,
@@ -65,32 +75,43 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
         this._undoService = undoService;
 
         this.AvailableCultures = Enum.GetValues<ResourceCulture>().ToList();
-        this.ClearCommand = ReactiveCommand.Create<ProjectFontModel>(this.Clear);
-        this.SelectCommand = ReactiveCommand.CreateFromTask<ProjectFontModel>(this.SelectFont);
+        this.ClearMonoGameFontCommand = ReactiveCommand.Create<ProjectFontModel>(this.ClearMonoGameFont);
+        this.ClearSpriteSheetFontCommand = ReactiveCommand.Create<ProjectFontModel>(this.ClearSpriteSheetFont);
+        this.SelectMonoGameFontCommand = ReactiveCommand.CreateFromTask<ProjectFontModel>(this.SelectMonoGameFont);
+        this.SelectSpriteSheetFontCommand = ReactiveCommand.CreateFromTask<ProjectFontModel>(this.SelectSpriteSheetFont);
         this.ResetFontCategories();
         this.InitializeComponent();
     }
 
     public IReadOnlyCollection<ResourceCulture> AvailableCultures { get; }
 
-    public ICommand ClearCommand { get; }
+    public ICommand ClearMonoGameFontCommand { get; }
 
-    public IReadOnlyCollection<ProjectFontModel> FontsInCurrentCulture => this._fontsInCurrentCulture;
+    public ICommand ClearSpriteSheetFontCommand { get; }
 
-    public ICommand SelectCommand { get; }
 
     public ResourceCulture CurrentCulture {
-        get => this._currentCulture;
+        get;
         set {
-            if (value != this._currentCulture) {
-                this.SetAndRaise(CurrentCultureProperty, ref this._currentCulture, value);
+            if (value != field) {
+                this.SetAndRaise(CurrentCultureProperty, ref field, value);
                 this.ResetFontCategories();
             }
         }
+    } = ResourceCulture.Default;
+
+    public IReadOnlyCollection<ProjectFontModel> FontsInCurrentCulture => this._fontsInCurrentCulture;
+
+    public ICommand SelectMonoGameFontCommand { get; }
+
+    public ICommand SelectSpriteSheetFontCommand { get; }
+
+    private void ClearMonoGameFont(ProjectFontModel font) {
+        font.Definition = font.Definition.WithMonoGameFont(Guid.Empty);
     }
 
-    private void Clear(ProjectFontModel font) {
-        font.Definition = ProjectFontDefinition.Empty;
+    private void ClearSpriteSheetFont(ProjectFontModel font) {
+        font.Definition = font.Definition.WithSpriteSheetFont(Guid.Empty, Guid.Empty);
     }
 
     private void ResetFontCategories() {
@@ -105,12 +126,24 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
         }
     }
 
-    private async Task SelectFont(ProjectFontModel font) {
+    private async Task SelectMonoGameFont(ProjectFontModel font) {
+        var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(SpriteFont), false, this.Title);
+        if (contentNode != null && contentNode.Id != Guid.Empty) {
+            var contentId = contentNode.Id;
+            var originalDefinition = font.Definition;
+            var newDefinition = originalDefinition.WithMonoGameFont(contentId);
+            this._undoService.Do(
+                () => { font.Definition = newDefinition; },
+                () => { font.Definition = originalDefinition; });
+        }
+    }
+
+    private async Task SelectSpriteSheetFont(ProjectFontModel font) {
         var (spriteSheet, packagedAssetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteSheetFont>(this.Title);
         if (spriteSheet != null && packagedAssetId != Guid.Empty) {
             var contentId = spriteSheet.ContentId;
             var originalDefinition = font.Definition;
-            var newDefinition = new ProjectFontDefinition(contentId, packagedAssetId, font.Definition.MonoGameFontId);
+            var newDefinition = originalDefinition.WithSpriteSheetFont(contentId, packagedAssetId);
             this._undoService.Do(
                 () => { font.Definition = newDefinition; },
                 () => { font.Definition = originalDefinition; });

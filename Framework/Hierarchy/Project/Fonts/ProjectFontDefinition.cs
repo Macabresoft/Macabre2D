@@ -49,4 +49,19 @@ public readonly record struct ProjectFontDefinition {
         this.FontId = fontId;
         this.MonoGameFontId = monoGameFontId;
     }
+
+    /// <summary>
+    /// Creates a new <see cref="ProjectFontDefinition" /> with a different MonoGame font, while maintaining the original sprite sheet font.
+    /// </summary>
+    /// <param name="monoGameFontId">The MonoGame font identifier.</param>
+    /// <returns>A modified <see cref="ProjectFontDefinition" />.</returns>
+    public ProjectFontDefinition WithMonoGameFont(Guid monoGameFontId) => new(this.SpriteSheetId, this.FontId, monoGameFontId);
+
+    /// <summary>
+    /// Creates a new <see cref="ProjectFontDefinition" /> with a different sprite sheet font, while maintaining the original MonoGame font.
+    /// </summary>
+    /// <param name="spriteSheetId">The sprite sheet identifier.</param>
+    /// <param name="fontId">The font identifier.</param>
+    /// <returns>A modified <see cref="ProjectFontDefinition" />.</returns>
+    public ProjectFontDefinition WithSpriteSheetFont(Guid spriteSheetId, Guid fontId) => new(spriteSheetId, fontId, this.MonoGameFontId);
 }
