@@ -14,7 +14,7 @@
                        ShowInTaskbar="True"
                        WindowState="Maximized">
     <Design.DataContext>
-        <local:MainWindowViewModel />
+        <local:MainViewModel />
     </Design.DataContext>
     <avaloniaEx:BaseDialog.KeyBindings>
         <KeyBinding Command="{Binding ToggleTabCommand}"

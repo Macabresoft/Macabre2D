@@ -2,11 +2,11 @@ namespace Macabre2D.UI.Editor;
 
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 using Path = System.IO.Path;
@@ -14,7 +14,7 @@ using Path = System.IO.Path;
 /// <summary>
 /// The view model for the main window.
 /// </summary>
-public class MainWindowViewModel : UndoBaseViewModel {
+public class MainViewModel : UndoBaseViewModel, IScreen {
     private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
@@ -25,14 +25,14 @@ public class MainWindowViewModel : UndoBaseViewModel {
     private readonly IEditorSettingsService _settingsService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
+    /// Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
     /// <remarks>This constructor only exists for design time XAML.</remarks>
-    public MainWindowViewModel() : base() {
+    public MainViewModel() : base() {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
+    /// Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
     /// <param name="assetSelectionService">The asset selection service.</param>
     /// <param name="busyService">The busy service.</param>
@@ -47,7 +47,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <param name="settingsService">The editor settings service.</param>
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
-    public MainWindowViewModel(
+    public MainViewModel(
         IAssetSelectionService assetSelectionService,
         IBusyService busyService,
         IContentService contentService,
@@ -119,6 +119,9 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Gets the command to rebuild content.
     /// </summary>
     public ICommand RebuildContentCommand { get; }
+
+    /// <inheritdoc />
+    public RoutingState Router { get; } = new();
 
     /// <summary>
     /// Gets the command to save the current scene.

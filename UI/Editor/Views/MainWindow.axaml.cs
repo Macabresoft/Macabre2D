@@ -6,6 +6,6 @@ using Macabre2D.UI.Common;
 public partial class MainWindow : BaseDialog {
     internal void Initialize() {
         this.InitializeComponent();
-        this.DataContext = Resolver.Resolve<MainWindowViewModel>();
+        this.DataContext = Resolver.Resolve<MainViewModel>();
     }
 }

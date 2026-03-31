@@ -1,7 +1,9 @@
 namespace Macabre2D.UI.Editor;
 
 using System;
+using System.Reflection;
 using Avalonia;
+using ReactiveUI;
 using ReactiveUI.Avalonia;
 
 internal static class Program {
@@ -10,7 +12,17 @@ internal static class Program {
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI(rxAppBuilder =>
+            {
+                // Enable ReactiveUI
+                rxAppBuilder
+                    .WithViewsFromAssembly(Assembly.GetExecutingAssembly())
+                    .WithRegistration(locator =>
+                    {
+                        // Register your services here
+                        locator.RegisterLazySingleton<IScreen>(() => new MainViewModel());
+                    });
+            }).RegisterReactiveUIViewsFromEntryAssembly();
 
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
