@@ -55,12 +55,26 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
 
     /// <inheritdoc />
     [DataMember]
-    public string Name { get; set; }
+    public string Name {
+        get;
+        set {
+            field = value;
+
+            if (BaseGame.IsDesignMode && this.IsInitialized) {
+                this.RaisePropertyChanged();
+            }
+        }
+    }
 
     /// <summary>
     /// Gets the game.
     /// </summary>
     protected IGame Game => this.Scene.Game;
+
+    /// <summary>
+    /// Gets a value indicating whether this is initialized.
+    /// </summary>
+    protected bool IsInitialized { get; private set; }
 
     /// <summary>
     /// Gets the scene.
@@ -77,14 +91,25 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
         foreach (var entityReference in this.GetGameObjectReferences()) {
             entityReference.Deinitialize();
         }
+
+        this.IsInitialized = false;
     }
 
     /// <inheritdoc />
     public virtual void Initialize(IScene scene) {
-        this.Scene = scene;
+        try {
+            if (this.IsInitialized) {
+                this.Deinitialize();
+            }
 
-        foreach (var entityReference in this.GetGameObjectReferences()) {
-            entityReference.Initialize(this.Scene);
+            this.Scene = scene;
+
+            foreach (var entityReference in this.GetGameObjectReferences()) {
+                entityReference.Initialize(this.Scene);
+            }
+        }
+        finally {
+            this.IsInitialized = true;
         }
     }
 
