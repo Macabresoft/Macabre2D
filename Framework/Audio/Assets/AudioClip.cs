@@ -27,7 +27,6 @@ public sealed class AudioClip : Asset<SoundEffect> {
         set => this.Set(ref field, value);
     }
 
-
     /// <summary>
     /// Gets or sets the default pan.
     /// </summary>

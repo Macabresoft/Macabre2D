@@ -10,6 +10,7 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface that abstracts out building content and projects.
@@ -75,6 +76,10 @@ public class BuildService : IBuildService {
 
         foreach (var extension in AudioClip.ValidFileExtensions) {
             FileExtensionToAssetType.Add(extension, typeof(AudioClip));
+        }
+
+        foreach (var extension in FontAsset.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(FontAsset));
         }
 
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));

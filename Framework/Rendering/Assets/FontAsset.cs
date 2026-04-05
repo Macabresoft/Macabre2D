@@ -19,16 +19,20 @@ public enum FontStyle {
 /// </summary>
 public sealed class FontAsset : Asset<SpriteFont> {
 
+    /// <summary>
+    /// The valid file extensions for a <see cref="SpriteFont" />.
+    /// </summary>
+    public static readonly string[] ValidFileExtensions = [".otf", ".ttf"];
+
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not to premultiply the alpha.
+    /// Gets or sets a value indicating whether to premultiply the alpha.
     /// </summary>
     [DataMember]
     public bool PremultiplyAlpha {
         get;
-
         set => this.Set(ref field, value);
     } = true;
 
@@ -37,7 +41,6 @@ public sealed class FontAsset : Asset<SpriteFont> {
     /// </summary>
     public float Size {
         get;
-
         set => this.Set(ref field, value);
     } = 12;
 
@@ -46,7 +49,6 @@ public sealed class FontAsset : Asset<SpriteFont> {
     /// </summary>
     public float Spacing {
         get;
-
         set {
             if (this.Set(ref field, value) && this.Content != null) {
                 this.Content.Spacing = this.Spacing;
@@ -59,7 +61,6 @@ public sealed class FontAsset : Asset<SpriteFont> {
     /// </summary>
     public FontStyle Style {
         get;
-
         set => this.Set(ref field, value);
     } = FontStyle.Regular;
 
@@ -69,16 +70,14 @@ public sealed class FontAsset : Asset<SpriteFont> {
     [DataMember]
     public TextureProcessorOutputFormat TextureFormat {
         get;
-
         set => this.Set(ref field, value);
     } = TextureProcessorOutputFormat.Compressed;
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not to use kerning for this sprite font.
+    /// Gets or sets a value indicating whether to use kerning for this sprite font.
     /// </summary>
     public bool UseKerning {
         get;
-
         set => this.Set(ref field, value);
     } = true;
 
