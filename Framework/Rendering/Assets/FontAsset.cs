@@ -18,12 +18,11 @@ public enum FontStyle {
 /// A font to be used by the <see cref="TextRenderer" />.
 /// </summary>
 public sealed class FontAsset : Asset<SpriteFont> {
-
     /// <summary>
-    /// The valid file extensions for a <see cref="SpriteFont" />.
+    /// The file extension for a serialized <see cref="SpriteFont" />.
     /// </summary>
-    public static readonly string[] ValidFileExtensions = [".otf", ".ttf"];
-
+    public const string FileExtension = ".spritefont";
+    
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
 

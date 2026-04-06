@@ -253,7 +253,14 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
             this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
-            var exitCode = this._buildService.BuildContentFromScratch(this._rootContentDirectory, forceRebuild || this.CheckForMetadataChanges());
+            var exitCode = this._buildService.BuildContentFromScratch(
+                this._rootContentDirectory, 
+                forceRebuild || this.CheckForMetadataChanges(),
+                out var newMetadata);
+
+            foreach (var metadata in newMetadata) {
+                this.SaveMetadata(metadata);
+            }
 
             foreach (var metadata in this._rootContentDirectory.GetAllContentFiles().Select(x => x.Metadata)) {
                 this._assetManager.RegisterMetadata(metadata);

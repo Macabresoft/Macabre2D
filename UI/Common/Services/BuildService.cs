@@ -36,8 +36,9 @@ public interface IBuildService {
     /// </summary>
     /// <param name="contentDirectory">The content directory.</param>
     /// <param name="forceRebuild">A value indicating whether a rebuild should be forced.</param>
+    /// <param name="newMetadata">Any new metadata that was created during tyhe build process.</param>
     /// <returns>The exit code of the MGCB process.</returns>
-    int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild);
+    int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild, out IEnumerable<ContentMetadata> newMetadata);
 
     /// <summary>
     /// Creates the MGCB file.
@@ -69,6 +70,8 @@ public class BuildService : IBuildService {
     static BuildService() {
         FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
         FileExtensionToAssetType.Add(PrefabAsset.FileExtension, typeof(PrefabAsset));
+        FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
+        FileExtensionToAssetType.Add(FontAsset.FileExtension, typeof(FontAsset));
 
         foreach (var extension in SpriteSheet.ValidFileExtensions) {
             FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
@@ -78,11 +81,6 @@ public class BuildService : IBuildService {
             FileExtensionToAssetType.Add(extension, typeof(AudioClip));
         }
 
-        foreach (var extension in FontAsset.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(FontAsset));
-        }
-
-        FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
     }
 
     /// <summary>
@@ -131,12 +129,13 @@ public class BuildService : IBuildService {
     }
 
     /// <inheritdoc />
-    public int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild) {
+    public int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild, out IEnumerable<ContentMetadata> newMetadata) {
         foreach (var metadata in this.GetMetadata()) {
             this.ResolveContentFile(contentDirectory, metadata);
         }
 
-        if (this.ResolveNewContentFiles(contentDirectory) || forceRebuild) {
+        var requiresRebuild = this.ResolveNewContentFiles(contentDirectory, out newMetadata);
+        if (requiresRebuild || forceRebuild) {
             var buildArgs = this.CreateMGCBFile(contentDirectory, out var outputDirectoryPath);
             return this.BuildContent(buildArgs, outputDirectoryPath);
         }
@@ -185,9 +184,10 @@ public class BuildService : IBuildService {
         return buildArgs;
     }
 
-    private bool CreateContentFile(IContentDirectory parent, string fileName) {
+    private bool CreateContentFile(IContentDirectory parent, string fileName, out ContentMetadata? metadata) {
         var result = false;
         var extension = Path.GetExtension(fileName);
+        metadata = null;
 
         if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
             var parentPath = parent.GetContentPath();
@@ -195,7 +195,7 @@ public class BuildService : IBuildService {
             splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
 
             if (Activator.CreateInstance(assetType) is IAsset asset) {
-                var metadata = new ContentMetadata(asset, splitPath, extension);
+                metadata = new ContentMetadata(asset, splitPath, extension);
                 this._assemblyService.CreateContentFileObject(parent, metadata);
                 result = true;
             }
@@ -249,21 +249,28 @@ public class BuildService : IBuildService {
         }
     }
 
-    private bool ResolveNewContentFiles(IContentDirectory currentDirectory) {
+    private bool ResolveNewContentFiles(IContentDirectory currentDirectory, out IEnumerable<ContentMetadata> metadata) {
+        var foundMetadata = new List<ContentMetadata>();
         var result = false;
         var currentPath = currentDirectory.GetFullPath();
         var files = this._fileSystem.GetFiles(currentPath);
         var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
 
         foreach (var file in files.Select(Path.GetFileName).Where(fileName => currentContentFiles.All(x => x.Name != fileName))) {
-            result = this.CreateContentFile(currentDirectory, file) || result;
+            var tempResult = this.CreateContentFile(currentDirectory, file, out var createdMetadata);
+            result = tempResult || result;
+            if (createdMetadata != null && tempResult) {
+                foundMetadata.Add(createdMetadata);
+            }
         }
 
         var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
         foreach (var child in currentContentDirectories) {
-            result = this.ResolveNewContentFiles(child) || result;
+            result = this.ResolveNewContentFiles(child, out var childMetadata) || result;
+            foundMetadata.AddRange(childMetadata);
         }
 
+        metadata = foundMetadata;
         return result;
     }
 }

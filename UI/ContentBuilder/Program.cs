@@ -2,6 +2,7 @@
 
 using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
+using Macabre2D.Framework;
 using Macabre2D.UI.Common;
 using Unity;
 
@@ -15,7 +16,7 @@ try {
     Console.WriteLine(@"Getting content directory...");
     var rootContentDirectory = new RootContentDirectory(fileSystem, pathService);
     Console.WriteLine(@"Creating MGCB file and building content...");
-    buildService.BuildContentFromScratch(rootContentDirectory, true);
+    buildService.BuildContentFromScratch(rootContentDirectory, true, out _);
     Console.WriteLine(@"Done!");
 }
 catch (Exception e) {
