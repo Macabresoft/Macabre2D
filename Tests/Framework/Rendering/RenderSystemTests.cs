@@ -123,12 +123,12 @@ public class RenderSystemTests {
         public float ActualViewHeight => this.ViewHeight;
         public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
         public Layers LayersToExcludeFromRender => (Layers)2;
-        public Layers LayersToRender { get; set; } = (Layers)1;
         public OffsetOptions OffsetOptions { get; } = new();
         public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame { get; } = [];
         public BoundingArea SafeArea => this.BoundingArea;
-        public float ViewHeight { get; set; } = 4f;
         public float ViewWidth => 4f;
+        public Layers LayersToRender { get; set; } = (Layers)1;
+        public float ViewHeight { get; set; } = 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) => Vector2.Zero;
 
@@ -141,6 +141,10 @@ public class RenderSystemTests {
             foreach (var entity in entities) {
                 entity.Render(frameTime, this.BoundingArea);
             }
+        }
+
+        public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+            throw new NotImplementedException();
         }
     }
 

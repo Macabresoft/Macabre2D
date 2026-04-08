@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFontRenderer, IUpdateableEntity {
+public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
 
     private float _characterHeight;
@@ -18,6 +18,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderLegacyFontChanged;
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
@@ -36,6 +39,21 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
+    /// Gets a timer that determines how long this waits on each end of the scrolled text.
+    /// </summary>
+    [DataMember]
+    public GameTimer ScrollWaitTime { get; } = new(1f);
+
+    /// <inheritdoc />
+    public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
+
+    /// <summary>
+    /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
+    /// </summary>
+    [DataMember]
+    public FloatOverride WidthOverride { get; } = new();
+
+    /// <summary>
     /// Gets or sets the velocity of the text scrolling.
     /// </summary>
     [DataMember]
@@ -44,14 +62,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
         set => field = Math.Abs(value);
     } = 3f;
 
-    /// <summary>
-    /// Gets a timer that determines how long this waits on each end of the scrolled text.
-    /// </summary>
-    [DataMember]
-    public GameTimer ScrollWaitTime { get; } = new(1f);
-
     /// <inheritdoc />
-    public bool ShouldRenderMonoGameSpriteFont { get; private set; }
+    public bool ShouldRenderLegacyFont { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this scrolls.
@@ -70,15 +82,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
             }
         }
     }
-
-    /// <inheritdoc />
-    public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
-
-    /// <summary>
-    /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
-    /// </summary>
-    [DataMember]
-    public FloatOverride WidthOverride { get; } = new();
 
     /// <summary>
     /// Gets the text line this is rendering.
@@ -141,12 +144,12 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
     }
 
     /// <inheritdoc />
-    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.RenderAsMonoGameSpriteFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderLegacyFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />
-    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         // TODO: do a render here
         Console.WriteLine($"Render as SpriteFont (Color: {colorOverride}): {this.GetFullText()}");
     }
@@ -207,9 +210,14 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IMonoGameSpriteFont
 
     /// <inheritdoc />
     protected override void ReloadFontFromCategory() {
-        this.ShouldRenderMonoGameSpriteFont = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
-        if (this.ShouldRenderMonoGameSpriteFont) {
+        var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
+        this.ShouldRenderLegacyFont = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
+        if (this.ShouldRenderLegacyFont) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
+        }
+
+        if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
+            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
         }
     }
 

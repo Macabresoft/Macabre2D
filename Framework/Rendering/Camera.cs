@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -34,12 +34,6 @@ public interface ICamera : IBoundableEntity {
     Layers LayersToExcludeFromRender { get; }
 
     /// <summary>
-    /// Gets the layers to render.
-    /// </summary>
-    /// <value>The layers to render.</value>
-    Layers LayersToRender { get; set; }
-
-    /// <summary>
     /// Gets the offset options.
     /// </summary>
     /// <value>The offset options.</value>
@@ -62,14 +56,20 @@ public interface ICamera : IBoundableEntity {
     BoundingArea SafeArea { get; }
 
     /// <summary>
-    /// Gets or sets the view height of the camera in world units (not screen pixels).
-    /// </summary>
-    float ViewHeight { get; set; }
-
-    /// <summary>
     /// Gets the view width.
     /// </summary>
     float ViewWidth { get; }
+
+    /// <summary>
+    /// Gets the layers to render.
+    /// </summary>
+    /// <value>The layers to render.</value>
+    Layers LayersToRender { get; set; }
+
+    /// <summary>
+    /// Gets or sets the view height of the camera in world units (not screen pixels).
+    /// </summary>
+    float ViewHeight { get; set; }
 
     /// <summary>
     /// Converts the point from screen space to world space.
@@ -85,6 +85,15 @@ public interface ICamera : IBoundableEntity {
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="renderTree">The render tree.</param>
     void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree);
+
+    /// <summary>
+    /// Renders the provided legacy font entities.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
+    /// <param name="renderSize">The render size.</param>
+    /// <param name="renderTree">The render tree.</param>
+    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree);
 }
 
 /// <summary>
@@ -111,11 +120,6 @@ public class Camera : Entity, ICamera {
         this._viewWidth = new ResettableLazy<float>(this.CreateViewWidth);
     }
 
-    /// <summary>
-    /// Gets the actual view height for this camera. Will only be different from <see cref="ViewHeight" /> if pixel snapping is enabled.
-    /// </summary>
-    public float ActualViewHeight { get; private set; }
-
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
@@ -127,16 +131,30 @@ public class Camera : Entity, ICamera {
     public ShaderReference FallbackShaderReference { get; } = new();
 
     /// <inheritdoc />
+    [DataMember(Name = "Offset Options")]
+    public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
+
+    /// <inheritdoc />
+    public virtual BoundingArea SafeArea => this.BoundingArea;
+
+    /// <inheritdoc />
+    public float ViewWidth => this._viewWidth.Value;
+
+    /// <summary>
+    /// Gets the actual view height for this camera. Will only be different from <see cref="ViewHeight" /> if pixel snapping is enabled.
+    /// </summary>
+    public float ActualViewHeight { get; private set; }
+
+    /// <inheritdoc />
     [DataMember(Name = "Layers to Exclude")]
     public Layers LayersToExcludeFromRender { get; set; } = Layers.None;
 
     /// <inheritdoc />
     [DataMember(Name = "Layers to Render")]
     public Layers LayersToRender { get; set; } = LayersHelpers.GetAll();
-
-    /// <inheritdoc />
-    [DataMember(Name = "Offset Options")]
-    public OffsetOptions OffsetOptions { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
     /// <summary>
     /// Gets or sets a value indicating whether to override the common view height from <see cref="IGameProject" />.
@@ -154,9 +172,6 @@ public class Camera : Entity, ICamera {
     } = true;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
-
-    /// <inheritdoc />
     [DataMember]
     public int RenderOrder {
         get;
@@ -166,9 +181,6 @@ public class Camera : Entity, ICamera {
             }
         }
     }
-
-    /// <inheritdoc />
-    public virtual BoundingArea SafeArea => this.BoundingArea;
 
     /// <summary>
     /// Gets or sets the type of the sampler state.
@@ -196,9 +208,6 @@ public class Camera : Entity, ICamera {
             this.ResetZoom();
         }
     } = 10f;
-
-    /// <inheritdoc />
-    public float ViewWidth => this._viewWidth.Value;
 
     /// <inheritdoc />
     public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
@@ -244,6 +253,11 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
         this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+        throw new NotImplementedException();
     }
 
     /// <summary>

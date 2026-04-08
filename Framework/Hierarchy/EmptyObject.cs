@@ -14,7 +14,8 @@ using Microsoft.Xna.Framework.Graphics;
 public class EmptyObject :
     ICamera,
     IInputSystem,
-    IMonoGameSpriteFontRenderer,
+    ILegacyFontRenderer,
+    ILegacyFontRenderSystem,
     IPhysicsBody,
     IQueueableSpriteAnimator,
     IRenderableBlinker,
@@ -88,6 +89,18 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public event EventHandler? ShouldRenderLegacyFontChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderLegacyFontsChanged {
+        add { }
+        remove { }
+    }
+
+    /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged {
         add { }
         remove { }
@@ -129,12 +142,6 @@ public class EmptyObject :
     /// <inheritdoc />
     public float ActualViewHeight => 1f;
 
-    /// <inheritdoc />
-    public Color BackgroundColor {
-        get => Color.HotPink;
-        set { }
-    }
-
     /// <summary>
     /// Gets the singleton instance as <see cref="IBoundableEntity" />.
     /// </summary>
@@ -155,28 +162,13 @@ public class EmptyObject :
     /// <inheritdoc />
     public GameTimer DisappearTimer { get; } = new();
 
-    /// <inheritdoc />
-    public bool EndImmediately {
-        get => true;
-        set { }
-    }
-
     /// <summary>
     /// Gets the singleton instance as <see cref="IEntity" />.
     /// </summary>
     public static IEntity Entity => Instance;
 
     /// <inheritdoc />
-    public FontCategory FontCategory { get; set; } = FontCategory.None;
-
-    /// <inheritdoc />
     public SpriteSheetFontReference FontReference { get; } = new();
-
-    /// <inheritdoc />
-    public string Format {
-        get => string.Empty;
-        set { }
-    }
 
     /// <inheritdoc />
     public ByteOverride FrameRateOverride { get; } = new();
@@ -191,19 +183,7 @@ public class EmptyObject :
     public float HorizontalAxis => 0f;
 
     /// <inheritdoc />
-    public Guid Id {
-        get => Guid.Empty;
-        set { }
-    }
-
-    /// <inheritdoc />
     public bool IsActive => false;
-
-    /// <inheritdoc />
-    public bool IsEnabled {
-        get => false;
-        set { }
-    }
 
     /// <inheritdoc />
     public bool IsLooping => false;
@@ -215,43 +195,13 @@ public class EmptyObject :
     public bool IsTrigger => false;
 
     /// <inheritdoc />
-    public int Kerning {
-        get => 0;
-        set { }
-    }
-
-    /// <inheritdoc />
-    public Layers Layers {
-        get => Layers.None;
-        set { }
-    }
-
-    /// <inheritdoc />
     public Layers LayersToExcludeFromRender => default;
-
-    /// <inheritdoc />
-    public Layers LayersToRender {
-        get => default;
-        set { }
-    }
-
-    /// <inheritdoc />
-    public Vector2 LocalPosition {
-        get => Vector2.Zero;
-        set { }
-    }
 
     /// <inheritdoc />
     public Point MaximumTile => Point.Zero;
 
     /// <inheritdoc />
     public Point MinimumTile => Point.Zero;
-
-    /// <inheritdoc />
-    public string Name {
-        get => "Empty";
-        set { }
-    }
 
     /// <inheritdoc />
     public OffsetOptions OffsetOptions { get; } = new();
@@ -273,13 +223,122 @@ public class EmptyObject :
     /// <inheritdoc />
     public RenderOptions RenderOptions { get; } = new();
 
+    /// <inheritdoc />
+    public BoundingArea SafeArea => BoundingArea.Empty;
+
+    /// <summary>
+    /// Gets the singleton instance as <see cref="IScene" />.
+    /// </summary>
+    public static IScene Scene => Instance;
+
+    /// <inheritdoc />
+    public bool ShouldAnimate => false;
+
+    /// <inheritdoc />
+    public bool ShouldRenderLegacyFont => false;
+
+    /// <inheritdoc />
+    public bool ShouldRenderLegacyFonts => false;
+
+    /// <inheritdoc />
+    public bool ShouldUpdate => false;
+
+    /// <inheritdoc />
+    public GameTimer ShowTimer { get; } = new();
+
+    /// <inheritdoc />
+    public SpriteReference SpriteReference { get; } = new();
+
+    /// <inheritdoc />
+    public SceneState State { get; } = new();
+
+    /// <summary>
+    /// Gets the singleton instance as <see cref="ITextRenderer" />.
+    /// </summary>
+    public static ITextRenderer TextRenderer => Instance;
+
+    /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
+    public int UpdateOrder => 0;
+
+    /// <inheritdoc />
+    public float VerticalAxis => 0f;
+
+    /// <inheritdoc />
+    public float ViewWidth => 1f;
+
+    /// <inheritdoc />
+    public Vector2 WorldPosition => Vector2.Zero;
+
+    /// <inheritdoc />
+    public Color BackgroundColor {
+        get => Color.HotPink;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public bool EndImmediately {
+        get => true;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public FontCategory FontCategory { get; set; } = FontCategory.None;
+
+    /// <inheritdoc />
+    public string Format {
+        get => string.Empty;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public Guid Id {
+        get => Guid.Empty;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public bool IsEnabled {
+        get => false;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public int Kerning {
+        get => 0;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public Layers Layers {
+        get => Layers.None;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public Layers LayersToRender {
+        get => default;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public Vector2 LocalPosition {
+        get => Vector2.Zero;
+        set { }
+    }
+
+    /// <inheritdoc />
+    public string Name {
+        get => "Empty";
+        set { }
+    }
+
     /// <inheritdoc cref="IRenderableEntity.RenderOrder" />
     public int RenderOrder {
         get => 0;
         set { }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IRenderableEntity" />
     public bool RenderOutOfBounds {
         get => false;
         set { }
@@ -295,30 +354,10 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public BoundingArea SafeArea => BoundingArea.Empty;
-
-    /// <summary>
-    /// Gets the singleton instance as <see cref="IScene" />.
-    /// </summary>
-    public static IScene Scene => Instance;
-
-    /// <inheritdoc />
-    public bool ShouldAnimate => false;
-
-    /// <inheritdoc />
     public bool ShouldRender {
         get => false;
         set { }
     }
-
-    /// <inheritdoc />
-    public bool ShouldRenderMonoGameSpriteFont => false;
-
-    /// <inheritdoc />
-    public bool ShouldUpdate => false;
-
-    /// <inheritdoc />
-    public GameTimer ShowTimer { get; } = new();
 
     /// <inheritdoc />
     public float SpeedMultiplier {
@@ -327,21 +366,10 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public SpriteReference SpriteReference { get; } = new();
-
-    /// <inheritdoc />
-    public SceneState State { get; } = new();
-
-    /// <inheritdoc />
     public string Text {
         get => string.Empty;
         set { }
     }
-
-    /// <summary>
-    /// Gets the singleton instance as <see cref="ITextRenderer" />.
-    /// </summary>
-    public static ITextRenderer TextRenderer => Instance;
 
     /// <inheritdoc />
     public Vector2 TileSize {
@@ -355,23 +383,11 @@ public class EmptyObject :
         set { }
     }
 
-    /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
-    public int UpdateOrder => 0;
-
-    /// <inheritdoc />
-    public float VerticalAxis => 0f;
-
     /// <inheritdoc />
     public float ViewHeight {
         get => 1f;
         set { }
     }
-
-    /// <inheritdoc />
-    public float ViewWidth => 1f;
-
-    /// <inheritdoc />
-    public Vector2 WorldPosition => Vector2.Zero;
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() => throw new NotSupportedException("Initialization has not occured.");
@@ -640,11 +656,23 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
     }
 
     /// <inheritdoc />
-    public void RenderAsMonoGameSpriteFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize) {
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime, Point renderSize) {
     }
 
     /// <inheritdoc />

@@ -35,7 +35,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
     private readonly IBusyService _busyService;
     private readonly IEditorService _editorService;
     private readonly IProjectService _projectService;
-    private readonly CurrentSceneRenderStep _renderStep = new();
+    private readonly SceneStackRenderStep _renderStep = new();
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
     private bool _isInitialized;

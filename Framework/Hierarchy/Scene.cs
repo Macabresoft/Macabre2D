@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -40,11 +40,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IAssetManager Assets => AssetManager.Empty;
 
     /// <summary>
-    /// Gets or sets the color of the background.
-    /// </summary>
-    Color BackgroundColor { get; set; }
-
-    /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
     IReadOnlyCollection<ICamera> Cameras => [];
@@ -75,6 +70,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IReadOnlyCollection<IRenderableEntity> RenderableEntities => [];
 
     /// <summary>
+    /// Gets the legacy font renderers.
+    /// </summary>
+    IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => [];
+
+    /// <summary>
     /// Gets the scene state.
     /// </summary>
     SceneState State { get; }
@@ -88,6 +88,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => [];
+
+    /// <summary>
+    /// Gets or sets the color of the background.
+    /// </summary>
+    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Adds the system.
@@ -192,6 +197,14 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     public void Render(FrameTime frameTime, InputState inputState);
 
     /// <summary>
+    /// Renders legacy fonts in the scene.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
+    /// <param name="renderSize">The render size.</param>
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize);
+
+    /// <summary>
     /// Reorders systems so the specified system is moved to the specified index.
     /// </summary>
     /// <param name="system">The system.</param>
@@ -275,6 +288,11 @@ public sealed class Scene : GridContainer, IScene {
         r => r.ShouldRender,
         (r, handler) => r.ShouldRenderChanged += handler,
         (r, handler) => r.ShouldRenderChanged -= handler);
+    
+    private readonly FilterCollection<ILegacyFontRenderer> _legacyFontRenderers = new(
+        r => r.ShouldRenderLegacyFont,
+        (r, handler) => r.ShouldRenderLegacyFontChanged += handler,
+        (r, handler) => r.ShouldRenderLegacyFontChanged -= handler);
 
     private readonly FilterCollection<IRenderSystem> _renderSystems = new(
         a => a.ShouldRender,
@@ -327,6 +345,40 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => this._animatableEntities;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
+
+    /// <inheritdoc cref="IScene" />
+    public override IGame Game => this._game;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => this._legacyFontRenderers;
+
+    /// <inheritdoc />
+    public bool ShouldUpdate => true;
+
+    /// <inheritdoc />
+    [DataMember]
+    public SceneState State { get; } = new();
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
+
+    /// <inheritdoc />
     public IAssetManager Assets { get; private set; } = AssetManager.Empty;
 
     /// <inheritdoc />
@@ -346,38 +398,7 @@ public sealed class Scene : GridContainer, IScene {
     } = BoundingArea.Empty;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
-
-    /// <inheritdoc cref="IScene" />
-    public override IGame Game => this._game;
-
-    /// <inheritdoc />
     public bool IsActive { get; private set; }
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
-
-    /// <inheritdoc />
-    public bool ShouldUpdate => true;
-
-    /// <inheritdoc />
-    [DataMember]
-    public SceneState State { get; } = new();
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
     /// <inheritdoc />
     public T AddSystem<T>() where T : IGameSystem, new() {
@@ -549,6 +570,7 @@ public sealed class Scene : GridContainer, IScene {
     public void RegisterEntity(IEntity entity) {
         this._animatableEntities.Add(entity);
         this._cameras.Add(entity);
+        this._legacyFontRenderers.Add(entity);
         this._physicsBodies.Add(entity);
         this._renderableEntities.Add(entity);
         this._updateableEntities.Add(entity);
@@ -596,6 +618,11 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize) {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
     public void ReorderSystem(IGameSystem system, int newIndex) {
         this._systems.Reorder(system, newIndex);
     }
@@ -625,6 +652,7 @@ public sealed class Scene : GridContainer, IScene {
     public void UnregisterEntity(IEntity entity) {
         this._animatableEntities.Remove(entity);
         this._cameras.Remove(entity);
+        this._legacyFontRenderers.Remove(entity);
         this._physicsBodies.Remove(entity);
         this._renderableEntities.Remove(entity);
         this._updateableEntities.Remove(entity);
@@ -665,6 +693,7 @@ public sealed class Scene : GridContainer, IScene {
     private void ClearFilterCaches() {
         this._animatableEntities.Clear();
         this._cameras.Clear();
+        this._legacyFontRenderers.Clear();
         this._physicsBodies.Clear();
         this._renderableEntities.Clear();
         this._updateableEntities.Clear();
@@ -702,6 +731,7 @@ public sealed class Scene : GridContainer, IScene {
     private void RebuildFilterCaches() {
         this._animatableEntities.RebuildCache();
         this._cameras.RebuildCache();
+        this._legacyFontRenderers.RebuildCache();
         this._physicsBodies.RebuildCache();
         this._renderableEntities.RebuildCache();
         this._updateableEntities.RebuildCache();

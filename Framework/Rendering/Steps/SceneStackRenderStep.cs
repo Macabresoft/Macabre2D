@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// Renders the current scene.
+/// Renders the entire scene stack.
 /// </summary>
-public class CurrentSceneRenderStep : RenderStep {
+public class SceneStackRenderStep : RenderStep {
 
     /// <inheritdoc />
     public override RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget) {
