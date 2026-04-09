@@ -3,15 +3,48 @@ namespace Macabre2D.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Macabresoft.Core;
+
+/// <summary>
+/// Interface for generically adding and removing items from a filter collection.
+/// </summary>
+public interface IFilterCollection {
+    /// <summary>
+    /// Adds the specified item. If the item is not the correct time, it gets ignored.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    void Add(object item);
+
+    /// <summary>
+    /// Adds the items.
+    /// </summary>
+    /// <param name="items">The items.</param>
+    void AddRange(IEnumerable<object> items);
+
+    /// <summary>
+    /// Removes all items from the collection.
+    /// </summary>
+    void Clear();
+
+    /// <summary>
+    /// Rebuilds the cache.
+    /// </summary>
+    void RebuildCache();
+
+    /// <summary>
+    /// Removes the specified item.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    /// <returns>A value indicating whether the item was removed.</returns>
+    bool Remove(object item);
+}
 
 /// <summary>
 /// The FilterCollection class provides efficient, reusable filtering based on a filter
 /// predicate, and associate change events.
 /// </summary>
-public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
+public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IFilterCollection {
     private readonly List<T> _cachedFilteredItems = [];
     private readonly Predicate<T> _filter;
     private readonly Action<T, EventHandler> _filterChangedSubscriber;
@@ -90,10 +123,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         }
     }
 
-    /// <summary>
-    /// Adds the specified item. If the item is not the correct time, it gets ignored.
-    /// </summary>
-    /// <param name="item">The item.</param>
+    /// <inheritdoc />
     public void Add(object item) {
         if (item is T x) {
             this.Add(x);
@@ -115,10 +145,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         }
     }
 
-    /// <summary>
-    /// Adds the items.
-    /// </summary>
-    /// <param name="items">The items.</param>
+    /// <inheritdoc />
     public void AddRange(IEnumerable<object> items) {
         var castedItems = items.OfType<T>().ToList();
 
@@ -127,9 +154,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         }
     }
 
-    /// <summary>
-    /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
-    /// </summary>
+    /// <inheritdoc cref="IFilterCollection" />
     public void Clear() {
         lock (this.Lock) {
             foreach (var t in this.Items) {
@@ -184,9 +209,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
     /// </returns>
     public IEnumerator<T> GetEnumerator() => this._cachedFilteredItems.GetEnumerator();
 
-    /// <summary>
-    /// Rebuilds the cache.
-    /// </summary>
+    /// <inheritdoc />
     public void RebuildCache() {
         lock (this.Lock) {
             if (this.ShouldRebuildCache) {
@@ -245,11 +268,7 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         }
     }
 
-    /// <summary>
-    /// Removes the specified item.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>A value indicating whether the item was removed.</returns>
+    /// <inheritdoc />
     public bool Remove(object item) {
         if (item is T x) {
             return this.Remove(x);
@@ -333,6 +352,6 @@ public class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         public static AddJournalEntry CreateKey(T item) => new(-1, item);
 
         /// <inheritdoc />
-        public override int GetHashCode() => this.Item.GetHashCode();
+        public override int GetHashCode() => this.Item?.GetHashCode() ?? 0;
     }
 }

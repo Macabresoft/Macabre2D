@@ -55,6 +55,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     bool IsActive { get; }
 
     /// <summary>
+    /// Gets the legacy font renderers.
+    /// </summary>
+    IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => [];
+
+    /// <summary>
     /// Gets the named children.
     /// </summary>
     IReadOnlyCollection<INameableCollection> NamedChildren => [];
@@ -68,11 +73,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Gets the renderable entities in the scene.
     /// </summary>
     IReadOnlyCollection<IRenderableEntity> RenderableEntities => [];
-
-    /// <summary>
-    /// Gets the legacy font renderers.
-    /// </summary>
-    IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => [];
 
     /// <summary>
     /// Gets the scene state.
@@ -240,11 +240,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterCollection<IAnimatableEntity> _animatableEntities = new(
         a => a.ShouldAnimate,
         (a, handler) => a.ShouldAnimateChanged += handler,
         (a, handler) => a.ShouldAnimateChanged -= handler);
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,
         (c, handler) => c.IsEnabledChanged += handler,
@@ -253,6 +255,7 @@ public sealed class Scene : GridContainer, IScene {
         (c, handler) => c.RenderOrderChanged += handler,
         (c, handler) => c.RenderOrderChanged -= handler);
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
         u => u.ShouldUpdate,
         (u, handler) => u.ShouldUpdateChanged += handler,
@@ -263,9 +266,22 @@ public sealed class Scene : GridContainer, IScene {
 
     private readonly Dictionary<Guid, IEntity> _idToEntitiesInScene = [];
 
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly FilterCollection<ILegacyFontRenderer> _legacyFontRenderers = new(
+        r => r.ShouldRenderLegacyFont,
+        (r, handler) => r.ShouldRenderLegacyFontChanged += handler,
+        (r, handler) => r.ShouldRenderLegacyFontChanged -= handler);
+
+
+    private readonly FilterCollection<ILegacyFontRenderSystem> _legacyFontRenderSystems = new(
+        a => a.ShouldRenderLegacyFonts,
+        (a, handler) => a.ShouldRenderLegacyFontsChanged += handler,
+        (a, handler) => a.ShouldRenderLegacyFontsChanged -= handler);
+
     private readonly List<INameableCollection> _namedChildren = [];
     private readonly List<Action> _pendingActions = [];
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new(
         p => p.IsEnabled,
         (p, handler) => p.IsEnabledChanged += handler,
@@ -284,15 +300,11 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterCollection<IRenderableEntity> _renderableEntities = new(
         r => r.ShouldRender,
         (r, handler) => r.ShouldRenderChanged += handler,
         (r, handler) => r.ShouldRenderChanged -= handler);
-    
-    private readonly FilterCollection<ILegacyFontRenderer> _legacyFontRenderers = new(
-        r => r.ShouldRenderLegacyFont,
-        (r, handler) => r.ShouldRenderLegacyFontChanged += handler,
-        (r, handler) => r.ShouldRenderLegacyFontChanged -= handler);
 
     private readonly FilterCollection<IRenderSystem> _renderSystems = new(
         a => a.ShouldRender,
@@ -302,6 +314,7 @@ public sealed class Scene : GridContainer, IScene {
     [DataMember]
     private readonly SystemCollection _systems = [];
 
+    // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
         u => u.ShouldUpdate,
         (u, handler) => u.ShouldUpdateChanged += handler,
@@ -354,6 +367,9 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => this._legacyFontRenderers;
+
+    /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
@@ -361,9 +377,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => this._legacyFontRenderers;
 
     /// <inheritdoc />
     public bool ShouldUpdate => true;
@@ -568,21 +581,18 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void RegisterEntity(IEntity entity) {
-        this._animatableEntities.Add(entity);
-        this._cameras.Add(entity);
-        this._legacyFontRenderers.Add(entity);
-        this._physicsBodies.Add(entity);
-        this._renderableEntities.Add(entity);
-        this._updateableEntities.Add(entity);
-        this._fixedUpdateableEntities.Add(entity);
+        foreach (var cache in this.GetEntityCaches()) {
+            cache.Add(entity);
+        }
+
         this._idToEntitiesInScene[entity.Id] = entity;
 
         if (this._isInitialized) {
             if (BaseGame.IsDesignMode) {
-                this.RebuildFilterCaches();
+                this.RebuildEntityCaches();
             }
             else {
-                this.Scene.Invoke(this.RebuildFilterCaches);
+                this.Scene.Invoke(this.RebuildEntityCaches);
             }
         }
     }
@@ -619,7 +629,18 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize) {
-        throw new NotImplementedException();
+        try {
+            this._isBusy = true;
+            this._legacyFontRenderers.RebuildCache();
+            this._legacyFontRenderSystems.RebuildCache();
+
+            foreach (var system in this._legacyFontRenderSystems) {
+                system.RenderLegacyFonts(frameTime, renderSize);
+            }
+        }
+        finally {
+            this._isBusy = false;
+        }
     }
 
     /// <inheritdoc />
@@ -650,13 +671,10 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void UnregisterEntity(IEntity entity) {
-        this._animatableEntities.Remove(entity);
-        this._cameras.Remove(entity);
-        this._legacyFontRenderers.Remove(entity);
-        this._physicsBodies.Remove(entity);
-        this._renderableEntities.Remove(entity);
-        this._updateableEntities.Remove(entity);
-        this._fixedUpdateableEntities.Remove(entity);
+        foreach (var cache in this.GetEntityCaches()) {
+            cache.Remove(entity);
+        }
+
         this._idToEntitiesInScene.Remove(entity.Id);
     }
 
@@ -691,19 +709,33 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private void ClearFilterCaches() {
-        this._animatableEntities.Clear();
-        this._cameras.Clear();
-        this._legacyFontRenderers.Clear();
-        this._physicsBodies.Clear();
-        this._renderableEntities.Clear();
-        this._updateableEntities.Clear();
-        this._fixedUpdateableEntities.Clear();
+        foreach (var cache in this.GetEntityCaches()) {
+            cache.Clear();
+        }
+
         this._idToEntitiesInScene.Clear();
 
-        this._renderSystems.Clear();
-        this._updateSystems.Clear();
-        this._preUpdateSystems.Clear();
-        this._postUpdateSystems.Clear();
+        foreach (var cache in this.GetSystemCaches()) {
+            cache.Clear();
+        }
+    }
+
+    private IEnumerable<IFilterCollection> GetEntityCaches() {
+        yield return this._animatableEntities;
+        yield return this._cameras;
+        yield return this._legacyFontRenderers;
+        yield return this._physicsBodies;
+        yield return this._renderableEntities;
+        yield return this._updateableEntities;
+        yield return this._fixedUpdateableEntities;
+    }
+
+    private IEnumerable<IFilterCollection> GetSystemCaches() {
+        yield return this._legacyFontRenderSystems;
+        yield return this._renderSystems;
+        yield return this._updateSystems;
+        yield return this._preUpdateSystems;
+        yield return this._postUpdateSystems;
     }
 
     private void InvokePendingActions() {
@@ -728,21 +760,22 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
-    private void RebuildFilterCaches() {
-        this._animatableEntities.RebuildCache();
-        this._cameras.RebuildCache();
-        this._legacyFontRenderers.RebuildCache();
-        this._physicsBodies.RebuildCache();
-        this._renderableEntities.RebuildCache();
-        this._updateableEntities.RebuildCache();
-        this._fixedUpdateableEntities.RebuildCache();
+    private void RebuildEntityCaches() {
+        foreach (var cache in this.GetEntityCaches()) {
+            cache.RebuildCache();
+        }
+    }
 
-        this._updateSystems.RebuildCache();
-        this._preUpdateSystems.RebuildCache();
-        this._postUpdateSystems.RebuildCache();
+    private void RebuildFilterCaches() {
+        this.RebuildEntityCaches();
+
+        foreach (var system in this.GetSystemCaches()) {
+            system.RebuildCache();
+        }
     }
 
     private void RegisterSystem(IGameSystem system) {
+        this._legacyFontRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
         if (system is IUpdateSystem updateSystem) {
@@ -765,9 +798,8 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private void UnregisterSystem(IGameSystem system) {
-        this._renderSystems.Remove(system);
-        this._updateSystems.Remove(system);
-        this._preUpdateSystems.Remove(system);
-        this._postUpdateSystems.Remove(system);
+        foreach (var cache in this.GetSystemCaches()) {
+            cache.Remove(system);
+        }
     }
 }
