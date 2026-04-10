@@ -106,6 +106,7 @@ public class Camera : Entity, ICamera {
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private float _zoom;
+    private Vector2 _screenOffset;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -236,7 +237,7 @@ public class Camera : Entity, ICamera {
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
         this.Game.UserSettings.Rendering.ShaderChanged -= this.RenderOptions_ShaderChanged;
     }
-
+    
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -379,13 +380,10 @@ public class Camera : Entity, ICamera {
     /// <param name="position">The position.</param>
     /// <returns>The view matrix.</returns>
     protected Matrix GetFullScreenViewMatrix(Vector2 position) {
-        var offsetX = this.OffsetOptions.Offset.X;
-        var offsetY = this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y;
-
         var matrix =
             Matrix.CreateTranslation(new Vector3(-position * this.Game.ScreenPixelsPerUnit, 0f)) *
             Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
-            Matrix.CreateTranslation(new Vector3(-offsetX, offsetY, 0f));
+            Matrix.CreateTranslation(new Vector3(-this._screenOffset.X, this._screenOffset.Y, 0f));
 
         return matrix;
     }
@@ -420,6 +418,10 @@ public class Camera : Entity, ICamera {
     /// This will also be called during initialization.
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
+        var offsetX = this.Game.ScreenToInternalResolutionRatio * this.OffsetOptions.Offset.X;
+        var offsetY = this.Game.ScreenToInternalResolutionRatio * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
+        this._screenOffset = new Vector2(offsetX, offsetY);
+        
         this.CalculateActualViewHeight();
         this._boundingArea.Reset();
         this._viewWidth.Reset();

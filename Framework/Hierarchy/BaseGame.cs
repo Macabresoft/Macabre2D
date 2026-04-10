@@ -173,13 +173,18 @@ public class BaseGame : Game, IGame {
             if (value != field) {
                 field = value;
                 this.UnitsPerScreenPixel = 1f / field;
+                this.ScreenToInternalResolutionRatio = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
             }
         }
     } = 32;
 
     /// <inheritdoc />
+    public float ScreenToInternalResolutionRatio { get; private set; }
+
+    /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
 
+    /// <inheritdoc />
     public float UnitsPerScreenPixel { get; private set; }
 
     /// <inheritdoc />
@@ -600,6 +605,7 @@ public class BaseGame : Game, IGame {
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
         public ushort ScreenPixelsPerUnit => 1;
+        public float ScreenToInternalResolutionRatio => 1f;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;

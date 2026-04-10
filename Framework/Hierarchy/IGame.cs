@@ -127,6 +127,11 @@ public interface IGame {
     /// Gets the screen pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort ScreenPixelsPerUnit { get; }
+    
+    /// <summary>
+    /// Gets the screen resolution to internal resolution ratio. This is calculated as ViewPort.Y / InternalResolution.Y.
+    /// </summary>
+    float ScreenToInternalResolutionRatio { get; }
 
     /// <summary>
     /// Gets the sprite batch.
