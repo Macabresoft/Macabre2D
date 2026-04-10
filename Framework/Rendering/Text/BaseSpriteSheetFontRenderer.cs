@@ -20,8 +20,11 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
         set {
             if (value != field) {
                 field = value;
-                this.ReloadFontFromCategory();
-                this.RequestRefresh();
+
+                if (this.IsInitialized) {
+                    this.ReloadFontFromCategory();
+                    this.RequestRefresh();
+                }
             }
         }
     } = FontCategory.None;

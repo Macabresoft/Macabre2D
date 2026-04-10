@@ -76,6 +76,29 @@ public class BaseGame : Game, IGame {
     public AudioSettings AudioSettings => this.UserSettings.Audio;
 
     /// <inheritdoc />
+    public IDataManager DataManager { get; } = new DesktopDataManager();
+
+    /// <inheritdoc />
+    public DisplaySettings DisplaySettings => this.UserSettings.Display;
+
+    /// <inheritdoc />
+    public IInputActionIconResolver InputActionIconResolver { get; } = new InputActionIconResolver();
+
+    /// <inheritdoc />
+    public InputSettings InputSettings => this.UserSettings.Input;
+
+    /// <inheritdoc />
+    public LaunchArguments LaunchArguments { get; }
+
+    public IReadOnlyCollection<IScene> OpenScenes => this._sceneStack;
+
+    /// <inheritdoc />
+    public GameState State { get; } = new();
+
+    /// <inheritdoc />
+    public TimeSpan TimeSinceGameStart => this._gameTime.TotalGameTime;
+
+    /// <inheritdoc />
     public Point CroppedViewportSize { get; private set; }
 
     /// <inheritdoc />
@@ -94,9 +117,6 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public IDataManager DataManager { get; } = new DesktopDataManager();
-
-    /// <inheritdoc />
     public InputDevice DesiredInputDevice {
         get;
         protected set {
@@ -106,9 +126,6 @@ public class BaseGame : Game, IGame {
             }
         }
     } = InputDevice.Auto;
-
-    /// <inheritdoc />
-    public DisplaySettings DisplaySettings => this.UserSettings.Display;
 
     /// <inheritdoc />
     public FrameTime FrameTime { get; private set; }
@@ -126,23 +143,12 @@ public class BaseGame : Game, IGame {
     } = 1d;
 
     /// <inheritdoc />
-    public IInputActionIconResolver InputActionIconResolver { get; } = new InputActionIconResolver();
-
-    /// <inheritdoc />
-    public InputSettings InputSettings => this.UserSettings.Input;
-
-    /// <inheritdoc />
     public InputState InputState { get; protected set; }
 
     /// <summary>
     /// Gets or sets a value which indicates whether the game is running in design mode.
     /// </summary>
     public static bool IsDesignMode { get; private set; }
-
-    /// <inheritdoc />
-    public LaunchArguments LaunchArguments { get; }
-
-    public IReadOnlyCollection<IScene> OpenScenes => this._sceneStack;
 
     /// <inheritdoc />
     public IScene Overlay { get; private set; } = EmptyObject.Scene;
@@ -157,7 +163,7 @@ public class BaseGame : Game, IGame {
     } = new GameProject();
 
     /// <inheritdoc />
-    public float ScreenPixelsPerUnit {
+    public ushort ScreenPixelsPerUnit {
         get;
         private set {
             if (value < 1) {
@@ -173,12 +179,6 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
-
-    /// <inheritdoc />
-    public GameState State { get; } = new();
-
-    /// <inheritdoc />
-    public TimeSpan TimeSinceGameStart => this._gameTime.TotalGameTime;
 
     public float UnitsPerScreenPixel { get; private set; }
 
@@ -549,7 +549,7 @@ public class BaseGame : Game, IGame {
             this.CroppedViewportSize = this.ViewportSize;
         }
 
-        this.ScreenPixelsPerUnit = this.CroppedViewportSize.Y / this.Project.ViewHeight;
+        this.ScreenPixelsPerUnit = (ushort)Math.Floor(this.CroppedViewportSize.Y / this.Project.ViewHeight);
 
         this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 
@@ -592,14 +592,6 @@ public class BaseGame : Game, IGame {
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
         public FrameTime FrameTime => FrameTime.Zero;
 
-        public double GameSpeed {
-            get => 1f;
-            set {
-                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
-                this.GameSpeedChanged.SafeInvoke(this, 1f);
-            }
-        }
-
         public GraphicsDevice? GraphicsDevice => null;
         public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
         public InputSettings InputSettings => this.UserSettings.Input;
@@ -607,13 +599,21 @@ public class BaseGame : Game, IGame {
         public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
-        public float ScreenPixelsPerUnit => 1f;
+        public ushort ScreenPixelsPerUnit => 1;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
         public float UnitsPerScreenPixel => 1f;
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
+
+        public double GameSpeed {
+            get => 1f;
+            set {
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
+        }
 
         public void ApplyDisplaySettings() {
         }

@@ -1,6 +1,7 @@
 namespace Macabre2D.Framework;
 
 using System;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,6 +29,11 @@ public interface ILegacyFontRenderer : IBoundableEntity {
     /// Gets or sets a value indicating whether this should be rendered when out of bounds.
     /// </summary>
     bool RenderOutOfBounds { get; set; }
+
+    /// <summary>
+    /// Gets the render priority.
+    /// </summary>
+    RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Renders this instance as a MonoGame <see cref="SpriteFont" />.

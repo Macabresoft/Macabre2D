@@ -63,7 +63,15 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
     } = 3f;
 
     /// <inheritdoc />
-    public bool ShouldRenderLegacyFont { get; private set; }
+    public bool ShouldRenderLegacyFont {
+        get => field;
+        set {
+            if (value != field) {
+                field = value;
+                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+            }
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether this scrolls.
@@ -211,13 +219,12 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
     /// <inheritdoc />
     protected override void ReloadFontFromCategory() {
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
-        this.ShouldRenderLegacyFont = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
-        if (this.ShouldRenderLegacyFont) {
+        var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
+        if (fontFound) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
         }
-
-        if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
-            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+        else {
+            this.ShouldRenderLegacyFont = !this.FontReference.HasContent;
         }
     }
 

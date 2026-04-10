@@ -126,7 +126,7 @@ public interface IGame {
     /// <summary>
     /// Gets the screen pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
-    float ScreenPixelsPerUnit { get; }
+    ushort ScreenPixelsPerUnit { get; }
 
     /// <summary>
     /// Gets the sprite batch.

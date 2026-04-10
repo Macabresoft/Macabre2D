@@ -102,6 +102,7 @@ public interface ICamera : IBoundableEntity {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<IRenderableEntity> _renderedLastFrame = [];
+    private readonly List<ILegacyFontRenderer> _renderedLegacyFontsLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private float _zoom;
@@ -136,6 +137,8 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
+
+    public IReadOnlyCollection<ILegacyFontRenderer> RenderedLegacyFontsLastFrame => this._renderedLegacyFontsLastFrame;
 
     /// <inheritdoc />
     public virtual BoundingArea SafeArea => this.BoundingArea;
@@ -257,7 +260,54 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
-        throw new NotImplementedException();
+        this._renderedLegacyFontsLastFrame.Clear();
+
+        var viewMatrix = this.GetFullScreenViewMatrix();
+        var viewBoundingArea = this.BoundingArea;
+        var layersToExclude = this.LayersToExcludeFromRender;
+        var layersToRender = this.LayersToRender;
+
+        var groupings = renderTree
+            .RetrievePotentialCollisions(viewBoundingArea)
+            .Where(x => x.ShouldRenderLegacyFont && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+            .GroupBy(x => x.RenderPriority)
+            .OrderBy(x => x.Key);
+
+        var fallbackShader = this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+
+        foreach (var group in groupings) {
+            var shader = fallbackShader;
+            var renderPriority = group.Key;
+
+            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
+                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+            }
+
+            spriteBatch?.Begin(
+                SpriteSortMode.Deferred,
+                this.Game.UserSettings.Rendering.GetRenderPriorityBlendState(renderPriority),
+                this.Sampler.ToSamplerState(),
+                null,
+                RasterizerState.CullNone,
+                shader,
+                viewMatrix);
+
+            var entities = group.OrderBy(x => x.RenderOrder);
+            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
+                foreach (var entity in entities) {
+                    entity.RenderLegacyFont(frameTime, viewBoundingArea, color);
+                    this._renderedLegacyFontsLastFrame.Add(entity);
+                }
+            }
+            else {
+                foreach (var entity in entities) {
+                    entity.RenderLegacyFont(frameTime, viewBoundingArea);
+                    this._renderedLegacyFontsLastFrame.Add(entity);
+                }
+            }
+
+            spriteBatch?.End();
+        }
     }
 
     /// <summary>
@@ -315,6 +365,29 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.FallbackShaderReference;
+    }
+
+    /// <summary>
+    /// Gets the view matrix for a full screen render.
+    /// </summary>
+    /// <returns>The view matrix.</returns>
+    protected Matrix GetFullScreenViewMatrix() => this.GetFullScreenViewMatrix(this.WorldPosition);
+
+    /// <summary>
+    /// Gets the view matrix for a full screen render.
+    /// </summary>
+    /// <param name="position">The position.</param>
+    /// <returns>The view matrix.</returns>
+    protected Matrix GetFullScreenViewMatrix(Vector2 position) {
+        var offsetX = this.OffsetOptions.Offset.X;
+        var offsetY = this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y;
+
+        var matrix =
+            Matrix.CreateTranslation(new Vector3(-position * this.Game.ScreenPixelsPerUnit, 0f)) *
+            Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
+            Matrix.CreateTranslation(new Vector3(-offsetX, offsetY, 0f));
+
+        return matrix;
     }
 
     /// <summary>

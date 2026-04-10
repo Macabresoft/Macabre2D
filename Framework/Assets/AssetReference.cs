@@ -142,7 +142,6 @@ public abstract class AssetReference : PropertyChangedNotifier, IAssetReference 
 /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
 /// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<TAsset> where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
-    private TAsset? _asset;
     private Guid _contentId = Guid.Empty;
 
     /// <inheritdoc />
@@ -156,8 +155,8 @@ public class AssetReference<TAsset, TContent> : AssetReference, IAssetReference<
 
     /// <inheritdoc />
     public TAsset? Asset {
-        get => this._asset;
-        private set => this.Set(ref this._asset, value);
+        get;
+        private set => this.Set(ref field, value);
     }
 
     /// <inheritdoc />

@@ -5,19 +5,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An entity which will render the specified text.
 /// </summary>
-public class TextRenderer : RenderableEntity {
+public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderLegacyFontChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextRenderer" /> class.
@@ -42,10 +45,22 @@ public class TextRenderer : RenderableEntity {
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="ILegacyFontRenderer" />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public override RenderPriority RenderPriority { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool ShouldRenderLegacyFont {
+        get => field && this.IsEnabled;
+        set {
+            if (this.Set(ref field, value)) {
+                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+            }
+        }
+    } = true;
 
     /// <summary>
     /// Gets or sets the text.
@@ -67,6 +82,7 @@ public class TextRenderer : RenderableEntity {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
+        this.ShouldRender = false;
         this.FontReference.Initialize(this.Scene.Assets, this.Game);
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
@@ -74,14 +90,34 @@ public class TextRenderer : RenderableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        /*
         this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    */
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
+        /*if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
             spriteBatch.Draw(
                 this.Project.PixelsPerUnit,
+                font,
+                this.Text,
+                this.WorldPosition,
+                colorOverride,
+                this.RenderOptions.Orientation);
+        }*/
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderLegacyFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    }
+
+    /// <inheritdoc />
+    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
+            spriteBatch.Draw(
+                this.Game.ScreenPixelsPerUnit,
                 font,
                 this.Text,
                 this.WorldPosition,
