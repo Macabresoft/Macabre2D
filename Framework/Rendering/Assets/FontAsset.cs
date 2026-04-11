@@ -15,7 +15,7 @@ public enum FontStyle {
 }
 
 /// <summary>
-/// A font to be used by the <see cref="TextRenderer" />.
+/// A font to be used by the <see cref="LegacyFontRenderer" />.
 /// </summary>
 public sealed class FontAsset : Asset<SpriteFont> {
     /// <summary>

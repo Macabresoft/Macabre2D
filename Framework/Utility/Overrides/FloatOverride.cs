@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.Framework;
 
 /// <summary>
-/// A <see cref="byte" /> wrapper that can be enabled or disabled.
+/// A <see cref="float" /> wrapper that can be enabled or disabled.
 /// </summary>
 public class FloatOverride : ValueOverride<float> {
 

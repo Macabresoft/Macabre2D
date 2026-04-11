@@ -11,10 +11,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// An entity which will render the specified text.
+/// An entity which will render the specified text using a legacy <see cref="SpriteFont" /> from MonoGame.
 /// </summary>
-public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
+public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+    private float _scale;
+    private float _actualHeight;
+    private float _actualWidth;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -23,11 +26,17 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
     public event EventHandler? ShouldRenderLegacyFontChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextRenderer" /> class.
+    /// Initializes a new instance of the <see cref="LegacyFontRenderer" /> class.
     /// </summary>
-    public TextRenderer() {
+    public LegacyFontRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
+
+    /// <summary>
+    /// Gets the height override for this font renderer.
+    /// </summary>
+    [DataMember]
+    public FloatOverride HeightOverride { get; } = new();
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
@@ -79,6 +88,14 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
     } = string.Empty;
 
     /// <inheritdoc />
+    public override void Deinitialize() {
+        base.Deinitialize();
+        
+        this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
+        this.HeightOverride.PropertyChanged -= this.HeightOverride_PropertyChanged;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
@@ -86,8 +103,15 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
         this.FontReference.Initialize(this.Scene.Assets, this.Game);
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
+        this.HeightOverride.PropertyChanged += this.HeightOverride_PropertyChanged;
+        
+        this.Reset();
     }
 
+    private void HeightOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.Reset();
+    }
+    
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         /*
@@ -121,7 +145,7 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
                 font,
                 this.Text,
                 this.WorldPosition,
-                new Vector2(this.Game.ScreenToInternalResolutionRatio),
+                new Vector2(this._scale),
                 colorOverride,
                 this.RenderOptions.Orientation);
         }
@@ -134,11 +158,11 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var inversePixelsPerUnit = this.Project.UnitsPerPixel;
+        var unitsPerScreenPixel = this.Game.UnitsPerScreenPixel;
         var (x, y) = this.RenderOptions.Size;
-        var width = x * inversePixelsPerUnit;
-        var height = y * inversePixelsPerUnit;
-        var offset = this.RenderOptions.Offset * inversePixelsPerUnit;
+        var width = x * unitsPerScreenPixel;
+        var height = y * unitsPerScreenPixel;
+        var offset = this.RenderOptions.Offset * unitsPerScreenPixel;
         var points = new List<Vector2> {
             this.GetWorldPosition(offset),
             this.GetWorldPosition(offset + new Vector2(width, 0f)),
@@ -154,7 +178,7 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
-    private Vector2 CreateSize() => this.FontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
+    private Vector2 CreateSize() => new(this._actualWidth, this._actualHeight);
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
@@ -163,7 +187,31 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
     }
 
     private void Reset() {
+        this.ResetScale();
+        this.RenderOptions.InvalidateSize();
         this.ResetBoundingArea();
+    }
+
+    private void ResetScale() {
+        if (this.FontReference.Asset?.Content is { } font) {
+            var initialSize = font.MeasureString(this.Text);
+
+            if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
+                this._actualHeight = this.HeightOverride.Value * this.Project.PixelsPerUnit;
+                this._scale = this._actualHeight / initialSize.Y;
+                this._actualWidth = initialSize.X * this._scale;
+            }
+            else {
+                this._scale = 1f;
+                this._actualWidth = initialSize.X;
+                this._actualHeight = initialSize.Y;
+            }
+        }
+        else {
+            this._scale = 0f;
+            this._actualWidth = 0f;
+            this._actualHeight = 0f;
+        }
     }
 
     private void ResetBoundingArea() {
