@@ -13,14 +13,14 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An entity which will render the specified text using a legacy <see cref="SpriteFont" /> from MonoGame.
 /// </summary>
-public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
+public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private float _scale;
     private float _actualHeight;
     private float _actualWidth;
+    private float _scale;
 
     /// <inheritdoc />
-    public override event EventHandler? BoundingAreaChanged;
+    public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
     public event EventHandler? ShouldRenderLegacyFontChanged;
@@ -32,14 +32,8 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
-    /// <summary>
-    /// Gets the height override for this font renderer.
-    /// </summary>
-    [DataMember]
-    public FloatOverride HeightOverride { get; } = new();
-
     /// <inheritdoc />
-    public override BoundingArea BoundingArea => this._boundingArea.Value;
+    public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
     /// Gets the font reference.
@@ -48,16 +42,33 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
     public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
 
     /// <summary>
+    /// Gets the height override for this font renderer.
+    /// </summary>
+    [DataMember]
+    public FloatOverride HeightOverride { get; } = new();
+
+    /// <summary>
     /// Gets the render options.
     /// </summary>
     /// <value>The render options.</value>
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
 
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    [PredefinedInteger(PredefinedIntegerKind.RenderOrder)]
+    public int RenderOrder { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool RenderOutOfBounds { get; set; }
+
     /// <inheritdoc cref="ILegacyFontRenderer" />
     [DataMember]
     [Category(CommonCategories.Rendering)]
-    public override RenderPriority RenderPriority { get; set; }
+    public RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
     [DataMember]
@@ -90,7 +101,7 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        
+
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.HeightOverride.PropertyChanged -= this.HeightOverride_PropertyChanged;
     }
@@ -99,37 +110,11 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
-        this.ShouldRender = false;
-        this.FontReference.Initialize(this.Scene.Assets, this.Game);
-        this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderOptions.Initialize(this.CreateSize);
+        this.Reset();
+
         this.HeightOverride.PropertyChanged += this.HeightOverride_PropertyChanged;
-        
-        this.Reset();
-    }
-
-    private void HeightOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        this.Reset();
-    }
-    
-    /// <inheritdoc />
-    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        /*
-        this.Render(frameTime, viewBoundingArea, this.RenderOptions.Color);
-    */
-    }
-
-    /// <inheritdoc />
-    public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        /*if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
-            spriteBatch.Draw(
-                this.Project.PixelsPerUnit,
-                font,
-                this.Text,
-                this.WorldPosition,
-                colorOverride,
-                this.RenderOptions.Orientation);
-        }*/
+        this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
     }
 
     /// <inheritdoc />
@@ -148,6 +133,20 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
                 new Vector2(this._scale),
                 colorOverride,
                 this.RenderOptions.Orientation);
+        }
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        yield return this.FontReference;
+    }
+
+    /// <inheritdoc />
+    protected override void OnIsEnableChanged() {
+        base.OnIsEnableChanged();
+
+        if (this.ShouldRenderLegacyFont) {
+            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
         }
     }
 
@@ -180,6 +179,10 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
 
     private Vector2 CreateSize() => new(this._actualWidth, this._actualHeight);
 
+    private void HeightOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        this.Reset();
+    }
+
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {
             this.Reset();
@@ -190,6 +193,11 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
         this.ResetScale();
         this.RenderOptions.InvalidateSize();
         this.ResetBoundingArea();
+    }
+
+    private void ResetBoundingArea() {
+        this._boundingArea.Reset();
+        this.BoundingAreaChanged.SafeInvoke(this);
     }
 
     private void ResetScale() {
@@ -212,10 +220,5 @@ public class LegacyFontRenderer : RenderableEntity, ILegacyFontRenderer {
             this._actualWidth = 0f;
             this._actualHeight = 0f;
         }
-    }
-
-    private void ResetBoundingArea() {
-        this._boundingArea.Reset();
-        this.BoundingAreaChanged.SafeInvoke(this);
     }
 }
