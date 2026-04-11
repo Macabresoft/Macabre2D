@@ -121,6 +121,7 @@ public class TextRenderer : RenderableEntity, ILegacyFontRenderer {
                 font,
                 this.Text,
                 this.WorldPosition,
+                new Vector2(this.Game.ScreenToInternalResolutionRatio),
                 colorOverride,
                 this.RenderOptions.Orientation);
         }

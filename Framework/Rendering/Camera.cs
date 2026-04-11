@@ -105,8 +105,8 @@ public class Camera : Entity, ICamera {
     private readonly List<ILegacyFontRenderer> _renderedLegacyFontsLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
-    private float _zoom;
     private Vector2 _screenOffset;
+    private float _zoom;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -237,7 +237,7 @@ public class Camera : Entity, ICamera {
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
         this.Game.UserSettings.Rendering.ShaderChanged -= this.RenderOptions_ShaderChanged;
     }
-    
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -260,55 +260,8 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
-        this._renderedLegacyFontsLastFrame.Clear();
-
-        var viewMatrix = this.GetFullScreenViewMatrix();
-        var viewBoundingArea = this.BoundingArea;
-        var layersToExclude = this.LayersToExcludeFromRender;
-        var layersToRender = this.LayersToRender;
-
-        var groupings = renderTree
-            .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => x.ShouldRenderLegacyFont && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
-            .GroupBy(x => x.RenderPriority)
-            .OrderBy(x => x.Key);
-
-        var fallbackShader = this.FallbackShaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
-
-        foreach (var group in groupings) {
-            var shader = fallbackShader;
-            var renderPriority = group.Key;
-
-            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
-                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
-            }
-
-            spriteBatch?.Begin(
-                SpriteSortMode.Deferred,
-                this.Game.UserSettings.Rendering.GetRenderPriorityBlendState(renderPriority),
-                this.Sampler.ToSamplerState(),
-                null,
-                RasterizerState.CullNone,
-                shader,
-                viewMatrix);
-
-            var entities = group.OrderBy(x => x.RenderOrder);
-            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
-                foreach (var entity in entities) {
-                    entity.RenderLegacyFont(frameTime, viewBoundingArea, color);
-                    this._renderedLegacyFontsLastFrame.Add(entity);
-                }
-            }
-            else {
-                foreach (var entity in entities) {
-                    entity.RenderLegacyFont(frameTime, viewBoundingArea);
-                    this._renderedLegacyFontsLastFrame.Add(entity);
-                }
-            }
-
-            spriteBatch?.End();
-        }
+    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
     }
 
     /// <summary>
@@ -421,7 +374,7 @@ public class Camera : Entity, ICamera {
         var offsetX = this.Game.ScreenToInternalResolutionRatio * this.OffsetOptions.Offset.X;
         var offsetY = this.Game.ScreenToInternalResolutionRatio * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
         this._screenOffset = new Vector2(offsetX, offsetY);
-        
+
         this.CalculateActualViewHeight();
         this._boundingArea.Reset();
         this._viewWidth.Reset();
@@ -491,6 +444,71 @@ public class Camera : Entity, ICamera {
                 foreach (var entity in entities) {
                     entity.Render(frameTime, viewBoundingArea);
                     this._renderedLastFrame.Add(entity);
+                }
+            }
+
+            spriteBatch?.End();
+        }
+    }
+
+    /// <summary>
+    /// Renders legacy fonts in the specified bounding area.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="renderTree">The render tree.</param>
+    /// <param name="viewBoundingArea">The view's bounding area.</param>
+    /// <param name="viewMatrix">The view matrix.</param>
+    /// <param name="layersToRender">The layers to render.</param>
+    /// <param name="layersToExclude">The layers to exclude from render.</param>
+    /// <param name="fallbackShaderReference">The shader.</param>
+    protected void RenderLegacyFonts(
+        FrameTime frameTime,
+        SpriteBatch? spriteBatch,
+        IReadonlyQuadTree<ILegacyFontRenderer> renderTree,
+        BoundingArea viewBoundingArea,
+        Matrix viewMatrix,
+        Layers layersToRender,
+        Layers layersToExclude,
+        ShaderReference? fallbackShaderReference) {
+        this._renderedLegacyFontsLastFrame.Clear();
+
+        var groupings = renderTree
+            .RetrievePotentialCollisions(viewBoundingArea)
+            .Where(x => x.ShouldRenderLegacyFont && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+            .GroupBy(x => x.RenderPriority)
+            .OrderBy(x => x.Key);
+
+        var fallbackShader = fallbackShaderReference?.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+
+        foreach (var group in groupings) {
+            var shader = fallbackShader;
+            var renderPriority = group.Key;
+
+            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
+                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+            }
+
+            spriteBatch?.Begin(
+                SpriteSortMode.Deferred,
+                this.Game.UserSettings.Rendering.GetRenderPriorityBlendState(renderPriority),
+                this.Sampler.ToSamplerState(),
+                null,
+                RasterizerState.CullNone,
+                shader,
+                viewMatrix);
+
+            var entities = group.OrderBy(x => x.RenderOrder);
+            if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
+                foreach (var entity in entities) {
+                    entity.RenderLegacyFont(frameTime, viewBoundingArea, color);
+                    this._renderedLegacyFontsLastFrame.Add(entity);
+                }
+            }
+            else {
+                foreach (var entity in entities) {
+                    entity.RenderLegacyFont(frameTime, viewBoundingArea);
+                    this._renderedLegacyFontsLastFrame.Add(entity);
                 }
             }
 
