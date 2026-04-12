@@ -10,27 +10,12 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an entity which can be rendered.
 /// </summary>
-public interface IRenderableEntity : IBoundableEntity {
+public interface IRenderableEntity : IBaseRenderable {
 
     /// <summary>
     /// Called when <see cref="ShouldRender" /> changes.
     /// </summary>
     event EventHandler? ShouldRenderChanged;
-
-    /// <summary>
-    /// Gets or sets the render order.
-    /// </summary>
-    int RenderOrder { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this should be rendered when out of bounds.
-    /// </summary>
-    bool RenderOutOfBounds { get; set; }
-
-    /// <summary>
-    /// Gets the render priority.
-    /// </summary>
-    RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this instance should render.

@@ -1,6 +1,7 @@
 namespace Macabre2D.UI.Common;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Threading;
 using Macabre2D.Common;
@@ -41,10 +42,17 @@ public class SelectorGizmo : Entity, IGizmo {
             inputState.IsMouseButtonNewlyReleased(MouseButton.Left)) {
             IEntity selected = null;
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-            var potentials = scene.RenderableEntities
+            var potentials = new List<IEntity>();
+            
+            potentials.AddRange(scene.RenderableEntities
                 .Where(x => x.ShouldRender && x.BoundingArea.Contains(mousePosition))
                 .OrderByDescending(x => x.RenderPriority)
-                .ThenByDescending(x => x.RenderOrder);
+                .ThenByDescending(x => x.RenderOrder));
+            
+            potentials.AddRange(scene.LegacyFontRenderers
+                .Where(x => x.ShouldRenderLegacyFont && x.BoundingArea.Contains(mousePosition))
+                .OrderByDescending(x => x.RenderPriority)
+                .ThenByDescending(x => x.RenderOrder));
 
             foreach (var potential in potentials) {
                 if (potential is IActiveTileableEntity tileableEntity) {

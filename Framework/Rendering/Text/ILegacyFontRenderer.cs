@@ -1,14 +1,13 @@
 namespace Macabre2D.Framework;
 
 using System;
-using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for an entity that can render a MonoGame <see cref="SpriteFont" /> under circumstances where it is required.
 /// </summary>
-public interface ILegacyFontRenderer : IBoundableEntity {
+public interface ILegacyFontRenderer : IBaseRenderable {
 
     /// <summary>
     /// Called when <see cref="ShouldRenderLegacyFont" /> changes.
@@ -19,21 +18,6 @@ public interface ILegacyFontRenderer : IBoundableEntity {
     /// Gets a value indicating whether this should render a MonoGame <see cref="SpriteFont" />.
     /// </summary>
     bool ShouldRenderLegacyFont { get; }
-
-    /// <summary>
-    /// Gets or sets the render order.
-    /// </summary>
-    int RenderOrder { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this should be rendered when out of bounds.
-    /// </summary>
-    bool RenderOutOfBounds { get; set; }
-
-    /// <summary>
-    /// Gets the render priority.
-    /// </summary>
-    RenderPriority RenderPriority { get; set; }
 
     /// <summary>
     /// Renders this instance as a MonoGame <see cref="SpriteFont" />.
