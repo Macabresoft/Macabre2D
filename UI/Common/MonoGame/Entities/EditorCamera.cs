@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 public class EditorCamera : Camera {
 
     /// <inheritdoc />
-    public override void RenderLegacyFonts(FrameTime frameTime, SpriteBatch spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    public override void RenderLegacyFonts(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
         this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
     }
 

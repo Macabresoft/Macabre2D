@@ -46,7 +46,7 @@ public class EditorRenderSystem : RenderSystem {
             }
 
             camera.Render(frameTime, spriteBatch, this._renderTree);
-            camera.RenderLegacyFonts(frameTime, spriteBatch, this.Game.ViewportSize, this._legacyFontRenderTree);
+            camera.RenderLegacyFonts(frameTime, spriteBatch, this._legacyFontRenderTree);
             camera.Render(frameTime, spriteBatch, this._gizmoRenderTree);
         }
     }

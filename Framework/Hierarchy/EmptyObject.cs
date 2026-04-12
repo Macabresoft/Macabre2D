@@ -344,7 +344,7 @@ public class EmptyObject :
         set { }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IRenderableEntity" />
     public RenderPriority RenderPriority { get; set; } = default;
 
     /// <inheritdoc />
@@ -664,15 +664,15 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize) {
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState) {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, Point renderSize) {
+    public void RenderLegacyFonts(FrameTime frameTime) {
     }
 
     /// <inheritdoc />

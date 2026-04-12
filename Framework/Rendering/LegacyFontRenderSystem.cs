@@ -25,8 +25,7 @@ public interface ILegacyFontRenderSystem {
     /// Renders entities as defined by this system.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
-    /// <param name="renderSize">The render size.</param>
-    void RenderLegacyFonts(FrameTime frameTime, Point renderSize);
+    void RenderLegacyFonts(FrameTime frameTime);
 }
 
 /// <summary>
@@ -68,11 +67,11 @@ public sealed class LegacyFontRenderSystem : GameSystem, ILegacyFontRenderSystem
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, Point renderSize) {
+    public void RenderLegacyFonts(FrameTime frameTime) {
         this.InsertRenderables();
 
         foreach (var camera in this.Scene.Cameras) {
-            camera.RenderLegacyFonts(frameTime, this.Game.SpriteBatch, renderSize, this._renderTree);
+            camera.RenderLegacyFonts(frameTime, this.Game.SpriteBatch, this._renderTree);
         }
     }
 

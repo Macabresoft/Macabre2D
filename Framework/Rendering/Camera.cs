@@ -91,9 +91,8 @@ public interface ICamera : IBoundableEntity {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
-    /// <param name="renderSize">The render size.</param>
     /// <param name="renderTree">The render tree.</param>
-    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree);
+    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree);
 }
 
 /// <summary>
@@ -260,7 +259,7 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, Point renderSize, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
         this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
     }
 

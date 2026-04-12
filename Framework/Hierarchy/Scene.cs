@@ -201,8 +201,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
-    /// <param name="renderSize">The render size.</param>
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize);
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState);
 
     /// <summary>
     /// Reorders systems so the specified system is moved to the specified index.
@@ -628,14 +627,14 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState, Point renderSize) {
+    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState) {
         try {
             this._isBusy = true;
             this._legacyFontRenderers.RebuildCache();
             this._legacyFontRenderSystems.RebuildCache();
 
             foreach (var system in this._legacyFontRenderSystems) {
-                system.RenderLegacyFonts(frameTime, renderSize);
+                system.RenderLegacyFonts(frameTime);
             }
         }
         finally {
