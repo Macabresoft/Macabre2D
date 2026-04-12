@@ -17,7 +17,9 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _actualHeight;
     private float _actualWidth;
+    private ushort _pixelsPerUnit = 1;
     private float _scale;
+    private float _unitsPerPixel = 1f;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -125,25 +127,14 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
-            if (!BaseGame.IsDesignMode) {
-                spriteBatch.Draw(
-                    this.Game.ScreenPixelsPerUnit,
-                    font,
-                    this.Text,
-                    this.WorldPosition,
-                    new Vector2(this._scale),
-                    colorOverride,
-                    this.RenderOptions.Orientation);
-            }
-            else {
-                spriteBatch.Draw(
-                    this.Project.PixelsPerUnit,
-                    font,
-                    this.Text,
-                    this.WorldPosition,
-                    colorOverride,
-                    this.RenderOptions.Orientation);
-            }
+            spriteBatch.Draw(
+                this._pixelsPerUnit,
+                font,
+                this.Text,
+                this.WorldPosition,
+                new Vector2(this._scale),
+                colorOverride,
+                this.RenderOptions.Orientation);
         }
     }
 
@@ -168,7 +159,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var unitsPerPixel = this.Game.UnitsPerScreenPixel;
+        var unitsPerPixel = this._unitsPerPixel;
         var (x, y) = this.RenderOptions.Size;
         var width = x * unitsPerPixel;
         var height = y * unitsPerPixel;
@@ -212,11 +203,20 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     }
 
     private void ResetScale() {
+        if (!BaseGame.IsDesignMode) {
+            this._pixelsPerUnit = this.Game.ScreenPixelsPerUnit;
+            this._unitsPerPixel = this.Game.UnitsPerScreenPixel;
+        }
+        else {
+            this._pixelsPerUnit = this.Project.PixelsPerUnit;
+            this._unitsPerPixel = this.Project.UnitsPerPixel;
+        }
+
         if (this.FontReference.Asset?.Content is { } font) {
             var initialSize = font.MeasureString(this.Text);
 
             if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
-                this._actualHeight = this.HeightOverride.Value * this.Game.ScreenPixelsPerUnit;
+                this._actualHeight = this.HeightOverride.Value * this._pixelsPerUnit;
                 this._scale = this._actualHeight / initialSize.Y;
                 this._actualWidth = initialSize.X * this._scale;
             }
