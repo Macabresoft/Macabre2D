@@ -216,7 +216,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
             var initialSize = font.MeasureString(this.Text);
 
             if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
-                this._actualHeight = this.HeightOverride.Value * this.Project.PixelsPerUnit;
+                this._actualHeight = this.HeightOverride.Value * this.Game.ScreenPixelsPerUnit;
                 this._scale = this._actualHeight / initialSize.Y;
                 this._actualWidth = initialSize.X * this._scale;
             }
