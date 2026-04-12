@@ -7,6 +7,8 @@ using Macabre2D.Framework;
 /// A render system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
 public class EditorRenderSystem : RenderSystem {
+    private readonly QuadTree<IRenderableEntity> _gizmoRenderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    private readonly QuadTree<ILegacyFontRenderer> _legacyFontRenderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;
@@ -24,20 +26,28 @@ public class EditorRenderSystem : RenderSystem {
         if (this.Game is IEditorGame { SpriteBatch: { } spriteBatch, Camera: { } camera } sceneEditor) {
             var scene = this._sceneService.CurrentScene ?? this._sceneService.CurrentlyEditing?.Scene ?? EmptyObject.Scene;
             this._renderTree.Clear();
+            this._legacyFontRenderTree.Clear();
+            this._gizmoRenderTree.Clear();
 
             foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => x is EditorGrid)) {
                 this._renderTree.Insert(component);
             }
-            
+
             foreach (var component in scene.RenderableEntities) {
                 this._renderTree.Insert(component);
             }
-            
+
+            foreach (var legacyFontRenderer in scene.LegacyFontRenderers) {
+                this._legacyFontRenderTree.Insert(legacyFontRenderer);
+            }
+
             foreach (var component in sceneEditor.CurrentScene.RenderableEntities.Where(x => !(x is EditorGrid))) {
-                this._renderTree.Insert(component);
+                this._gizmoRenderTree.Insert(component);
             }
 
             camera.Render(frameTime, spriteBatch, this._renderTree);
+            camera.RenderLegacyFonts(frameTime, spriteBatch, this.Game.ViewportSize, this._legacyFontRenderTree);
+            camera.Render(frameTime, spriteBatch, this._gizmoRenderTree);
         }
     }
 }

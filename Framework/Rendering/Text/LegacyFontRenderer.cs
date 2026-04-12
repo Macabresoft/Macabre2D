@@ -125,14 +125,25 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
-            spriteBatch.Draw(
-                this.Game.ScreenPixelsPerUnit,
-                font,
-                this.Text,
-                this.WorldPosition,
-                new Vector2(this._scale),
-                colorOverride,
-                this.RenderOptions.Orientation);
+            if (!BaseGame.IsDesignMode) {
+                spriteBatch.Draw(
+                    this.Game.ScreenPixelsPerUnit,
+                    font,
+                    this.Text,
+                    this.WorldPosition,
+                    new Vector2(this._scale),
+                    colorOverride,
+                    this.RenderOptions.Orientation);
+            }
+            else {
+                spriteBatch.Draw(
+                    this.Project.PixelsPerUnit,
+                    font,
+                    this.Text,
+                    this.WorldPosition,
+                    colorOverride,
+                    this.RenderOptions.Orientation);
+            }
         }
     }
 
@@ -157,11 +168,11 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var unitsPerScreenPixel = this.Game.UnitsPerScreenPixel;
+        var unitsPerPixel = this.Game.UnitsPerScreenPixel;
         var (x, y) = this.RenderOptions.Size;
-        var width = x * unitsPerScreenPixel;
-        var height = y * unitsPerScreenPixel;
-        var offset = this.RenderOptions.Offset * unitsPerScreenPixel;
+        var width = x * unitsPerPixel;
+        var height = y * unitsPerPixel;
+        var offset = this.RenderOptions.Offset * unitsPerPixel;
         var points = new List<Vector2> {
             this.GetWorldPosition(offset),
             this.GetWorldPosition(offset + new Vector2(width, 0f)),
