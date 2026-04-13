@@ -122,18 +122,8 @@ public class ResizeRenderStep : RenderStep {
         return renderTarget;
     }
 
-    private Point GetRenderSize() => this.GetRenderSize(this.ViewportSize, this.InternalResolution);
-
-
-    private Point GetRenderSize(Point viewPortSize, Point pixelRenderSize) {
-        return this.Sizing switch {
-            RenderSizing.PixelSize => new Point(pixelRenderSize.X * this.Multiplier, pixelRenderSize.Y * this.Multiplier),
-            RenderSizing.LimitedPixelSize when pixelRenderSize.Y * this.Multiplier is var height && height < viewPortSize.Y => new Point(pixelRenderSize.X * this.Multiplier, height),
-            RenderSizing.LimitedPixelSize => new Point(viewPortSize.X, viewPortSize.Y),
-            _ => new Point(viewPortSize.X * this.Multiplier, viewPortSize.Y * this.Multiplier)
-        };
-    }
-
+    private Point GetRenderSize() => this.GetRenderSize(this.Sizing, this.Multiplier, this.ViewportSize, this.InternalResolution);
+    
     private Vector2 GetRenderSizeFloatingPoint() => this._renderSize.Value.ToVector2();
 
     /// <summary>
@@ -141,7 +131,7 @@ public class ResizeRenderStep : RenderStep {
     /// </summary>
     /// <returns>The render target.</returns>
     protected RenderTarget2D GetRenderTarget() {
-        this._renderTarget ??= this.Game.GraphicsDevice.CreateRenderTarget(this.RenderSize);
+        this._renderTarget ??= this.GetRenderTarget(this.RenderSize);
         return this._renderTarget;
     }
 

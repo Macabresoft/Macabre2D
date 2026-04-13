@@ -108,6 +108,30 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
     protected virtual void OnViewportSizeChanged() {
         this.ViewportSize = this.Game.CroppedViewportSize;
     }
+    
+    /// <summary>
+    /// Gets the render size based on <see cref="RenderSizing"/> and a multiplier.
+    /// </summary>
+    /// <param name="sizing">The sizing.</param>
+    /// <param name="multiplier">The multiplier.</param>
+    /// <param name="viewPortSize">The view port size.</param>
+    /// <param name="pixelRenderSize">The internal size at which pixels are being rendered..</param>
+    /// <returns>The final render size.</returns>
+    protected Point GetRenderSize(RenderSizing sizing, byte multiplier, Point viewPortSize, Point pixelRenderSize) {
+        return sizing switch {
+            RenderSizing.PixelSize => new Point(pixelRenderSize.X * multiplier, pixelRenderSize.Y * multiplier),
+            RenderSizing.LimitedPixelSize when pixelRenderSize.Y * multiplier is var height && height < viewPortSize.Y => new Point(pixelRenderSize.X * multiplier, height),
+            RenderSizing.LimitedPixelSize => new Point(viewPortSize.X, viewPortSize.Y),
+            _ => new Point(viewPortSize.X * multiplier, viewPortSize.Y * multiplier)
+        };
+    }
+    
+    /// <summary>
+    /// Gets the render target to use.
+    /// </summary>
+    /// <param name="renderSize">The render size.</param>
+    /// <returns>The render target.</returns>
+    protected RenderTarget2D GetRenderTarget(Point renderSize) => this.Game.GraphicsDevice.CreateRenderTarget(renderSize);
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OnViewportSizeChanged();
