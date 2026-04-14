@@ -260,7 +260,7 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
-        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
+        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
     /// <summary>
@@ -460,7 +460,6 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
-    /// <param name="fallbackShaderReference">The shader.</param>
     protected void RenderLegacyFonts(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
@@ -468,8 +467,7 @@ public class Camera : Entity, ICamera {
         BoundingArea viewBoundingArea,
         Matrix viewMatrix,
         Layers layersToRender,
-        Layers layersToExclude,
-        ShaderReference? fallbackShaderReference) {
+        Layers layersToExclude) {
         this._renderedLegacyFontsLastFrame.Clear();
 
         var groupings = renderTree
@@ -478,15 +476,11 @@ public class Camera : Entity, ICamera {
             .GroupBy(x => x.RenderPriority)
             .OrderBy(x => x.Key);
 
-        var fallbackShader = fallbackShaderReference?.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
 
+        var shader = !BaseGame.IsDesignMode ? this.Project.Fallbacks.LegacyFontShader.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene) : null;
+        
         foreach (var group in groupings) {
-            var shader = fallbackShader;
             var renderPriority = group.Key;
-
-            if (!BaseGame.IsDesignMode && this._renderPriorityToShader.TryGetValue(renderPriority, out var shaderReference)) {
-                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
-            }
 
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,

@@ -11,7 +11,7 @@ public class EditorCamera : Camera {
 
     /// <inheritdoc />
     public override void RenderLegacyFonts(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
-        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender, this.FallbackShaderReference);
+        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
     /// <inheritdoc />

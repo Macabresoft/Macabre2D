@@ -42,6 +42,12 @@ public class ProjectFallbacks {
     public KeyboardIconSetReference KeyboardReference { get; } = new();
 
     /// <summary>
+    /// Gets the legacy font shader reference.
+    /// </summary>
+    [DataMember]
+    public ShaderReference LegacyFontShader { get; } = new();
+
+    /// <summary>
     /// Gets the icon set reference for mouse cursors.
     /// </summary>
     [DataMember]
