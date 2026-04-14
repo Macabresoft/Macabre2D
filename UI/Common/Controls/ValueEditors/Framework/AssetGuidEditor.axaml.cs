@@ -72,6 +72,9 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
                 else if (info.GetCustomAttribute<SpriteSheetGuidAttribute>() != null) {
                     this._assetType = typeof(SpriteSheet);
                 }
+                else if (info.GetCustomAttribute<ShaderGuidAttribute>() != null) {
+                    this._assetType = typeof(ShaderAsset);
+                }
                 else if (info.GetCustomAttribute<PrefabGuidAttribute>() != null) {
                     this._assetType = typeof(PrefabAsset);
                 }

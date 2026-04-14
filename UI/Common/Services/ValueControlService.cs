@@ -275,6 +275,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         type.GetCustomAttribute<AssetGuidAttribute>() != null ||
         type.GetCustomAttribute<SceneGuidAttribute>() != null ||
         type.GetCustomAttribute<SpriteSheetGuidAttribute>() != null ||
+        type.GetCustomAttribute<ShaderGuidAttribute>() != null ||
         type.GetCustomAttribute<PrefabGuidAttribute>() != null;
 
     private bool IsValidType(MemberInfo member, params Type[] typesToIgnore) {
