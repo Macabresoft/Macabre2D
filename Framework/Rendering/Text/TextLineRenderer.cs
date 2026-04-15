@@ -1,16 +1,22 @@
 ﻿namespace Macabre2D.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
+
+    [DataMember(Order = 0)]
+    private readonly AssetReference<FontAsset, SpriteFont> _fontReference = new();
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
@@ -64,8 +70,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
 
     /// <inheritdoc />
     public bool ShouldRenderLegacyFont {
-        get => field;
-        set {
+        get;
+        private set {
             if (value != field) {
                 field = value;
                 this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
@@ -159,7 +165,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         // TODO: do a render here
-        Console.WriteLine($"Render as SpriteFont (Color: {colorOverride}): {this.GetFullText()}");
+        Debug.WriteLine($"Render as SpriteFont (Color: {colorOverride}): {this.GetFullText()}");
     }
 
     /// <inheritdoc />
@@ -203,12 +209,20 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
         return Vector2.Zero;
     }
 
+    /// <inheritdoc />
+    protected override IEnumerable<IAssetReference> GetAssetReferences() {
+        foreach (var reference in base.GetAssetReferences()) {
+            yield return reference;
+        }
+
+        yield return this._fontReference;
+    }
+
     /// <summary>
     /// Gets the position to start rendering the text.
     /// </summary>
     /// <returns>The position to start rendering text.</returns>
     protected virtual Vector2 GetTextStartPosition() => this.BoundingArea.Minimum;
-
 
     /// <inheritdoc />
     protected override void OnTransformChanged() {
@@ -222,9 +236,15 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
         if (fontFound) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
+            this.ShouldRenderLegacyFont = false;
         }
         else {
-            this.ShouldRenderLegacyFont = !this.FontReference.HasContent;
+            this._fontReference.ContentId = fontDefinition.FontId;
+            this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._fontReference.HasContent;
+        }
+
+        if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
+            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
         }
     }
 
