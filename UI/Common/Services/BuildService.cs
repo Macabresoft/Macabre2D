@@ -71,7 +71,7 @@ public class BuildService : IBuildService {
         FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
         FileExtensionToAssetType.Add(PrefabAsset.FileExtension, typeof(PrefabAsset));
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
-        FileExtensionToAssetType.Add(FontAsset.FileExtension, typeof(FontAsset));
+        FileExtensionToAssetType.Add(LegacyFontAsset.FileExtension, typeof(LegacyFontAsset));
 
         foreach (var extension in SpriteSheet.ValidFileExtensions) {
             FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));

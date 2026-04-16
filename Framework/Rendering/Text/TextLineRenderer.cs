@@ -14,9 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-
-    [DataMember(Order = 0)]
-    private readonly AssetReference<FontAsset, SpriteFont> _fontReference = new();
+    private readonly AssetReference<LegacyFontAsset, SpriteFont> _legacyFontReference = new();
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
@@ -164,8 +162,17 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
 
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        // TODO: do a render here
-        Debug.WriteLine($"Render as SpriteFont (Color: {colorOverride}): {this.GetFullText()}");
+        var text = this.GetFullText();
+        if (!string.IsNullOrEmpty(text) && this._legacyFontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
+            spriteBatch.Draw(
+                this.Game.ScreenPixelsPerUnit, //TODO: swap this based on in editor or not
+                font,
+                text,
+                this.GetTextStartPosition(),
+                new Vector2(1f), //TODO: get proper scale
+                colorOverride,
+                this.RenderOptions.Orientation);
+        }
     }
 
     /// <inheritdoc />
@@ -215,7 +222,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
             yield return reference;
         }
 
-        yield return this._fontReference;
+        yield return this._legacyFontReference;
     }
 
     /// <summary>
@@ -239,8 +246,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
             this.ShouldRenderLegacyFont = false;
         }
         else {
-            this._fontReference.ContentId = fontDefinition.FontId;
-            this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._fontReference.HasContent;
+            this._legacyFontReference.ContentId = fontDefinition.FontId;
+            this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._legacyFontReference.HasContent;
         }
 
         if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {

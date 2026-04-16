@@ -155,7 +155,7 @@ public static class SpriteBatchExtensions {
         /// <param name="orientation">The orientation.</param>
         public void Draw(
             ushort pixelsPerUnit,
-            FontAsset font,
+            LegacyFontAsset font,
             string text,
             Vector2 position,
             Vector2 scale,
@@ -186,7 +186,7 @@ public static class SpriteBatchExtensions {
         /// <param name="orientation">The orientation.</param>
         public void Draw(
             ushort pixelsPerUnit,
-            FontAsset font,
+            LegacyFontAsset font,
             string text,
             Vector2 position,
             Color color,
@@ -204,7 +204,7 @@ public static class SpriteBatchExtensions {
         /// <param name="color">The color.</param>
         public void Draw(
             ushort pixelsPerUnit,
-            FontAsset font,
+            LegacyFontAsset font,
             string text,
             Vector2 position,
             Color color) {

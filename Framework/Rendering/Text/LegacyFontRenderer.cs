@@ -41,7 +41,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     /// Gets the font reference.
     /// </summary>
     [DataMember(Order = 0)]
-    public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
+    public AssetReference<LegacyFontAsset, SpriteFont> FontReference { get; } = new();
 
     /// <summary>
     /// Gets the height override for this font renderer.
