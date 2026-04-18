@@ -3,6 +3,7 @@
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Macabre2D.Framework;
+using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
@@ -12,6 +13,7 @@ public sealed class EntityReferenceTests {
     public static void Initialize_ShouldSetEntity_WhenEntityIdIsAlreadySet() {
         var scene = new Scene();
         var child = scene.AddChild<Entity>();
+        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
         entityReference.EntityId = child.Id;
         entityReference.Initialize(scene);
@@ -39,6 +41,7 @@ public sealed class EntityReferenceTests {
     public static void SetEntityId_ShouldSetEntity_WhenAlreadyInitialized() {
         var scene = new Scene();
         var child = scene.AddChild<Entity>();
+        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
         entityReference.Initialize(scene);
         entityReference.EntityId = child.Id;
