@@ -2,6 +2,8 @@ namespace Macabre2D.Framework;
 
 using System.Runtime.Serialization;
 using System.Text;
+using Macabresoft.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,13 +20,33 @@ public enum FontStyle {
 /// A font to be used by the <see cref="LegacyFontRenderer" />.
 /// </summary>
 public sealed class LegacyFontAsset : Asset<SpriteFont> {
+
     /// <summary>
     /// The file extension for a serialized <see cref="SpriteFont" />.
     /// </summary>
     public const string FileExtension = ".spritefont";
-    
+
+    private readonly ResettableLazy<Vector2> _spaceSize;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LegacyFontAsset" /> class.
+    /// </summary>
+    public LegacyFontAsset() : base() {
+        this._spaceSize = new ResettableLazy<Vector2>(this.GetSpaceSize);
+    }
+
+    /// <summary>
+    /// Gets the character height. This is represented in screen pixels.
+    /// </summary>
+    public float CharacterPixelHeight => this._spaceSize.Value.Y;
+
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets the width of the space character. This is represented in screen pixels.
+    /// </summary>
+    public float SpacePixelWidth => this._spaceSize.Value.X;
 
     /// <summary>
     /// Gets or sets a value indicating whether to premultiply the alpha.
@@ -91,5 +113,20 @@ public sealed class LegacyFontAsset : Asset<SpriteFont> {
         contentStringBuilder.AppendLine($@"/build:{contentPath}{fileExtension}");
         contentStringBuilder.AppendLine($"#end {contentPath}");
         return contentStringBuilder.ToString();
+    }
+
+    /// <inheritdoc />
+    public override void LoadContent(SpriteFont content) {
+        base.LoadContent(content);
+        this._spaceSize.Reset();
+    }
+
+    private Vector2 GetSpaceSize() {
+        var result = Vector2.Zero;
+        if (this.Content is { } font) {
+            result = font.MeasureString(" ");
+        }
+
+        return result;
     }
 }

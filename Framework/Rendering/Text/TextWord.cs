@@ -9,9 +9,6 @@ using Macabre2D.Project.Common;
 /// Represents a single word in a <see cref="TextLine" />.
 /// </summary>
 public class TextWord {
-    private const char InputActionEndToken = '}';
-    private const char InputActionStartToken = '{';
-
     private TextWord(IGameProject project, SpriteSheet spriteSheet, SpriteSheetFont font, int kerning, string word) {
         var fontCharacters = new List<SpriteSheetFontCharacter>();
 
@@ -78,7 +75,7 @@ public class TextWord {
         if (font.SpriteSheet is { } spriteSheet) {
             var splitWords = text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             foreach (var word in splitWords) {
-                if (word.StartsWith(InputActionStartToken) && word.EndsWith(InputActionEndToken)) {
+                if (word.StartsWith(TextLine.InputActionStartToken) && word.EndsWith(TextLine.InputActionEndToken)) {
                     var inputActionString = word[1..^1];
                     if (Enum.TryParse<InputAction>(inputActionString, out var action) &&
                         iconResolver.TryGetIcon(action, InputDevice.Auto, InputActionDisplayMode.Primary, out var iconSpriteSheet, out var spriteIndex, out var iconKerning)) {

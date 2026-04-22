@@ -2,23 +2,23 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-/// <summary>
-/// Represents the alignment of text in a <see cref="TextLine" />
-/// </summary>
-public enum TextAlignment {
-    Left,
-    Right,
-    Centered,
-    Justified
-}
 
 /// <summary>
 /// Represents a line of text to be rendered.
 /// </summary>
 public class TextLine {
+    /// <summary>
+    /// Gets the ending token for an <see cref="InputAction"/> in a text line.
+    /// </summary>
+    public const char InputActionEndToken = '}';
+    
+    /// <summary>
+    /// Gets the beginning token for an <see cref="InputAction"/> in a text line.
+    /// </summary>
+    public const char InputActionStartToken = '{';
 
     /// <summary>
     /// Gets an empty text line.
@@ -99,10 +99,10 @@ public class TextLine {
     /// <param name="kerning">The kerning.</param>
     /// <returns>The created text line.</returns>
     public static TextLine CreateTextLine(
-        IGameProject project, 
+        IGameProject project,
         IInputActionIconResolver iconResolver,
         string text,
-        SpriteSheetFont font, 
+        SpriteSheetFont font,
         int kerning) {
         var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
         var words = TextWord.CreateTextWords(project, iconResolver, text, font, kerning);
