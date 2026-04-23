@@ -139,7 +139,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
                     this.GetTextStartPosition(),
                     this.Project.PixelsPerUnit,
                     this.RenderOptions.Orientation,
-                    this.IgnoreColorForIcons,
                     this.WidthOverride.Value,
                     this._offset);
             }
@@ -149,8 +148,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer
                     colorOverride,
                     this.GetTextStartPosition(),
                     this.Project.PixelsPerUnit,
-                    this.RenderOptions.Orientation,
-                    this.IgnoreColorForIcons);
+                    this.RenderOptions.Orientation);
             }
         }
     }

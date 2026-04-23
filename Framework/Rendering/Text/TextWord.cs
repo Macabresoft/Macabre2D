@@ -30,7 +30,6 @@ public class TextWord {
 
     private TextWord(IReadOnlyCollection<TextCharacter> characters, SpriteSheet spriteSheet) {
         this.Characters = characters;
-        this.IsIcon = true;
         this.SpriteSheet = spriteSheet;
         this.Width = characters.Sum(x => x.Width);
     }
@@ -39,11 +38,6 @@ public class TextWord {
     /// Gets the characters in this word.
     /// </summary>
     public IReadOnlyCollection<TextCharacter> Characters { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether this represents an icon.
-    /// </summary>
-    public bool IsIcon { get; }
 
     /// <summary>
     /// Gets the sprite sheet for this word.
@@ -74,23 +68,7 @@ public class TextWord {
 
         if (font.SpriteSheet is { } spriteSheet) {
             var splitWords = text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            foreach (var word in splitWords) {
-                if (word.StartsWith(TextLine.InputActionStartToken) && word.EndsWith(TextLine.InputActionEndToken)) {
-                    var inputActionString = word[1..^1];
-                    if (Enum.TryParse<InputAction>(inputActionString, out var action) &&
-                        iconResolver.TryGetIcon(action, InputDevice.Auto, InputActionDisplayMode.Primary, out var iconSpriteSheet, out var spriteIndex, out var iconKerning)) {
-                        var width = project.UnitsPerPixel * (iconSpriteSheet.SpriteSize.X + iconKerning + kerning);
-                        var textCharacter = new TextCharacter(spriteIndex.Value, width);
-                        result.Add(new TextWord([textCharacter], iconSpriteSheet));
-                    }
-                    else {
-                        result.Add(new TextWord(project, spriteSheet, font, kerning, $"ERROR:{word}"));
-                    }
-                }
-                else {
-                    result.Add(new TextWord(project, spriteSheet, font, kerning, word));
-                }
-            }
+            result.AddRange(splitWords.Select(word => new TextWord(project, spriteSheet, font, kerning, word)));
         }
 
         return result;

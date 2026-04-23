@@ -18,7 +18,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     private float _actualHeight;
     private float _actualWidth;
     private ushort _pixelsPerUnit = 1;
-    private float _scale;
+    private LegacyTextLine _textLine = LegacyTextLine.Empty;
     private float _unitsPerPixel = 1f;
 
     /// <inheritdoc />
@@ -104,6 +104,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     public override void Deinitialize() {
         base.Deinitialize();
 
+        this._textLine = LegacyTextLine.Empty;
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
         this.HeightOverride.PropertyChanged -= this.HeightOverride_PropertyChanged;
     }
@@ -126,14 +127,12 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
 
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
-            spriteBatch.Draw(
-                this._pixelsPerUnit,
-                font,
-                this.Text,
-                this.WorldPosition,
-                new Vector2(this._scale),
+        if (this.SpriteBatch is { } spriteBatch) {
+            this._textLine.Render(
+                spriteBatch,
                 colorOverride,
+                this.WorldPosition,
+                this._pixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
     }
@@ -192,7 +191,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     }
 
     private void Reset() {
-        this.ResetScale();
+        this.ResetTextLine();
         this.RenderOptions.InvalidateSize();
         this.ResetBoundingArea();
     }
@@ -202,7 +201,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
         this.BoundingAreaChanged.SafeInvoke(this);
     }
 
-    private void ResetScale() {
+    private void ResetTextLine() {
         if (!BaseGame.IsDesignMode) {
             this._pixelsPerUnit = this.Game.ScreenPixelsPerUnit;
             this._unitsPerPixel = this.Game.UnitsPerScreenPixel;
@@ -212,22 +211,24 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
             this._unitsPerPixel = this.Project.UnitsPerPixel;
         }
 
-        if (this.FontReference.Asset?.Content is { } font) {
+        if (this.FontReference.Asset is { Content: { } font } fontAsset) {
             var initialSize = font.MeasureString(this.Text);
+            var scale = 1f;
 
             if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
                 this._actualHeight = this.HeightOverride.Value * this._pixelsPerUnit;
-                this._scale = this._actualHeight / initialSize.Y;
-                this._actualWidth = initialSize.X * this._scale;
+                scale = this._actualHeight / initialSize.Y;
+                this._actualWidth = initialSize.X * scale;
             }
             else {
-                this._scale = 1f;
                 this._actualWidth = initialSize.X;
                 this._actualHeight = initialSize.Y;
             }
+
+            this._textLine = new LegacyTextLine(fontAsset, scale, this._pixelsPerUnit, this.Text);
         }
         else {
-            this._scale = 0f;
+            this._textLine = LegacyTextLine.Empty;
             this._actualWidth = 0f;
             this._actualHeight = 0f;
         }

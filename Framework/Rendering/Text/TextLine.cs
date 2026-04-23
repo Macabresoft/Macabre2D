@@ -11,16 +11,6 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class TextLine {
     /// <summary>
-    /// Gets the ending token for an <see cref="InputAction"/> in a text line.
-    /// </summary>
-    public const char InputActionEndToken = '}';
-    
-    /// <summary>
-    /// Gets the beginning token for an <see cref="InputAction"/> in a text line.
-    /// </summary>
-    public const char InputActionStartToken = '{';
-
-    /// <summary>
     /// Gets an empty text line.
     /// </summary>
     public static readonly TextLine Empty = new(TextAlignment.Left, 0f, 0f, []);
@@ -160,24 +150,21 @@ public class TextLine {
     /// <param name="position">The start position.</param>
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="orientation">The orientation.</param>
-    /// <param name="ignoreColorForIcons">A value indicating whether to ignore color when rendering icons.</param>
     public void Render(
         SpriteBatch spriteBatch,
         Color colorOverride,
         Vector2 position,
         ushort pixelsPerUnit,
-        SpriteEffects orientation,
-        bool ignoreColorForIcons) {
+        SpriteEffects orientation) {
         foreach (var (word, xPosition) in this._words) {
             var currentPosition = new Vector2(position.X + xPosition, position.Y);
-            var color = word.IsIcon && ignoreColorForIcons ? Color.White : colorOverride;
             foreach (var character in word.Characters) {
                 word.SpriteSheet.Draw(
                     spriteBatch,
                     pixelsPerUnit,
                     character.SpriteIndex,
                     currentPosition,
-                    color,
+                    colorOverride,
                     orientation);
 
                 currentPosition = new Vector2(currentPosition.X + character.Width, position.Y);
@@ -193,7 +180,6 @@ public class TextLine {
     /// <param name="position">The start position.</param>
     /// <param name="pixelsPerUnit">The pixels per unit.</param>
     /// <param name="orientation">The orientation.</param>
-    /// <param name="ignoreColorForIcons">A value indicating whether to ignore color when rendering icons.</param>
     /// <param name="width">The width.</param>
     /// <param name="offset">The offset.</param>
     public void Render(
@@ -202,14 +188,12 @@ public class TextLine {
         Vector2 position,
         ushort pixelsPerUnit,
         SpriteEffects orientation,
-        bool ignoreColorForIcons,
         float width,
         float offset) {
         foreach (var (word, xPosition) in this._words) {
             var shouldBreak = false;
             var currentPosition = new Vector2(position.X + xPosition, position.Y);
             var characterPosition = xPosition;
-            var color = word.IsIcon && ignoreColorForIcons ? Color.White : colorOverride;
 
             foreach (var character in word.Characters) {
                 if (characterPosition + character.Width > width + offset) {
@@ -223,7 +207,7 @@ public class TextLine {
                         pixelsPerUnit,
                         character.SpriteIndex,
                         new Vector2(position.X + characterPosition - offset, currentPosition.Y),
-                        color,
+                        colorOverride,
                         orientation);
                 }
 

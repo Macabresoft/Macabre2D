@@ -131,7 +131,7 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
                         colorOverride,
                         currentPosition,
                         this.Project.PixelsPerUnit,
-                        this.RenderOptions.Orientation, this.IgnoreColorForIcons);
+                        this.RenderOptions.Orientation);
                 }
 
                 currentPosition = new Vector2(currentPosition.X, currentPosition.Y - this._characterHeight);

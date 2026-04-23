@@ -48,12 +48,6 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether color should be ignored when rendering icons.
-    /// </summary>
-    [DataMember]
-    public bool IgnoreColorForIcons { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets the kerning. This is the space between letters in pixels. Positive numbers will increase the space, negative numbers will decrease it.
     /// </summary>
     [DataMember]
