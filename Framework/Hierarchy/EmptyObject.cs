@@ -14,8 +14,8 @@ using Microsoft.Xna.Framework.Graphics;
 public class EmptyObject :
     ICamera,
     IInputSystem,
-    ILegacyFontRenderer,
-    ILegacyFontRenderSystem,
+    ILegacyTextRenderer,
+    ILegacyTextRenderSystem,
     IPhysicsBody,
     IQueueableSpriteAnimator,
     IRenderableBlinker,
@@ -664,7 +664,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree) {
     }
 
     /// <inheritdoc />

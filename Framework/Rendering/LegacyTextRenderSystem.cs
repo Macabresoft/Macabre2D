@@ -5,12 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
-using Microsoft.Xna.Framework;
 
 /// <summary>
-/// An interface for a render system which exclusively renders entities that implement <see cref="ILegacyFontRenderer" />.
+/// An interface for a render system which exclusively renders entities that implement <see cref="ILegacyTextRenderer" />.
 /// </summary>
-public interface ILegacyFontRenderSystem {
+public interface ILegacyTextRenderSystem {
     /// <summary>
     /// Called when <see cref="ShouldRenderLegacyFonts" /> changes.
     /// </summary>
@@ -29,10 +28,10 @@ public interface ILegacyFontRenderSystem {
 }
 
 /// <summary>
-/// A render system which exclusively renders entities that implement <see cref="ILegacyFontRenderer" />.
+/// A render system which exclusively renders entities that implement <see cref="ILegacyTextRenderer" />.
 /// </summary>
-public sealed class LegacyFontRenderSystem : GameSystem, ILegacyFontRenderSystem {
-    private QuadTree<ILegacyFontRenderer> _renderTree = QuadTree<ILegacyFontRenderer>.Default;
+public sealed class LegacyTextRenderSystem : GameSystem, ILegacyTextRenderSystem {
+    private QuadTree<ILegacyTextRenderer> _renderTree = QuadTree<ILegacyTextRenderer>.Default;
 
     /// <inheritdoc />
     public event EventHandler? ShouldRenderLegacyFontsChanged;
@@ -94,10 +93,10 @@ public sealed class LegacyFontRenderSystem : GameSystem, ILegacyFontRenderSystem
         this._renderTree.Clear();
 
         if (this.Scene.BoundingArea.IsEmpty) {
-            this._renderTree = QuadTree<ILegacyFontRenderer>.Default;
+            this._renderTree = QuadTree<ILegacyTextRenderer>.Default;
         }
         else {
-            this._renderTree = new QuadTree<ILegacyFontRenderer>(
+            this._renderTree = new QuadTree<ILegacyTextRenderer>(
                 0,
                 this.Scene.BoundingArea.Minimum.X,
                 this.Scene.BoundingArea.Minimum.Y,

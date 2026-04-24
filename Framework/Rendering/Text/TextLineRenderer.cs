@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyFontRenderer, IUpdateableEntity {
+public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly AssetReference<LegacyFontAsset, SpriteFont> _legacyFontReference = new();
 

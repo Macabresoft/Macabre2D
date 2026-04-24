@@ -57,7 +57,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the legacy font renderers.
     /// </summary>
-    IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => [];
+    IReadOnlyCollection<ILegacyTextRenderer> LegacyFontRenderers => [];
 
     /// <summary>
     /// Gets the named children.
@@ -266,13 +266,13 @@ public sealed class Scene : GridContainer, IScene {
     private readonly Dictionary<Guid, IEntity> _idToEntitiesInScene = [];
 
     // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly FilterCollection<ILegacyFontRenderer> _legacyFontRenderers = new(
+    private readonly FilterCollection<ILegacyTextRenderer> _legacyFontRenderers = new(
         r => r.ShouldRenderLegacyFont,
         (r, handler) => r.ShouldRenderLegacyFontChanged += handler,
         (r, handler) => r.ShouldRenderLegacyFontChanged -= handler);
 
 
-    private readonly FilterCollection<ILegacyFontRenderSystem> _legacyFontRenderSystems = new(
+    private readonly FilterCollection<ILegacyTextRenderSystem> _legacyFontRenderSystems = new(
         a => a.ShouldRenderLegacyFonts,
         (a, handler) => a.ShouldRenderLegacyFontsChanged += handler,
         (a, handler) => a.ShouldRenderLegacyFontsChanged -= handler);
@@ -366,7 +366,7 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ILegacyFontRenderer> LegacyFontRenderers => this._legacyFontRenderers;
+    public IReadOnlyCollection<ILegacyTextRenderer> LegacyFontRenderers => this._legacyFontRenderers;
 
     /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;

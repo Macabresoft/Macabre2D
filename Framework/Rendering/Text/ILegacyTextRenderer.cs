@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for an entity that can render a MonoGame <see cref="SpriteFont" /> under circumstances where it is required.
 /// </summary>
-public interface ILegacyFontRenderer : IBaseRenderable {
+public interface ILegacyTextRenderer : IBaseRenderable {
 
     /// <summary>
     /// Called when <see cref="ShouldRenderLegacyFont" /> changes.

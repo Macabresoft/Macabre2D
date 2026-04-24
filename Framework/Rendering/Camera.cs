@@ -92,7 +92,7 @@ public interface ICamera : IBoundableEntity {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="renderTree">The render tree.</param>
-    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree);
+    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree);
 }
 
 /// <summary>
@@ -101,7 +101,7 @@ public interface ICamera : IBoundableEntity {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<IRenderableEntity> _renderedLastFrame = [];
-    private readonly List<ILegacyFontRenderer> _renderedLegacyFontsLastFrame = [];
+    private readonly List<ILegacyTextRenderer> _renderedLegacyFontsLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private Vector2 _screenOffset;
@@ -138,7 +138,7 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
 
-    public IReadOnlyCollection<ILegacyFontRenderer> RenderedLegacyFontsLastFrame => this._renderedLegacyFontsLastFrame;
+    public IReadOnlyCollection<ILegacyTextRenderer> RenderedLegacyFontsLastFrame => this._renderedLegacyFontsLastFrame;
 
     /// <inheritdoc />
     public virtual BoundingArea SafeArea => this.BoundingArea;
@@ -259,7 +259,7 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyFontRenderer> renderTree) {
+    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree) {
         this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
@@ -463,7 +463,7 @@ public class Camera : Entity, ICamera {
     protected void RenderLegacyFonts(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
-        IReadonlyQuadTree<ILegacyFontRenderer> renderTree,
+        IReadonlyQuadTree<ILegacyTextRenderer> renderTree,
         BoundingArea viewBoundingArea,
         Matrix viewMatrix,
         Layers layersToRender,

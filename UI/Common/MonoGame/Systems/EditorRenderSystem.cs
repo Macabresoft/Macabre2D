@@ -8,7 +8,7 @@ using Macabre2D.Framework;
 /// </summary>
 public class EditorRenderSystem : RenderSystem {
     private readonly QuadTree<IRenderableEntity> _gizmoRenderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
-    private readonly QuadTree<ILegacyFontRenderer> _legacyFontRenderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    private readonly QuadTree<ILegacyTextRenderer> _legacyFontRenderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;

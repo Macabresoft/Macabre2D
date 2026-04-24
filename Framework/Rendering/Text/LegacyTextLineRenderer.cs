@@ -13,7 +13,8 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// An entity which will render the specified text using a legacy <see cref="SpriteFont" /> from MonoGame.
 /// </summary>
-public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
+[Obsolete("This engine is meant for pixel graphics and TextLineRenderer should be used instead. Use at your own annoyance!")]
+public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _actualHeight;
     private float _actualWidth;
@@ -28,9 +29,9 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     public event EventHandler? ShouldRenderLegacyFontChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LegacyFontRenderer" /> class.
+    /// Initializes a new instance of the <see cref="LegacyTextLineRenderer" /> class.
     /// </summary>
-    public LegacyFontRenderer() {
+    public LegacyTextLineRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
@@ -67,7 +68,7 @@ public class LegacyFontRenderer : Entity, ILegacyFontRenderer {
     [Category(CommonCategories.Rendering)]
     public bool RenderOutOfBounds { get; set; }
 
-    /// <inheritdoc cref="ILegacyFontRenderer" />
+    /// <inheritdoc cref="ILegacyTextRenderer" />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public RenderPriority RenderPriority { get; set; }
