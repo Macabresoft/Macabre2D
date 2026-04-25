@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Macabre2D.Project.Common;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -159,10 +160,10 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch) {
-            this._textLine.Render(
+            this._legacyTextLine.Render(
                 spriteBatch,
                 colorOverride,
-                this.WorldPosition,
+                this.GetTextStartPosition(),
                 this._legacyTextPixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
@@ -238,8 +239,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
-        else {
-            // TODO: load the english culture font and assign the FontReference that font definition. This will make sure there is a size constraint to work within.
+        else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
+            this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
             this._legacyFontReference.ContentId = fontDefinition.FontId;
             this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._legacyFontReference.HasContent;
         }
