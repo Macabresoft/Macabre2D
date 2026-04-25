@@ -127,7 +127,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
     }
 
     private async Task SelectMonoGameFont(ProjectFontModel font) {
-        var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(SpriteFont), false, this.Title);
+        var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(LegacyFontAsset), false, this.Title);
         if (contentNode != null && contentNode.Id != Guid.Empty) {
             var contentId = contentNode.Id;
             var originalDefinition = font.Definition;
