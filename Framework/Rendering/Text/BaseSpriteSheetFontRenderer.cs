@@ -13,6 +13,19 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     private string _resourceText = string.Empty;
     private string _stringFormat = string.Empty;
 
+    /// <summary>
+    /// Gets the font asset reference.
+    /// </summary>
+    [DataMember]
+    public SpriteSheetFontReference FontReference { get; } = new();
+
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
+
     /// <inheritdoc />
     [DataMember]
     public FontCategory FontCategory {
@@ -28,12 +41,6 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
             }
         }
     } = FontCategory.None;
-
-    /// <summary>
-    /// Gets the font asset reference.
-    /// </summary>
-    [DataMember]
-    public SpriteSheetFontReference FontReference { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
@@ -84,13 +91,6 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
         }
     }
 
-    /// <summary>
-    /// Gets a render priority override.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
-
     /// <inheritdoc />
     [ResourceName]
     [DataMember]
@@ -116,7 +116,7 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
             }
         }
     } = string.Empty;
-    
+
     /// <summary>
     /// Gets the font.
     /// </summary>
@@ -157,6 +157,20 @@ public abstract class BaseSpriteSheetFontRenderer : RenderableEntity, ITextRende
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
         yield return this.FontReference;
+    }
+
+    /// <summary>
+    /// Gets the resource text given a specific <see cref="ResourceCulture" />.
+    /// </summary>
+    /// <param name="culture">The culture.</param>
+    /// <returns>The text value of the resource.</returns>
+    protected string GetResourceText(ResourceCulture culture) {
+        var result = string.Empty;
+        if (Resources.ResourceManager.TryGetString(this.ResourceName, culture, out var resource)) {
+            result = resource;
+        }
+
+        return result;
     }
 
     /// <summary>

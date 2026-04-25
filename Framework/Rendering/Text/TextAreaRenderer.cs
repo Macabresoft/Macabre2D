@@ -218,7 +218,6 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
             this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
             var textLines = TextLine.CreateTextLines(
                 this.Project,
-                this.Game.InputActionIconResolver,
                 this.GetFullText(),
                 this.Width,
                 this._font,

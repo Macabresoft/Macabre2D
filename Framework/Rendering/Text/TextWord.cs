@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Macabre2D.Project.Common;
 
 /// <summary>
 /// Represents a single word in a <see cref="TextLine" />.
@@ -53,14 +52,12 @@ public class TextWord {
     /// Creates a collection of <see cref="TextWord" />.
     /// </summary>
     /// <param name="project">The project.</param>
-    /// <param name="iconResolver">The icon resolver.</param>
     /// <param name="text">The text.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The kerning.</param>
     /// <returns>A collection of words.</returns>
     public static IReadOnlyCollection<TextWord> CreateTextWords(
         IGameProject project,
-        IInputActionIconResolver iconResolver,
         string text,
         SpriteSheetFont font,
         int kerning) {

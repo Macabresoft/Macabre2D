@@ -241,8 +241,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         }
         else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
             this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
-            this._legacyFontReference.ContentId = fontDefinition.FontId;
-            this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._legacyFontReference.HasContent;
+            this._legacyFontReference.ContentId = fontDefinition.MonoGameFontId;
+            this.ShouldRenderLegacyFont = this._legacyFontReference.HasContent;
         }
 
         if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
@@ -317,9 +317,13 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
         if (this.Font != null) {
             var actualText = this.GetFullText();
-            this._textLine = TextLine.CreateTextLine(this.Project, this.Game.InputActionIconResolver, actualText, this.Font, this.Kerning);
 
-            if (this.ShouldRenderLegacyFont && this._legacyFontReference.Asset is { } legacyFontAsset && this.Font.SpriteSheet != null) {
+            if (this.ShouldRenderLegacyFont &&
+                !string.IsNullOrEmpty(this.ResourceName) &&
+                this._legacyFontReference.Asset is { } legacyFontAsset &&
+                this.Font.SpriteSheet != null) {
+                this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
+
                 var unitsPerPixel = 1f;
                 if (!BaseGame.IsDesignMode) {
                     this._legacyTextPixelsPerUnit = this.Game.ScreenPixelsPerUnit;
@@ -332,6 +336,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
                 var size = new Vector2(this._textLine.Width, this._characterHeight);
                 this._legacyTextLine = new LegacyTextLine(legacyFontAsset, unitsPerPixel, size, actualText);
+            }
+            else {
+                this._textLine = TextLine.CreateTextLine(this.Project, actualText, this.Font, this.Kerning);
             }
         }
     }
