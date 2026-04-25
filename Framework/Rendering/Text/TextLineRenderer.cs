@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -18,7 +17,11 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
+    private LegacyTextLine _legacyTextLine = LegacyTextLine.Empty;
+    private ushort _legacyTextPixelsPerUnit = 1;
     private float _offset;
+
+    private TextLine _textLine = TextLine.Empty;
 
     /// <inheritdoc />
     public override event EventHandler? BoundingAreaChanged;
@@ -49,7 +52,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     public GameTimer ScrollWaitTime { get; } = new(1f);
 
     /// <inheritdoc />
-    public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this.TextLine.Width > this.WidthOverride.Value;
+    public virtual bool ShouldUpdate => this.ShouldScroll && this.WidthOverride.IsEnabled && this._textLine.Width > this.WidthOverride.Value;
 
     /// <summary>
     /// Gets an override for the width of this instance. If the override is enabled, the text line will not render past the defined width.
@@ -95,11 +98,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         }
     }
 
-    /// <summary>
-    /// Gets the text line this is rendering.
-    /// </summary>
-    protected TextLine TextLine { get; private set; } = TextLine.Empty;
-
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
@@ -112,7 +110,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.ResetIndexes();
+        this.ResetTextLine();
         this.RenderOptions.Initialize(this.CreateSize);
         this._boundingArea.Reset();
 
@@ -131,9 +129,9 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (!this.BoundingArea.IsEmpty && this.SpriteBatch is { } spriteBatch) {
+        if (!this.BoundingArea.IsEmpty && !this.ShouldRenderLegacyFont && this.SpriteBatch is { } spriteBatch) {
             if (this.ShouldScroll && this.WidthOverride.IsEnabled) {
-                this.TextLine.Render(
+                this._textLine.Render(
                     spriteBatch,
                     colorOverride,
                     this.GetTextStartPosition(),
@@ -143,7 +141,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
                     this._offset);
             }
             else {
-                this.TextLine.Render(
+                this._textLine.Render(
                     spriteBatch,
                     colorOverride,
                     this.GetTextStartPosition(),
@@ -160,15 +158,12 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     /// <inheritdoc />
     public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        var text = this.GetFullText();
-        if (!string.IsNullOrEmpty(text) && this._legacyFontReference.Asset is { } font && this.SpriteBatch is { } spriteBatch) {
-            spriteBatch.Draw(
-                this.Game.ScreenPixelsPerUnit, //TODO: swap this based on in editor or not
-                font,
-                text,
-                this.GetTextStartPosition(),
-                new Vector2(1f), //TODO: get proper scale
+        if (this.SpriteBatch is { } spriteBatch) {
+            this._textLine.Render(
+                spriteBatch,
                 colorOverride,
+                this.WorldPosition,
+                this._legacyTextPixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
     }
@@ -206,8 +201,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSize() {
         if (this.Font != null && this.SpriteSheet != null) {
-            var unitWidth = this.WidthOverride.IsEnabled ? this.WidthOverride.Value : this.TextLine.Width;
-            this._characterHeight = this.SpriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            var unitWidth = this.WidthOverride.IsEnabled ? this.WidthOverride.Value : this._textLine.Width;
             return new Vector2(unitWidth * this.Project.PixelsPerUnit, this.SpriteSheet.SpriteSize.Y);
         }
 
@@ -239,11 +233,13 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     protected override void ReloadFontFromCategory() {
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
+
         if (fontFound) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
         else {
+            // TODO: load the english culture font and assign the FontReference that font definition. This will make sure there is a size constraint to work within.
             this._legacyFontReference.ContentId = fontDefinition.FontId;
             this.ShouldRenderLegacyFont = !this.FontReference.HasContent && this._legacyFontReference.HasContent;
         }
@@ -257,7 +253,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     protected override void RequestRefresh() {
         if (this.IsInitialized) {
             this.ResetResource();
-            this.ResetIndexes();
+            this.ResetTextLine();
             this.ResetSize();
 
             if (this.ShouldScroll) {
@@ -286,7 +282,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     private void HandleScrolling(FrameTime frameTime) {
         if (this._isScrollingRight) {
-            var distance = this.TextLine.Width - this.WidthOverride.Value;
+            var distance = this._textLine.Width - this.WidthOverride.Value;
             this._offset += (float)frameTime.SecondsPassed * this.ScrollVelocity;
             if (this._offset >= distance) {
                 this.ScrollWaitTime.Restart();
@@ -308,14 +304,34 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         }
     }
 
-    private void ResetIndexes() {
-        this.TextLine = TextLine.Empty;
+    private void ResetTextLine() {
+        this._textLine = TextLine.Empty;
+        this._legacyTextLine = LegacyTextLine.Empty;
 
         this.ResetFontAndSpriteSheet();
 
+        if (this.SpriteSheet != null) {
+            this._characterHeight = this.SpriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+        }
+
         if (this.Font != null) {
             var actualText = this.GetFullText();
-            this.TextLine = TextLine.CreateTextLine(this.Project, this.Game.InputActionIconResolver, actualText, this.Font, this.Kerning);
+            this._textLine = TextLine.CreateTextLine(this.Project, this.Game.InputActionIconResolver, actualText, this.Font, this.Kerning);
+
+            if (this.ShouldRenderLegacyFont && this._legacyFontReference.Asset is { } legacyFontAsset && this.Font.SpriteSheet != null) {
+                var unitsPerPixel = 1f;
+                if (!BaseGame.IsDesignMode) {
+                    this._legacyTextPixelsPerUnit = this.Game.ScreenPixelsPerUnit;
+                    unitsPerPixel = this.Game.UnitsPerScreenPixel;
+                }
+                else {
+                    this._legacyTextPixelsPerUnit = this.Project.PixelsPerUnit;
+                    unitsPerPixel = this.Project.UnitsPerPixel;
+                }
+
+                var size = new Vector2(this._textLine.Width, this._characterHeight);
+                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, unitsPerPixel, size, actualText);
+            }
         }
     }
 

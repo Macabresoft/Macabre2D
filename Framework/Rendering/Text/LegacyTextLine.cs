@@ -10,7 +10,7 @@ public class LegacyTextLine {
     public static readonly LegacyTextLine Empty = new(
         new LegacyFontAsset(),
         1f,
-        BoundingArea.Empty,
+        Vector2.Zero,
         string.Empty);
 
     private readonly LegacyFontAsset _font;
@@ -47,12 +47,12 @@ public class LegacyTextLine {
     /// </summary>
     /// <param name="legacyFont">The legacy font.</param>
     /// <param name="unitsPerScreenPixel">The units per screen pixel.</param>
-    /// <param name="boundingArea">The bounding area to render this within.</param>
+    /// <param name="size">The maximum size of this text line.</param>
     /// <param name="text">The text to render.</param>
     public LegacyTextLine(
         LegacyFontAsset legacyFont,
         float unitsPerScreenPixel,
-        BoundingArea boundingArea,
+        Vector2 size,
         string text) {
         this._font = legacyFont;
         this.Text = text;
@@ -66,16 +66,17 @@ public class LegacyTextLine {
             internalSize = spriteFont.MeasureString(text) * unitsPerScreenPixel;
         }
 
-        var availableWidth = boundingArea.Width;
+        var availableHeight = size.Y;
         var scale = 1f;
 
-        if (internalSize.X > 0f && availableWidth > 0f) {
-            scale = availableWidth / internalSize.X;
+        if (internalSize.Y > 0f && availableHeight > 0f) {
+            scale = availableHeight / internalSize.X;
 
-            var unitHeight = legacyFont.CharacterPixelHeight * unitsPerScreenPixel * scale;
+            var width = scale * internalSize.X;
 
-            if (unitHeight > boundingArea.Height) {
-                scale *= boundingArea.Height / unitHeight;
+            // TODO: ignore this if scrolling is enabled
+            if (width > size.X) {
+                scale *= size.X/ width;
             }
         }
 
