@@ -4,10 +4,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using ReactiveUI;
 
@@ -65,7 +65,7 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// <summary>
     /// Refreshes the content.
     /// </summary>
-    /// <param name="forceRebuild">A value indicating whether or not rebuild should be forced.</param>
+    /// <param name="forceRebuild">A value indicating whether rebuild should be forced.</param>
     void RefreshContent(bool forceRebuild);
 
     /// <summary>
@@ -188,7 +188,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
                 if (contentFile != null) {
                     this.CopyToEditorBin(parent, contentFile);
-                    this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
+                    this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
                     prefabAsset = contentFile.Asset as PrefabAsset;
                 }
@@ -253,17 +253,15 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
             this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
+            var hasMetadataChanges = this.CheckForMetadataChanges();
+
             var exitCode = this._buildService.BuildContentFromScratch(
-                this._rootContentDirectory, 
-                forceRebuild || this.CheckForMetadataChanges(),
+                this._rootContentDirectory,
+                forceRebuild || hasMetadataChanges,
                 out var newMetadata);
 
             foreach (var metadata in newMetadata) {
                 this.SaveMetadata(metadata);
-            }
-
-            foreach (var metadata in this._rootContentDirectory.GetAllContentFiles().Select(x => x.Metadata)) {
-                this._assetManager.RegisterMetadata(metadata);
             }
 
             if (exitCode == 0) {
@@ -299,10 +297,16 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     protected override bool ShouldLoadEditors() => this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
 
     private bool CheckForMetadataChanges() {
-        var editorMetadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList() : null;
-        return editorMetadataFiles == null ||
-               editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count ||
-               this._assetManager.LoadedMetadata.Any(metadata => !editorMetadataFiles.Contains(metadata.GetFileName()));
+        if (!this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath)) {
+            return true;
+        }
+
+        var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList();
+        var metadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath).ToList() : null;
+
+        return metadataFiles == null ||
+               editorMetadataFiles.Count != metadataFiles.Count ||
+               metadataFiles.Select(Path.GetFileName).Any(metadata => !editorMetadataFiles.Select(Path.GetFileName).Contains(metadata));
     }
 
     private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
@@ -347,7 +351,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
         if (contentFile != null) {
             this.CopyToEditorBin(parent, contentFile);
-            this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
+            this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
             this._settingsService.Settings.ShouldRebuildContent = true;
         }
 
@@ -398,7 +402,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
 
     private void RefreshMgcbFiles() {
-        this._buildService.CreateMGCBFile(this.RootContentDirectory, out _);
+        this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
     }
 
     private void ResetAssets() {

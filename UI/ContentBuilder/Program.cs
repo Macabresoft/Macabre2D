@@ -1,9 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
-using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using Unity;
 
 try {
@@ -16,12 +15,10 @@ try {
     Console.WriteLine(@"Getting content directory...");
     var rootContentDirectory = new RootContentDirectory(fileSystem, pathService);
     Console.WriteLine(@"Creating MGCB file and building content...");
-    buildService.BuildContentFromScratch(rootContentDirectory, true, out _);
+    buildService.BuildContentFromScratch(rootContentDirectory, false, out _);
     Console.WriteLine(@"Done!");
 }
 catch (Exception e) {
     Console.WriteLine(e.ToString());
     Console.WriteLine(@"Failed!");
 }
-
-

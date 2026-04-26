@@ -2,6 +2,7 @@ namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -87,7 +88,12 @@ public class ContentMetadata {
         contentStringBuilder.AppendLine($"#begin {metadataPath}");
         contentStringBuilder.AppendLine($@"/copy:{metadataPath}");
         contentStringBuilder.AppendLine($"#end {metadataPath}");
-        contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
+        
+        // We should copy the metadata, but ignore the asset for editor purposes.
+        if (!this.Asset.IgnoreInBuild) {
+            contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
+        }
+        
         return contentStringBuilder.ToString();
     }
 

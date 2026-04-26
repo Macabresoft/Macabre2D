@@ -60,7 +60,7 @@ public interface IContentDirectory : IContentNode {
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
     /// <param name="file">The file.</param>
-    /// <returns>A value indicating whether or not the file was found.</returns>
+    /// <returns>A value indicating whether the file was found.</returns>
     bool TryFindNode(Guid contentId, out ContentFile file);
 
     /// <summary>
@@ -68,7 +68,7 @@ public interface IContentDirectory : IContentNode {
     /// </summary>
     /// <param name="splitContentPath">The split content path.</param>
     /// <param name="node">The found content node.</param>
-    /// <returns>A value indicating whether or not the node was found.</returns>
+    /// <returns>A value indicating whether the node was found.</returns>
     bool TryFindNode(string[] splitContentPath, out IContentNode node);
 }
 
@@ -77,7 +77,7 @@ public interface IContentDirectory : IContentNode {
 /// </summary>
 [DataContract(Name = "Directory")]
 public class ContentDirectory : ContentNode, IContentDirectory {
-    private readonly ObservableCollectionExtended<IContentNode> _children = new();
+    private readonly ObservableCollectionExtended<IContentNode> _children = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContentNode" /> class.

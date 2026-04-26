@@ -6,11 +6,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface that abstracts out building content and projects.
@@ -41,12 +40,19 @@ public interface IBuildService {
     int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild, out IEnumerable<ContentMetadata> newMetadata);
 
     /// <summary>
+    /// Gets the metadata from files.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<ContentMetadata> GetMetadata();
+
+    /// <summary>
     /// Creates the MGCB file.
     /// </summary>
     /// <param name="contentDirectory">The content directory.</param>
     /// <param name="outputDirectoryPath">The output directory path.</param>
-    /// <returns>The build arguments and the output directory path.</returns>
-    BuildContentArguments CreateMGCBFile(IContentDirectory contentDirectory, out string outputDirectoryPath);
+    /// <param name="buildArgs">The build arguments and the output directory path.</param>
+    /// <returns>A value indicating whether a new MGCB file was created.</returns>
+    bool TryCreateMGCBFile(IContentDirectory contentDirectory, out string outputDirectoryPath, out BuildContentArguments buildArgs);
 }
 
 /// <summary>
@@ -57,7 +63,7 @@ public class BuildService : IBuildService {
     /// Maps file extensions to asset types.
     /// </summary>
     public static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
-    
+
     private readonly IAssemblyService _assemblyService;
     private readonly IFileSystemService _fileSystem;
     private readonly IPathService _pathService;
@@ -80,7 +86,6 @@ public class BuildService : IBuildService {
         foreach (var extension in AudioClip.ValidFileExtensions) {
             FileExtensionToAssetType.Add(extension, typeof(AudioClip));
         }
-
     }
 
     /// <summary>
@@ -130,24 +135,49 @@ public class BuildService : IBuildService {
 
     /// <inheritdoc />
     public int BuildContentFromScratch(IContentDirectory contentDirectory, bool forceRebuild, out IEnumerable<ContentMetadata> newMetadata) {
-        foreach (var metadata in this.GetMetadata()) {
+        var currentMetadata = this.GetMetadata();
+        foreach (var metadata in currentMetadata) {
             this.ResolveContentFile(contentDirectory, metadata);
         }
 
         var requiresRebuild = this.ResolveNewContentFiles(contentDirectory, out newMetadata);
         if (requiresRebuild || forceRebuild) {
-            var buildArgs = this.CreateMGCBFile(contentDirectory, out var outputDirectoryPath);
-            return this.BuildContent(buildArgs, outputDirectoryPath);
+            if (this.TryCreateMGCBFile(contentDirectory, out var outputDirectoryPath, out var buildArgs) || forceRebuild) {
+                return this.BuildContent(buildArgs, outputDirectoryPath);
+            }
+
+            return 0;
         }
 
         return -1;
     }
 
-    public BuildContentArguments CreateMGCBFile(IContentDirectory contentDirectory, out string outputDirectoryPath) {
+    /// <inheritdoc />
+    public IEnumerable<ContentMetadata> GetMetadata() {
+        var metadata = new List<ContentMetadata>();
+        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
+            var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
+            foreach (var file in files) {
+                try {
+                    var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
+                    metadata.Add(contentMetadata);
+                }
+                catch {
+                    // TODO: delete metadata to archive if it cannot be loaded
+                    // ignored
+                }
+            }
+        }
+
+        return metadata;
+    }
+
+    /// <inheritdoc />
+    public bool TryCreateMGCBFile(IContentDirectory contentDirectory, out string outputDirectoryPath, out BuildContentArguments buildArgs) {
         const string Platform = "DesktopGL";
         var mgcbStringBuilder = new StringBuilder();
         var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{Platform}.mgcb");
-        var buildArgs = new BuildContentArguments(
+        buildArgs = new BuildContentArguments(
             mgcbFilePath,
             Platform,
             true);
@@ -174,14 +204,26 @@ public class BuildService : IBuildService {
         mgcbStringBuilder.AppendLine();
 
         var contentFiles = contentDirectory.GetAllContentFiles();
-        foreach (var contentFile in contentFiles.Where(x => !x.Asset.IgnoreInBuild)) {
+        foreach (var contentFile in contentFiles) {
             mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
         }
 
         var mgcbText = mgcbStringBuilder.ToString();
-        this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+        var shouldRebuild = false;
 
-        return buildArgs;
+        if (this._fileSystem.DoesFileExist(mgcbFilePath)) {
+            var existingText = File.ReadAllText(mgcbFilePath);
+            if (!string.Equals(existingText, mgcbText)) {
+                shouldRebuild = true;
+                this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+            }
+        }
+        else {
+            shouldRebuild = true;
+            this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+        }
+
+        return shouldRebuild;
     }
 
     private bool CreateContentFile(IContentDirectory parent, string fileName, out ContentMetadata? metadata) {
@@ -202,24 +244,6 @@ public class BuildService : IBuildService {
         }
 
         return result;
-    }
-
-    private IEnumerable<ContentMetadata> GetMetadata() {
-        var metadata = new List<ContentMetadata>();
-        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
-            var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
-            foreach (var file in files) {
-                try {
-                    var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
-                    metadata.Add(contentMetadata);
-                }
-                catch {
-                    // ignored
-                }
-            }
-        }
-
-        return metadata;
     }
 
     private void ResolveContentFile(IContentDirectory rootContentDirectory, ContentMetadata metadata) {
