@@ -101,6 +101,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     /// <inheritdoc />
     public override void Deinitialize() {
+        this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
+
         base.Deinitialize();
 
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
@@ -119,6 +121,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
             this.ScrollWaitTime.Restart();
         }
 
+        this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.WidthOverride.PropertyChanged += this.WidthOverride_PropertyChanged;
     }
@@ -280,6 +283,13 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         this._characterHeight > 0f &&
         this.Font != null &&
         !string.IsNullOrEmpty(this.GetFullText());
+
+    private void Game_ViewportSizeChanged(object? sender, Point e) {
+        if (this.IsInitialized && this.ShouldRenderLegacyFont) {
+            this.ResetTextLine();
+            this.ResetSize();
+        }
+    }
 
     private void HandleScrolling(FrameTime frameTime) {
         if (this._isScrollingRight) {

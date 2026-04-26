@@ -103,6 +103,8 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
 
     /// <inheritdoc />
     public override void Deinitialize() {
+        this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
+
         base.Deinitialize();
 
         this._textLine = LegacyTextLine.Empty;
@@ -117,6 +119,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
         this.RenderOptions.Initialize(this.CreateSize);
         this.Reset();
 
+        this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.HeightOverride.PropertyChanged += this.HeightOverride_PropertyChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
     }
@@ -180,6 +183,12 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     }
 
     private Vector2 CreateSize() => new(this._actualWidth, this._actualHeight);
+
+    private void Game_ViewportSizeChanged(object? sender, Point e) {
+        if (this.IsInitialized) {
+            this.Reset();
+        }
+    }
 
     private void HeightOverride_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         this.Reset();
