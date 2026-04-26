@@ -157,15 +157,21 @@ public class BuildService : IBuildService {
         var metadata = new List<ContentMetadata>();
         if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
             var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
+            var filesToDelete = new List<string>();
             foreach (var file in files) {
                 try {
                     var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
                     metadata.Add(contentMetadata);
                 }
                 catch {
-                    // TODO: delete metadata to archive if it cannot be loaded
-                    // ignored
+                    // If you got a serialization problem, I feel bad for you, but I must delete your file.
+                    // Reminder to use source control so you can catch when this happens.
+                    filesToDelete.Add(file);
                 }
+            }
+
+            foreach (var file in filesToDelete) {
+                this._fileSystem.DeleteFile(file);
             }
         }
 
