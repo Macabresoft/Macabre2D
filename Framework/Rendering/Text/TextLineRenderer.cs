@@ -7,14 +7,13 @@ using System.Runtime.Serialization;
 using Macabre2D.Project.Common;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly AssetReference<LegacyFontAsset, SpriteFont> _legacyFontReference = new();
+    private readonly LegacyFontReference _legacyFontReference = new();
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
