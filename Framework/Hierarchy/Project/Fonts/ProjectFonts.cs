@@ -48,7 +48,7 @@ public class ProjectFonts {
         var monoGameFontId = Guid.Empty;
 
         if (this.TryGetFont(key, out var fontDefinition)) {
-            monoGameFontId = fontDefinition.MonoGameFontId;
+            monoGameFontId = fontDefinition.LegacyFontId;
         }
 
         this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId, monoGameFontId));

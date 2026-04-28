@@ -64,7 +64,7 @@ public class ProjectFontModel : PropertyChangedNotifier {
             this.SpriteSheetFontPath = string.Empty;
         }
 
-        if (this._definition.MonoGameFontId != Guid.Empty && this._assetManager.TryGetMetadata(this._definition.MonoGameFontId, out var monoGameFontMetadata)) {
+        if (this._definition.LegacyFontId != Guid.Empty && this._assetManager.TryGetMetadata(this._definition.LegacyFontId, out var monoGameFontMetadata)) {
             this.MonoGameFontPath = $"{monoGameFontMetadata.GetContentPath()}{monoGameFontMetadata.ContentFileExtension}";
         }
         else {

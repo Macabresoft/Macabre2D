@@ -21,10 +21,10 @@ public readonly record struct ProjectFontDefinition {
     public readonly Guid FontId;
 
     /// <summary>
-    /// The MonoGame font identifier which references a <see cref="SpriteFont" />.
+    /// The legacy font identifier which references a <see cref="SpriteFont" />.
     /// </summary>
     [DataMember]
-    public readonly Guid MonoGameFontId;
+    public readonly Guid LegacyFontId;
 
     /// <summary>
     /// The sprite sheet identifier which references a <see cref="SpriteSheetFont" />.
@@ -43,11 +43,11 @@ public readonly record struct ProjectFontDefinition {
     /// </summary>
     /// <param name="spriteSheetId">The sprite sheet identifier.</param>
     /// <param name="fontId">The font identifier.</param>
-    /// <param name="monoGameFontId">The mono game font identifier.</param>
-    public ProjectFontDefinition(Guid spriteSheetId, Guid fontId, Guid monoGameFontId) {
+    /// <param name="legacyFontId">The legacy font identifier.</param>
+    public ProjectFontDefinition(Guid spriteSheetId, Guid fontId, Guid legacyFontId) {
         this.SpriteSheetId = spriteSheetId;
         this.FontId = fontId;
-        this.MonoGameFontId = monoGameFontId;
+        this.LegacyFontId = legacyFontId;
     }
 
     /// <summary>
@@ -63,5 +63,5 @@ public readonly record struct ProjectFontDefinition {
     /// <param name="spriteSheetId">The sprite sheet identifier.</param>
     /// <param name="fontId">The font identifier.</param>
     /// <returns>A modified <see cref="ProjectFontDefinition" />.</returns>
-    public ProjectFontDefinition WithSpriteSheetFont(Guid spriteSheetId, Guid fontId) => new(spriteSheetId, fontId, this.MonoGameFontId);
+    public ProjectFontDefinition WithSpriteSheetFont(Guid spriteSheetId, Guid fontId) => new(spriteSheetId, fontId, this.LegacyFontId);
 }

@@ -31,11 +31,16 @@ public interface IRenderSystem : IGameSystem {
 /// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : GameSystem, IRenderSystem {
+public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
+    private QuadTree<ILegacyTextRenderer> _legacyRenderTree = QuadTree<ILegacyTextRenderer>.Default;
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
+
 
     /// <inheritdoc />
     public event EventHandler? ShouldRenderChanged;
+
+    /// <inheritdoc />
+    public event EventHandler? ShouldRenderLegacyFontsChanged;
 
     /// <inheritdoc />
     [DataMember]
@@ -44,6 +49,17 @@ public class RenderSystem : GameSystem, IRenderSystem {
         set {
             if (this.Set(ref field, value)) {
                 this.ShouldRenderChanged.SafeInvoke(this);
+            }
+        }
+    } = true;
+
+    /// <inheritdoc />
+    [DataMember]
+    public bool ShouldRenderLegacyFonts {
+        get;
+        set {
+            if (this.Set(ref field, value)) {
+                this.ShouldRenderLegacyFontsChanged.SafeInvoke(this);
             }
         }
     } = true;
@@ -75,6 +91,30 @@ public class RenderSystem : GameSystem, IRenderSystem {
         }
     }
 
+    /// <inheritdoc />
+    public void RenderLegacyFonts(FrameTime frameTime) {
+        this.InsertLegacyRenderables();
+
+        foreach (var camera in this.Scene.Cameras) {
+            camera.RenderLegacyFonts(frameTime, this.Game.SpriteBatch, this._legacyRenderTree);
+        }
+    }
+
+    private void InsertLegacyRenderables() {
+        this._legacyRenderTree.Clear();
+
+        if (!this.Scene.BoundingArea.IsEmpty) {
+            foreach (var entity in this.Scene.LegacyFontRenderers.Where(x => x.RenderOutOfBounds || x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
+                this._legacyRenderTree.Insert(entity);
+            }
+        }
+        else {
+            foreach (var entity in this.Scene.LegacyFontRenderers) {
+                this._legacyRenderTree.Insert(entity);
+            }
+        }
+    }
+
     private void InsertRenderables() {
         this._renderTree.Clear();
 
@@ -92,6 +132,7 @@ public class RenderSystem : GameSystem, IRenderSystem {
 
     private void ResetTree() {
         this._renderTree.Clear();
+        this._legacyRenderTree.Clear();
 
         if (this.Scene.BoundingArea.IsEmpty) {
             this._renderTree = QuadTree<IRenderableEntity>.Default;
@@ -103,6 +144,20 @@ public class RenderSystem : GameSystem, IRenderSystem {
                 this.Scene.BoundingArea.Minimum.Y,
                 this.Scene.BoundingArea.Width,
                 this.Scene.BoundingArea.Height);
+        }
+
+        if (this.ShouldRenderLegacyFonts) {
+            if (this.Scene.BoundingArea.IsEmpty) {
+                this._legacyRenderTree = QuadTree<ILegacyTextRenderer>.Default;
+            }
+            else {
+                this._legacyRenderTree = new QuadTree<ILegacyTextRenderer>(
+                    0,
+                    this.Scene.BoundingArea.Minimum.X,
+                    this.Scene.BoundingArea.Minimum.Y,
+                    this.Scene.BoundingArea.Width,
+                    this.Scene.BoundingArea.Height);
+            }
         }
     }
 

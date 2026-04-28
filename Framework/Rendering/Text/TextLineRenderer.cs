@@ -243,7 +243,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         }
         else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
             this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
-            this._legacyFontReference.ContentId = fontDefinition.MonoGameFontId;
+            this._legacyFontReference.ContentId = fontDefinition.LegacyFontId;
             this.ShouldRenderLegacyFont = this._legacyFontReference.HasContent;
         }
 
