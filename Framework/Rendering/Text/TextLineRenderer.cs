@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
-    private readonly LegacyFontReference _legacyFontReference = new();
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
@@ -98,6 +97,11 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         }
     }
 
+    /// <summary>
+    /// Gets the legacy font reference.
+    /// </summary>
+    protected LegacyFontReference LegacyFontReference { get; } = new();
+
     /// <inheritdoc />
     public override void Deinitialize() {
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
@@ -155,13 +159,13 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    public virtual void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
         this.RenderLegacyFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (this.SpriteBatch is { } spriteBatch) {
+    public virtual void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this.SpriteBatch is { } spriteBatch && this.ShouldRender) {
             this._legacyTextLine.Render(
                 spriteBatch,
                 colorOverride,
@@ -217,7 +221,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
             yield return reference;
         }
 
-        yield return this._legacyFontReference;
+        yield return this.LegacyFontReference;
     }
 
     /// <summary>
@@ -237,14 +241,14 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
 
-        if (fontFound) {
+        if (fontFound && fontDefinition.LegacyFontId == Guid.Empty) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
         else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
             this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
-            this._legacyFontReference.ContentId = fontDefinition.LegacyFontId;
-            this.ShouldRenderLegacyFont = this._legacyFontReference.HasContent;
+            this.LegacyFontReference.ContentId = fontDefinition.LegacyFontId;
+            this.ShouldRenderLegacyFont = this.LegacyFontReference.HasContent;
         }
 
         if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
@@ -329,7 +333,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
             if (this.ShouldRenderLegacyFont &&
                 !string.IsNullOrEmpty(this.ResourceName) &&
-                this._legacyFontReference.Asset is { } legacyFontAsset &&
+                this.LegacyFontReference.Asset is { } legacyFontAsset &&
                 this.Font.SpriteSheet != null) {
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
 
