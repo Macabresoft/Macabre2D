@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabre2D.Project.Common;
 using Macabresoft.Core;
@@ -18,6 +19,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     private bool _isScrollingRight = true;
     private LegacyTextLine _legacyTextLine = LegacyTextLine.Empty;
     private ushort _legacyTextPixelsPerUnit = 1;
+    private float _legacyTextUnitsPerPixel = 1f;
     private float _offset;
 
     private TextLine _textLine = TextLine.Empty;
@@ -191,7 +193,27 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     /// <returns>The bounding area.</returns>
     protected virtual BoundingArea CreateBoundingArea() {
         var boundingArea = BoundingArea.Empty;
-        if (this.CouldBeVisible()) {
+        if (this.CouldLegacyTextBeVisible()) {
+            var unitsPerPixel = this._legacyTextUnitsPerPixel;
+            var (x, y) = this.RenderOptions.Size;
+            var width = x * unitsPerPixel;
+            var height = y * unitsPerPixel;
+            var offset = this.RenderOptions.Offset * unitsPerPixel;
+            var points = new List<Vector2> {
+                this.GetWorldPosition(offset),
+                this.GetWorldPosition(offset + new Vector2(width, 0f)),
+                this.GetWorldPosition(offset + new Vector2(width, height)),
+                this.GetWorldPosition(offset + new Vector2(0f, height))
+            };
+
+            var minimumX = points.Min(point => point.X);
+            var minimumY = points.Min(point => point.Y);
+            var maximumX = points.Max(point => point.X);
+            var maximumY = points.Max(point => point.Y);
+
+            boundingArea = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+        }
+        else if (this.CouldBeVisible()) {
             boundingArea = this.RenderOptions.CreateBoundingArea(this);
 
             if (this.WidthOverride.IsEnabled) {
@@ -291,6 +313,10 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         this.Font != null &&
         !string.IsNullOrEmpty(this.GetFullText());
 
+    private bool CouldLegacyTextBeVisible() =>
+        this.ShouldRenderLegacyFont &&
+        this._legacyTextLine is { Height: > 0f, Width: > 0f };
+
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         if (this.IsInitialized && this.ShouldRenderLegacyFont) {
             this.ResetTextLine();
@@ -341,18 +367,17 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
                 this.Font.SpriteSheet != null) {
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
 
-                var unitsPerPixel = 1f;
                 if (!BaseGame.IsDesignMode) {
                     this._legacyTextPixelsPerUnit = this.Game.ScreenPixelsPerUnit;
-                    unitsPerPixel = this.Game.UnitsPerScreenPixel;
+                    this._legacyTextUnitsPerPixel = this.Game.UnitsPerScreenPixel;
                 }
                 else {
                     this._legacyTextPixelsPerUnit = this.Project.PixelsPerUnit;
-                    unitsPerPixel = this.Project.UnitsPerPixel;
+                    this._legacyTextUnitsPerPixel = this.Project.UnitsPerPixel;
                 }
 
                 var size = new Vector2(this._textLine.Width, this._characterHeight);
-                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, unitsPerPixel, size, actualText);
+                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, this._legacyTextUnitsPerPixel, size, actualText);
             }
             else {
                 this._textLine = TextLine.CreateTextLine(this.Project, actualText, this.Font, this.Kerning);

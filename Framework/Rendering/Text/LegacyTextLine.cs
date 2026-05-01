@@ -70,14 +70,7 @@ public class LegacyTextLine {
         var scale = 1f;
 
         if (internalSize.Y > 0f && availableHeight > 0f) {
-            scale = availableHeight / internalSize.X;
-
-            var width = scale * internalSize.X;
-
-            // TODO: ignore this if scrolling is enabled
-            if (width > size.X) {
-                scale *= size.X/ width;
-            }
+            scale = availableHeight / internalSize.Y;
         }
 
         this._scale = new Vector2(scale);
