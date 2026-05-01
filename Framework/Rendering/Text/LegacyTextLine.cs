@@ -86,7 +86,7 @@ public class LegacyTextLine {
     }
 
     /// <summary>
-    /// Gets the height.
+    /// Gets the height in screen space pixels.
     /// </summary>
     public float Height { get; }
 
@@ -96,7 +96,7 @@ public class LegacyTextLine {
     public string Text { get; }
 
     /// <summary>
-    /// Gets the width.
+    /// Gets the width in screen space pixels.
     /// </summary>
     public float Width { get; }
 
