@@ -18,9 +18,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _actualHeight;
     private float _actualWidth;
-    private ushort _pixelsPerUnit = 1;
     private LegacyTextLine _textLine = LegacyTextLine.Empty;
-    private float _unitsPerPixel = 1f;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -136,7 +134,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
                 spriteBatch,
                 colorOverride,
                 this.WorldPosition,
-                this._pixelsPerUnit,
+                this.Game.ScreenPixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
     }
@@ -162,7 +160,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var unitsPerPixel = this._unitsPerPixel;
+        var unitsPerPixel = this.Game.UnitsPerScreenPixel;
         var (x, y) = this.RenderOptions.Size;
         var width = x * unitsPerPixel;
         var height = y * unitsPerPixel;
@@ -212,21 +210,12 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     }
 
     private void ResetTextLine() {
-        if (!BaseGame.IsDesignMode) {
-            this._pixelsPerUnit = this.Game.ScreenPixelsPerUnit;
-            this._unitsPerPixel = this.Game.UnitsPerScreenPixel;
-        }
-        else {
-            this._pixelsPerUnit = this.Project.PixelsPerUnit;
-            this._unitsPerPixel = this.Project.UnitsPerPixel;
-        }
-
         if (this.FontReference.Asset is { Content: { } font } fontAsset) {
             var initialSize = font.MeasureString(this.Text);
             var scale = 1f;
 
             if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
-                this._actualHeight = this.HeightOverride.Value * this._pixelsPerUnit;
+                this._actualHeight = this.HeightOverride.Value * this.Game.ScreenPixelsPerUnit;
                 scale = this._actualHeight / initialSize.Y;
                 this._actualWidth = initialSize.X * scale;
             }
@@ -235,7 +224,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
                 this._actualHeight = initialSize.Y;
             }
 
-            this._textLine = new LegacyTextLine(fontAsset, scale, this._pixelsPerUnit, this.Text);
+            this._textLine = new LegacyTextLine(fontAsset, scale, this.Game.ScreenPixelsPerUnit, this.Text);
         }
         else {
             this._textLine = LegacyTextLine.Empty;

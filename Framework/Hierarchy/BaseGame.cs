@@ -554,7 +554,12 @@ public class BaseGame : Game, IGame {
             this.CroppedViewportSize = this.ViewportSize;
         }
 
-        this.ScreenPixelsPerUnit = (ushort)Math.Floor(this.CroppedViewportSize.Y / this.Project.ViewHeight);
+        if (!IsDesignMode) {
+            this.ScreenPixelsPerUnit = (ushort)Math.Floor(this.CroppedViewportSize.Y / this.Project.ViewHeight);
+        }
+        else {
+            this.ScreenPixelsPerUnit = this.Project.PixelsPerUnit;
+        }
 
         this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 

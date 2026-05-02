@@ -18,8 +18,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     private float _characterHeight;
     private bool _isScrollingRight = true;
     private LegacyTextLine _legacyTextLine = LegacyTextLine.Empty;
-    private ushort _legacyTextPixelsPerUnit = 1;
-    private float _legacyTextUnitsPerPixel = 1f;
     private float _offset;
 
     private TextLine _textLine = TextLine.Empty;
@@ -172,7 +170,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
                 spriteBatch,
                 colorOverride,
                 this.GetTextStartPosition(),
-                this._legacyTextPixelsPerUnit,
+                this.Game.ScreenPixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
     }
@@ -194,7 +192,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     protected virtual BoundingArea CreateBoundingArea() {
         var boundingArea = BoundingArea.Empty;
         if (this.CouldLegacyTextBeVisible()) {
-            var unitsPerPixel = this._legacyTextUnitsPerPixel;
+            var unitsPerPixel = this.Game.UnitsPerScreenPixel;
             var (x, y) = this.RenderOptions.Size;
             var width = x * unitsPerPixel;
             var height = y * unitsPerPixel;
@@ -367,17 +365,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
                 this.Font.SpriteSheet != null) {
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
 
-                if (!BaseGame.IsDesignMode) {
-                    this._legacyTextPixelsPerUnit = this.Game.ScreenPixelsPerUnit;
-                    this._legacyTextUnitsPerPixel = this.Game.UnitsPerScreenPixel;
-                }
-                else {
-                    this._legacyTextPixelsPerUnit = this.Project.PixelsPerUnit;
-                    this._legacyTextUnitsPerPixel = this.Project.UnitsPerPixel;
-                }
-
                 var size = new Vector2(this._textLine.Width, this._characterHeight);
-                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, this._legacyTextUnitsPerPixel, size, actualText);
+                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, this.Game.UnitsPerScreenPixel, size, actualText);
             }
             else {
                 this._textLine = TextLine.CreateTextLine(this.Project, actualText, this.Font, this.Kerning);
