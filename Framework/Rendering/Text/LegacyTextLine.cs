@@ -1,5 +1,6 @@
 namespace Macabre2D.Framework;
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,6 +18,7 @@ public class LegacyTextLine {
     private readonly LegacyFontAsset _font;
 
     private readonly Vector2 _scale = Vector2.One;
+    private readonly Vector2 _offset = Vector2.Zero;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LegacyTextLine" /> class.
@@ -75,11 +77,19 @@ public class LegacyTextLine {
         if (internalSize.Y > 0f && availableHeight > 0f) {
             scale = availableHeight / internalSize.Y;
         }
+        
+        if (additionalScaling > 0f) {
+            scale *= additionalScaling;
+        }
 
-        scale *= additionalScaling;
         this._scale = new Vector2(scale);
         this.Width = internalSize.X * scale;
         this.Height = internalSize.Y * scale;
+
+        if (this.Height < size.Y) {
+            // TODO: this only seems to work for some instances
+            this._offset = new Vector2(0f, (size.Y - this.Height) * 0.5f);
+        }
     }
 
     /// <summary>
@@ -116,7 +126,7 @@ public class LegacyTextLine {
                 pixelsPerUnit,
                 this._font,
                 this.Text,
-                position,
+                position + this._offset,
                 this._scale,
                 colorOverride,
                 orientation);

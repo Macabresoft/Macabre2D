@@ -112,7 +112,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         this.RenderOptions.PropertyChanged -= this.RenderSettings_PropertyChanged;
     }
 
-
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -258,7 +257,10 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
-        this.RequestRefresh();
+        
+        if (this.IsInitialized) {
+            this.ResetSize();
+        }
     }
 
     /// <inheritdoc />
@@ -266,7 +268,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
 
-        if (fontFound) {
+        if (fontFound && fontDefinition.LegacyFontId == Guid.Empty) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
