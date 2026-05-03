@@ -476,9 +476,6 @@ public class Camera : Entity, ICamera {
             .GroupBy(x => x.RenderPriority)
             .OrderBy(x => x.Key);
 
-
-        var shader = !BaseGame.IsDesignMode ? this.Project.Fallbacks.LegacyFontShader.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene) : null;
-        
         foreach (var group in groupings) {
             var renderPriority = group.Key;
 
@@ -488,7 +485,7 @@ public class Camera : Entity, ICamera {
                 this.Sampler.ToSamplerState(),
                 null,
                 RasterizerState.CullNone,
-                shader,
+                null,
                 viewMatrix);
 
             var entities = group.OrderBy(x => x.RenderOrder);
