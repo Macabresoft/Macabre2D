@@ -45,13 +45,15 @@ public class ProjectFonts {
     /// <param name="fontId">The font identifier.</param>
     /// <param name="spriteSheetId">The sprite sheet identifier.</param>
     public void SetFont(ProjectFontKey key, Guid fontId, Guid spriteSheetId) {
-        var monoGameFontId = Guid.Empty;
+        var legacyFontId = Guid.Empty;
+        var legacyScale = 1f;
 
         if (this.TryGetFont(key, out var fontDefinition)) {
-            monoGameFontId = fontDefinition.LegacyFontId;
+            legacyFontId = fontDefinition.LegacyFontId;
+            legacyScale = fontDefinition.LegacyFontScale;
         }
 
-        this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId, monoGameFontId));
+        this.SetFont(key, new ProjectFontDefinition(fontId, spriteSheetId, legacyFontId, legacyScale));
     }
 
     /// <summary>

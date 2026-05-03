@@ -17,6 +17,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
 
     private float _characterHeight;
     private bool _isScrollingRight = true;
+    private float _legacyFontScale = 1f;
     private LegacyTextLine _legacyTextLine = LegacyTextLine.Empty;
     private float _offset;
 
@@ -270,6 +271,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
             this.ShouldRenderLegacyFont = false;
         }
         else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
+            this._legacyFontScale = fontDefinition.LegacyFontScale;
             this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
             this.LegacyFontReference.ContentId = fontDefinition.LegacyFontId;
             this.ShouldRenderLegacyFont = this.LegacyFontReference.HasContent;
@@ -366,7 +368,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
 
                 var size = new Vector2(this._textLine.Width, this._characterHeight);
-                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, this.Game.UnitsPerScreenPixel, size, actualText);
+                this._legacyTextLine = new LegacyTextLine(legacyFontAsset, this.Game.UnitsPerScreenPixel, this._legacyFontScale, size, actualText);
             }
             else {
                 this._textLine = TextLine.CreateTextLine(this.Project, actualText, this.Font, this.Kerning);

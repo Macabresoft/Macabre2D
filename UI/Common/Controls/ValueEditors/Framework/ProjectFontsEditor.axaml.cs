@@ -107,7 +107,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
     public ICommand SelectSpriteSheetFontCommand { get; }
 
     private void ClearMonoGameFont(ProjectFontModel font) {
-        font.Definition = font.Definition.WithMonoGameFont(Guid.Empty);
+        font.Definition = font.Definition.WithLegacyFont(Guid.Empty);
     }
 
     private void ClearSpriteSheetFont(ProjectFontModel font) {
@@ -131,7 +131,7 @@ public partial class ProjectFontsEditor : ValueEditorControl<ProjectFonts> {
         if (contentNode != null && contentNode.Id != Guid.Empty) {
             var contentId = contentNode.Id;
             var originalDefinition = font.Definition;
-            var newDefinition = originalDefinition.WithMonoGameFont(contentId);
+            var newDefinition = originalDefinition.WithLegacyFont(contentId);
             this._undoService.Do(
                 () => { font.Definition = newDefinition; },
                 () => { font.Definition = originalDefinition; });

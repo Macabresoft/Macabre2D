@@ -10,6 +10,7 @@ public class LegacyTextLine {
     public static readonly LegacyTextLine Empty = new(
         new LegacyFontAsset(),
         1f,
+        1f,
         Vector2.Zero,
         string.Empty);
 
@@ -47,11 +48,13 @@ public class LegacyTextLine {
     /// </summary>
     /// <param name="legacyFont">The legacy font.</param>
     /// <param name="unitsPerScreenPixel">The units per screen pixel.</param>
+    /// <param name="additionalScaling">Any additional scaling to be applied.</param>
     /// <param name="size">The maximum size of this text line.</param>
     /// <param name="text">The text to render.</param>
     public LegacyTextLine(
         LegacyFontAsset legacyFont,
         float unitsPerScreenPixel,
+        float additionalScaling,
         Vector2 size,
         string text) {
         this._font = legacyFont;
@@ -73,6 +76,7 @@ public class LegacyTextLine {
             scale = availableHeight / internalSize.Y;
         }
 
+        scale *= additionalScaling;
         this._scale = new Vector2(scale);
         this.Width = internalSize.X * scale;
         this.Height = internalSize.Y * scale;
