@@ -253,7 +253,11 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
             this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
-            var hasMetadataChanges = this.CheckForMetadataChanges();
+            var hasMetadataChanges = this.CheckForMetadataChanges(out var cleanEditorMetadata);
+            
+            if (cleanEditorMetadata) {
+                this._fileSystem.DeleteDirectory(this._pathService.EditorMetadataDirectoryPath);
+            }
 
             var exitCode = this._buildService.BuildContentFromScratch(
                 this._rootContentDirectory,
@@ -296,16 +300,18 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     /// <inheritdoc />
     protected override bool ShouldLoadEditors() => this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
 
-    private bool CheckForMetadataChanges() {
+    private bool CheckForMetadataChanges(out bool cleanEditorMetadata) {
+        cleanEditorMetadata = false;
         if (!this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath)) {
             return true;
         }
 
         var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList();
-        var metadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath).ToList() : null;
-
-        return metadataFiles == null ||
-               editorMetadataFiles.Count != metadataFiles.Count ||
+        var metadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath).ToList() : [];
+        
+        cleanEditorMetadata = editorMetadataFiles.Count > metadataFiles.Count;
+        
+        return editorMetadataFiles.Count != metadataFiles.Count ||
                metadataFiles.Select(Path.GetFileName).Any(metadata => !editorMetadataFiles.Select(Path.GetFileName).Contains(metadata));
     }
 
