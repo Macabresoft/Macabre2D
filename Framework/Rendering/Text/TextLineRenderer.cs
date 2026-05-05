@@ -268,7 +268,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
 
-        if (fontFound && fontDefinition.LegacyFontId == Guid.Empty) {
+        if (fontFound) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
