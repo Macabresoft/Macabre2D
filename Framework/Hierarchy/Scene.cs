@@ -499,13 +499,12 @@ public sealed class Scene : GridContainer, IScene {
                 this.Initialize(this, this);
                 this.RebuildFilterCaches();
                 this.OnSceneTreeLoaded();
+                this.InvokePendingActions();
             }
             finally {
                 this._isInitialized = true;
                 this._isBusy = false;
             }
-
-            this.InvokePendingActions();
         }
         else {
             foreach (var system in this.Systems) {

@@ -15,7 +15,6 @@ public class DockableWrapper : BaseDockable, IDockable {
     private readonly List<IBoundableEntity> _boundables = [];
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly IReadOnlyCollection<Type> _typesToIgnore = [typeof(BoundableCover), typeof(BoxTileBoundableCover)];
-    private bool _isCollapsed;
     private Vector2 _margin = Vector2.Zero;
 
     /// <inheritdoc />
@@ -36,9 +35,9 @@ public class DockableWrapper : BaseDockable, IDockable {
     /// </summary>
     [DataMember]
     public bool IsCollapsed {
-        get => this._isCollapsed;
+        get;
         set {
-            if (this.Set(ref this._isCollapsed, value)) {
+            if (this.Set(ref field, value)) {
                 this.RaiseBoundingAreaChanged();
             }
         }
@@ -68,8 +67,8 @@ public class DockableWrapper : BaseDockable, IDockable {
     protected bool IsTransforming { get; set; }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
-        base.Initialize(scene, parent);
+    public override void OnSceneTreeLoaded() {
+        base.OnSceneTreeLoaded();
 
         foreach (var dockable in this._boundables) {
             dockable.BoundingAreaChanged -= this.Child_BoundingAreaChanged;
@@ -80,7 +79,7 @@ public class DockableWrapper : BaseDockable, IDockable {
         var boundableChildren = this.Children
             .OfType<IBoundableEntity>()
             .Where(x => !this._typesToIgnore.Any(y => x.GetType().IsAssignableTo(y)));
-        
+
         foreach (var child in boundableChildren) {
             this._boundables.Add(child);
             child.BoundingAreaChanged += this.Child_BoundingAreaChanged;
