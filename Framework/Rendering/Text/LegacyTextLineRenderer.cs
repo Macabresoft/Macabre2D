@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// An entity which will render the specified text using a legacy <see cref="SpriteFont" /> from MonoGame.
 /// </summary>
 [Obsolete("This engine is meant for pixel graphics and TextLineRenderer should be used instead. Use at your own annoyance!")]
-public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
+public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private float _actualHeight;
     private float _actualWidth;
@@ -66,7 +66,7 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     [Category(CommonCategories.Rendering)]
     public bool RenderOutOfBounds { get; set; }
 
-    /// <inheritdoc cref="ILegacyTextRenderer" />
+    /// <inheritdoc cref="IScreenSpaceRenderer" />
     [DataMember]
     [Category(CommonCategories.Rendering)]
     public RenderPriority RenderPriority { get; set; }
@@ -123,12 +123,12 @@ public class LegacyTextLineRenderer : Entity, ILegacyTextRenderer {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.RenderLegacyFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    public void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderInScreenSpace(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    public void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch) {
             this._textLine.Render(
                 spriteBatch,

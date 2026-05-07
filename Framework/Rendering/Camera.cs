@@ -92,7 +92,7 @@ public interface ICamera : IBoundableEntity {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="renderTree">The render tree.</param>
-    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree);
+    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree);
 }
 
 /// <summary>
@@ -101,7 +101,6 @@ public interface ICamera : IBoundableEntity {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<IRenderableEntity> _renderedLastFrame = [];
-    private readonly List<ILegacyTextRenderer> _renderedLegacyFontsLastFrame = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private Vector2 _screenOffset;
@@ -137,8 +136,6 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderedLastFrame => this._renderedLastFrame;
-
-    public IReadOnlyCollection<ILegacyTextRenderer> RenderedLegacyFontsLastFrame => this._renderedLegacyFontsLastFrame;
 
     /// <inheritdoc />
     public virtual BoundingArea SafeArea => this.BoundingArea;
@@ -259,7 +256,7 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree) {
+    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
         this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
@@ -463,12 +460,11 @@ public class Camera : Entity, ICamera {
     protected void RenderLegacyFonts(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
-        IReadonlyQuadTree<ILegacyTextRenderer> renderTree,
+        IReadonlyQuadTree<IScreenSpaceRenderer> renderTree,
         BoundingArea viewBoundingArea,
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude) {
-        this._renderedLegacyFontsLastFrame.Clear();
 
         var groupings = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
@@ -491,14 +487,12 @@ public class Camera : Entity, ICamera {
             var entities = group.OrderBy(x => x.RenderOrder);
             if (this.Game.UserSettings.Rendering.TryGetColorForRenderPriority(renderPriority, out var color)) {
                 foreach (var entity in entities) {
-                    entity.RenderLegacyFont(frameTime, viewBoundingArea, color);
-                    this._renderedLegacyFontsLastFrame.Add(entity);
+                    entity.RenderInScreenSpace(frameTime, viewBoundingArea, color);
                 }
             }
             else {
                 foreach (var entity in entities) {
-                    entity.RenderLegacyFont(frameTime, viewBoundingArea);
-                    this._renderedLegacyFontsLastFrame.Add(entity);
+                    entity.RenderInScreenSpace(frameTime, viewBoundingArea);
                 }
             }
 

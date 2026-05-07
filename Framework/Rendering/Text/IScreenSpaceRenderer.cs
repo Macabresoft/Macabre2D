@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for an entity that can render a MonoGame <see cref="SpriteFont" /> under circumstances where it is required.
 /// </summary>
-public interface ILegacyTextRenderer : IBaseRenderable {
+public interface IScreenSpaceRenderer : IBaseRenderable {
 
     /// <summary>
     /// Called when <see cref="ShouldRenderLegacyFont" /> changes.
@@ -24,7 +24,7 @@ public interface ILegacyTextRenderer : IBaseRenderable {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="viewBoundingArea">The view bounding area.</param>
-    void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea);
+    void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea);
 
     /// <summary>
     /// Renders this instance as a MonoGame <see cref="SpriteFont" /> with a specific color.
@@ -32,5 +32,5 @@ public interface ILegacyTextRenderer : IBaseRenderable {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="viewBoundingArea">The view bounding area.</param>
     /// <param name="colorOverride">The color override.</param>
-    void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
+    void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
 }

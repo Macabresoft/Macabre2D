@@ -6,16 +6,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// Renders the current scene.
+/// Renders the current scene in screen space.
 /// </summary>
-public class CurrentSceneRenderLegacyFontsStep : RenderStep {
+public class CurrentSceneRenderInScreenSpaceStep : RenderStep {
     private readonly ResettableLazy<Point> _renderSize;
     private RenderTarget2D? _renderTarget;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CurrentSceneRenderLegacyFontsStep" /> class.
+    /// Initializes a new instance of the <see cref="CurrentSceneRenderInScreenSpaceStep" /> class.
     /// </summary>
-    public CurrentSceneRenderLegacyFontsStep() {
+    public CurrentSceneRenderInScreenSpaceStep() {
         this._renderSize = new ResettableLazy<Point>(this.GetRenderSize);
     }
 

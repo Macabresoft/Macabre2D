@@ -31,8 +31,8 @@ public interface IRenderSystem : IGameSystem {
 /// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
-    private QuadTree<ILegacyTextRenderer> _legacyRenderTree = QuadTree<ILegacyTextRenderer>.Default;
+public class RenderSystem : GameSystem, IRenderSystem, IScreenSpaceRenderSystem {
+    private QuadTree<IScreenSpaceRenderer> _legacyRenderTree = QuadTree<IScreenSpaceRenderer>.Default;
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
 
 
@@ -40,7 +40,7 @@ public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
     public event EventHandler? ShouldRenderChanged;
 
     /// <inheritdoc />
-    public event EventHandler? ShouldRenderLegacyFontsChanged;
+    public event EventHandler? ShouldRenderInScreenSpaceChanged;
 
     /// <inheritdoc />
     [DataMember]
@@ -55,11 +55,11 @@ public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
 
     /// <inheritdoc />
     [DataMember]
-    public bool ShouldRenderLegacyFonts {
+    public bool ShouldRenderInScreenSpace {
         get;
         set {
             if (this.Set(ref field, value)) {
-                this.ShouldRenderLegacyFontsChanged.SafeInvoke(this);
+                this.ShouldRenderInScreenSpaceChanged.SafeInvoke(this);
             }
         }
     } = true;
@@ -92,7 +92,7 @@ public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime) {
+    public void RenderInScreenSpace(FrameTime frameTime) {
         this.InsertLegacyRenderables();
 
         foreach (var camera in this.Scene.Cameras) {
@@ -146,12 +146,12 @@ public class RenderSystem : GameSystem, IRenderSystem, ILegacyTextRenderSystem {
                 this.Scene.BoundingArea.Height);
         }
 
-        if (this.ShouldRenderLegacyFonts) {
+        if (this.ShouldRenderInScreenSpace) {
             if (this.Scene.BoundingArea.IsEmpty) {
-                this._legacyRenderTree = QuadTree<ILegacyTextRenderer>.Default;
+                this._legacyRenderTree = QuadTree<IScreenSpaceRenderer>.Default;
             }
             else {
-                this._legacyRenderTree = new QuadTree<ILegacyTextRenderer>(
+                this._legacyRenderTree = new QuadTree<IScreenSpaceRenderer>(
                     0,
                     this.Scene.BoundingArea.Minimum.X,
                     this.Scene.BoundingArea.Minimum.Y,

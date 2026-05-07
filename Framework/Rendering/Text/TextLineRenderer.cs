@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A renderer for <see cref="SpriteSheetFont" /> which renders a single line of text.
 /// </summary>
-public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer, IUpdateableEntity {
+public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRenderer, IUpdateableEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
 
     private float _characterHeight;
@@ -159,12 +159,12 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        this.RenderLegacyFont(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    public virtual void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderInScreenSpace(frameTime, viewBoundingArea, this.RenderOptions.Color);
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    public virtual void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteBatch is { } spriteBatch && this.ShouldRender) {
             this._legacyTextLine.Render(
                 spriteBatch,
@@ -268,7 +268,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, ILegacyTextRenderer
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
 
-        if (fontFound) {
+        if (fontFound && fontDefinition.LegacyFontId == Guid.Empty) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }

@@ -14,8 +14,8 @@ using Microsoft.Xna.Framework.Graphics;
 public class EmptyObject :
     ICamera,
     IInputSystem,
-    ILegacyTextRenderer,
-    ILegacyTextRenderSystem,
+    IScreenSpaceRenderer,
+    IScreenSpaceRenderSystem,
     IPhysicsBody,
     IQueueableSpriteAnimator,
     IRenderableBlinker,
@@ -95,7 +95,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public event EventHandler? ShouldRenderLegacyFontsChanged {
+    public event EventHandler? ShouldRenderInScreenSpaceChanged {
         add { }
         remove { }
     }
@@ -238,7 +238,7 @@ public class EmptyObject :
     public bool ShouldRenderLegacyFont => false;
 
     /// <inheritdoc />
-    public bool ShouldRenderLegacyFonts => false;
+    public bool ShouldRenderInScreenSpace => false;
 
     /// <inheritdoc />
     public bool ShouldUpdate => false;
@@ -656,15 +656,15 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea) {
+    public void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea) {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFont(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+    public void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<ILegacyTextRenderer> renderTree) {
+    public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
     }
 
     /// <inheritdoc />
@@ -672,7 +672,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime) {
+    public void RenderInScreenSpace(FrameTime frameTime) {
     }
 
     /// <inheritdoc />
