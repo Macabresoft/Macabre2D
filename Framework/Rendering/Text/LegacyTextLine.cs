@@ -13,7 +13,8 @@ public class LegacyTextLine {
         1f,
         1f,
         Vector2.Zero,
-        string.Empty);
+        string.Empty,
+        false);
 
     private readonly LegacyFontAsset _font;
 
@@ -53,12 +54,14 @@ public class LegacyTextLine {
     /// <param name="additionalScaling">Any additional scaling to be applied.</param>
     /// <param name="size">The maximum size of this text line.</param>
     /// <param name="text">The text to render.</param>
+    /// <param name="isWidthRestricted">A value indicating whether the width is restricted.</param>
     public LegacyTextLine(
         LegacyFontAsset legacyFont,
         float unitsPerScreenPixel,
         float additionalScaling,
         Vector2 size,
-        string text) {
+        string text,
+        bool isWidthRestricted) {
         this._font = legacyFont;
         this.Text = text;
 
@@ -71,20 +74,25 @@ public class LegacyTextLine {
             internalSize = spriteFont.MeasureString(text) * unitsPerScreenPixel;
         }
 
-        var availableHeight = size.Y;
         var scale = 1f;
-
-        if (internalSize.Y > 0f && availableHeight > 0f) {
-            scale = availableHeight / internalSize.Y;
+        
+        if (internalSize.Y > 0f && size.Y > 0f) {
+            scale = size.Y / internalSize.Y;
         }
         
         if (additionalScaling > 0f) {
             scale *= additionalScaling;
         }
 
-        this._scale = new Vector2(scale);
         this.Width = internalSize.X * scale;
+        
+        if (isWidthRestricted && this.Width > size.X && size.X > 0f) {
+            scale *= size.X / this.Width;
+            this.Width = internalSize.X * scale;
+        }
+        
         this.Height = internalSize.Y * scale;
+        this._scale = new Vector2(scale);
 
         if (this.Height < size.Y) {
             // TODO: this only seems to work for some instances
