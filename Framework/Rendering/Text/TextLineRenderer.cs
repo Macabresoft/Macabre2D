@@ -364,7 +364,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
             var actualText = this.GetFullText();
 
             if (this.ShouldRenderLegacyFont &&
-                !string.IsNullOrEmpty(this.ResourceName) &&
                 this.LegacyFontReference.Asset is { } legacyFontAsset &&
                 this.Font.SpriteSheet != null) {
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
