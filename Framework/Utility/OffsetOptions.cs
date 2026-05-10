@@ -93,10 +93,17 @@ public class OffsetOptions : PropertyChangedNotifier {
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>The bounding area.</returns>
-    public BoundingArea CreateBoundingArea(IEntity entity) {
+    public BoundingArea CreateBoundingArea(IEntity entity) => this.CreateBoundingArea(entity, entity.Project.UnitsPerPixel);
+
+    /// <summary>
+    /// Creates a bounding area for an entity.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="unitsPerPixel">The units per pixel.</param>
+    /// <returns>The bounding area.</returns>
+    public BoundingArea CreateBoundingArea(IEntity entity, float unitsPerPixel) {
         BoundingArea result;
         if (this.Size != Vector2.Zero) {
-            var unitsPerPixel = entity.Project.UnitsPerPixel;
             var (x, y) = this.Size;
             var width = x * unitsPerPixel;
             var height = y * unitsPerPixel;
@@ -123,6 +130,13 @@ public class OffsetOptions : PropertyChangedNotifier {
     }
 
     /// <summary>
+    /// Creates a bounding area for an entity using the screen space conversion for pixels to units.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <returns>The bounding area.</returns>
+    public BoundingArea CreateBoundingAreaFromScreenSpace(IEntity entity) => this.CreateBoundingArea(entity, entity.Game.UnitsPerScreenPixel);
+
+    /// <summary>
     /// Initializes the specified size factory.
     /// </summary>
     /// <param name="sizeFactory">The size factory.</param>
@@ -138,7 +152,7 @@ public class OffsetOptions : PropertyChangedNotifier {
     public void InvalidateSize() {
         if (this._isInitialized) {
             this._size.Reset();
-            this.ResetOffset(); 
+            this.ResetOffset();
         }
     }
 

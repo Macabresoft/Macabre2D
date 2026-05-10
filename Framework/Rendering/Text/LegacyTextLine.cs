@@ -1,6 +1,5 @@
 namespace Macabre2D.Framework;
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -19,7 +18,6 @@ public class LegacyTextLine {
     private readonly LegacyFontAsset _font;
 
     private readonly Vector2 _scale = Vector2.One;
-    private readonly Vector2 _offset = Vector2.Zero;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LegacyTextLine" /> class.
@@ -75,28 +73,28 @@ public class LegacyTextLine {
         }
 
         var scale = 1f;
-        
+
         if (internalSize.Y > 0f && size.Y > 0f) {
             scale = size.Y / internalSize.Y;
         }
-        
+
         if (additionalScaling > 0f) {
             scale *= additionalScaling;
         }
 
         this.Width = internalSize.X * scale;
-        
+
         if (isWidthRestricted && this.Width > size.X && size.X > 0f) {
             scale *= size.X / this.Width;
             this.Width = internalSize.X * scale;
         }
-        
+
         this.Height = internalSize.Y * scale;
         this._scale = new Vector2(scale);
 
         if (this.Height < size.Y) {
             // TODO: this only seems to work for some instances
-            this._offset = new Vector2(0f, (size.Y - this.Height) * 0.5f);
+            this.Offset = new Vector2(0f, (size.Y - this.Height) * 0.5f);
         }
     }
 
@@ -104,6 +102,11 @@ public class LegacyTextLine {
     /// Gets the height in screen space pixels.
     /// </summary>
     public float Height { get; }
+
+    /// <summary>
+    /// Gets the offset.
+    /// </summary>
+    public Vector2 Offset { get; } = Vector2.Zero;
 
     /// <summary>
     /// Gets the text.
@@ -134,7 +137,7 @@ public class LegacyTextLine {
                 pixelsPerUnit,
                 this._font,
                 this.Text,
-                position + this._offset,
+                position + this.Offset,
                 this._scale,
                 colorOverride,
                 orientation);

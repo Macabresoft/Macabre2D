@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using Macabre2D.Project.Common;
 using Macabresoft.Core;
@@ -192,24 +191,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     protected virtual BoundingArea CreateBoundingArea() {
         var boundingArea = BoundingArea.Empty;
         if (this.CouldLegacyTextBeVisible()) {
-            var unitsPerPixel = this.Game.UnitsPerScreenPixel;
-            var (x, y) = this.RenderOptions.Size;
-            var width = x * unitsPerPixel;
-            var height = y * unitsPerPixel;
-            var offset = this.RenderOptions.Offset * unitsPerPixel;
-            var points = new List<Vector2> {
-                this.GetWorldPosition(offset),
-                this.GetWorldPosition(offset + new Vector2(width, 0f)),
-                this.GetWorldPosition(offset + new Vector2(width, height)),
-                this.GetWorldPosition(offset + new Vector2(0f, height))
-            };
-
-            var minimumX = points.Min(point => point.X);
-            var minimumY = points.Min(point => point.Y);
-            var maximumX = points.Max(point => point.X);
-            var maximumY = points.Max(point => point.Y);
-
-            boundingArea = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            boundingArea = this.RenderOptions.CreateBoundingAreaFromScreenSpace(this);
         }
         else if (this.CouldBeVisible()) {
             boundingArea = this.RenderOptions.CreateBoundingArea(this);
@@ -257,7 +239,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     /// <inheritdoc />
     protected override void OnTransformChanged() {
         base.OnTransformChanged();
-        
+
         if (this.IsInitialized) {
             this.ResetSize();
         }
