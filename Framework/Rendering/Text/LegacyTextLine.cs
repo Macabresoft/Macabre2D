@@ -93,7 +93,6 @@ public class LegacyTextLine {
         this._scale = new Vector2(scale);
 
         if (this.Height < size.Y) {
-            // TODO: this only seems to work for some instances
             this.Offset = new Vector2(0f, (size.Y - this.Height) * 0.5f);
         }
     }

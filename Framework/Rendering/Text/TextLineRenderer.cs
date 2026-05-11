@@ -209,8 +209,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     /// </summary>
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSize() {
-        if (this.ShouldRenderLegacyFont) {
-            return new Vector2(this._legacyTextLine.Width, this._legacyTextLine.Height) * this.Game.ScreenPixelsPerUnit;
+        if (this.ShouldRenderLegacyFont && this.SpriteSheet != null) {
+            return new Vector2(this._legacyTextLine.Width, this.SpriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel) * this.Game.ScreenPixelsPerUnit;
         }
 
         if (this.Font != null && this.SpriteSheet != null) {
