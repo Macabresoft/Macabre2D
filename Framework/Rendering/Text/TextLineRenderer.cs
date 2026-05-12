@@ -45,6 +45,11 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
+    /// Gets the legacy font reference.
+    /// </summary>
+    public LegacyFontReference LegacyFontReference { get; } = new();
+
+    /// <summary>
     /// Gets a timer that determines how long this waits on each end of the scrolled text.
     /// </summary>
     [DataMember]
@@ -96,11 +101,6 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
             }
         }
     }
-
-    /// <summary>
-    /// Gets the legacy font reference.
-    /// </summary>
-    protected LegacyFontReference LegacyFontReference { get; } = new();
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -250,7 +250,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
         var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
         var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
 
-        if (fontFound && fontDefinition.LegacyFontId == Guid.Empty) {
+        if (fontFound) {
             this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             this.ShouldRenderLegacyFont = false;
         }
