@@ -44,7 +44,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-                          RowDefinitions="Auto, Auto, Auto, Auto">
+                          RowDefinitions="Auto, Auto, Auto, Auto, Auto">
                         <TextBlock Grid.Column="0"
                                    Grid.ColumnSpan="4"
                                    Grid.Row="0"
@@ -117,8 +117,21 @@
                             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
                         </Button>
                         
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="3"
+                                   Classes="Label"
+                                   FontWeight="Normal"
+                                   Text="MonoGame Scale: " />
+                        
+                        <local:FloatEditor Grid.Column="1"
+                                           Grid.ColumnSpan="3"
+                                           Grid.Row="3"
+                                           Value="{Binding LegacyFontScale}"
+                                           ValueMinimum="0"
+                                           ValueMaximum="1" />
+                        
                         <Border Grid.Column="0"
-                                Grid.Row="3"
+                                Grid.Row="4"
                                 Grid.ColumnSpan="4"
                                 Classes="HorizontalSeparator" />
                     </Grid>

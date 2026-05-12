@@ -6,24 +6,42 @@ using Macabre2D.Project.Common;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 
+/// <summary>
+/// A UI model for project fonts.
+/// </summary>
 public class ProjectFontModel : PropertyChangedNotifier {
     private readonly IAssetManager _assetManager;
     private readonly ProjectFonts _fonts;
+
+    private readonly ProjectFontKey _key;
     private readonly IUndoService _undoService;
     private ProjectFontDefinition _definition;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProjectFontModel" /> class.
+    /// </summary>
+    /// <param name="key">The project font unique key.</param>
+    /// <param name="assetManager">The asset manager.</param>
+    /// <param name="undoService">The under service.</param>
+    /// <param name="fonts">The project's font configuration.</param>
     public ProjectFontModel(ProjectFontKey key, IAssetManager assetManager, IUndoService undoService, ProjectFonts fonts) {
-        this.Key = key;
+        this._key = key;
         this._assetManager = assetManager;
         this._undoService = undoService;
         this._fonts = fonts;
 
-        fonts.TryGetFont(this.Key, out this._definition);
+        fonts.TryGetFont(this._key, out this._definition);
         this.ResetFontName();
     }
 
-    public FontCategory Category => this.Key.Category;
+    /// <summary>
+    /// Gets the font category.
+    /// </summary>
+    public FontCategory Category => this._key.Category;
 
+    /// <summary>
+    /// Gets the project font definition.
+    /// </summary>
     public ProjectFontDefinition Definition {
         get => this._definition;
         set {
@@ -32,25 +50,40 @@ public class ProjectFontModel : PropertyChangedNotifier {
                 () =>
                 {
                     this._definition = value;
-                    this._fonts.SetFont(this.Key, this._definition);
+                    this._fonts.SetFont(this._key, this._definition);
                     this.ResetFontName();
                 },
                 () =>
                 {
                     this._definition = currentDefinition;
-                    this._fonts.SetFont(this.Key, this._definition);
+                    this._fonts.SetFont(this._key, this._definition);
                     this.ResetFontName();
                 });
         }
     }
 
-    public ProjectFontKey Key { get; }
+    /// <summary>
+    /// Gets or sets the legacy font scale.
+    /// </summary>
+    public float LegacyFontScale {
+        get => this._definition.LegacyFontScale;
+        set {
+            var scale = Math.Clamp(value, 0f, 1f);
+            this.Definition = this._definition.WithLegacyFontScale(scale);
+        }
+    }
 
+    /// <summary>
+    /// Gets the path to the MonoGame font within the content directory.
+    /// </summary>
     public string MonoGameFontPath {
         get;
         private set => this.Set(ref field, value);
     } = string.Empty;
 
+    /// <summary>
+    /// Gets the path to the sprite sheet font within the content directory.
+    /// </summary>
     public string SpriteSheetFontPath {
         get;
         private set => this.Set(ref field, value);
