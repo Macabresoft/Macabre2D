@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
 
 /// <summary>
 /// The base project node in the project tree.
@@ -12,15 +13,17 @@ public class ProjectNode {
     /// </summary>
     /// <param name="rootContentDirectory">The root content directory.</param>
     /// <param name="project">The project.</param>
-    public ProjectNode(IContentDirectory rootContentDirectory, IGameProject project) {
+    /// <param name="undoService">The undo service.</param>
+    public ProjectNode(IContentDirectory rootContentDirectory, IGameProject project, IUndoService undoService) {
         this.Children = [
             new UserSettingsNode(project.DefaultUserSettings),
+            new ProjectFontsNode(project.Fonts, undoService),
             project.RenderSteps,
             project.PhysicsMaterials,
             rootContentDirectory
         ];
     }
-    
+
     /// <summary>
     /// Gets the children.
     /// </summary>

@@ -144,10 +144,6 @@
           <DependentUpon>ResourceEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\Framework\ProjectFontsEditor.axaml.cs">
-          <DependentUpon>ProjectFontsReferenceEditor.axaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\PredefinedIntEditor.axaml.cs">
           <DependentUpon>PredefinedIntEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
@@ -206,6 +202,10 @@
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\PhysicsMaterialGuidEditor.axaml.cs">
           <DependentUpon>PhysicsMaterialReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\Framework\ProjectFontModelCollectionEditor.axaml.cs">
+          <DependentUpon>ProjectFontModelCollectionEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
     </ItemGroup>

@@ -239,7 +239,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             if (this._valueControlService != null && this.Collection != null) {
                 var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
                 shaderReference.Initialize(this._assetManager, BaseGame.Empty);
-                this._controlCollection = this._valueControlService.CreateControl(shaderReference, "Shader");
+                this._controlCollection = this._valueControlService.CreateControl(shaderReference, "Shader", false);
 
                 if (this._controlCollection != null) {
                     this._shaderEditors.Clear();

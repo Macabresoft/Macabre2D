@@ -4,10 +4,10 @@ using System;
 using System.IO;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -49,7 +49,8 @@ public class ProjectServiceTests {
             pathService,
             sceneService,
             serializer,
-            Substitute.For<IEditorSettingsService>());
+            Substitute.For<IEditorSettingsService>(),
+            Substitute.For<IUndoService>());
 
         var project = projectService.LoadProject();
 
@@ -86,7 +87,8 @@ public class ProjectServiceTests {
             pathService,
             sceneService,
             serializer,
-            settingsService);
+            settingsService,
+            Substitute.For<IUndoService>());
 
 
         var loadedProject = projectService.LoadProject();
@@ -112,7 +114,8 @@ public class ProjectServiceTests {
             pathService,
             Substitute.For<ISceneService>(),
             serializer,
-            Substitute.For<IEditorSettingsService>());
+            Substitute.For<IEditorSettingsService>(),
+            Substitute.For<IUndoService>());
 
         projectService.SaveProject();
 
@@ -146,7 +149,8 @@ public class ProjectServiceTests {
             pathService,
             sceneService,
             serializer,
-            settingsService);
+            settingsService,
+            Substitute.For<IUndoService>());
 
         projectService.LoadProject();
         projectService.SaveProject();

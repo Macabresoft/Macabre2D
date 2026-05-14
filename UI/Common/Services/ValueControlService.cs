@@ -26,8 +26,9 @@ public interface IValueControlService {
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <param name="name">The name.</param>
+    /// <param name="tryRootControlFirst">A value indicating whether to try creating a single root control first.</param>
     /// <returns>The editor collection.</returns>
-    ValueControlCollection CreateControl(object owner, string name);
+    ValueControlCollection CreateControl(object owner, string name, bool tryRootControlFirst);
 
     /// <summary>
     /// Creates value controls for an object based on its properties and fields that contain a
@@ -65,11 +66,24 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     }
 
     /// <inheritdoc />
-    public ValueControlCollection CreateControl(object owner, string name) {
-        var editors = this.CreateControls(string.Empty, owner, owner);
+    public ValueControlCollection CreateControl(object owner, string name, bool tryRootControlFirst) {
+        var editors = new List<IValueControl>();
+        if (tryRootControlFirst && 
+            owner?.GetType() is { } ownerType &&
+            this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), ownerType) is { } editorType) {
+
+            var dependencies = new ValueControlDependencies(owner, ownerType, string.Empty, name, owner);
+            if (this._container.Resolve(editorType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueEditor editor) {
+                editors.Add(editor);
+            }
+        }
+        else {
+            editors.AddRange(this.CreateControls(string.Empty, owner, owner));
+        }
+        
         return new ValueControlCollection(editors, name);
     }
-
+    
     /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> CreateControls(object owner, params Type[] typesToIgnore) {
         var valueEditors = this.CreateControls(string.Empty, owner, owner, typesToIgnore);
@@ -251,7 +265,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         string propertyPath,
         params ResolverOverride[] overrides) {
         var dependencies = new ValueControlDependencies(value, memberType, GetPropertyName(propertyPath), GetTitle(member), owner);
-        var actualOverrides = overrides.Concat(new[] { new DependencyOverride(typeof(ValueControlDependencies), dependencies) }).ToArray();
+        var actualOverrides = overrides.Concat([new DependencyOverride(typeof(ValueControlDependencies), dependencies)]).ToArray();
         if (this._container.Resolve(editorType, actualOverrides) is IValueEditor editor) {
             this.SetCategoryForEditor(editor, owner, member, propertyPath);
             return editor;

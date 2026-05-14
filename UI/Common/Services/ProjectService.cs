@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
 using Microsoft.Xna.Framework;
 using ReactiveUI;
 
@@ -57,6 +57,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
     private readonly ObservableCollection<object> _treeRoot = [];
+    private readonly IUndoService _undoService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectService" /> class.
@@ -67,29 +68,32 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
     /// <param name="sceneService">The scene service.</param>
     /// <param name="serializer">The serializer.</param>
     /// <param name="settingsService">The editor settings service.</param>
+    /// <param name="undoService">The undo service.</param>
     public ProjectService(
         IContentService contentService,
         IFileSystemService fileSystem,
         IPathService pathService,
         ISceneService sceneService,
         ISerializer serializer,
-        IEditorSettingsService settingsService) {
+        IEditorSettingsService settingsService,
+        IUndoService undoService) {
         this._contentService = contentService;
         this._fileSystem = fileSystem;
         this._pathService = pathService;
         this._sceneService = sceneService;
         this._serializer = serializer;
         this._settingsService = settingsService;
+        this._undoService = undoService;
     }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<object> TreeRoot => this._treeRoot;
 
     /// <inheritdoc />
     public GameProject CurrentProject {
         get;
         private set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<object> TreeRoot => this._treeRoot;
 
     /// <inheritdoc />
     public GameProject LoadProject() {
@@ -177,7 +181,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     private void ResetProjectTreeRoot() {
         this._treeRoot.Clear();
-        this._treeRoot.Add(new ProjectNode(this._contentService.RootContentDirectory, this.CurrentProject));
+        this._treeRoot.Add(new ProjectNode(this._contentService.RootContentDirectory, this.CurrentProject, this._undoService));
     }
 
     private void SaveProjectFile(IGameProject project, string projectFilePath) {

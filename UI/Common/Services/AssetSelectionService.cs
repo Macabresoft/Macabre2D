@@ -1,14 +1,13 @@
 ﻿namespace Macabre2D.UI.Common;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using Avalonia.Controls;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 using Unity.Resolution;
@@ -74,13 +73,13 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
+
+    /// <inheritdoc />
     public Control AssetEditor {
         get => this._assetEditor;
         private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
 
     /// <inheritdoc />
     public object Selected {
@@ -170,42 +169,40 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
 
         this._editors.Clear();
 
-        if (this._selected is ProjectNode) {
-            var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject, UserSettings.UserSettingsTypes.ToArray());
-            this._editors.AddRange(editors);
-
-            foreach (var editorCollection in this._editors) {
-                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-            }
-        }
-        else if (this._selected is IContentNode) {
+        if (this._selected is IContentNode) {
             this._editors.AddRange(this._contentService.Editors);
         }
-        else if (this._selected is RenderStep or PhysicsMaterial) {
-            var editors = this._valueControlService.CreateControls(this._selected);
-            this._editors.AddRange(editors);
+        else {
+            if (this._selected is ProjectNode) {
+                var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject, UserSettings.UserSettingsTypes.ToArray());
+                this._editors.AddRange(editors);
+            }
+            else if (this._selected is RenderStep or PhysicsMaterial) {
+                var editors = this._valueControlService.CreateControls(this._selected);
+                this._editors.AddRange(editors);
+            }
+            else if (this._selected is INameableSettings nameableSettings) {
+                object wrapper = nameableSettings switch {
+                    AudioSettings audioSettings => new NameableSettingsWrapper<AudioSettings>(audioSettings),
+                    DisplaySettings displaySettings => new NameableSettingsWrapper<DisplaySettings>(displaySettings),
+                    GameplaySettings gameplaySettings => new NameableSettingsWrapper<GameplaySettings>(gameplaySettings),
+                    InputSettings inputSettings => new NameableSettingsWrapper<InputSettings>(inputSettings),
+                    RenderSettings renderSettings => new NameableSettingsWrapper<RenderSettings>(renderSettings),
+                    _ => null
+                };
+
+                if (wrapper != null) {
+                    var editors = this._valueControlService.CreateControls(wrapper);
+                    this._editors.AddRange(editors);
+                }
+            }
+            else if (this._selected is ProjectFontModelCollection collection) {
+                var editor = this._valueControlService.CreateControl(this._selected, $"Fonts ({collection.Culture.ToCultureName()})", true);
+                this._editors.Add(editor);
+            }
 
             foreach (var editorCollection in this._editors) {
                 editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-            }
-        }
-        else if (this._selected is INameableSettings nameableSettings) {
-            object wrapper = nameableSettings switch {
-                AudioSettings audioSettings => new NameableSettingsWrapper<AudioSettings>(audioSettings),
-                DisplaySettings displaySettings => new NameableSettingsWrapper<DisplaySettings>(displaySettings),
-                GameplaySettings gameplaySettings => new NameableSettingsWrapper<GameplaySettings>(gameplaySettings),
-                InputSettings inputSettings => new NameableSettingsWrapper<InputSettings>(inputSettings),
-                RenderSettings renderSettings => new NameableSettingsWrapper<RenderSettings>(renderSettings),
-                _ => null
-            };
-
-            if (wrapper != null) {
-                var editors = this._valueControlService.CreateControls(wrapper);
-                this._editors.AddRange(editors);
-                
-                foreach (var editorCollection in this._editors) {
-                    editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-                }
             }
         }
     }
@@ -216,7 +213,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         public NameableSettingsWrapper(T settings) {
             this.Settings = settings;
         }
-        
+
         [DataMember]
         public T Settings { get; }
     }

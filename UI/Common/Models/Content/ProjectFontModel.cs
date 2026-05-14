@@ -10,7 +10,6 @@ using Macabresoft.Core;
 /// A UI model for project fonts.
 /// </summary>
 public class ProjectFontModel : PropertyChangedNotifier {
-    private readonly IAssetManager _assetManager;
     private readonly ProjectFonts _fonts;
 
     private readonly ProjectFontKey _key;
@@ -21,17 +20,15 @@ public class ProjectFontModel : PropertyChangedNotifier {
     /// Initializes a new instance of the <see cref="ProjectFontModel" /> class.
     /// </summary>
     /// <param name="key">The project font unique key.</param>
-    /// <param name="assetManager">The asset manager.</param>
     /// <param name="undoService">The under service.</param>
     /// <param name="fonts">The project's font configuration.</param>
-    public ProjectFontModel(ProjectFontKey key, IAssetManager assetManager, IUndoService undoService, ProjectFonts fonts) {
+    public ProjectFontModel(ProjectFontKey key, IUndoService undoService, ProjectFonts fonts) {
         this._key = key;
-        this._assetManager = assetManager;
         this._undoService = undoService;
         this._fonts = fonts;
 
         fonts.TryGetFont(this._key, out this._definition);
-        this.ResetFontName();
+        this.ResetDisplayProperties();
     }
 
     /// <summary>
@@ -51,13 +48,13 @@ public class ProjectFontModel : PropertyChangedNotifier {
                 {
                     this._definition = value;
                     this._fonts.SetFont(this._key, this._definition);
-                    this.ResetFontName();
+                    this.ResetDisplayProperties();
                 },
                 () =>
                 {
                     this._definition = currentDefinition;
                     this._fonts.SetFont(this._key, this._definition);
-                    this.ResetFontName();
+                    this.ResetDisplayProperties();
                 });
         }
     }
@@ -89,15 +86,19 @@ public class ProjectFontModel : PropertyChangedNotifier {
         private set => this.Set(ref field, value);
     } = string.Empty;
 
-    private void ResetFontName() {
-        if (this._definition.FontId != Guid.Empty && this._definition.SpriteSheetId != Guid.Empty && this._assetManager.TryGetMetadata(this.Definition.SpriteSheetId, out var metadata)) {
+    /// <summary>
+    /// Resets the display properties.
+    /// </summary>
+    public void ResetDisplayProperties() {
+        var assetManager = Resolver.Resolve<IAssetManager>();
+        if (this._definition.FontId != Guid.Empty && this._definition.SpriteSheetId != Guid.Empty && assetManager.TryGetMetadata(this.Definition.SpriteSheetId, out var metadata)) {
             this.SpriteSheetFontPath = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
         else {
             this.SpriteSheetFontPath = string.Empty;
         }
 
-        if (this._definition.LegacyFontId != Guid.Empty && this._assetManager.TryGetMetadata(this._definition.LegacyFontId, out var monoGameFontMetadata)) {
+        if (this._definition.LegacyFontId != Guid.Empty && assetManager.TryGetMetadata(this._definition.LegacyFontId, out var monoGameFontMetadata)) {
             this.MonoGameFontPath = $"{monoGameFontMetadata.GetContentPath()}{monoGameFontMetadata.ContentFileExtension}";
         }
         else {

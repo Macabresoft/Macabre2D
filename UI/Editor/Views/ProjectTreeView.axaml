@@ -296,6 +296,22 @@
                                                                IsEditable="False"
                                                                Text="{Binding Name, Mode=OneTime}" />
                         </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="common:ProjectFontsNode"
+                                          ItemsSource="{Binding Children}">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource AutoTextIcon}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="Font Culture Configurations" />
+                        </TreeDataTemplate>
+                        
+                        
+                        <TreeDataTemplate DataType="common:ProjectFontModelCollection">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource FontIcon}"
+                                                               IsFileName="False"
+                                                               Text="{Binding Culture, Mode=OneWay, Converter={x:Static common:ResourceCultureToDisplayNameConverter.Instance}}" />
+                        </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">

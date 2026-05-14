@@ -87,7 +87,7 @@ public partial class ColliderEditor : ValueEditorControl<Collider> {
 
             if (this._valueControlService != null && this.Collection != null && this.Value is { } value) {
                 this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
-                this._controlCollection = this._valueControlService.CreateControl(value, string.Empty);
+                this._controlCollection = this._valueControlService.CreateControl(value, string.Empty, false);
                 if (this._controlCollection != null) {
                     this._childEditors.Clear();
                     this._childEditors.AddRange(this._controlCollection.ValueControls);
