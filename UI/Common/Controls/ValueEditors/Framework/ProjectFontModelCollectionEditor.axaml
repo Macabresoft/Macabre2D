@@ -5,105 +5,115 @@
                            xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            x:TypeArguments="local:ProjectFontModelCollection"
                            x:Class="Macabre2D.UI.Common.ProjectFontModelCollectionEditor">
-    <Design.DataContext>
-        <local:ProjectFontModelCollectionEditor />
-    </Design.DataContext>
-    <ItemsControl ItemsSource="{Binding $parent[local:ProjectFontModelCollectionEditor].Value.Models, Mode=OneWay}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-                      RowDefinitions="Auto, Auto, Auto, Auto, Auto">
-                    <TextBlock Grid.Column="0"
-                               Grid.ColumnSpan="4"
-                               Grid.Row="0"
-                               FontWeight="Bold"
-                               Text="{Binding Category, Converter={x:Static local:ToDisplayNameConverter.Instance}}" />
-                    
-                    <!-- Sprite Sheet Font -->
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="1"
-                               Classes="Label"
-                               FontWeight="Normal"
-                               Text="Sprite Sheet Font: " />
+    <Grid RowDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ProjectFontModelCollectionEditor]}">
+        <Design.DataContext>
+            <local:ProjectFontModelCollectionEditor />
+        </Design.DataContext>
 
-                    <TextBox Grid.Column="1"
-                             Grid.Row="1"
-                             IsReadOnly="True"
-                             VerticalAlignment="Top"
-                             Text="{Binding SpriteSheetFontPath}"
-                             ToolTip.Tip="{Binding SpriteSheetFontPath}" />
+        <CheckBox Grid.Row="0"
+                  IsChecked="{Binding ShouldRenderInScreenSpace}"
+                  Content="Render in Screen Space (Use Legacy Font)"
+                  ToolTip.Tip="Render in Screen Space (Use Legacy Font)" />
 
-                    <Button Grid.Column="2"
-                            Grid.Row="1"
-                            VerticalAlignment="Top"
-                            Classes="Icon"
-                            Command="{Binding $parent[local:ProjectFontModelCollectionEditor].SelectSpriteSheetFontCommand}"
-                            CommandParameter="{Binding}"
-                            ToolTip.Tip="Search for a sprite sheet font">
-                        <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
-                    </Button>
-                    <Button Grid.Column="3"
-                            Grid.Row="1"
-                            VerticalAlignment="Top"
-                            Classes="Icon"
-                            Command="{Binding $parent[local:ProjectFontModelCollectionEditor].ClearSpriteSheetFontCommand}"
-                            CommandParameter="{Binding}"
-                            ToolTip.Tip="Clear the sprite sheet font">
-                        <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-                    </Button>
-                    
-                    <!-- MonoGame Font -->
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="2"
-                               Classes="Label"
-                               FontWeight="Normal"
-                               Text="MonoGame Font: " />
+        <ItemsControl Grid.Row="1"
+                      ItemsSource="{Binding Value.Models, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+                          RowDefinitions="Auto, Auto, Auto, Auto, Auto">
+                        <TextBlock Grid.Column="0"
+                                   Grid.ColumnSpan="4"
+                                   Grid.Row="0"
+                                   FontWeight="Bold"
+                                   Text="{Binding Category, Converter={x:Static local:ToDisplayNameConverter.Instance}}" />
 
-                    <TextBox Grid.Column="1"
-                             Grid.Row="2"
-                             IsReadOnly="True"
-                             VerticalAlignment="Top"
-                             Text="{Binding MonoGameFontPath}"
-                             ToolTip.Tip="{Binding MonoGameFontPath}" />
+                        <!-- Sprite Sheet Font -->
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Classes="Label"
+                                   FontWeight="Normal"
+                                   Text="Sprite Sheet Font: " />
 
-                    <Button Grid.Column="2"
-                            Grid.Row="2"
-                            VerticalAlignment="Top"
-                            Classes="Icon"
-                            Command="{Binding $parent[local:ProjectFontModelCollectionEditor].SelectMonoGameFontCommand}"
-                            CommandParameter="{Binding}"
-                            ToolTip.Tip="Search for a MonoGame font">
-                        <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
-                    </Button>
-                    <Button Grid.Column="3"
-                            Grid.Row="2"
-                            VerticalAlignment="Top"
-                            Classes="Icon"
-                            Command="{Binding $parent[local:ProjectFontModelCollectionEditor].ClearMonoGameFontCommand}"
-                            CommandParameter="{Binding}"
-                            ToolTip.Tip="Clear the MonoGame font">
-                        <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
-                    </Button>
-                    
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="3"
-                               Classes="Label"
-                               FontWeight="Normal"
-                               Text="MonoGame Scale: " />
-                    
-                    <local:FloatEditor Grid.Column="1"
-                                       Grid.ColumnSpan="3"
-                                       Grid.Row="3"
-                                       Value="{Binding LegacyFontScale}"
-                                       ValueMinimum="0"
-                                       ValueMaximum="1" />
-                    
-                    <Border Grid.Column="0"
-                            Grid.Row="4"
-                            Grid.ColumnSpan="4"
-                            Classes="HorizontalSeparator" />
-                </Grid>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+                        <TextBox Grid.Column="1"
+                                 Grid.Row="1"
+                                 IsReadOnly="True"
+                                 VerticalAlignment="Top"
+                                 Text="{Binding SpriteSheetFontPath}"
+                                 ToolTip.Tip="{Binding SpriteSheetFontPath}" />
+
+                        <Button Grid.Column="2"
+                                Grid.Row="1"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontModelCollectionEditor].SelectSpriteSheetFontCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Search for a sprite sheet font">
+                            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+                        </Button>
+                        <Button Grid.Column="3"
+                                Grid.Row="1"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontModelCollectionEditor].ClearSpriteSheetFontCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Clear the sprite sheet font">
+                            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+                        </Button>
+
+                        <!-- MonoGame Font -->
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="2"
+                                   Classes="Label"
+                                   FontWeight="Normal"
+                                   Text="MonoGame Font: " />
+
+                        <TextBox Grid.Column="1"
+                                 Grid.Row="2"
+                                 IsReadOnly="True"
+                                 VerticalAlignment="Top"
+                                 Text="{Binding MonoGameFontPath}"
+                                 ToolTip.Tip="{Binding MonoGameFontPath}" />
+
+                        <Button Grid.Column="2"
+                                Grid.Row="2"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontModelCollectionEditor].SelectMonoGameFontCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Search for a MonoGame font">
+                            <avaloniaEx:Icon Content="{StaticResource DocumentSearchIcon}" />
+                        </Button>
+                        <Button Grid.Column="3"
+                                Grid.Row="2"
+                                VerticalAlignment="Top"
+                                Classes="Icon"
+                                Command="{Binding $parent[local:ProjectFontModelCollectionEditor].ClearMonoGameFontCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Clear the MonoGame font">
+                            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+                        </Button>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="3"
+                                   Classes="Label"
+                                   FontWeight="Normal"
+                                   Text="MonoGame Scale: " />
+
+                        <local:FloatEditor Grid.Column="1"
+                                           Grid.ColumnSpan="3"
+                                           Grid.Row="3"
+                                           Value="{Binding LegacyFontScale}"
+                                           ValueMinimum="0"
+                                           ValueMaximum="1" />
+
+                        <Border Grid.Column="0"
+                                Grid.Row="4"
+                                Grid.ColumnSpan="4"
+                                Classes="HorizontalSeparator" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
 </common:ValueEditorControl>

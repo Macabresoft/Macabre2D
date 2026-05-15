@@ -247,22 +247,23 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
 
     /// <inheritdoc />
     protected override void ReloadFontFromCategory() {
-        var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
-        var fontFound = this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition);
+        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
+            var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
 
-        if (fontFound) {
-            this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
-            this.ShouldRenderLegacyFont = false;
-        }
-        else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
-            this._legacyFontScale = fontDefinition.LegacyFontScale;
-            this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
-            this.LegacyFontReference.ContentId = fontDefinition.LegacyFontId;
-            this.ShouldRenderLegacyFont = this.LegacyFontReference.HasContent;
-        }
+            this.ShouldRenderLegacyFont = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture);
 
-        if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
-            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+            if (!this.ShouldRenderLegacyFont) {
+                this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
+            }
+            else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
+                this._legacyFontScale = fontDefinition.LegacyFontScale;
+                this.FontReference.LoadAsset(defaultDefinition.SpriteSheetId, defaultDefinition.FontId);
+                this.LegacyFontReference.ContentId = fontDefinition.LegacyFontId;
+            }
+
+            if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
+                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+            }
         }
     }
 

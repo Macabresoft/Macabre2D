@@ -14,6 +14,16 @@ public class ProjectFonts {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<ProjectFontKey, ProjectFontDefinition> _categoryAndCultureToFontDefinition = [];
 
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<ResourceCulture, bool> _cultureToShouldRenderInScreenSpace = [];
+
+    /// <summary>
+    /// Checks whether a culture should render in screen space.
+    /// </summary>
+    /// <param name="culture">The culture.</param>
+    /// <returns>A value indicating whether to render in screen space.</returns>
+    public bool CheckShouldRenderInScreenSpace(ResourceCulture culture) => this._cultureToShouldRenderInScreenSpace.GetValueOrDefault(culture, false);
+
     /// <summary>
     /// Removes the font with the given <see cref="FontCategory" /> and <see cref="ResourceCulture" />.
     /// </summary>
@@ -67,6 +77,15 @@ public class ProjectFonts {
         }
 
         this._categoryAndCultureToFontDefinition[key] = fontDefinition;
+    }
+
+    /// <summary>
+    /// Sets whether a specific culture should render in screen space.
+    /// </summary>
+    /// <param name="culture">The culture.</param>
+    /// <param name="shouldRenderInScreenSpace">A value indicating whether to render in screen space.</param>
+    public void SetShouldRenderInScreenSpace(ResourceCulture culture, bool shouldRenderInScreenSpace) {
+        this._cultureToShouldRenderInScreenSpace[culture] = shouldRenderInScreenSpace;
     }
 
     /// <summary>

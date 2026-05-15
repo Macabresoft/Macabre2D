@@ -32,12 +32,20 @@ public partial class ProjectFontModelCollectionEditor : ValueEditorControl<Proje
             nameof(SelectSpriteSheetFontCommand),
             editor => editor.SelectSpriteSheetFontCommand);
 
+    public static readonly DirectProperty<ProjectFontModelCollectionEditor, bool> ShouldRenderInScreenSpaceProperty =
+        AvaloniaProperty.RegisterDirect<ProjectFontModelCollectionEditor, bool>(
+            nameof(ShouldRenderInScreenSpace),
+            editor => editor.ShouldRenderInScreenSpace,
+            (editor, value) => editor.ShouldRenderInScreenSpace = value);
+
     private readonly ICommonDialogService _dialogService;
+    private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
 
     public ProjectFontModelCollectionEditor() : this(
         null,
         Resolver.Resolve<ICommonDialogService>(),
+        Resolver.Resolve<IProjectService>(),
         Resolver.Resolve<IUndoService>()) {
     }
 
@@ -45,8 +53,10 @@ public partial class ProjectFontModelCollectionEditor : ValueEditorControl<Proje
     public ProjectFontModelCollectionEditor(
         ValueControlDependencies dependencies,
         ICommonDialogService dialogService,
+        IProjectService projectService,
         IUndoService undoService) : base(dependencies) {
         this._dialogService = dialogService;
+        this._projectService = projectService;
         this._undoService = undoService;
 
         this.ClearMonoGameFontCommand = ReactiveCommand.Create<ProjectFontModel>(this.ClearMonoGameFont);
@@ -63,6 +73,24 @@ public partial class ProjectFontModelCollectionEditor : ValueEditorControl<Proje
     public ICommand SelectMonoGameFontCommand { get; }
 
     public ICommand SelectSpriteSheetFontCommand { get; }
+
+    public bool ShouldRenderInScreenSpace {
+        get => this._projectService.CurrentProject.Fonts.CheckShouldRenderInScreenSpace(this.Value.Culture);
+        set {
+            var originalValue = this.ShouldRenderInScreenSpace;
+            if (value != originalValue) {
+                this._undoService.Do(() =>
+                {
+                    this._projectService.CurrentProject.Fonts.SetShouldRenderInScreenSpace(this.Value.Culture, value);
+                    this.RaisePropertyChanged(ShouldRenderInScreenSpaceProperty, originalValue, value);
+                }, () =>
+                {
+                    this._projectService.CurrentProject.Fonts.SetShouldRenderInScreenSpace(this.Value.Culture, originalValue);
+                    this.RaisePropertyChanged(ShouldRenderInScreenSpaceProperty, value, originalValue);
+                });
+            }
+        }
+    }
 
     /// <inheritdoc />
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<ProjectFontModelCollection> args) {
