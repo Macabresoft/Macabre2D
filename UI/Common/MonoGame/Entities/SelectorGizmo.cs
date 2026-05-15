@@ -50,7 +50,7 @@ public class SelectorGizmo : Entity, IGizmo {
                 .ThenByDescending(x => x.RenderOrder));
             
             potentials.AddRange(scene.LegacyFontRenderers
-                .Where(x => x.ShouldRenderLegacyFont && x.BoundingArea.Contains(mousePosition))
+                .Where(x => x.ShouldRenderInScreenSpace && x.BoundingArea.Contains(mousePosition))
                 .OrderByDescending(x => x.RenderPriority)
                 .ThenByDescending(x => x.RenderOrder));
 

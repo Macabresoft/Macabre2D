@@ -267,9 +267,9 @@ public sealed class Scene : GridContainer, IScene {
 
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterCollection<IScreenSpaceRenderer> _legacyFontRenderers = new(
-        r => r.ShouldRenderLegacyFont,
-        (r, handler) => r.ShouldRenderLegacyFontChanged += handler,
-        (r, handler) => r.ShouldRenderLegacyFontChanged -= handler);
+        r => r.ShouldRenderInScreenSpace,
+        (r, handler) => r.ShouldRenderInScreenSpaceChanged += handler,
+        (r, handler) => r.ShouldRenderInScreenSpaceChanged -= handler);
 
 
     private readonly FilterCollection<IScreenSpaceRenderSystem> _legacyFontRenderSystems = new(

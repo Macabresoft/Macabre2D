@@ -23,7 +23,7 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
     public event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
-    public event EventHandler? ShouldRenderLegacyFontChanged;
+    public event EventHandler? ShouldRenderInScreenSpaceChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LegacyTextLineRenderer" /> class.
@@ -73,11 +73,11 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Rendering)]
-    public bool ShouldRenderLegacyFont {
+    public bool ShouldRenderInScreenSpace {
         get => field && this.IsEnabled;
         set {
             if (this.Set(ref field, value)) {
-                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+                this.ShouldRenderInScreenSpaceChanged.SafeInvoke(this);
             }
         }
     } = true;
@@ -147,8 +147,8 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
 
-        if (this.ShouldRenderLegacyFont) {
-            this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+        if (this.ShouldRenderInScreenSpace) {
+            this.ShouldRenderInScreenSpaceChanged.SafeInvoke(this);
         }
     }
 

@@ -468,7 +468,7 @@ public class Camera : Entity, ICamera {
 
         var groupings = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => x.ShouldRenderLegacyFont && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
+            .Where(x => x.ShouldRenderInScreenSpace && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
             .GroupBy(x => x.RenderPriority)
             .OrderBy(x => x.Key);
 

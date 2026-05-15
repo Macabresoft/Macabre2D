@@ -88,13 +88,7 @@ public class EmptyObject :
         remove { }
     }
 
-    /// <inheritdoc />
-    public event EventHandler? ShouldRenderLegacyFontChanged {
-        add { }
-        remove { }
-    }
-
-    /// <inheritdoc />
+    /// <inheritdoc cref="IScreenSpaceRenderer" />
     public event EventHandler? ShouldRenderInScreenSpaceChanged {
         add { }
         remove { }
@@ -234,10 +228,7 @@ public class EmptyObject :
     /// <inheritdoc />
     public bool ShouldAnimate => false;
 
-    /// <inheritdoc />
-    public bool ShouldRenderLegacyFont => false;
-
-    /// <inheritdoc />
+    /// <inheritdoc cref="IScreenSpaceRenderer" />
     public bool ShouldRenderInScreenSpace => false;
 
     /// <inheritdoc />
@@ -664,15 +655,15 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public void RenderInScreenSpace(FrameTime frameTime) {
+    }
+
+    /// <inheritdoc />
     public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
     }
 
     /// <inheritdoc />
     public void RenderLegacyFonts(FrameTime frameTime, InputState inputState) {
-    }
-
-    /// <inheritdoc />
-    public void RenderInScreenSpace(FrameTime frameTime) {
     }
 
     /// <inheritdoc />

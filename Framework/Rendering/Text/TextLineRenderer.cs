@@ -26,7 +26,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     public override event EventHandler? BoundingAreaChanged;
 
     /// <inheritdoc />
-    public event EventHandler? ShouldRenderLegacyFontChanged;
+    public event EventHandler? ShouldRenderInScreenSpaceChanged;
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
@@ -74,12 +74,12 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     } = 3f;
 
     /// <inheritdoc />
-    public bool ShouldRenderLegacyFont {
+    public bool ShouldRenderInScreenSpace {
         get;
         private set {
             if (value != field) {
                 field = value;
-                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+                this.ShouldRenderInScreenSpaceChanged.SafeInvoke(this);
             }
         }
     }
@@ -135,7 +135,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
-        if (!this.BoundingArea.IsEmpty && !this.ShouldRenderLegacyFont && this.SpriteBatch is { } spriteBatch) {
+        if (!this.BoundingArea.IsEmpty && !this.ShouldRenderInScreenSpace && this.SpriteBatch is { } spriteBatch) {
             if (this.ShouldScroll && this.WidthOverride.IsEnabled) {
                 this._textLine.Render(
                     spriteBatch,
@@ -209,7 +209,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     /// </summary>
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSize() {
-        if (this.ShouldRenderLegacyFont && this.SpriteSheet != null) {
+        if (this.ShouldRenderInScreenSpace && this.SpriteSheet != null) {
             return new Vector2(this._legacyTextLine.Width, this.SpriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel) * this.Game.ScreenPixelsPerUnit;
         }
 
@@ -248,11 +248,11 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     /// <inheritdoc />
     protected override void ReloadFontFromCategory() {
         if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
-            var shouldRenderLegacyFont = this.ShouldRenderLegacyFont;
+            var shouldRenderLegacyFont = this.ShouldRenderInScreenSpace;
 
-            this.ShouldRenderLegacyFont = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture);
+            this.ShouldRenderInScreenSpace = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture);
 
-            if (!this.ShouldRenderLegacyFont) {
+            if (!this.ShouldRenderInScreenSpace) {
                 this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
             }
             else if (this.Project.Fonts.TryGetFont(this.FontCategory, ResourceCulture.Default, out var defaultDefinition)) {
@@ -261,8 +261,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
                 this.LegacyFontReference.ContentId = fontDefinition.LegacyFontId;
             }
 
-            if (shouldRenderLegacyFont != this.ShouldRenderLegacyFont) {
-                this.ShouldRenderLegacyFontChanged.SafeInvoke(this);
+            if (shouldRenderLegacyFont != this.ShouldRenderInScreenSpace) {
+                this.ShouldRenderInScreenSpaceChanged.SafeInvoke(this);
             }
         }
     }
@@ -299,11 +299,11 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
         !string.IsNullOrEmpty(this.GetFullText());
 
     private bool CouldLegacyTextBeVisible() =>
-        this.ShouldRenderLegacyFont &&
+        this.ShouldRenderInScreenSpace &&
         this._legacyTextLine is { Height: > 0f, Width: > 0f };
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
-        if (this.IsInitialized && this.ShouldRenderLegacyFont) {
+        if (this.IsInitialized && this.ShouldRenderInScreenSpace) {
             this.ResetTextLine();
             this.ResetSize();
         }
@@ -346,7 +346,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
         if (this.Font != null) {
             var actualText = this.GetFullText();
 
-            if (this.ShouldRenderLegacyFont &&
+            if (this.ShouldRenderInScreenSpace &&
                 this.LegacyFontReference.Asset is { } legacyFontAsset &&
                 this.Font.SpriteSheet != null) {
                 this._textLine = TextLine.CreateTextLine(this.Project, this.GetResourceText(ResourceCulture.Default), this.Font, this.Kerning);
