@@ -54,6 +54,11 @@ public interface IGame {
     Point CroppedViewportSize { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the current culture renders text in screen space.
+    /// </summary>
+    bool CurrentCultureRendersTextInScreenSpace { get; }
+
+    /// <summary>
     /// Gets the scene.
     /// </summary>
     IScene CurrentScene { get; }
@@ -77,11 +82,6 @@ public interface IGame {
     /// Gets the frame time.
     /// </summary>
     FrameTime FrameTime { get; }
-
-    /// <summary>
-    /// Gets or sets the game speed.
-    /// </summary>
-    double GameSpeed { get; set; }
 
     /// <summary>
     /// Gets the graphics device.
@@ -127,7 +127,7 @@ public interface IGame {
     /// Gets the screen pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort ScreenPixelsPerUnit { get; }
-    
+
     /// <summary>
     /// Gets the screen resolution to internal resolution ratio. This is calculated as ViewPort.Y / InternalResolution.Y.
     /// </summary>
@@ -168,6 +168,11 @@ public interface IGame {
     /// Gets the size of the viewport.
     /// </summary>
     Point ViewportSize { get; }
+
+    /// <summary>
+    /// Gets or sets the game speed.
+    /// </summary>
+    double GameSpeed { get; set; }
 
     /// <summary>
     /// Applies the display settings.

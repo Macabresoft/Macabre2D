@@ -102,6 +102,9 @@ public class BaseGame : Game, IGame {
     public Point CroppedViewportSize { get; private set; }
 
     /// <inheritdoc />
+    public bool CurrentCultureRendersTextInScreenSpace { get; private set; }
+
+    /// <inheritdoc />
     public IScene CurrentScene {
         get => this._sceneStack.Any() ? this._sceneStack.Peek() : EmptyObject.Scene;
         private set {
@@ -296,6 +299,7 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public void RaiseCultureChanged() {
         Resources.Culture = CultureInfo.GetCultureInfo(this.DisplaySettings.Culture.ToCultureName());
+        this.CurrentCultureRendersTextInScreenSpace = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.DisplaySettings.Culture);
         this.CultureChanged.SafeInvoke(this, this.DisplaySettings.Culture);
     }
 
@@ -596,6 +600,7 @@ public class BaseGame : Game, IGame {
         public AudioSettings AudioSettings => this.UserSettings.Audio;
         public ContentManager? Content => null;
         public Point CroppedViewportSize => this.ViewportSize;
+        public bool CurrentCultureRendersTextInScreenSpace => false;
         public IScene CurrentScene => EmptyObject.Scene;
         public IDataManager DataManager => EmptyDataManager.Instance;
         public InputDevice DesiredInputDevice => InputDevice.GamePad;

@@ -3,8 +3,8 @@ namespace Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -44,7 +44,6 @@ public interface IRenderableEntity : IBaseRenderable {
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
-    private bool _shouldRender = true;
 
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
@@ -70,16 +69,16 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public abstract RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
-    [DataMember]
+    [field: DataMember(Name = nameof(ShouldRender))]
     [Category(CommonCategories.Rendering)]
     public bool ShouldRender {
-        get => this._shouldRender && this.IsEnabled;
+        get => field && this.CheckShouldRender();
         set {
-            if (this.Set(ref this._shouldRender, value)) {
-                this.ShouldRenderChanged.SafeInvoke(this);
+            if (this.Set(ref field, value)) {
+                this.RaiseShouldRenderChanged();
             }
         }
-    }
+    } = true;
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
@@ -87,12 +86,25 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride);
 
+    /// <summary>
+    /// A modifiable check on whether <see cref="ShouldRender" /> should return true.
+    /// </summary>
+    /// <returns>A value indicating whether <see cref="ShouldRender" /> should return true.</returns>
+    protected virtual bool CheckShouldRender() => this.IsEnabled;
+
     /// <inheritdoc />
     protected override void OnIsEnableChanged() {
         base.OnIsEnableChanged();
 
-        if (this._shouldRender) {
+        if (this.ShouldRender) {
             this.ShouldRenderChanged.SafeInvoke(this);
         }
+    }
+
+    /// <summary>
+    /// Raises the <see cref="ShouldRenderChanged" /> event.
+    /// </summary>
+    protected void RaiseShouldRenderChanged() {
+        this.ShouldRenderChanged.SafeInvoke(this);
     }
 }
