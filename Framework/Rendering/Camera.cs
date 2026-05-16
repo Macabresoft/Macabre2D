@@ -92,7 +92,7 @@ public interface ICamera : IBoundableEntity {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="renderTree">The render tree.</param>
-    void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree);
+    void RenderInScreenSpace(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree);
 }
 
 /// <summary>
@@ -256,8 +256,8 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void RenderLegacyFonts(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
-        this.RenderLegacyFonts(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetFullScreenViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
+    public virtual void RenderInScreenSpace(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
+        this.RenderInScreenSpace(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetScreenSpaceViewMatrix(), this.LayersToRender, this.LayersToExcludeFromRender);
     }
 
     /// <summary>
@@ -321,14 +321,14 @@ public class Camera : Entity, ICamera {
     /// Gets the view matrix for a full screen render.
     /// </summary>
     /// <returns>The view matrix.</returns>
-    protected Matrix GetFullScreenViewMatrix() => this.GetFullScreenViewMatrix(this.WorldPosition);
+    protected Matrix GetScreenSpaceViewMatrix() => this.GetScreenSpaceViewMatrix(this.WorldPosition);
 
     /// <summary>
     /// Gets the view matrix for a full screen render.
     /// </summary>
     /// <param name="position">The position.</param>
     /// <returns>The view matrix.</returns>
-    protected Matrix GetFullScreenViewMatrix(Vector2 position) {
+    protected Matrix GetScreenSpaceViewMatrix(Vector2 position) {
         var matrix =
             Matrix.CreateTranslation(new Vector3(-position * this.Game.ScreenPixelsPerUnit, 0f)) *
             Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
@@ -457,7 +457,7 @@ public class Camera : Entity, ICamera {
     /// <param name="viewMatrix">The view matrix.</param>
     /// <param name="layersToRender">The layers to render.</param>
     /// <param name="layersToExclude">The layers to exclude from render.</param>
-    protected void RenderLegacyFonts(
+    protected void RenderInScreenSpace(
         FrameTime frameTime,
         SpriteBatch? spriteBatch,
         IReadonlyQuadTree<IScreenSpaceRenderer> renderTree,

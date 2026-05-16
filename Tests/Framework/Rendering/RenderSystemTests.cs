@@ -143,7 +143,7 @@ public class RenderSystemTests {
             }
         }
 
-        public void RenderLegacyFonts(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
+        public void RenderInScreenSpace(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IScreenSpaceRenderer> renderTree) {
             throw new NotImplementedException();
         }
     }

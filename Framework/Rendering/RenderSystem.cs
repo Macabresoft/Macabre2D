@@ -96,7 +96,7 @@ public class RenderSystem : GameSystem, IRenderSystem, IScreenSpaceRenderSystem 
         this.InsertLegacyRenderables();
 
         foreach (var camera in this.Scene.Cameras) {
-            camera.RenderLegacyFonts(frameTime, this.Game.SpriteBatch, this._legacyRenderTree);
+            camera.RenderInScreenSpace(frameTime, this.Game.SpriteBatch, this._legacyRenderTree);
         }
     }
 
