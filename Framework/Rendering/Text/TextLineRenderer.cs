@@ -247,7 +247,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
 
     /// <inheritdoc />
     protected override void ReloadFontFromCategory() {
-        if (this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
+        if (this.FontCategory != FontCategory.None && this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
             var shouldRenderLegacyFont = this.ShouldRenderInScreenSpace;
 
             this.ShouldRenderInScreenSpace = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture);
