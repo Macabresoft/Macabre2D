@@ -8,17 +8,15 @@ using Microsoft.Xna.Framework;
 /// A <see cref="BoxTileMap" /> that automatically sizes to contain its contents.
 /// </summary>
 public class BoxTileBoundableCover : BoxTileMap {
-    private Point _margin;
-    private Point _minimumSize;
 
     /// <summary>
     /// Gets or sets the margin.
     /// </summary>
     [DataMember]
     public Point Margin {
-        get => this._margin;
+        get;
         set {
-            if (this.Set(ref this._margin, value)) {
+            if (this.Set(ref field, value)) {
                 this.ResetSize();
             }
         }
@@ -29,9 +27,9 @@ public class BoxTileBoundableCover : BoxTileMap {
     /// </summary>
     [DataMember]
     public Point MinimumSize {
-        get => this._minimumSize;
+        get;
         set {
-            if (this.Set(ref this._minimumSize, value)) {
+            if (this.Set(ref field, value)) {
                 this.ResetSize();
             }
         }
@@ -67,8 +65,8 @@ public class BoxTileBoundableCover : BoxTileMap {
 
     private void ResetSize() {
         if (this.Parent is IBoundableEntity { BoundingArea.IsEmpty: false } boundable) {
-            var width = this._margin.X;
-            var height = this._margin.Y;
+            var width = this.Margin.X;
+            var height = this.Margin.Y;
             var boundingArea = boundable.BoundingArea;
             var spriteSize = this.GetSpriteUnitSize();
 
@@ -87,7 +85,7 @@ public class BoxTileBoundableCover : BoxTileMap {
                 }
 
                 this.SetSizeWithMinimum(width, height);
-                var desiredMinimum = boundingArea.Minimum - new Vector2(this._margin.X * spriteSize.X * 0.5f, this._margin.Y * spriteSize.X * 0.5f);
+                var desiredMinimum = boundingArea.Minimum - new Vector2(this.Margin.X * spriteSize.X * 0.5f, this.Margin.Y * spriteSize.X * 0.5f);
                 var difference = desiredMinimum - this.BoundingArea.Minimum;
                 this.Move(difference);
             }
