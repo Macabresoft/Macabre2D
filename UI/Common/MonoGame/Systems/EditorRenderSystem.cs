@@ -37,7 +37,7 @@ public class EditorRenderSystem : RenderSystem {
                 this._renderTree.Insert(component);
             }
 
-            foreach (var legacyFontRenderer in scene.LegacyFontRenderers) {
+            foreach (var legacyFontRenderer in scene.ScreenSpaceRenderers) {
                 this._legacyFontRenderTree.Insert(legacyFontRenderer);
             }
 

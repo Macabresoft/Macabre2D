@@ -55,11 +55,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     bool IsActive { get; }
 
     /// <summary>
-    /// Gets the legacy font renderers.
-    /// </summary>
-    IReadOnlyCollection<IScreenSpaceRenderer> LegacyFontRenderers => [];
-
-    /// <summary>
     /// Gets the named children.
     /// </summary>
     IReadOnlyCollection<INameableCollection> NamedChildren => [];
@@ -73,6 +68,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Gets the renderable entities in the scene.
     /// </summary>
     IReadOnlyCollection<IRenderableEntity> RenderableEntities => [];
+
+    /// <summary>
+    /// Gets the screen space renderers.
+    /// </summary>
+    IReadOnlyCollection<IScreenSpaceRenderer> ScreenSpaceRenderers => [];
 
     /// <summary>
     /// Gets the scene state.
@@ -197,11 +197,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     public void Render(FrameTime frameTime, InputState inputState);
 
     /// <summary>
-    /// Renders legacy fonts in the scene.
+    /// Renders the scene in screen space.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState);
+    public void RenderInScreenSpace(FrameTime frameTime, InputState inputState);
 
     /// <summary>
     /// Reorders systems so the specified system is moved to the specified index.
@@ -265,18 +265,6 @@ public sealed class Scene : GridContainer, IScene {
 
     private readonly Dictionary<Guid, IEntity> _idToEntitiesInScene = [];
 
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly FilterCollection<IScreenSpaceRenderer> _legacyFontRenderers = new(
-        r => r.ShouldRenderInScreenSpace,
-        (r, handler) => r.ShouldRenderInScreenSpaceChanged += handler,
-        (r, handler) => r.ShouldRenderInScreenSpaceChanged -= handler);
-
-
-    private readonly FilterCollection<IScreenSpaceRenderSystem> _legacyFontRenderSystems = new(
-        a => a.ShouldRenderInScreenSpace,
-        (a, handler) => a.ShouldRenderInScreenSpaceChanged += handler,
-        (a, handler) => a.ShouldRenderInScreenSpaceChanged -= handler);
-
     private readonly List<INameableCollection> _namedChildren = [];
     private readonly List<Action> _pendingActions = [];
 
@@ -309,6 +297,18 @@ public sealed class Scene : GridContainer, IScene {
         a => a.ShouldRender,
         (a, handler) => a.ShouldRenderChanged += handler,
         (a, handler) => a.ShouldRenderChanged -= handler);
+
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly FilterCollection<IScreenSpaceRenderer> _screenSpaceRenderers = new(
+        r => r.ShouldRenderInScreenSpace,
+        (r, handler) => r.ShouldRenderInScreenSpaceChanged += handler,
+        (r, handler) => r.ShouldRenderInScreenSpaceChanged -= handler);
+
+
+    private readonly FilterCollection<IScreenSpaceRenderSystem> _screenSpaceRenderSystems = new(
+        a => a.ShouldRenderInScreenSpace,
+        (a, handler) => a.ShouldRenderInScreenSpaceChanged += handler,
+        (a, handler) => a.ShouldRenderInScreenSpaceChanged -= handler);
 
     [DataMember]
     private readonly SystemCollection _systems = [];
@@ -366,9 +366,6 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IScreenSpaceRenderer> LegacyFontRenderers => this._legacyFontRenderers;
-
-    /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
@@ -376,6 +373,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IScreenSpaceRenderer> ScreenSpaceRenderers => this._screenSpaceRenderers;
 
     /// <inheritdoc />
     public bool ShouldUpdate => true;
@@ -626,13 +626,13 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState) {
+    public void RenderInScreenSpace(FrameTime frameTime, InputState inputState) {
         try {
             this._isBusy = true;
-            this._legacyFontRenderers.RebuildCache();
-            this._legacyFontRenderSystems.RebuildCache();
+            this._screenSpaceRenderers.RebuildCache();
+            this._screenSpaceRenderSystems.RebuildCache();
 
-            foreach (var system in this._legacyFontRenderSystems) {
+            foreach (var system in this._screenSpaceRenderSystems) {
                 system.RenderInScreenSpace(frameTime);
             }
         }
@@ -721,7 +721,7 @@ public sealed class Scene : GridContainer, IScene {
     private IEnumerable<IFilterCollection> GetEntityCaches() {
         yield return this._animatableEntities;
         yield return this._cameras;
-        yield return this._legacyFontRenderers;
+        yield return this._screenSpaceRenderers;
         yield return this._physicsBodies;
         yield return this._renderableEntities;
         yield return this._updateableEntities;
@@ -729,7 +729,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private IEnumerable<IFilterCollection> GetSystemCaches() {
-        yield return this._legacyFontRenderSystems;
+        yield return this._screenSpaceRenderSystems;
         yield return this._renderSystems;
         yield return this._updateSystems;
         yield return this._preUpdateSystems;
@@ -773,7 +773,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private void RegisterSystem(IGameSystem system) {
-        this._legacyFontRenderSystems.Add(system);
+        this._screenSpaceRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
         if (system is IUpdateSystem updateSystem) {

@@ -104,12 +104,12 @@ public class RenderSystem : GameSystem, IRenderSystem, IScreenSpaceRenderSystem 
         this._legacyRenderTree.Clear();
 
         if (!this.Scene.BoundingArea.IsEmpty) {
-            foreach (var entity in this.Scene.LegacyFontRenderers.Where(x => x.RenderOutOfBounds || x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
+            foreach (var entity in this.Scene.ScreenSpaceRenderers.Where(x => x.RenderOutOfBounds || x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
                 this._legacyRenderTree.Insert(entity);
             }
         }
         else {
-            foreach (var entity in this.Scene.LegacyFontRenderers) {
+            foreach (var entity in this.Scene.ScreenSpaceRenderers) {
                 this._legacyRenderTree.Insert(entity);
             }
         }

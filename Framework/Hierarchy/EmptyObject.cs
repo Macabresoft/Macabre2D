@@ -663,7 +663,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void RenderLegacyFonts(FrameTime frameTime, InputState inputState) {
+    public void RenderInScreenSpace(FrameTime frameTime, InputState inputState) {
     }
 
     /// <inheritdoc />

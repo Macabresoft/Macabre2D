@@ -48,7 +48,7 @@ public class CurrentSceneRenderInScreenSpaceStep : RenderStep {
         spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
         spriteBatch.End();
         
-        this.Game.CurrentScene.RenderLegacyFonts(this.Game.FrameTime, this.Game.InputState);
+        this.Game.CurrentScene.RenderInScreenSpace(this.Game.FrameTime, this.Game.InputState);
         return renderTarget;
     }
 
