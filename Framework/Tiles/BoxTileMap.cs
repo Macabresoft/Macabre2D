@@ -288,14 +288,14 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
         var spriteSize = this.GetSpriteUnitSize(this.ShouldRenderInScreenSpace);
 
         if (spriteSize != Vector2.Zero) {
-            var defaultScale = Vector2.One;
+            var scale = Vector2.One;
 
             if (this.ShouldRenderInScreenSpace && this.Project.PixelsPerUnit > 0) {
-                defaultScale *= this.Game.ScreenPixelsPerUnit / (float)this.Project.PixelsPerUnit;
-                spriteSize = new Vector2(spriteSize.X * defaultScale.X, spriteSize.Y * defaultScale.Y);
+                scale = new Vector2(this.Game.ScreenToInternalResolutionRatio);
+                spriteSize *= this.Game.ScreenToInternalResolutionRatio;
             }
 
-            if (defaultScale.X == 0f || defaultScale.Y == 0f) {
+            if (scale.X == 0f || scale.Y == 0f) {
                 // Nothing to render
                 return;
             }
@@ -305,75 +305,75 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
                 var y = 0f;
                 if (this.Height == 1) {
                     if (this.Width == 1) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.None));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.None));
                     }
                     else {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.East));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.East));
                         x += spriteSize.X;
 
                         if (this.Width > 2) {
                             var absoluteMiddleWidth = this.Width - 2;
-                            var middleWidth = absoluteMiddleWidth / defaultScale.X;
-                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, defaultScale.Y), (byte)(CardinalDirections.East | CardinalDirections.West)));
+                            var middleWidth = absoluteMiddleWidth / scale.X;
+                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, scale.Y), (byte)(CardinalDirections.East | CardinalDirections.West)));
                             x += middleWidth;
                         }
 
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.West));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.West));
                     }
                 }
                 else if (this.Width == 1) {
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.North));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.North));
                     y += spriteSize.Y;
 
                     if (this.Height > 2) {
                         var absoluteMiddleHeight = this.Height - 2;
-                        var middleHeight = absoluteMiddleHeight / defaultScale.Y;
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(defaultScale.X, absoluteMiddleHeight), (byte)(CardinalDirections.North | CardinalDirections.South)));
+                        var middleHeight = absoluteMiddleHeight / scale.Y;
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(scale.X, absoluteMiddleHeight), (byte)(CardinalDirections.North | CardinalDirections.South)));
                         y += middleHeight;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.South));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.South));
                 }
                 else {
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.North)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.North)));
                     x += spriteSize.X;
                     var absoluteMiddleWidth = this.Width - 2;
                     var absoluteMiddleHeight = this.Height - 2;
-                    var middleWidth = absoluteMiddleWidth / defaultScale.X;
-                    var middleHeight = absoluteMiddleHeight / defaultScale.Y;
+                    var middleWidth = absoluteMiddleWidth / scale.X;
+                    var middleHeight = absoluteMiddleHeight / scale.Y;
 
                     if (middleWidth > 0) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, defaultScale.Y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, scale.Y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
                         x += middleWidth * spriteSize.X;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.West | CardinalDirections.North)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.North)));
 
                     x = 0f;
                     y += spriteSize.Y;
 
                     if (absoluteMiddleHeight > 0) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(defaultScale.X, absoluteMiddleHeight), (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(scale.X, absoluteMiddleHeight), (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
                         x += spriteSize.X;
                         if (absoluteMiddleWidth > 0) {
                             this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, absoluteMiddleHeight), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                             x += middleWidth * spriteSize.X;
                         }
 
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(defaultScale.X, absoluteMiddleHeight), (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(scale.X, absoluteMiddleHeight), (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                         x = 0f;
                         y += middleHeight * spriteSize.Y;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.South)));
                     x += spriteSize.X;
 
                     if (absoluteMiddleWidth > 0) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, defaultScale.Y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), new Vector2(absoluteMiddleWidth, scale.Y), (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
                         x += middleWidth * spriteSize.X;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.West | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.South)));
                 }
             }
             else {
@@ -381,67 +381,67 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
                 var y = 0f;
                 if (this.Height == 1) {
                     if (this.Width == 1) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.None));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.None));
                     }
                     else {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.East));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.East));
                         x += spriteSize.X;
 
                         for (var column = 1; column < this.Width - 1; column++) {
-                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.West)));
+                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West)));
                             x += spriteSize.X;
                         }
 
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.West));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.West));
                     }
                 }
                 else if (this.Width == 1) {
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.North));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.North));
                     y += spriteSize.Y;
 
                     for (var row = 1; row < this.Height - 1; row++) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.North | CardinalDirections.South)));
                         y += spriteSize.Y;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)CardinalDirections.South));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)CardinalDirections.South));
                 }
                 else {
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.North)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.North)));
                     x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North)));
                         x += spriteSize.X;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.West | CardinalDirections.North)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.North)));
                     x = 0f;
                     y += spriteSize.Y;
 
                     for (var row = 1; row < this.Height - 1; row++) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.North | CardinalDirections.South)));
                         x += spriteSize.X;
 
                         for (var column = 1; column < this.Width - 1; column++) {
-                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
+                            this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                             x += spriteSize.X;
                         }
 
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.North | CardinalDirections.South)));
                         y += spriteSize.Y;
                         x = 0f;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.South)));
                     x += spriteSize.X;
 
                     for (var column = 1; column < this.Width - 1; column++) {
-                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
+                        this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.East | CardinalDirections.West | CardinalDirections.South)));
                         x += spriteSize.X;
                     }
 
-                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), defaultScale, (byte)(CardinalDirections.West | CardinalDirections.South)));
+                    this._spriteInstances.Add(new SpriteInstance(new Vector2(x, y), scale, (byte)(CardinalDirections.West | CardinalDirections.South)));
                 }
             }
         }
