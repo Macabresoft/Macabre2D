@@ -191,12 +191,13 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
     /// <summary>
     /// Gets the sprite size in world units.
     /// </summary>
+    /// <param name="allowScreenSpace">A value indicating whether this calculation should allow screen space pixels rather than internal pixels.</param>
     /// <returns>The sprite size.</returns>
-    protected Vector2 GetSpriteUnitSize() {
+    protected Vector2 GetSpriteUnitSize(bool allowScreenSpace) {
         var result = Vector2.Zero;
 
         if (this.TileSet.Asset is { } spriteSheet) {
-            var unitsPerPixel = this.ShouldRenderInScreenSpace ? this.Game.UnitsPerScreenPixel : this.Project.UnitsPerPixel;
+            var unitsPerPixel = allowScreenSpace && this.ShouldRenderInScreenSpace ? this.Game.UnitsPerScreenPixel : this.Project.UnitsPerPixel;
 
             result = new Vector2(
                 spriteSheet.SpriteSize.X * unitsPerPixel,
@@ -284,7 +285,7 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
 
     private void ResetSprites() {
         this._spriteInstances.Clear();
-        var spriteSize = this.GetSpriteUnitSize();
+        var spriteSize = this.GetSpriteUnitSize(this.ShouldRenderInScreenSpace);
 
         if (spriteSize != Vector2.Zero) {
             var defaultScale = Vector2.One;

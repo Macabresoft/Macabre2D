@@ -68,7 +68,7 @@ public class BoxTileBoundableCover : BoxTileMap {
             var width = this.Margin.X;
             var height = this.Margin.Y;
             var boundingArea = boundable.BoundingArea;
-            var spriteSize = this.GetSpriteUnitSize();
+            var spriteSize = this.GetSpriteUnitSize(this.ShouldStretchSprites);
 
             if (spriteSize is { X: > 0f, Y: > 0f }) {
                 var boundingWidth = boundingArea.Width;
