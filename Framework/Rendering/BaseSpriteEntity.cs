@@ -3,8 +3,8 @@ namespace Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -23,7 +23,7 @@ public interface ISpriteEntity : IRenderableEntity {
 /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
 /// </summary>
 [Category(CommonCategories.Rendering)]
-public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
+public abstract class BaseSpriteEntity : ScreenSpaceRenderableEntity, ISpriteEntity {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Vector2> _offsetTransform;
 
@@ -47,6 +47,18 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
+    /// <summary>
+    /// Gets a render priority override.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
+
+    /// <summary>
+    /// Gets the sprite index.
+    /// </summary>
+    public abstract byte? SpriteIndex { get; }
+
     /// <inheritdoc />
     [DataMember(Order = 4, Name = "Render Options")]
     public RenderOptions RenderOptions { get; private set; } = new();
@@ -66,18 +78,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
             this.RenderPriorityOverride.Value = value;
         }
     }
-
-    /// <summary>
-    /// Gets a render priority override.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Rendering)]
-    public RenderPriorityOverride RenderPriorityOverride { get; } = new();
-
-    /// <summary>
-    /// Gets the sprite index.
-    /// </summary>
-    public abstract byte? SpriteIndex { get; }
 
     /// <summary>
     /// Gets the sprite sheet.
@@ -107,6 +107,18 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             this.RenderAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, this.GetRenderTransform(), colorOverride);
+        }
+    }
+
+    /// <inheritdoc />
+    public override void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        this.RenderInScreenSpace(frameTime, viewBoundingArea, this.RenderOptions.Color);
+    }
+
+    /// <inheritdoc />
+    public override void RenderInScreenSpace(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
+        if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
+            this.RenderInScreenSpaceAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, this.GetRenderTransform(), colorOverride);
         }
     }
 
@@ -150,6 +162,26 @@ public abstract class BaseSpriteEntity : RenderableEntity, ISpriteEntity {
             this.Project.PixelsPerUnit,
             spriteIndex,
             position,
+            color,
+            this.RenderOptions.Orientation);
+    }
+
+    /// <summary>
+    /// Renders the specified sprite in screen space at the specified location.
+    /// </summary>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="spriteSheet">The sprite sheet.</param>
+    /// <param name="spriteIndex">The sprite index.</param>
+    /// <param name="position">The position.</param>
+    /// <param name="colorOverride">The color override.</param>
+    protected void RenderInScreenSpaceAtPosition(SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Vector2 position, Color colorOverride) {
+        var color = this.AlphaOverride.IsEnabled ? new Color(colorOverride, this.AlphaOverride.Value) : colorOverride;
+        spriteSheet.Draw(
+            spriteBatch,
+            this.Game.ScreenPixelsPerUnit,
+            spriteIndex,
+            position,
+            new Vector2(this.Game.ScreenToInternalResolutionRatio),
             color,
             this.RenderOptions.Orientation);
     }

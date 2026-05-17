@@ -71,11 +71,17 @@ public abstract class ScreenSpaceRenderableEntity : RenderableEntity, IScreenSpa
         this.RaiseShouldRenderChanged();
     }
 
+    /// <inheritdoc />
+    protected override void RaiseShouldRenderChanged() {
+        base.RaiseShouldRenderChanged();
+        this.ResetShouldRenderInScreenSpace();
+    }
+
     private void Game_CultureChanged(object? sender, ResourceCulture e) {
         this.ResetShouldRenderInScreenSpace();
     }
 
     private void ResetShouldRenderInScreenSpace() {
-        this.ShouldRenderInScreenSpace = this.AllowScreenSpaceRendering && this.Game.CurrentCultureRendersTextInScreenSpace;
+        this.ShouldRenderInScreenSpace = this.AllowScreenSpaceRendering && this.Game.CurrentCultureRendersTextInScreenSpace && this.InternalShouldRender;
     }
 }

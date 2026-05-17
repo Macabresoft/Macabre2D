@@ -44,6 +44,8 @@ public interface IRenderableEntity : IBaseRenderable {
 /// </summary>
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
+    [DataMember(Name = nameof(ShouldRender))]
+    private bool _shouldRender = true;
 
     /// <inheritdoc />
     public abstract event EventHandler? BoundingAreaChanged;
@@ -69,16 +71,21 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public abstract RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
-    [field: DataMember(Name = nameof(ShouldRender))]
+
     [Category(CommonCategories.Rendering)]
     public bool ShouldRender {
-        get => field && this.CheckShouldRender();
+        get => this._shouldRender && this.CheckShouldRender();
         set {
-            if (this.Set(ref field, value)) {
+            if (this.Set(ref this._shouldRender, value)) {
                 this.RaiseShouldRenderChanged();
             }
         }
-    } = true;
+    }
+
+    /// <summary>
+    /// Gets the internal value of <see cref="ShouldRender" />. This can return true even if <see cref="ShouldRender" /> returns false.
+    /// </summary>
+    protected bool InternalShouldRender => this._shouldRender;
 
     /// <inheritdoc />
     public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
@@ -104,7 +111,7 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     /// <summary>
     /// Raises the <see cref="ShouldRenderChanged" /> event.
     /// </summary>
-    protected void RaiseShouldRenderChanged() {
+    protected virtual void RaiseShouldRenderChanged() {
         this.ShouldRenderChanged.SafeInvoke(this);
     }
 }
