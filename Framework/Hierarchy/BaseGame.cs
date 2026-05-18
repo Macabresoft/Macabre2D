@@ -176,13 +176,16 @@ public class BaseGame : Game, IGame {
             if (value != field) {
                 field = value;
                 this.UnitsPerScreenPixel = 1f / field;
-                this.ScreenToInternalResolutionRatio = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
+
+                if (!BaseGame.IsDesignMode) {
+                    this.ScreenToInternalResolutionRatio = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
+                }
             }
         }
     } = 32;
 
     /// <inheritdoc />
-    public float ScreenToInternalResolutionRatio { get; private set; }
+    public float ScreenToInternalResolutionRatio { get; private set; } = 1f;
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
