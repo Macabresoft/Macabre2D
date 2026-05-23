@@ -16,8 +16,6 @@ public sealed class ShaderAsset : Asset<Effect> {
     /// </summary>
     public const string FileExtension = ".fx";
 
-    private Type _configurationType = typeof(ShaderConfiguration);
-
     /// <inheritdoc />
     public override bool IncludeFileExtensionInContentPath => false;
 
@@ -27,14 +25,14 @@ public sealed class ShaderAsset : Asset<Effect> {
     [DataMember]
     [TypeRestriction(typeof(IShaderConfiguration))]
     public Type ConfigurationType {
-        get => this._configurationType;
+        get;
         set {
-            if (value != this._configurationType && value is { IsAbstract: false, IsInterface: false, IsClass: true } && value.GetConstructor(Type.EmptyTypes) != null) {
-                this.Set(ref this._configurationType, value);
+            if (value != field && value is { IsAbstract: false, IsInterface: false, IsClass: true } && value.GetConstructor(Type.EmptyTypes) != null) {
+                this.Set(ref field, value);
             }
         }
-    }
-    
+    } = typeof(ShaderConfiguration);
+
     /// <inheritdoc />
     public override string GetContentBuildCommands(string contentPath, string fileExtension) {
         var contentStringBuilder = new StringBuilder();
