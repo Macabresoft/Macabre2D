@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Common;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
 using ReactiveUI;
 using Unity;
 
@@ -29,7 +29,6 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
             editor => editor.SelectCommand);
 
     private readonly IAssetManager _assetManager;
-    private readonly Type _assetType;
     private readonly ICommonDialogService _dialogService;
     private readonly IUndoService _undoService;
 
@@ -58,25 +57,25 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
 
         if (dependencies is { Owner: AssetReference assetReference, ValuePropertyName: nameof(SpriteSheet.ContentId) }) {
-            this._assetType = assetReference.AssetType;
+            this.AssetType = assetReference.AssetType;
         }
         else if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
             if (members.FirstOrDefault() is { } info) {
                 if (info.GetCustomAttribute<AssetGuidAttribute>() is { } attribute) {
-                    this._assetType = attribute.AssetType;
+                    this.AssetType = attribute.AssetType;
                 }
                 else if (info.GetCustomAttribute<SceneGuidAttribute>() != null) {
-                    this._assetType = typeof(SceneAsset);
+                    this.AssetType = typeof(SceneAsset);
                 }
                 else if (info.GetCustomAttribute<SpriteSheetGuidAttribute>() != null) {
-                    this._assetType = typeof(SpriteSheet);
+                    this.AssetType = typeof(SpriteSheet);
                 }
                 else if (info.GetCustomAttribute<ShaderGuidAttribute>() != null) {
-                    this._assetType = typeof(ShaderAsset);
+                    this.AssetType = typeof(ShaderAsset);
                 }
                 else if (info.GetCustomAttribute<PrefabGuidAttribute>() != null) {
-                    this._assetType = typeof(PrefabAsset);
+                    this.AssetType = typeof(PrefabAsset);
                 }
             }
         }
@@ -85,14 +84,16 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
         this.InitializeComponent();
     }
 
+    public Type AssetType { get; }
+
     public ICommand ClearCommand { get; }
+
+    public ICommand SelectCommand { get; }
 
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
-
-    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
         base.OnValueChanged(args);
@@ -120,7 +121,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
     }
 
     private async Task Select() {
-        var contentNode = await this._dialogService.OpenContentSelectionDialog(this._assetType, false, this.Title);
+        var contentNode = await this._dialogService.OpenContentSelectionDialog(this.AssetType, false, this.Title);
         if (contentNode is ContentFile { Metadata: { } metadata }) {
             var originalId = this.Value;
             var contentId = metadata.ContentId;

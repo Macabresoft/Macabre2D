@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
-using Avalonia.Threading;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
 using Macabresoft.AvaloniaEx;
@@ -224,6 +223,8 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
+    private IEnumerable<AssetGuidEditor> GetShaderEditors() => this._shaderEditors.OfType<AssetGuidEditor>().Where(x => x.AssetType == typeof(ShaderAsset));
+
     private void Reset() {
         var originalBlendState = this._currentBlendState;
         this._currentBlendState = this.Value.GetRenderPriorityBlendStateType(this.SelectedPriority);
@@ -310,13 +311,13 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
     }
 
     private void SubscribeToShaderChange() {
-        if (this._shaderEditors.OfType<AssetGuidEditor>().FirstOrDefault() is { } assetGuidEditor) {
+        foreach (var assetGuidEditor in this.GetShaderEditors()) {
             assetGuidEditor.ValueChanged += this.AssetGuidEditorOnValueChanged;
         }
     }
 
     private void UnsubscribeFromShaderChange() {
-        if (this._shaderEditors.OfType<AssetGuidEditor>().FirstOrDefault() is { } assetGuidEditor) {
+        foreach (var assetGuidEditor in this.GetShaderEditors()) {
             assetGuidEditor.ValueChanged -= this.AssetGuidEditorOnValueChanged;
         }
     }
