@@ -1,10 +1,8 @@
 ﻿namespace Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -25,20 +23,23 @@ public class RenderSettings : CopyableSettings<RenderSettings>, INameableSetting
     private readonly Dictionary<RenderPriority, Color> _renderPriorityToColor = [];
 
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToScreenSpaceShaderReference = [];
+
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShaderReference = [];
 
-    /// <summary>
-    /// Called when a color changes for a specific <see cref="RenderPriority" />.
-    /// </summary>
-    public event EventHandler<RenderPriority>? ColorChanged;
-
-    /// <summary>
-    /// Called when a shader changes for a specific <see cref="RenderPriority" />.
-    /// </summary>
-    public event EventHandler<RenderPriority>? ShaderChanged;
+    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    private readonly Dictionary<RenderPriority, bool> _renderPriorityToShareShader = [];
 
     /// <inheritdoc />
     public string Name => "Render Settings";
+
+    /// <summary>
+    /// Gets a value indicating whether a given <see cref="RenderPriority" /> should share the same shader in screen space as it does in the internal render.
+    /// </summary>
+    /// <param name="renderPriority">The render priority.</param>
+    /// <returns>A value indicating whether to use the same shader in screen space.</returns>
+    public bool CheckIfRenderPriorityShaderSharedWithScreenSpace(RenderPriority renderPriority) => this._renderPriorityToShareShader.TryGetValue(renderPriority, out var value) && value;
 
     /// <summary>
     /// Clears color overrides for all render priorities.
@@ -94,6 +95,24 @@ public class RenderSettings : CopyableSettings<RenderSettings>, INameableSetting
     public BlendStateType GetRenderPriorityBlendStateType(RenderPriority renderPriority) => this._renderPriorityToBlendStateType.GetValueOrDefault(renderPriority, BlendStateType.AlphaBlend);
 
     /// <summary>
+    /// Tries to get the screen space shader for the specified <see cref="RenderPriority" />.
+    /// </summary>
+    /// <param name="renderPriority">The render priority.</param>
+    /// <returns>The existing screen space shader reference or a new one associated with the specified <see cref="RenderPriority" />.</returns>
+    public ShaderReference GetScreenSpaceShaderForRenderPriority(RenderPriority renderPriority) {
+        if (!this.CheckIfRenderPriorityShaderSharedWithScreenSpace(renderPriority)) {
+            if (!this._renderPriorityToScreenSpaceShaderReference.TryGetValue(renderPriority, out var shaderReference)) {
+                shaderReference = new ShaderReference();
+                this._renderPriorityToScreenSpaceShaderReference[renderPriority] = shaderReference;
+            }
+
+            return shaderReference;
+        }
+
+        return this.GetShaderForRenderPriority(renderPriority);
+    }
+
+    /// <summary>
     /// Tries to get the shader for the specified <see cref="RenderPriority" />.
     /// </summary>
     /// <param name="renderPriority">The render priority.</param>
@@ -113,16 +132,6 @@ public class RenderSettings : CopyableSettings<RenderSettings>, INameableSetting
     /// <param name="renderPriority">The render priority.</param>
     public void RemoveRenderPriorityColor(RenderPriority renderPriority) {
         this._renderPriorityToColor.Remove(renderPriority);
-        this.ColorChanged.SafeInvoke(this, renderPriority);
-    }
-
-    /// <summary>
-    /// Removes shader override for the specified render priority.
-    /// </summary>
-    /// <param name="renderPriority">The render priority.</param>
-    public void RemoveRenderPriorityShader(RenderPriority renderPriority) {
-        this._renderPriorityToShaderReference.Remove(renderPriority);
-        this.ShaderChanged.SafeInvoke(this, renderPriority);
     }
 
     /// <summary>
@@ -141,21 +150,15 @@ public class RenderSettings : CopyableSettings<RenderSettings>, INameableSetting
     /// <param name="color">The color.</param>
     public void SetRenderPriorityColor(RenderPriority renderPriority, Color color) {
         this._renderPriorityToColor[renderPriority] = color;
-        this.ColorChanged.SafeInvoke(this, renderPriority);
     }
 
     /// <summary>
-    /// Sets the shader for a specified <see cref="RenderPriority" />.
+    /// Sets a value indicating whether a given <see cref="RenderPriority" /> should use the same shader in screen space as it does in the internal render.
     /// </summary>
     /// <param name="renderPriority">The render priority.</param>
-    /// <param name="shaderId">The shader identifier.</param>
-    public void SetRenderPriorityShader(RenderPriority renderPriority, Guid shaderId) {
-        var shaderReference = new ShaderReference {
-            ContentId = shaderId
-        };
-
-        this._renderPriorityToShaderReference[renderPriority] = shaderReference;
-        this.ShaderChanged.SafeInvoke(this, renderPriority);
+    /// <param name="useSameShaderForScreenSpace">A value indicating whether to use the same shader in screen space.</param>
+    public void SetShareRenderPriorityShaderWithScreenSpace(RenderPriority renderPriority, bool useSameShaderForScreenSpace) {
+        this._renderPriorityToShareShader[renderPriority] = useSameShaderForScreenSpace;
     }
 
     /// <summary>

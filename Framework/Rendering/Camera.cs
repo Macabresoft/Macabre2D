@@ -231,7 +231,6 @@ public class Camera : Entity, ICamera {
         this._renderedLastFrame.Clear();
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged -= this.OffsetSettings_PropertyChanged;
-        this.Game.UserSettings.Rendering.ShaderChanged -= this.RenderOptions_ShaderChanged;
     }
 
     /// <inheritdoc />
@@ -246,7 +245,6 @@ public class Camera : Entity, ICamera {
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetOptions.PropertyChanged += this.OffsetSettings_PropertyChanged;
-        this.Game.UserSettings.Rendering.ShaderChanged += this.RenderOptions_ShaderChanged;
         this.ResetZoom();
     }
 

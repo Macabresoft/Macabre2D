@@ -93,7 +93,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     /// <inheritdoc />
     public void ReturnControls(params ValueControlCollection[] controlCollections) {
         foreach (var editorCollection in controlCollections) {
-            editorCollection.Dispose();
+            editorCollection?.Dispose();
         }
     }
 

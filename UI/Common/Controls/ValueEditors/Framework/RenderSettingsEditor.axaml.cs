@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
+using Avalonia.Threading;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Unity;
 
@@ -37,17 +38,25 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.SelectedPriority,
             (editor, value) => editor.SelectedPriority = value);
 
+    public static readonly DirectProperty<RenderSettingsEditor, bool> ShareShaderWithScreenSpaceProperty =
+        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, bool>(
+            nameof(ShareShaderWithScreenSpace),
+            editor => editor.ShareShaderWithScreenSpace,
+            (editor, value) => editor.ShareShaderWithScreenSpace = value);
+
+
     private readonly IAssetManager _assetManager;
 
-    private readonly HashSet<IValueControl> _shaderEditors = new();
+    private readonly HashSet<IValueControl> _shaderEditors = [];
 
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
-    private ValueControlCollection _controlCollection;
     private BlendStateType _currentBlendState;
     private Color _currentColor;
     private bool _isOverrideEnabled;
-    private RenderPriority _selectedPriority;
+    private ValueControlCollection _screenSpaceShaderControlCollection;
+    private ValueControlCollection _shaderControlCollection;
+    private bool _shareShaderWithScreenSpace;
 
     public RenderSettingsEditor() : this(
         null,
@@ -71,6 +80,8 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.ResetShaderEditors();
         this.InitializeComponent();
     }
+
+    public IReadOnlyCollection<RenderPriority> Priorities { get; }
 
     public BlendStateType CurrentBlendState {
         get => this._currentBlendState;
@@ -152,16 +163,35 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
-    public IReadOnlyCollection<RenderPriority> Priorities { get; }
-
     public RenderPriority SelectedPriority {
-        get => this._selectedPriority;
+        get;
         set {
-            if (this._selectedPriority != value) {
-                var originalValue = this._selectedPriority;
-                this._selectedPriority = value;
-                this.RaisePropertyChanged(SelectedPriorityProperty, this._selectedPriority, originalValue);
+            if (field != value) {
+                var originalValue = field;
+                field = value;
+                this.RaisePropertyChanged(SelectedPriorityProperty, field, originalValue);
                 this.Reset();
+            }
+        }
+    }
+
+    public bool ShareShaderWithScreenSpace {
+        get => this._shareShaderWithScreenSpace;
+        set {
+            if (this._shareShaderWithScreenSpace != value) {
+                var originalValue = this._shareShaderWithScreenSpace;
+                this._shareShaderWithScreenSpace = value;
+                this._undoService.Do(() =>
+                {
+                    this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
+                    this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, value);
+                    this.ResetShaderEditors();
+                }, () =>
+                {
+                    this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
+                    this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, originalValue);
+                    this.ResetShaderEditors();
+                });
             }
         }
     }
@@ -188,14 +218,17 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             this.Collection.RemoveControls(this._shaderEditors);
             this.UnsubscribeFromShaderChange();
             this._shaderEditors.Clear();
-            this._valueControlService.ReturnControls(this._controlCollection);
-            this._controlCollection = null;
+            this._valueControlService.ReturnControls(this._shaderControlCollection, this._screenSpaceShaderControlCollection);
+            this._shaderControlCollection = null;
+            this._screenSpaceShaderControlCollection = null;
         }
     }
 
     private void Reset() {
         var originalBlendState = this._currentBlendState;
         this._currentBlendState = this.Value.GetRenderPriorityBlendStateType(this.SelectedPriority);
+        var originalShareShaderWithScreenSpace = this._shareShaderWithScreenSpace;
+        this._shareShaderWithScreenSpace = this.Value.CheckIfRenderPriorityShaderSharedWithScreenSpace(this.SelectedPriority);
         this.RaisePropertyChanged(CurrentBlendStateProperty, originalBlendState, this._currentBlendState);
 
         var originalColor = this._currentColor;
@@ -212,6 +245,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
 
         this.RaisePropertyChanged(CurrentColorProperty, originalColor, this._currentColor);
         this.RaisePropertyChanged(IsOverrideEnabledProperty, originalIsOverrideEnabled, this._isOverrideEnabled);
+        this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, originalShareShaderWithScreenSpace, this._shareShaderWithScreenSpace);
 
         this.ResetShaderEditors();
     }
@@ -239,19 +273,35 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             if (this._valueControlService != null && this.Collection != null) {
                 var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
                 shaderReference.Initialize(this._assetManager, BaseGame.Empty);
-                this._controlCollection = this._valueControlService.CreateControl(shaderReference, "Shader", false);
+                this._shaderControlCollection = this._valueControlService.CreateControl(shaderReference, "Shader", false);
 
-                if (this._controlCollection != null) {
-                    this._shaderEditors.Clear();
-                    this._shaderEditors.AddRange(this._controlCollection.ValueControls);
+                if (this._shaderControlCollection != null) {
+                    this._shaderEditors.AddRange(this._shaderControlCollection.ValueControls);
 
                     if (this._shaderEditors.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
                         shaderEditor.Title = "Shader";
                     }
 
-                    this.Collection.AddControls(this._shaderEditors);
-                    this.SubscribeToShaderChange();
+                    this.Collection.AddControls(this._shaderControlCollection.ValueControls);
                 }
+
+                if (!this._shareShaderWithScreenSpace) {
+                    shaderReference = this.Value.GetScreenSpaceShaderForRenderPriority(this.SelectedPriority);
+                    shaderReference.Initialize(this._assetManager, BaseGame.Empty);
+                    this._screenSpaceShaderControlCollection = this._valueControlService.CreateControl(shaderReference, "Screen Space Shader", false);
+
+                    if (this._screenSpaceShaderControlCollection != null) {
+                        this._shaderEditors.AddRange(this._screenSpaceShaderControlCollection.ValueControls);
+
+                        if (this._screenSpaceShaderControlCollection.ValueControls.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
+                            shaderEditor.Title = "Screen Space Shader";
+                        }
+
+                        this.Collection.AddControls(this._screenSpaceShaderControlCollection.ValueControls);
+                    }
+                }
+
+                this.SubscribeToShaderChange();
             }
         }
         finally {
