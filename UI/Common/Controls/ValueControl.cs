@@ -24,9 +24,6 @@ public abstract class ValueControl<T> : UserControl, IValueInfo<T>, IObserver<Av
     public static readonly StyledProperty<T> ValueProperty =
         AvaloniaProperty.Register<ValueControl<T>, T>(nameof(Value), defaultBindingMode: BindingMode.TwoWay);
 
-
-    private ValueControlCollection _collection;
-
     protected ValueControl() {
         ValueProperty.Changed.Subscribe(this);
     }
@@ -39,8 +36,14 @@ public abstract class ValueControl<T> : UserControl, IValueInfo<T>, IObserver<Av
 
             this.Owner = dependencies.Owner;
             this.Title = dependencies.Title;
+            this.ValuePropertyName = dependencies.ValuePropertyName;
+            this.ValueType = dependencies.ValueType;
         }
     }
+
+    public string ValuePropertyName { get; }
+
+    public Type ValueType { get; }
 
     public string Category {
         get => this.GetValue(CategoryProperty);
@@ -48,8 +51,8 @@ public abstract class ValueControl<T> : UserControl, IValueInfo<T>, IObserver<Av
     }
 
     public ValueControlCollection Collection {
-        get => this._collection;
-        set => this.SetAndRaise(CollectionProperty, ref this._collection, value);
+        get;
+        set => this.SetAndRaise(CollectionProperty, ref field, value);
     }
 
     public object Owner {

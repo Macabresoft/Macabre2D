@@ -6,7 +6,7 @@
                                  x:TypeArguments="framework:RenderSettings"
                                  x:Class="Macabre2D.UI.Common.RenderSettingsEditor">
     <Grid DataContext="{Binding $parent[local:RenderSettingsEditor]}"
-          RowDefinitions="Auto, Auto, Auto, Auto, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
         <Design.DataContext>
             <local:RenderSettingsEditor />
         </Design.DataContext>
@@ -48,5 +48,14 @@
                           Title="Share Shader with Screen Space"
                           ToolTip.Tip="Share Shader with Screen Space"
                           Value="{Binding ShareShaderWithScreenSpace}" />
+
+        <local:AssetGuidEditor Grid.Row="5"
+                               Value="{Binding ShaderAssetId}"
+                               AssetType="{x:Type framework:ShaderAsset}" />
+
+        <local:AssetGuidEditor Grid.Row="6"
+                               Value="{Binding ScreenSpaceShaderShaderAssetId}"
+                               AssetType="{x:Type framework:ShaderAsset}"
+                               IsVisible="{Binding !ShareShaderWithScreenSpace}" />
     </Grid>
 </valueEditors:ValueEditorControl>

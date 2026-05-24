@@ -4,12 +4,19 @@
                                  xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabre2D.UI.Common"
                                  x:TypeArguments="framework:Collider"
-                                 x:Class="Macabre2D.UI.Common.ColliderEditor">
-    <Grid DataContext="{Binding $parent[local:ColliderEditor]}">
+                                 x:Class="Macabre2D.UI.Common.ShaderAssetEditor">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ShaderAssetEditor]}">
         <Design.DataContext>
-            <local:ColliderEditor />
+            <local:ShaderAssetEditor />
         </Design.DataContext>
-        <ComboBox ItemsSource="{Binding DerivedTypes}"
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="Configuration" />
+
+        <ComboBox Grid.Column="1"
+                  ItemsSource="{Binding DerivedTypes}"
                   SelectedItem="{Binding SelectedType}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

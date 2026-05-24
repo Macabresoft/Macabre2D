@@ -20,6 +20,15 @@ public sealed class ShaderAsset : Asset<Effect> {
     public override bool IncludeFileExtensionInContentPath => false;
 
     /// <summary>
+    /// Gets the configuration for this shader.
+    /// </summary>
+    [DataMember]
+    public IShaderConfiguration Configuration {
+        get;
+        private set => this.Set(ref field, value);
+    } = ShaderConfiguration.Empty;
+
+    /// <summary>
     /// Gets or sets the configuration type for this shader, which determines shader parameters.
     /// </summary>
     [DataMember]
@@ -29,6 +38,7 @@ public sealed class ShaderAsset : Asset<Effect> {
         set {
             if (value != field && value is { IsAbstract: false, IsInterface: false, IsClass: true } && value.GetConstructor(Type.EmptyTypes) != null) {
                 this.Set(ref field, value);
+                this.ResetConfigurationType();
             }
         }
     } = typeof(ShaderConfiguration);
@@ -43,5 +53,17 @@ public sealed class ShaderAsset : Asset<Effect> {
         contentStringBuilder.AppendLine($@"/build:{contentPath}{fileExtension}");
         contentStringBuilder.AppendLine($"#end {contentPath}");
         return contentStringBuilder.ToString();
+    }
+
+    private void ResetConfigurationType() {
+        var newConfiguration = ShaderConfiguration.Empty;
+        if (this.ConfigurationType == this.Configuration.GetType()) {
+            newConfiguration = this.Configuration;
+        }
+        else if (Activator.CreateInstance(this.ConfigurationType) is IShaderConfiguration configuration) {
+            newConfiguration = configuration;
+        }
+
+        this.Configuration = newConfiguration;
     }
 }

@@ -1,11 +1,22 @@
 ﻿namespace Macabre2D.UI.Common;
 
-using Avalonia;
+using System;
 
 /// <summary>
 /// A control for values being displayed in the editor.
 /// </summary>
 public interface IValueControl {
+
+    /// <summary>
+    /// Gets the value's property name on its parent object.
+    /// </summary>
+    string ValuePropertyName { get; }
+
+    /// <summary>
+    /// Gets the value's type.
+    /// </summary>
+    Type ValueType { get; }
+
     /// <summary>
     /// Gets or sets the category.
     /// </summary>

@@ -63,7 +63,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
         GameProperty.Changed.Subscribe(this);
         this.Focusable = true;
     }
-
+    
     /// <summary>
     /// Gets or sets the fallback background brush.
     /// </summary>

@@ -7,11 +7,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 using Unity.Resolution;
@@ -68,10 +68,9 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     /// <inheritdoc />
     public ValueControlCollection CreateControl(object owner, string name, bool tryRootControlFirst) {
         var editors = new List<IValueControl>();
-        if (tryRootControlFirst && 
+        if (tryRootControlFirst &&
             owner?.GetType() is { } ownerType &&
             this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), ownerType) is { } editorType) {
-
             var dependencies = new ValueControlDependencies(owner, ownerType, string.Empty, name, owner);
             if (this._container.Resolve(editorType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueEditor editor) {
                 editors.Add(editor);
@@ -80,10 +79,10 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         else {
             editors.AddRange(this.CreateControls(string.Empty, owner, owner));
         }
-        
+
         return new ValueControlCollection(editors, name);
     }
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> CreateControls(object owner, params Type[] typesToIgnore) {
         var valueEditors = this.CreateControls(string.Empty, owner, owner, typesToIgnore);
@@ -195,6 +194,12 @@ public class ValueControlService : ReactiveObject, IValueControlService {
                     editor.Title = $"Physics Material Id ({propertyPath})";
                 }
 
+                result.Add(editor);
+            }
+        }
+        else if (memberType == typeof(IAsset) && owner is ContentFile && value is ShaderAsset) {
+            var editor = this.CreateValueEditorFromType(typeof(ShaderAssetEditor), owner, value, typeof(ShaderAsset), member, propertyPath);
+            if (editor != null) {
                 result.Add(editor);
             }
         }

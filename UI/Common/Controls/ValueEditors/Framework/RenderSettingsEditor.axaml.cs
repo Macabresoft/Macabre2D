@@ -7,7 +7,6 @@ using Avalonia;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Unity;
 
@@ -31,11 +30,23 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.IsOverrideEnabled,
             (editor, value) => editor.IsOverrideEnabled = value);
 
+    public static readonly DirectProperty<RenderSettingsEditor, Guid> ScreenSpaceShaderAssetIdProperty =
+        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, Guid>(
+            nameof(ScreenSpaceShaderShaderAssetId),
+            editor => editor.ScreenSpaceShaderShaderAssetId,
+            (editor, value) => editor.ScreenSpaceShaderShaderAssetId = value);
+
     public static readonly DirectProperty<RenderSettingsEditor, RenderPriority> SelectedPriorityProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, RenderPriority>(
             nameof(SelectedPriority),
             editor => editor.SelectedPriority,
             (editor, value) => editor.SelectedPriority = value);
+
+    public static readonly DirectProperty<RenderSettingsEditor, Guid> ShaderAssetIdProperty =
+        AvaloniaProperty.RegisterDirect<RenderSettingsEditor, Guid>(
+            nameof(ShaderAssetId),
+            editor => editor.ShaderAssetId,
+            (editor, value) => editor.ShaderAssetId = value);
 
     public static readonly DirectProperty<RenderSettingsEditor, bool> ShareShaderWithScreenSpaceProperty =
         AvaloniaProperty.RegisterDirect<RenderSettingsEditor, bool>(
@@ -43,40 +54,21 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             editor => editor.ShareShaderWithScreenSpace,
             (editor, value) => editor.ShareShaderWithScreenSpace = value);
 
-
-    private readonly IAssetManager _assetManager;
-
-    private readonly HashSet<IValueControl> _shaderEditors = [];
-
     private readonly IUndoService _undoService;
-    private readonly IValueControlService _valueControlService;
     private BlendStateType _currentBlendState;
     private Color _currentColor;
     private bool _isOverrideEnabled;
-    private ValueControlCollection _screenSpaceShaderControlCollection;
-    private ValueControlCollection _shaderControlCollection;
     private bool _shareShaderWithScreenSpace;
 
-    public RenderSettingsEditor() : this(
-        null,
-        Resolver.Resolve<IAssetManager>(),
-        Resolver.Resolve<IUndoService>(),
-        Resolver.Resolve<IValueControlService>()) {
+    public RenderSettingsEditor() : this(null, Resolver.Resolve<IUndoService>()) {
     }
 
     [InjectionConstructor]
-    public RenderSettingsEditor(
-        ValueControlDependencies dependencies,
-        IAssetManager assetManager,
-        IUndoService undoService,
-        IValueControlService valueControlService) : base(dependencies) {
-        this._assetManager = assetManager;
+    public RenderSettingsEditor(ValueControlDependencies dependencies, IUndoService undoService) : base(dependencies) {
         this._undoService = undoService;
-        this._valueControlService = valueControlService;
 
         this.Priorities = Enum.GetValues<RenderPriority>().ToList();
 
-        this.ResetShaderEditors();
         this.InitializeComponent();
     }
 
@@ -103,6 +95,7 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
             }
         }
     }
+
 
     public Color CurrentColor {
         get => this._currentColor;
@@ -162,6 +155,27 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
+    public Guid ScreenSpaceShaderShaderAssetId {
+        get => this._shareShaderWithScreenSpace ? this.Value.GetShaderForRenderPriority(this.SelectedPriority).ContentId : Guid.Empty;
+        set {
+            if (this._shareShaderWithScreenSpace) {
+                var shaderReference = this.Value.GetScreenSpaceShaderForRenderPriority(this.SelectedPriority);
+                var originalValue = shaderReference.ContentId;
+                if (originalValue != value) {
+                    this._undoService.Do(() =>
+                    {
+                        shaderReference.ContentId = value;
+                        this.RaisePropertyChanged(ScreenSpaceShaderAssetIdProperty, value, originalValue);
+                    }, () =>
+                    {
+                        shaderReference.ContentId = originalValue;
+                        this.RaisePropertyChanged(ScreenSpaceShaderAssetIdProperty, originalValue, value);
+                    });
+                }
+            }
+        }
+    }
+
     public RenderPriority SelectedPriority {
         get;
         set {
@@ -174,6 +188,25 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
     }
 
+    public Guid ShaderAssetId {
+        get => this.Value.GetShaderForRenderPriority(this.SelectedPriority).ContentId;
+        set {
+            var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
+            var originalValue = shaderReference.ContentId;
+            if (originalValue != value) {
+                this._undoService.Do(() =>
+                {
+                    shaderReference.ContentId = value;
+                    this.RaisePropertyChanged(ShaderAssetIdProperty, value, originalValue);
+                }, () =>
+                {
+                    shaderReference.ContentId = originalValue;
+                    this.RaisePropertyChanged(ShaderAssetIdProperty, originalValue, value);
+                });
+            }
+        }
+    }
+
     public bool ShareShaderWithScreenSpace {
         get => this._shareShaderWithScreenSpace;
         set {
@@ -182,24 +215,18 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
                 this._shareShaderWithScreenSpace = value;
                 this._undoService.Do(() =>
                 {
+                    var originalShaderId = this.ScreenSpaceShaderShaderAssetId;
                     this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
                     this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, value);
-                    this.ResetShaderEditors();
+                    this.RaisePropertyChanged(ShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
                 }, () =>
                 {
+                    var originalShaderId = this.ScreenSpaceShaderShaderAssetId;
                     this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
                     this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, originalValue);
-                    this.ResetShaderEditors();
+                    this.RaisePropertyChanged(ShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
                 });
             }
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change) {
-        base.OnPropertyChanged(change);
-
-        if (change.Property.Name == nameof(IValueEditor.Collection)) {
-            this.ResetShaderEditors();
         }
     }
 
@@ -208,24 +235,9 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.Reset();
     }
 
-    private void AssetGuidEditorOnValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        this.ResetShaderEditors();
-    }
-
-    private void ClearEditors() {
-        if (this._shaderEditors.Any()) {
-            this.Collection.RemoveControls(this._shaderEditors);
-            this.UnsubscribeFromShaderChange();
-            this._shaderEditors.Clear();
-            this._valueControlService.ReturnControls(this._shaderControlCollection, this._screenSpaceShaderControlCollection);
-            this._shaderControlCollection = null;
-            this._screenSpaceShaderControlCollection = null;
-        }
-    }
-
-    private IEnumerable<AssetGuidEditor> GetShaderEditors() => this._shaderEditors.OfType<AssetGuidEditor>().Where(x => x.AssetType == typeof(ShaderAsset));
-
     private void Reset() {
+        var originalShaderId = this.ShaderAssetId;
+        var originalScreenSpaceShaderId = this.ScreenSpaceShaderShaderAssetId;
         var originalBlendState = this._currentBlendState;
         this._currentBlendState = this.Value.GetRenderPriorityBlendStateType(this.SelectedPriority);
         var originalShareShaderWithScreenSpace = this._shareShaderWithScreenSpace;
@@ -247,8 +259,8 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         this.RaisePropertyChanged(CurrentColorProperty, originalColor, this._currentColor);
         this.RaisePropertyChanged(IsOverrideEnabledProperty, originalIsOverrideEnabled, this._isOverrideEnabled);
         this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, originalShareShaderWithScreenSpace, this._shareShaderWithScreenSpace);
-
-        this.ResetShaderEditors();
+        this.RaisePropertyChanged(ShaderAssetIdProperty, originalShaderId, this.ShaderAssetId);
+        this.RaisePropertyChanged(ScreenSpaceShaderAssetIdProperty, originalScreenSpaceShaderId, this.ScreenSpaceShaderShaderAssetId);
     }
 
     private void ResetColor() {
@@ -264,61 +276,5 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
         }
 
         this.RaisePropertyChanged(CurrentColorProperty, originalColor, this._currentColor);
-    }
-
-    private void ResetShaderEditors() {
-        try {
-            this.IgnoreUpdates = true;
-            this.ClearEditors();
-
-            if (this._valueControlService != null && this.Collection != null) {
-                var shaderReference = this.Value.GetShaderForRenderPriority(this.SelectedPriority);
-                shaderReference.Initialize(this._assetManager, BaseGame.Empty);
-                this._shaderControlCollection = this._valueControlService.CreateControl(shaderReference, "Shader", false);
-
-                if (this._shaderControlCollection != null) {
-                    this._shaderEditors.AddRange(this._shaderControlCollection.ValueControls);
-
-                    if (this._shaderEditors.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
-                        shaderEditor.Title = "Shader";
-                    }
-
-                    this.Collection.AddControls(this._shaderControlCollection.ValueControls);
-                }
-
-                if (!this._shareShaderWithScreenSpace) {
-                    shaderReference = this.Value.GetScreenSpaceShaderForRenderPriority(this.SelectedPriority);
-                    shaderReference.Initialize(this._assetManager, BaseGame.Empty);
-                    this._screenSpaceShaderControlCollection = this._valueControlService.CreateControl(shaderReference, "Screen Space Shader", false);
-
-                    if (this._screenSpaceShaderControlCollection != null) {
-                        this._shaderEditors.AddRange(this._screenSpaceShaderControlCollection.ValueControls);
-
-                        if (this._screenSpaceShaderControlCollection.ValueControls.OfType<IValueEditor<Guid>>().FirstOrDefault(x => x.ValuePropertyName == nameof(ShaderReference.ContentId)) is { } shaderEditor) {
-                            shaderEditor.Title = "Screen Space Shader";
-                        }
-
-                        this.Collection.AddControls(this._screenSpaceShaderControlCollection.ValueControls);
-                    }
-                }
-
-                this.SubscribeToShaderChange();
-            }
-        }
-        finally {
-            this.IgnoreUpdates = false;
-        }
-    }
-
-    private void SubscribeToShaderChange() {
-        foreach (var assetGuidEditor in this.GetShaderEditors()) {
-            assetGuidEditor.ValueChanged += this.AssetGuidEditorOnValueChanged;
-        }
-    }
-
-    private void UnsubscribeFromShaderChange() {
-        foreach (var assetGuidEditor in this.GetShaderEditors()) {
-            assetGuidEditor.ValueChanged -= this.AssetGuidEditorOnValueChanged;
-        }
     }
 }

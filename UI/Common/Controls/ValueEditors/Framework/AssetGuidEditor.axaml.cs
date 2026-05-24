@@ -13,6 +13,13 @@ using ReactiveUI;
 using Unity;
 
 public partial class AssetGuidEditor : ValueEditorControl<Guid> {
+
+    /// <summary>
+    /// Avalonia property for the fallback background property.
+    /// </summary>
+    public static readonly StyledProperty<Type> AssetTypeProperty = AvaloniaProperty.Register<AssetGuidEditor, Type>(
+        nameof(AssetType));
+
     public static readonly DirectProperty<AssetGuidEditor, ICommand> ClearCommandProperty =
         AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
             nameof(ClearCommand),
@@ -31,8 +38,6 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
     private readonly IAssetManager _assetManager;
     private readonly ICommonDialogService _dialogService;
     private readonly IUndoService _undoService;
-
-    private string _pathText;
 
     public AssetGuidEditor() : this(
         null,
@@ -84,15 +89,22 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
         this.InitializeComponent();
     }
 
-    public Type AssetType { get; }
 
     public ICommand ClearCommand { get; }
 
     public ICommand SelectCommand { get; }
 
+    /// <summary>
+    /// Gets or sets the asset type.
+    /// </summary>
+    public Type AssetType {
+        get => this.GetValue(AssetTypeProperty);
+        set => this.SetValue(AssetTypeProperty, value);
+    }
+
     public string PathText {
-        get => this._pathText;
-        private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
+        get;
+        private set => this.SetAndRaise(PathTextProperty, ref field, value);
     }
 
     protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<Guid> args) {
