@@ -291,8 +291,8 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
             var scale = Vector2.One;
 
             if (this.ShouldRenderInScreenSpace && this.Project.PixelsPerUnit > 0) {
-                scale = new Vector2(this.Game.ScreenToInternalResolutionRatio);
-                spriteSize *= this.Game.ScreenToInternalResolutionRatio;
+                scale = new Vector2(this.Game.ScreenResolutionToInternalResolution);
+                spriteSize *= this.Game.ScreenResolutionToInternalResolution;
             }
 
             if (scale.X == 0f || scale.Y == 0f) {

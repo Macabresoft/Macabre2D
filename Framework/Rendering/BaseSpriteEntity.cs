@@ -181,7 +181,7 @@ public abstract class BaseSpriteEntity : ScreenSpaceRenderableEntity, ISpriteEnt
             this.Game.ScreenPixelsPerUnit,
             spriteIndex,
             position,
-            new Vector2(this.Game.ScreenToInternalResolutionRatio),
+            new Vector2(this.Game.ScreenResolutionToInternalResolution),
             color,
             this.RenderOptions.Orientation);
     }

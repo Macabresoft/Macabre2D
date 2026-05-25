@@ -131,7 +131,7 @@ public interface IGame {
     /// <summary>
     /// Gets the screen resolution to internal resolution ratio. This is calculated as ViewPort.Y / InternalResolution.Y.
     /// </summary>
-    float ScreenToInternalResolutionRatio { get; }
+    float ScreenResolutionToInternalResolution { get; }
 
     /// <summary>
     /// Gets the sprite batch.

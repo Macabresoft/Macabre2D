@@ -178,14 +178,14 @@ public class BaseGame : Game, IGame {
                 this.UnitsPerScreenPixel = 1f / field;
 
                 if (!BaseGame.IsDesignMode) {
-                    this.ScreenToInternalResolutionRatio = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
+                    this.ScreenResolutionToInternalResolution = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
                 }
             }
         }
     } = 32;
 
     /// <inheritdoc />
-    public float ScreenToInternalResolutionRatio { get; private set; } = 1f;
+    public float ScreenResolutionToInternalResolution { get; private set; } = 1f;
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
@@ -618,7 +618,7 @@ public class BaseGame : Game, IGame {
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
         public ushort ScreenPixelsPerUnit => 1;
-        public float ScreenToInternalResolutionRatio => 1f;
+        public float ScreenResolutionToInternalResolution => 1f;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;

@@ -366,8 +366,8 @@ public class Camera : Entity, ICamera {
     /// This will also be called during initialization.
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
-        var offsetX = this.Game.ScreenToInternalResolutionRatio * this.OffsetOptions.Offset.X;
-        var offsetY = this.Game.ScreenToInternalResolutionRatio * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
+        var offsetX = this.Game.ScreenResolutionToInternalResolution * this.OffsetOptions.Offset.X;
+        var offsetY = this.Game.ScreenResolutionToInternalResolution * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
         this._screenOffset = new Vector2(offsetX, offsetY);
 
         this.CalculateActualViewHeight();
