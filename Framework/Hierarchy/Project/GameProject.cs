@@ -104,6 +104,14 @@ public interface IGameProject : INotifyPropertyChanged {
     /// produce the same value, but quicker.
     /// </remarks>
     float UnitsPerPixel { get; }
+    
+    /// <summary>
+    /// Gets the size of half of a pixel in units.
+    /// </summary>
+    /// <remarks>
+    /// This is for utility purposes.
+    /// </remarks>
+    float HalfPixelInUnits { get; }
 
     /// <summary>
     /// Gets the view height based on render resolution and units per pixel.
@@ -239,6 +247,7 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
             if (value != field) {
                 field = value;
                 this.UnitsPerPixel = 1f / field;
+                this.HalfPixelInUnits = this.UnitsPerPixel * 0.5f;
                 this.ResetViewSize();
             }
         }
@@ -260,6 +269,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     public float UnitsPerPixel { get; private set; } = 1f / 32f;
+
+    /// <inheritdoc />
+    public float HalfPixelInUnits { get; private set; } = 1f / 64f;
 
     /// <inheritdoc />
     public float ViewHeight {
