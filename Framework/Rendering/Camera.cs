@@ -101,6 +101,7 @@ public interface ICamera : IBoundableEntity {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly List<IRenderableEntity> _renderedLastFrame = [];
+    private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToScreenSpaceShader = [];
     private readonly Dictionary<RenderPriority, ShaderReference> _renderPriorityToShader = [];
     private readonly ResettableLazy<float> _viewWidth;
     private Vector2 _screenOffset;
@@ -463,7 +464,6 @@ public class Camera : Entity, ICamera {
         Matrix viewMatrix,
         Layers layersToRender,
         Layers layersToExclude) {
-
         var groupings = renderTree
             .RetrievePotentialCollisions(viewBoundingArea)
             .Where(x => x.ShouldRenderInScreenSpace && (x.Layers & layersToExclude) == Layers.None && (x.Layers & layersToRender) != Layers.None)
@@ -473,13 +473,19 @@ public class Camera : Entity, ICamera {
         foreach (var group in groupings) {
             var renderPriority = group.Key;
 
+            Effect? shader = null;
+
+            if (!BaseGame.IsDesignMode && this._renderPriorityToScreenSpaceShader.TryGetValue(renderPriority, out var shaderReference)) {
+                shader = shaderReference.PrepareAndGetShader(this.Game.ViewportSize.ToVector2(), this.Game, this.Scene);
+            }
+
             spriteBatch?.Begin(
                 SpriteSortMode.Deferred,
                 this.Game.UserSettings.Rendering.GetRenderPriorityBlendState(renderPriority),
                 this.Sampler.ToSamplerState(),
                 null,
                 RasterizerState.CullNone,
-                null,
+                shader,
                 viewMatrix);
 
             var entities = group.OrderBy(x => x.RenderOrder);
@@ -544,23 +550,18 @@ public class Camera : Entity, ICamera {
                 shaderReference.Initialize(this.Scene.Assets, this.Game);
                 this._renderPriorityToShader[renderPriority] = shaderReference;
             }
+
+            var screenSpaceShaderReference = renderOptions.GetScreenSpaceShaderForRenderPriority(renderPriority);
+            if (screenSpaceShaderReference.ContentId != Guid.Empty) {
+                screenSpaceShaderReference.Initialize(this.Scene.Assets, this.Game);
+                this._renderPriorityToScreenSpaceShader[renderPriority] = screenSpaceShaderReference;
+            }
         }
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.OffsetOptions.Offset)) {
             this.OnScreenAreaChanged();
-        }
-    }
-
-    private void RenderOptions_ShaderChanged(object? sender, RenderPriority renderPriority) {
-        var shaderReference = this.Game.UserSettings.Rendering.GetShaderForRenderPriority(renderPriority);
-        if (shaderReference.ContentId != Guid.Empty) {
-            shaderReference.Initialize(this.Scene.Assets, this.Game);
-            this._renderPriorityToShader[renderPriority] = shaderReference;
-        }
-        else {
-            this._renderPriorityToShader.Remove(renderPriority);
         }
     }
 

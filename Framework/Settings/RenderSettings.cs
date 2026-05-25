@@ -68,6 +68,16 @@ public class RenderSettings : CopyableSettings<RenderSettings>, INameableSetting
         foreach (var entry in this._renderPriorityToShaderReference) {
             other._renderPriorityToShaderReference[entry.Key] = entry.Value;
         }
+        
+        other._renderPriorityToScreenSpaceShaderReference.Clear();
+        foreach (var entry in this._renderPriorityToScreenSpaceShaderReference) {
+            other._renderPriorityToScreenSpaceShaderReference[entry.Key] = entry.Value;
+        }
+        
+        other._renderPriorityToShareShader.Clear();
+        foreach (var entry in this._renderPriorityToShareShader) {
+            other._renderPriorityToShareShader[entry.Key] = entry.Value;
+        }
     }
 
     /// <summary>

@@ -156,9 +156,9 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
     }
 
     public Guid ScreenSpaceShaderShaderAssetId {
-        get => this._shareShaderWithScreenSpace ? this.Value.GetShaderForRenderPriority(this.SelectedPriority).ContentId : Guid.Empty;
+        get => !this._shareShaderWithScreenSpace ? this.Value.GetScreenSpaceShaderForRenderPriority(this.SelectedPriority).ContentId : Guid.Empty;
         set {
-            if (this._shareShaderWithScreenSpace) {
+            if (!this._shareShaderWithScreenSpace) {
                 var shaderReference = this.Value.GetScreenSpaceShaderForRenderPriority(this.SelectedPriority);
                 var originalValue = shaderReference.ContentId;
                 if (originalValue != value) {
@@ -218,13 +218,13 @@ public partial class RenderSettingsEditor : ValueEditorControl<RenderSettings> {
                     var originalShaderId = this.ScreenSpaceShaderShaderAssetId;
                     this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
                     this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, value);
-                    this.RaisePropertyChanged(ShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
+                    this.RaisePropertyChanged(ScreenSpaceShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
                 }, () =>
                 {
                     var originalShaderId = this.ScreenSpaceShaderShaderAssetId;
                     this.Value.SetShareRenderPriorityShaderWithScreenSpace(this.SelectedPriority, value);
                     this.RaisePropertyChanged(ShareShaderWithScreenSpaceProperty, this._shareShaderWithScreenSpace, originalValue);
-                    this.RaisePropertyChanged(ShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
+                    this.RaisePropertyChanged(ScreenSpaceShaderAssetIdProperty, originalShaderId, this.ScreenSpaceShaderShaderAssetId);
                 });
             }
         }
