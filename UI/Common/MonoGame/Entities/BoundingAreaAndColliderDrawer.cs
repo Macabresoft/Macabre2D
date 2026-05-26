@@ -43,7 +43,7 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this._editorService.ShowBoundingAreasAndColliders && this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } primitiveDrawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * this.Project.UnitsPerPixel * 0.5f;
+            var shadowOffset = lineThickness * this.Project.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var boundingAreas = this._sceneService.CurrentlyEditing.GetDescendants<IBoundable>().Select(x => x.BoundingArea);

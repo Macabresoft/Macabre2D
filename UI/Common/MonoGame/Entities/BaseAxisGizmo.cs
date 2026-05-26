@@ -133,7 +133,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         var result = GizmoAxis.None;
 
         var viewRatio = this.Project.GetPixelAgnosticRatio(this.Camera.ActualViewHeight, this.Game.ViewportSize.Y);
-        var radius = viewRatio * GizmoPointSize * this.Project.UnitsPerPixel * 0.5f;
+        var radius = viewRatio * GizmoPointSize * this.Project.HalfPixelInUnits;
         if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
             result = GizmoAxis.X;
         }

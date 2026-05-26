@@ -57,17 +57,17 @@ public class SelectionDisplay : BaseDrawer {
         }
 
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
-            var settings = this.Project;
+            var project = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
+            var shadowOffset = lineThickness * project.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             foreach (var boundingArea in this._boundables.Select(x => x.BoundingArea)) {
-                this.DrawBoundingArea(spriteBatch, drawer, settings.PixelsPerUnit, boundingArea, Color.Transparent, shadowOffsetVector, lineThickness);
+                this.DrawBoundingArea(spriteBatch, drawer, project.PixelsPerUnit, boundingArea, Color.Transparent, shadowOffsetVector, lineThickness);
             }
 
             if (this._selectedBoundable is { BoundingArea: { IsEmpty: false } selectedBoundingArea }) {
-                this.DrawBoundingArea(spriteBatch, drawer, settings.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
+                this.DrawBoundingArea(spriteBatch, drawer, project.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
             }
 
             if (this._entityService.Selected is { } selected) {
@@ -82,7 +82,7 @@ public class SelectionDisplay : BaseDrawer {
 
                     drawer.DrawLine(
                         spriteBatch,
-                        settings.PixelsPerUnit,
+                        project.PixelsPerUnit,
                         left + shadowOffsetVector,
                         right + shadowOffsetVector,
                         this._editorService.DropShadowColor,
@@ -90,14 +90,14 @@ public class SelectionDisplay : BaseDrawer {
 
                     drawer.DrawLine(
                         spriteBatch,
-                        settings.PixelsPerUnit,
+                        project.PixelsPerUnit,
                         top + shadowOffsetVector,
                         bottom + shadowOffsetVector,
                         this._editorService.DropShadowColor,
                         lineThickness);
 
-                    drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
-                    drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
+                    drawer.DrawLine(spriteBatch, project.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
+                    drawer.DrawLine(spriteBatch, project.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
                 }
 
                 if (selected is IPhysicsBody body) {
@@ -106,7 +106,7 @@ public class SelectionDisplay : BaseDrawer {
                         drawer.DrawCollider(
                             collider,
                             spriteBatch,
-                            settings.PixelsPerUnit,
+                            project.PixelsPerUnit,
                             this._editorService.DropShadowColor,
                             lineThickness,
                             shadowOffsetVector);
@@ -114,7 +114,7 @@ public class SelectionDisplay : BaseDrawer {
                         drawer.DrawCollider(
                             collider,
                             spriteBatch,
-                            settings.PixelsPerUnit,
+                            project.PixelsPerUnit,
                             this._editorService.ColliderColor,
                             lineThickness,
                             Vector2.Zero);

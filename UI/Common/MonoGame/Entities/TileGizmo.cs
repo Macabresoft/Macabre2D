@@ -72,7 +72,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
             viewBoundingArea.Overlaps(this.BoundingArea)) {
             var settings = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
+            var shadowOffset = lineThickness * settings.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var tileBoundingAreas = tileable.ActiveTiles
