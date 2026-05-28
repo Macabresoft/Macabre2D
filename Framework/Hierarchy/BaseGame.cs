@@ -90,6 +90,8 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public LaunchArguments LaunchArguments { get; }
 
+    public ICommonMeasurements Measurements { get; } = new CommonMeasurements();
+
     public IReadOnlyCollection<IScene> OpenScenes => this._sceneStack;
 
     /// <inheritdoc />
@@ -166,32 +168,7 @@ public class BaseGame : Game, IGame {
     } = new GameProject();
 
     /// <inheritdoc />
-    public ushort ScreenPixelsPerUnit {
-        get;
-        private set {
-            if (value < 1) {
-                throw new ArgumentOutOfRangeException($"{nameof(this.ScreenPixelsPerUnit)} must be greater than 0!");
-            }
-
-            if (value != field) {
-                field = value;
-                this.UnitsPerScreenPixel = 1f / field;
-
-                if (!BaseGame.IsDesignMode) {
-                    this.ScreenResolutionToInternalResolution = this.Project.InternalRenderResolution.Y > 0 ? this.ViewportSize.Y / (float)this.Project.InternalRenderResolution.Y : 1f;
-                }
-            }
-        }
-    } = 32;
-
-    /// <inheritdoc />
-    public float ScreenResolutionToInternalResolution { get; private set; } = 1f;
-
-    /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
-
-    /// <inheritdoc />
-    public float UnitsPerScreenPixel { get; private set; }
 
     /// <inheritdoc />
     public UserSettings UserSettings {
@@ -392,6 +369,7 @@ public class BaseGame : Game, IGame {
 
         this.ResetViewPort();
         this.ReloadUserSettings();
+        this.Measurements.Initialize(this, this.Project);
 
         this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
@@ -432,6 +410,12 @@ public class BaseGame : Game, IGame {
         if (!IsDesignMode) {
             assetManager.Dispose();
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnExiting(object sender, ExitingEventArgs args) {
+        base.OnExiting(sender, args);
+        this.Measurements.Deinitialize();
     }
 
     /// <summary>
@@ -561,13 +545,6 @@ public class BaseGame : Game, IGame {
             this.CroppedViewportSize = this.ViewportSize;
         }
 
-        if (!IsDesignMode) {
-            this.ScreenPixelsPerUnit = (ushort)Math.Floor(this.CroppedViewportSize.Y / this.Project.ViewHeight);
-        }
-        else {
-            this.ScreenPixelsPerUnit = this.Project.PixelsPerUnit;
-        }
-
         this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
 
         this._gameRenderTarget?.Dispose();
@@ -609,11 +586,11 @@ public class BaseGame : Game, IGame {
         public InputDevice DesiredInputDevice => InputDevice.GamePad;
         public DisplaySettings DisplaySettings => this.UserSettings.Display;
         public FrameTime FrameTime => FrameTime.Zero;
-
         public GraphicsDevice? GraphicsDevice => null;
         public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
         public InputSettings InputSettings => this.UserSettings.Input;
         public LaunchArguments LaunchArguments => LaunchArguments.None;
+        public ICommonMeasurements Measurements => EmptyObject.Instance;
         public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
         public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;

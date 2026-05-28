@@ -114,7 +114,7 @@ public class ScrollingSpriteRenderer : SpriteRenderer, IAnimatableEntity {
         if (this.SpriteSheet is { } spriteSheet && this.SpriteIndex is { } spriteIndex) {
             var spriteSize = spriteSheet.SpriteSize;
             var spriteLocation = spriteSheet.GetSpriteLocation(spriteIndex);
-            var renderTransform = this.GetRenderTransform() * this.Project.PixelsPerUnit;
+            var renderTransform = this.GetRenderTransform() * this.Measurements.PixelsPerUnit;
 
             while (this._currentOffset.X > spriteSize.X) {
                 this._currentOffset = new Point(this._currentOffset.X - spriteSize.X, this._currentOffset.Y);

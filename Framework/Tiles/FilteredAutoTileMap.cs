@@ -154,7 +154,7 @@ public class FilteredAutoTileMap : Entity, IRenderableEntity, IActiveTileableEnt
                 var boundingArea = this._tileEntity.GetTileBoundingArea(activeTile);
                 if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex) && (this.Scene.BoundingArea.IsEmpty || boundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
                     spriteBatch.Draw(
-                        this.Project.PixelsPerUnit,
+                        this.Measurements.PixelsPerUnit,
                         spriteSheet,
                         spriteIndex,
                         boundingArea.Minimum,

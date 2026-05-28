@@ -49,31 +49,30 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is { } spriteBatch) {
-            var settings = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.HalfPixelInUnits;
+            var shadowOffset = lineThickness * this.Measurements.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
-            var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
+            var viewRatio = this.Measurements.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
-            var offset = viewRatio * GizmoPointSize * settings.HalfPixelInUnits; // The extra half pixel is to center it
+            var offset = viewRatio * GizmoPointSize * this.Measurements.HalfPixelInUnits; // The extra half pixel is to center it
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
                 this.EditorService.DropShadowColor);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._xAxisArrowSprite,
                 this.XAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
                 this.EditorService.DropShadowColor);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._yAxisArrowSprite,
                 this.YAxisPosition - new Vector2(offset) + shadowOffsetVector,
                 scale,
@@ -82,28 +81,28 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
             base.Render(frameTime, viewBoundingArea);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._xAxisArrowSprite,
                 this.XAxisPosition - new Vector2(offset),
                 scale,
                 this.EditorService.XAxisColor);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._yAxisArrowSprite,
                 this.YAxisPosition - new Vector2(offset),
                 scale,
                 this.EditorService.YAxisColor);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition + new Vector2(offset),
                 -scale,
                 this.EditorService.XAxisColor);
 
             spriteBatch.Draw(
-                settings.PixelsPerUnit,
+                this.Measurements.PixelsPerUnit,
                 this._neutralAxisTriangleSprite,
                 this.NeutralAxisPosition - new Vector2(offset),
                 scale,
@@ -247,7 +246,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                     }
                 }
                 else {
-                    nudgeAmount *= this.Project.UnitsPerPixel;
+                    nudgeAmount *= this.Measurements.UnitsPerPixel;
                     position += nudgeAmount;
                 }
                 

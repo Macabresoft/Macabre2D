@@ -10,12 +10,14 @@ using Macabre2D.UI.Common;
 using Macabresoft.AvaloniaEx;
 using NSubstitute;
 using NUnit.Framework;
+using Unity;
 
 [TestFixture]
 public class ProjectServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
+        this.RegisterDependencies();
         var contentService = Substitute.For<IContentService>();
         var pathService = this.CreatePathService();
         var fileSystem = this.CreateFileSystem(pathService, false);
@@ -65,6 +67,7 @@ public class ProjectServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void LoadProject_ShouldLoad_WhenFileExists() {
+        this.RegisterDependencies();
         var pathService = this.CreatePathService();
         var fileSystem = this.CreateFileSystem(pathService, true);
         var serializer = Substitute.For<ISerializer>();
@@ -127,6 +130,7 @@ public class ProjectServiceTests {
     [Test]
     [Category("Unit Tests")]
     public void SaveProject_ShouldSave_WhenProjectExists() {
+        this.RegisterDependencies();
         var pathService = this.CreatePathService();
         var fileSystem = this.CreateFileSystem(pathService, true);
         var serializer = Substitute.For<ISerializer>();
@@ -158,6 +162,10 @@ public class ProjectServiceTests {
         using (new AssertionScope()) {
             serializer.Received().Serialize(project, pathService.ProjectFilePath);
         }
+    }
+
+    private void RegisterDependencies() {
+        Resolver.Container.RegisterInstance(Substitute.For<IAssetManager>());
     }
 
     private IPathService CreatePathService() {

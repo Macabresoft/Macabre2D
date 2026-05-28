@@ -329,7 +329,7 @@ public class Camera : Entity, ICamera {
     /// <returns>The view matrix.</returns>
     protected Matrix GetScreenSpaceViewMatrix(Vector2 position) {
         var matrix =
-            Matrix.CreateTranslation(new Vector3(-position * this.Game.ScreenPixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-position * this.Measurements.ScreenPixelsPerUnit, 0f)) *
             Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this._screenOffset.X, this._screenOffset.Y, 0f));
 
@@ -353,7 +353,7 @@ public class Camera : Entity, ICamera {
         var offsetY = this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y;
 
         var matrix =
-            Matrix.CreateTranslation(new Vector3(-position * this.Project.PixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-position * this.Measurements.PixelsPerUnit, 0f)) *
             Matrix.CreateScale(this._zoom, -this._zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-offsetX, offsetY, 0f));
 
@@ -366,8 +366,8 @@ public class Camera : Entity, ICamera {
     /// This will also be called during initialization.
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
-        var offsetX = this.Game.ScreenResolutionToInternalResolution * this.OffsetOptions.Offset.X;
-        var offsetY = this.Game.ScreenResolutionToInternalResolution * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
+        var offsetX = this.Measurements.ScreenResolutionToInternalResolution * this.OffsetOptions.Offset.X;
+        var offsetY = this.Measurements.ScreenResolutionToInternalResolution * (this.OffsetOptions.Size.Y + this.OffsetOptions.Offset.Y);
         this._screenOffset = new Vector2(offsetX, offsetY);
 
         this.CalculateActualViewHeight();
@@ -505,7 +505,7 @@ public class Camera : Entity, ICamera {
     }
 
     private void CalculateActualViewHeight() {
-        this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Project.ViewHeight;
+        this.ActualViewHeight = this.OverrideCommonViewHeight ? this.ViewHeight : this.Measurements.ViewHeight;
         this.RaisePropertyChanged(nameof(this.ActualViewHeight));
     }
 
@@ -567,7 +567,7 @@ public class Camera : Entity, ICamera {
 
     private void ResetZoom() {
         if (this.OffsetOptions.Size.Y > 0f) {
-            this._zoom = 1f / this.Project.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
+            this._zoom = 1f / this.Measurements.GetPixelAgnosticRatio(this.ActualViewHeight, (int)this.OffsetOptions.Size.Y);
         }
     }
 
@@ -576,5 +576,5 @@ public class Camera : Entity, ICamera {
             this.ToPixelSnappedValue(value.X),
             this.ToPixelSnappedValue(value.Y));
 
-    private float ToPixelSnappedValue(float value) => (int)Math.Round(value * this.Project.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * this.Project.UnitsPerPixel;
+    private float ToPixelSnappedValue(float value) => this.Measurements.GetLengthInUnits((int)Math.Round(value * this.Measurements.PixelsPerUnit, 0, MidpointRounding.AwayFromZero));
 }

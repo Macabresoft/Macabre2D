@@ -181,7 +181,8 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     private void ResetProjectTreeRoot() {
         this._treeRoot.Clear();
-        this._treeRoot.Add(new ProjectNode(this._contentService.RootContentDirectory, this.CurrentProject, this._undoService));
+        var root = new ProjectNode(this._contentService.RootContentDirectory, this.CurrentProject, this._undoService);
+        this._treeRoot.Add(root);
     }
 
     private void SaveProjectFile(IGameProject project, string projectFilePath) {

@@ -188,12 +188,11 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// <param name="spriteSize">The sprite size.</param>
     /// <returns>The scale for the sprite to fit within the tile grid.</returns>
     protected Vector2 GetTileScale(Point spriteSize) {
-        var inversePixelsPerUnit = this.Project.UnitsPerPixel;
         var result = this.CurrentGrid.TileSize;
 
         if (spriteSize.X != 0 && spriteSize.Y != 0) {
-            var spriteWidth = spriteSize.X * inversePixelsPerUnit;
-            var spriteHeight = spriteSize.Y * inversePixelsPerUnit;
+            var spriteWidth = this.Measurements.GetLengthInUnits(spriteSize.X);
+            var spriteHeight = this.Measurements.GetLengthInUnits(spriteSize.Y);
             result = new Vector2(result.X / spriteWidth, result.Y / spriteHeight);
         }
 

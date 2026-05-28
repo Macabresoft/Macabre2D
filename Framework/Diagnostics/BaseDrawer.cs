@@ -57,7 +57,7 @@ public abstract class BaseDrawer : RenderableEntity {
     protected float GetLineThickness(float viewHeight) {
         var result = this.LineThickness;
         if (this.UseDynamicLineThickness && this.Game.GraphicsDevice is { } device) {
-            result = LineHelper.GetDynamicLineThickness(result, viewHeight, device, this.Project);
+            result = LineHelper.GetDynamicLineThickness(result, viewHeight, device, this.Measurements);
         }
 
         return result;

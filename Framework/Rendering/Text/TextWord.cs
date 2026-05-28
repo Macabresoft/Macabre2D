@@ -8,7 +8,7 @@ using System.Linq;
 /// Represents a single word in a <see cref="TextLine" />.
 /// </summary>
 public class TextWord {
-    private TextWord(IGameProject project, SpriteSheet spriteSheet, SpriteSheetFont font, int kerning, string word) {
+    private TextWord(ICommonMeasurements measurements, SpriteSheet spriteSheet, SpriteSheetFont font, int kerning, string word) {
         var fontCharacters = new List<SpriteSheetFontCharacter>();
 
         foreach (var character in word) {
@@ -18,7 +18,7 @@ public class TextWord {
         }
 
         var textCharacters = new List<TextCharacter>();
-        foreach (var textCharacter in fontCharacters.Select(fontCharacter => new TextCharacter(fontCharacter, font, kerning, project))) {
+        foreach (var textCharacter in fontCharacters.Select(fontCharacter => new TextCharacter(fontCharacter, font, kerning, measurements))) {
             textCharacters.Add(textCharacter);
             this.Width += textCharacter.Width;
         }
@@ -51,13 +51,13 @@ public class TextWord {
     /// <summary>
     /// Creates a collection of <see cref="TextWord" />.
     /// </summary>
-    /// <param name="project">The project.</param>
+    /// <param name="measurements">The measurements.</param>
     /// <param name="text">The text.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The kerning.</param>
     /// <returns>A collection of words.</returns>
     public static IReadOnlyCollection<TextWord> CreateTextWords(
-        IGameProject project,
+        ICommonMeasurements measurements,
         string text,
         SpriteSheetFont font,
         int kerning) {
@@ -65,7 +65,7 @@ public class TextWord {
 
         if (font.SpriteSheet is { } spriteSheet) {
             var splitWords = text.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            result.AddRange(splitWords.Select(word => new TextWord(project, spriteSheet, font, kerning, word)));
+            result.AddRange(splitWords.Select(word => new TextWord(measurements, spriteSheet, font, kerning, word)));
         }
 
         return result;

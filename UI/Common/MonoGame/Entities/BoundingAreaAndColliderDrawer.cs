@@ -43,7 +43,7 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this._editorService.ShowBoundingAreasAndColliders && this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } primitiveDrawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * this.Project.HalfPixelInUnits;
+            var shadowOffset = lineThickness * this.Measurements.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var boundingAreas = this._sceneService.CurrentlyEditing.GetDescendants<IBoundable>().Select(x => x.BoundingArea);
@@ -77,8 +77,8 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
 
             var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
 
-            primitiveDrawer.DrawPolygon(spriteBatch, this.Project.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, true, shadowPoints);
-            primitiveDrawer.DrawPolygon(spriteBatch, this.Project.PixelsPerUnit, this._editorService.SelectionColor, lineThickness, true, points);
+            primitiveDrawer.DrawPolygon(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, true, shadowPoints);
+            primitiveDrawer.DrawPolygon(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.SelectionColor, lineThickness, true, points);
         }
     }
 
@@ -91,7 +91,7 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
         primitiveDrawer.DrawCollider(
             collider,
             spriteBatch,
-            this.Project.PixelsPerUnit,
+            this.Measurements.PixelsPerUnit,
             this._editorService.DropShadowColor,
             lineThickness,
             shadowOffsetVector);
@@ -99,7 +99,7 @@ public class BoundingAreaAndColliderDrawer : BaseDrawer {
         primitiveDrawer.DrawCollider(
             collider,
             spriteBatch,
-            this.Project.PixelsPerUnit,
+            this.Measurements.PixelsPerUnit,
             this._editorService.ColliderColor,
             lineThickness,
             Vector2.Zero);

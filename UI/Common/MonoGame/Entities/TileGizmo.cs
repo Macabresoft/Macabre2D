@@ -70,9 +70,8 @@ public class TileGizmo : BaseDrawer, IGizmo {
             !this.BoundingArea.IsEmpty &&
             this._entityService.Selected is ITileableEntity tileable &&
             viewBoundingArea.Overlaps(this.BoundingArea)) {
-            var settings = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.HalfPixelInUnits;
+            var shadowOffset = lineThickness * this.Measurements.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var tileBoundingAreas = tileable.ActiveTiles
@@ -94,7 +93,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
                     topRight + shadowOffsetVector
                 };
 
-                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, settings.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadows);
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadows);
 
                 var lineStrip = new[] {
                     bottomLeft,
@@ -105,7 +104,7 @@ public class TileGizmo : BaseDrawer, IGizmo {
                     topRight
                 };
 
-                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, settings.PixelsPerUnit, this._editorService.SelectionColor, lineThickness, lineStrip);
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.SelectionColor, lineThickness, lineStrip);
             }
         }
     }

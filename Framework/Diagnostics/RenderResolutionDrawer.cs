@@ -34,7 +34,7 @@ public class RenderResolutionDrawer : BaseDrawer {
 
         if (this.SpriteBatch is { } spriteBatch && !this.BoundingArea.IsEmpty) {
             var thickness = this.GetLineThickness(viewBoundingArea.Height);
-            this.PrimitiveDrawer.DrawBoundingArea(spriteBatch, this.Project.PixelsPerUnit, this.BoundingArea, colorOverride, thickness);
+            this.PrimitiveDrawer.DrawBoundingArea(spriteBatch, this.Measurements.PixelsPerUnit, this.BoundingArea, colorOverride, thickness);
         }
     }
 
@@ -46,8 +46,8 @@ public class RenderResolutionDrawer : BaseDrawer {
     }
 
     private BoundingArea CreateBoundingArea() {
-        var height = this.Project.ViewHeight;
-        var width = height * this.Project.InternalRenderResolutionRatio;
+        var height = this.Measurements.ViewHeight;
+        var width = height * this.Measurements.InternalRenderResolutionRatio;
         return new BoundingArea(this.WorldPosition, width, height);
     }
 }

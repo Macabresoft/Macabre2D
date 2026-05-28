@@ -45,8 +45,8 @@ public class LoopingRepeatedSpriteAnimator : LoopingSpriteAnimator {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             var xPosition = this.BoundingArea.Minimum.X;
             var yPosition = this.BoundingArea.Minimum.Y;
-            var spriteWidth = spriteSheet.SpriteSize.X * this.Project.UnitsPerPixel;
-            var spriteHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            var spriteWidth = this.Measurements.GetLengthInUnits(spriteSheet.SpriteSize.X);
+            var spriteHeight = this.Measurements.GetLengthInUnits(spriteSheet.SpriteSize.Y);
             for (var x = 0; x < this.Width; x++) {
                 for (var y = 0; y < this.Height; y++) {
                     this.RenderAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, new Vector2(xPosition, yPosition), colorOverride);
@@ -64,8 +64,8 @@ public class LoopingRepeatedSpriteAnimator : LoopingSpriteAnimator {
         if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             var xPosition = this.BoundingArea.Minimum.X;
             var yPosition = this.BoundingArea.Minimum.Y;
-            var spriteWidth = spriteSheet.SpriteSize.X * this.Project.UnitsPerPixel;
-            var spriteHeight = spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            var spriteWidth = this.Measurements.GetLengthInUnits(spriteSheet.SpriteSize.X);
+            var spriteHeight = this.Measurements.GetLengthInUnits(spriteSheet.SpriteSize.Y);
             for (var x = 0; x < this.Width; x++) {
                 for (var y = 0; y < this.Height; y++) {
                     this.RenderInScreenSpaceAtPosition(spriteBatch, spriteSheet, this.SpriteIndex.Value, new Vector2(xPosition, yPosition), colorOverride);

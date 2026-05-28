@@ -77,6 +77,8 @@ public interface IGame {
     /// Gets the graphics settings.
     /// </summary>
     DisplaySettings DisplaySettings { get; }
+    
+    ICommonMeasurements Measurements { get; }
 
     /// <summary>
     /// Gets the frame time.
@@ -124,16 +126,6 @@ public interface IGame {
     IGameProject Project { get; }
 
     /// <summary>
-    /// Gets the screen pixels per unit. This value is the number of pixels per arbitrary game units.
-    /// </summary>
-    ushort ScreenPixelsPerUnit { get; }
-
-    /// <summary>
-    /// Gets the screen resolution to internal resolution ratio. This is calculated as ViewPort.Y / InternalResolution.Y.
-    /// </summary>
-    float ScreenResolutionToInternalResolution { get; }
-
-    /// <summary>
     /// Gets the sprite batch.
     /// </summary>
     SpriteBatch? SpriteBatch { get; }
@@ -147,17 +139,6 @@ public interface IGame {
     /// Gets a <see cref="TimeSpan" /> representing the time since launching the game.
     /// </summary>
     TimeSpan TimeSinceGameStart { get; }
-
-    /// <summary>
-    /// Gets the inverse of <see cref="ScreenPixelsPerUnit" />.
-    /// </summary>
-    /// <remarks>
-    /// This will be calculated when <see cref="ScreenPixelsPerUnit" /> is set.
-    /// Multiplication is a quicker operation than division, so if you find yourself dividing by
-    /// <see cref="UnitsPerScreenPixel" /> regularly, consider multiplying by this instead as it will
-    /// produce the same value, but quicker.
-    /// </remarks>
-    float UnitsPerScreenPixel { get; }
 
     /// <summary>
     /// Gets the user settings.

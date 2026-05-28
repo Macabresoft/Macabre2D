@@ -49,7 +49,7 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
                 this.PrimitiveDrawer.DrawCollider(
                     collider,
                     spriteBatch,
-                    this.Project.PixelsPerUnit,
+                    this.Measurements.PixelsPerUnit,
                     this.Color,
                     lineThickness,
                     Vector2.Zero);

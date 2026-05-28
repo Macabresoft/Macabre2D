@@ -58,7 +58,7 @@ public sealed class LineDrawer : BaseDrawer {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea, Color colorOverride) {
         if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && this.SpriteBatch is { } spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            this.PrimitiveDrawer.DrawLine(spriteBatch, this.Project.PixelsPerUnit, this.StartPoint, this.EndPoint, this.Color, lineThickness);
+            this.PrimitiveDrawer.DrawLine(spriteBatch, this.Measurements.PixelsPerUnit, this.StartPoint, this.EndPoint, this.Color, lineThickness);
         }
     }
 }

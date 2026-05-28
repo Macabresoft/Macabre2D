@@ -81,25 +81,25 @@ public class TextLine {
     /// <summary>
     /// Creates a single text line from text.
     /// </summary>
-    /// <param name="project">The project.</param>
+    /// <param name="measurements">The measurements.</param>
     /// <param name="text">The text.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The kerning.</param>
     /// <returns>The created text line.</returns>
     public static TextLine CreateTextLine(
-        IGameProject project,
+        ICommonMeasurements measurements,
         string text,
         SpriteSheetFont font,
         int kerning) {
-        var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
-        var words = TextWord.CreateTextWords(project, text, font, kerning);
+        var spaceWidth = GetStandardSpaceCharacterWidth(measurements, font, kerning);
+        var words = TextWord.CreateTextWords(measurements, text, font, kerning);
         return new TextLine(TextAlignment.Left, 0f, spaceWidth, words);
     }
 
     /// <summary>
     /// Creates multiple lines of text given a maximum width and a text alignment.
     /// </summary>
-    /// <param name="project">The project.</param>
+    /// <param name="measurements">The measurements.</param>
     /// <param name="text">The text.</param>
     /// <param name="maxWidth">The max width.</param>
     /// <param name="font">The font.</param>
@@ -107,14 +107,14 @@ public class TextLine {
     /// <param name="textAlignment">The text alignment.</param>
     /// <returns>The created text lines.</returns>
     public static IReadOnlyCollection<TextLine> CreateTextLines(
-        IGameProject project,
+        ICommonMeasurements measurements,
         string text,
         float maxWidth,
         SpriteSheetFont font,
         int kerning,
         TextAlignment textAlignment) {
-        var spaceWidth = GetStandardSpaceCharacterWidth(project, font, kerning);
-        var words = TextWord.CreateTextWords(project, text, font, kerning);
+        var spaceWidth = GetStandardSpaceCharacterWidth(measurements, font, kerning);
+        var words = TextWord.CreateTextWords(measurements, text, font, kerning);
         var currentLineWidth = 0f;
         var pseudoLines = new List<List<TextWord>>();
         var currentPseudoLine = new List<TextWord>();
@@ -221,10 +221,10 @@ public class TextLine {
         return -spaceWidth + words.Sum(word => word.Width + spaceWidth);
     }
 
-    private static float GetStandardSpaceCharacterWidth(IGameProject project, SpriteSheetFont font, int kerning) {
+    private static float GetStandardSpaceCharacterWidth(ICommonMeasurements measurements, SpriteSheetFont font, int kerning) {
         var result = 0f;
         if (font.TryGetSpriteCharacter(' ', out var spaceCharacter)) {
-            result = font.GetCharacterWidth(spaceCharacter, kerning, project);
+            result = font.GetCharacterWidth(spaceCharacter, kerning, measurements);
         }
 
         return result;

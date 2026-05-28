@@ -4,15 +4,21 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Common;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Interface for a single project in the engine.
 /// </summary>
-public interface IGameProject : INotifyPropertyChanged {
+public interface IGameProject {
+
+    /// <summary>
+    /// Event occurs when the internal size changes via <see cref="InternalRenderResolution" /> or <see cref="UnitsPerPixel" /> changing.
+    /// </summary>
+    event EventHandler? InternalSizeChanged;
+
     /// <summary>
     /// Gets any additional configuration specific to a project.
     /// </summary>
@@ -55,11 +61,6 @@ public interface IGameProject : INotifyPropertyChanged {
     Point InternalRenderResolution { get; }
 
     /// <summary>
-    /// Gets the ratio of the internal render resolution. This is width / height. So, if your render resolution is 800x600, the value of this will be equal to 800/600 or 4/3.
-    /// </summary>
-    float InternalRenderResolutionRatio { get; }
-
-    /// <summary>
     /// Gets the name for this project.
     /// </summary>
     string Name { get; }
@@ -73,11 +74,6 @@ public interface IGameProject : INotifyPropertyChanged {
     /// Gets the physics materials.
     /// </summary>
     PhysicsMaterialCollection PhysicsMaterials { get; }
-
-    /// <summary>
-    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
-    /// </summary>
-    ushort PixelsPerUnit { get; set; }
 
     /// <summary>
     /// Gets the screen shaders for this project.
@@ -95,37 +91,9 @@ public interface IGameProject : INotifyPropertyChanged {
     Guid StartupSceneId { get; }
 
     /// <summary>
-    /// Gets the inverse of <see cref="PixelsPerUnit" />.
+    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
-    /// <remarks>
-    /// This will be calculated when <see cref="PixelsPerUnit" /> is set.
-    /// Multiplication is a quicker operation than division, so if you find yourself dividing by
-    /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
-    /// produce the same value, but quicker.
-    /// </remarks>
-    float UnitsPerPixel { get; }
-    
-    /// <summary>
-    /// Gets the size of half of a pixel in units.
-    /// </summary>
-    /// <remarks>
-    /// This is for utility purposes.
-    /// </remarks>
-    float HalfPixelInUnits { get; }
-
-    /// <summary>
-    /// Gets the view height based on render resolution and units per pixel.
-    /// </summary>
-    float ViewHeight { get; }
-
-    /// <summary>
-    /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
-    /// screen regardless of the current view size.
-    /// </summary>
-    /// <param name="unitViewHeight">Height of the unit view.</param>
-    /// <param name="pixelViewHeight">Height of the pixel view.</param>
-    /// <returns>A pixel agnostic ratio.</returns>
-    float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
+    ushort PixelsPerUnit { get; set; }
 
     /// <summary>
     /// Initializes this instance.
@@ -140,7 +108,7 @@ public interface IGameProject : INotifyPropertyChanged {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Miscellaneous)]
-public class GameProject : PropertyChangedNotifier, IGameProject {
+public class GameProject : IGameProject, IDisposable {
     /// <summary>
     /// The default project name.
     /// </summary>
@@ -161,7 +129,8 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     /// </summary>
     public static readonly IGameProject Empty = new GameProject(string.Empty, Guid.Empty);
 
-    private Point _internalRenderResolution = new(800, 600);
+    /// <inheritdoc />
+    public event EventHandler? InternalSizeChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
@@ -189,14 +158,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public bool AllowInputRegardlessOfDevice { get; set; }
-
-    /// <inheritdoc />
-    [DataMember]
-    public string CompanyName { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [DataMember]
     public UserSettings DefaultUserSettings { get; } = new();
 
     /// <inheritdoc />
@@ -211,16 +172,29 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public Point InternalRenderResolution {
-        get => this._internalRenderResolution;
-        private set {
-            this._internalRenderResolution = new Point(Math.Max(1, value.X), Math.Max(1, value.Y));
-            this.InternalRenderResolutionRatio = this._internalRenderResolution.X / (float)this._internalRenderResolution.Y;
-            this.ResetViewSize();
-        }
-    }
+    public PhysicsMaterialCollection PhysicsMaterials { get; } = [];
 
-    public float InternalRenderResolutionRatio { get; private set; }
+    /// <inheritdoc />
+    [DataMember]
+    public RenderStepCollection RenderSteps { get; } = [];
+
+    /// <inheritdoc />
+    [DataMember]
+    public bool AllowInputRegardlessOfDevice { get; set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string CompanyName { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
+    public Point InternalRenderResolution {
+        get;
+        private set {
+            field = new Point(Math.Max(1, value.X), Math.Max(1, value.Y));
+            this.InternalSizeChanged.SafeInvoke(this);
+        }
+    } = new(800, 600);
 
     /// <inheritdoc />
     [DataMember]
@@ -233,10 +207,6 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public PhysicsMaterialCollection PhysicsMaterials { get; } = [];
-
-    /// <inheritdoc />
-    [DataMember]
     public ushort PixelsPerUnit {
         get;
         set {
@@ -246,16 +216,10 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
 
             if (value != field) {
                 field = value;
-                this.UnitsPerPixel = 1f / field;
-                this.HalfPixelInUnits = this.UnitsPerPixel * 0.5f;
-                this.ResetViewSize();
+                this.InternalSizeChanged.SafeInvoke(this);
             }
         }
     } = 32;
-
-    /// <inheritdoc />
-    [DataMember]
-    public RenderStepCollection RenderSteps { get; } = [];
 
     /// <inheritdoc />
     [DataMember(Name = "Debug Scene")]
@@ -268,19 +232,9 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
     public Guid StartupSceneId { get; set; }
 
     /// <inheritdoc />
-    public float UnitsPerPixel { get; private set; } = 1f / 32f;
-
-    /// <inheritdoc />
-    public float HalfPixelInUnits { get; private set; } = 1f / 64f;
-
-    /// <inheritdoc />
-    public float ViewHeight {
-        get;
-        private set => field = Math.Max(value, 0.1f); // View height cannot be 0, that would be chaos.
-    } = 10f;
-
-    /// <inheritdoc />
-    public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
+    public void Dispose() {
+        this.InternalSizeChanged = null;
+    }
 
     /// <inheritdoc />
     public void Initialize(IAssetManager assets, IGame game) {
@@ -291,9 +245,5 @@ public class GameProject : PropertyChangedNotifier, IGameProject {
         this.Fallbacks.MouseReference.Initialize(assets, game);
         this.Fallbacks.MouseCursorReference.Initialize(assets, game);
         this.Fallbacks.Font.Initialize(assets, game);
-    }
-
-    private void ResetViewSize() {
-        this.ViewHeight = this._internalRenderResolution.Y * this.UnitsPerPixel;
     }
 }

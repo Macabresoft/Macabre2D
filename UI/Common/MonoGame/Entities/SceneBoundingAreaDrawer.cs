@@ -43,7 +43,7 @@ public class SceneBoundingAreaDrawer : BaseDrawer {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this._editorService.ShowSceneBounds && this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } primitiveDrawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * this.Project.HalfPixelInUnits;
+            var shadowOffset = lineThickness * this.Measurements.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             this.DrawBoundingArea(this._sceneService.CurrentScene.BoundingArea, spriteBatch, primitiveDrawer, shadowOffsetVector, lineThickness);
@@ -68,8 +68,8 @@ public class SceneBoundingAreaDrawer : BaseDrawer {
             var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
             var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
 
-            primitiveDrawer.DrawPolygon(spriteBatch, this.Project.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, true, shadowPoints);
-            primitiveDrawer.DrawPolygon(spriteBatch, this.Project.PixelsPerUnit, this._editorService.SceneBoundsColor, lineThickness, true, points);
+            primitiveDrawer.DrawPolygon(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, true, shadowPoints);
+            primitiveDrawer.DrawPolygon(spriteBatch, this.Measurements.PixelsPerUnit, this._editorService.SceneBoundsColor, lineThickness, true, points);
         }
     }
 }

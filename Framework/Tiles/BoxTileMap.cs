@@ -148,7 +148,7 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
                     this.RenderSprite(
                         spriteBatch,
                         spriteSheet,
-                        this.Project.PixelsPerUnit,
+                        this.Measurements.PixelsPerUnit,
                         sprite.Position + offset,
                         sprite.Scale,
                         spriteIndex,
@@ -172,7 +172,7 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
                     this.RenderSprite(
                         spriteBatch,
                         spriteSheet,
-                        this.Game.ScreenPixelsPerUnit,
+                        this.Measurements.ScreenPixelsPerUnit,
                         sprite.Position + offset,
                         sprite.Scale,
                         spriteIndex,
@@ -197,7 +197,7 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
         var result = Vector2.Zero;
 
         if (this.TileSet.Asset is { } spriteSheet) {
-            var unitsPerPixel = allowScreenSpace && this.ShouldRenderInScreenSpace ? this.Game.UnitsPerScreenPixel : this.Project.UnitsPerPixel;
+            var unitsPerPixel = allowScreenSpace && this.ShouldRenderInScreenSpace ? this.Measurements.UnitsPerScreenPixel : this.Measurements.UnitsPerPixel;
 
             result = new Vector2(
                 spriteSheet.SpriteSize.X * unitsPerPixel,
@@ -290,9 +290,9 @@ public class BoxTileMap : ScreenSpaceRenderableEntity {
         if (spriteSize != Vector2.Zero) {
             var scale = Vector2.One;
 
-            if (this.ShouldRenderInScreenSpace && this.Project.PixelsPerUnit > 0) {
-                scale = new Vector2(this.Game.ScreenResolutionToInternalResolution);
-                spriteSize *= this.Game.ScreenResolutionToInternalResolution;
+            if (this.ShouldRenderInScreenSpace && this.Measurements.PixelsPerUnit > 0) {
+                scale = new Vector2(this.Measurements.ScreenResolutionToInternalResolution);
+                spriteSize *= this.Measurements.ScreenResolutionToInternalResolution;
             }
 
             if (scale.X == 0f || scale.Y == 0f) {

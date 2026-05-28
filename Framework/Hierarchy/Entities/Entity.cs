@@ -6,8 +6,8 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
@@ -32,11 +32,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IGame Game { get; }
 
     /// <summary>
-    /// Gets the layers.
-    /// </summary>
-    Layers Layers { get; set; }
-
-    /// <summary>
     /// Gets the parent.
     /// </summary>
     IEntity Parent => GridContainer.Empty;
@@ -50,6 +45,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Gets the scene.
     /// </summary>
     IScene Scene => EmptyObject.Scene;
+
+    /// <summary>
+    /// Gets the layers.
+    /// </summary>
+    Layers Layers { get; set; }
 
     /// <summary>
     /// Adds a child of the specified type.
@@ -247,6 +247,11 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public virtual IGame Game => this.Scene.Game;
 
+    /// <summary>
+    /// Gets the project.
+    /// </summary>
+    public IGameProject Project => this.Game.Project;
+
     /// <inheritdoc />
     [DataMember]
     [Browsable(false)]
@@ -283,23 +288,23 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public IEntity Parent { get; private set; } = EmptyObject.Entity;
 
-    /// <summary>
-    /// Gets the project.
-    /// </summary>
-    public IGameProject Project => this.Game.Project;
-
     /// <inheritdoc />
     public IScene Scene { get; private set; } = EmptyObject.Scene;
 
     /// <summary>
-    /// Gets a value indicating whether this is initialized.
+    /// Gets the common measurements from <see cref="Game" />.
     /// </summary>
-    protected bool IsInitialized { get; private set; }
+    protected ICommonMeasurements Measurements => this.Game.Measurements;
 
     /// <summary>
     /// Gets the sprite batch.
     /// </summary>
     protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
+
+    /// <summary>
+    /// Gets a value indicating whether this is initialized.
+    /// </summary>
+    protected bool IsInitialized { get; private set; }
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {

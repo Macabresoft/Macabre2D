@@ -130,7 +130,7 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
                         spriteBatch,
                         colorOverride,
                         currentPosition,
-                        this.Project.PixelsPerUnit,
+                        this.Measurements.PixelsPerUnit,
                         this.RenderOptions.Orientation);
                 }
 
@@ -177,11 +177,11 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
 
     private Vector2 CreateSize() {
         if (this._constrainHeight) {
-            return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
+            return new Vector2(this.Width * this.Measurements.PixelsPerUnit, this.Height * this.Measurements.PixelsPerUnit);
         }
 
         if (this._spriteSheet is { } spriteSheet) {
-            return new Vector2(this.Width * this.Project.PixelsPerUnit, this._textLines.Count * spriteSheet.SpriteSize.Y);
+            return new Vector2(this.Width * this.Measurements.PixelsPerUnit, this._textLines.Count * spriteSheet.SpriteSize.Y);
         }
 
         return Vector2.Zero;
@@ -215,9 +215,9 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
         }
 
         if (this._font != null && this._spriteSheet != null) {
-            this._characterHeight = this._spriteSheet.SpriteSize.Y * this.Project.UnitsPerPixel;
+            this._characterHeight =  this.Measurements.GetLengthInUnits(this._spriteSheet.SpriteSize.Y);
             var textLines = TextLine.CreateTextLines(
-                this.Project,
+                this.Measurements,
                 this.GetFullText(),
                 this.Width,
                 this._font,

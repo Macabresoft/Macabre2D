@@ -159,7 +159,7 @@ public abstract class BaseSpriteEntity : ScreenSpaceRenderableEntity, ISpriteEnt
         var color = this.AlphaOverride.IsEnabled ? new Color(colorOverride, this.AlphaOverride.Value) : colorOverride;
         spriteSheet.Draw(
             spriteBatch,
-            this.Project.PixelsPerUnit,
+            this.Measurements.PixelsPerUnit,
             spriteIndex,
             position,
             color,
@@ -178,10 +178,10 @@ public abstract class BaseSpriteEntity : ScreenSpaceRenderableEntity, ISpriteEnt
         var color = this.AlphaOverride.IsEnabled ? new Color(colorOverride, this.AlphaOverride.Value) : colorOverride;
         spriteSheet.Draw(
             spriteBatch,
-            this.Game.ScreenPixelsPerUnit,
+            this.Measurements.ScreenPixelsPerUnit,
             spriteIndex,
             position,
-            new Vector2(this.Game.ScreenResolutionToInternalResolution),
+            new Vector2(this.Measurements.ScreenResolutionToInternalResolution),
             color,
             this.RenderOptions.Orientation);
     }
@@ -196,7 +196,7 @@ public abstract class BaseSpriteEntity : ScreenSpaceRenderableEntity, ISpriteEnt
 
     private BoundingArea CreateBoundingArea() => this.RenderOptions.CreateBoundingArea(this);
 
-    private Vector2 CreateOffsetTransform() => this.GetWorldPosition(this.RenderOptions.Offset * this.Project.UnitsPerPixel);
+    private Vector2 CreateOffsetTransform() => this.GetWorldPosition(this.RenderOptions.Offset * this.Measurements.UnitsPerPixel);
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {

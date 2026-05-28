@@ -95,13 +95,13 @@ public sealed class EditorGrid : BaseDrawer {
         float lineThickness,
         float alpha) {
         if (this.PrimitiveDrawer != null) {
-            var shadowOffset = lineThickness * this.Project.UnitsPerPixel;
+            var shadowOffset = lineThickness * this.Measurements.UnitsPerPixel;
             var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
             var verticalShadowOffset = new Vector2(0f, shadowOffset);
             var color = this.Color * alpha;
 
             var columns = GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, tileSize.X, offset.X);
-            var pixelsPerUnit = this.Project.PixelsPerUnit;
+            var pixelsPerUnit = this.Measurements.PixelsPerUnit;
             foreach (var column in columns) {
                 var minimum = new Vector2(column, boundingArea.Minimum.Y);
                 var maximum = new Vector2(column, boundingArea.Maximum.Y);

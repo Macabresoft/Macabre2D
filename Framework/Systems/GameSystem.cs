@@ -72,6 +72,11 @@ public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
     protected IGame Game => this.Scene.Game;
 
     /// <summary>
+    /// Gets the common measurements from <see cref="Game" />.
+    /// </summary>
+    protected ICommonMeasurements Measurements => this.Game.Measurements;
+
+    /// <summary>
     /// Gets a value indicating whether this is initialized.
     /// </summary>
     protected bool IsInitialized { get; private set; }

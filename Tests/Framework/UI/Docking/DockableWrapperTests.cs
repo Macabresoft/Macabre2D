@@ -111,9 +111,12 @@ public static class DockableWrapperTests {
         var scene = Substitute.For<IScene>();
         var project = Substitute.For<IGameProject>();
         var game = Substitute.For<IGame>();
+        var measurements = Substitute.For<ICommonMeasurements>();
         scene.Game.Returns(game);
+        game.Measurements.Returns(measurements);
+        measurements.UnitsPerPixel.Returns(1f);
+        measurements.PixelsPerUnit.Returns((ushort)1);
         project.PixelsPerUnit = 1;
-        project.UnitsPerPixel.Returns(1f);
         scene.Project.Returns(project);
         game.Project.Returns(project);
         var wrapper = new DockableWrapper();
@@ -123,6 +126,7 @@ public static class DockableWrapperTests {
         }
 
         wrapper.Initialize(scene, scene);
+        wrapper.OnSceneTreeLoaded();
         return wrapper;
     }
 }

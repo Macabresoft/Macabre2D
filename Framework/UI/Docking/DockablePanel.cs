@@ -87,7 +87,7 @@ public class DockablePanel : BaseDockable, IDockable {
     /// </summary>
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSizeForOffset() {
-        return new Vector2(this.Width * this.Project.PixelsPerUnit, this.Height * this.Project.PixelsPerUnit);
+        return new Vector2(this.Width * this.Measurements.PixelsPerUnit, this.Height * this.Measurements.PixelsPerUnit);
     }
 
     /// <summary>

@@ -93,48 +93,14 @@ public class OffsetOptions : PropertyChangedNotifier {
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>The bounding area.</returns>
-    public BoundingArea CreateBoundingArea(IEntity entity) => this.CreateBoundingArea(entity, entity.Project.UnitsPerPixel);
-
-    /// <summary>
-    /// Creates a bounding area for an entity.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <param name="unitsPerPixel">The units per pixel.</param>
-    /// <returns>The bounding area.</returns>
-    public BoundingArea CreateBoundingArea(IEntity entity, float unitsPerPixel) {
-        BoundingArea result;
-        if (this.Size != Vector2.Zero) {
-            var (x, y) = this.Size;
-            var width = x * unitsPerPixel;
-            var height = y * unitsPerPixel;
-            var offset = this.Offset * unitsPerPixel;
-            var points = new List<Vector2> {
-                entity.GetWorldPosition(offset),
-                entity.GetWorldPosition(offset + new Vector2(width, 0f)),
-                entity.GetWorldPosition(offset + new Vector2(width, height)),
-                entity.GetWorldPosition(offset + new Vector2(0f, height))
-            };
-
-            var minimumX = points.Min(point => point.X);
-            var minimumY = points.Min(point => point.Y);
-            var maximumX = points.Max(point => point.X);
-            var maximumY = points.Max(point => point.Y);
-
-            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-        }
-        else {
-            result = BoundingArea.Empty;
-        }
-
-        return result;
-    }
+    public BoundingArea CreateBoundingArea(IEntity entity) => this.CreateBoundingArea(entity, entity.Game.Measurements.UnitsPerPixel);
 
     /// <summary>
     /// Creates a bounding area for an entity using the screen space conversion for pixels to units.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>The bounding area.</returns>
-    public BoundingArea CreateBoundingAreaFromScreenSpace(IEntity entity) => this.CreateBoundingArea(entity, entity.Game.UnitsPerScreenPixel);
+    public BoundingArea CreateBoundingAreaFromScreenSpace(IEntity entity) => this.CreateBoundingArea(entity, entity.Game.Measurements.UnitsPerScreenPixel);
 
     /// <summary>
     /// Initializes the specified size factory.
@@ -187,5 +153,33 @@ public class OffsetOptions : PropertyChangedNotifier {
 
             this.RaisePropertyChanged(nameof(this.Offset));
         }
+    }
+
+    private BoundingArea CreateBoundingArea(IEntity entity, float unitsPerPixel) {
+        BoundingArea result;
+        if (this.Size != Vector2.Zero) {
+            var (x, y) = this.Size;
+            var width = x * unitsPerPixel;
+            var height = y * unitsPerPixel;
+            var offset = this.Offset * unitsPerPixel;
+            var points = new List<Vector2> {
+                entity.GetWorldPosition(offset),
+                entity.GetWorldPosition(offset + new Vector2(width, 0f)),
+                entity.GetWorldPosition(offset + new Vector2(width, height)),
+                entity.GetWorldPosition(offset + new Vector2(0f, height))
+            };
+
+            var minimumX = points.Min(point => point.X);
+            var minimumY = points.Min(point => point.Y);
+            var maximumX = points.Max(point => point.X);
+            var maximumY = points.Max(point => point.Y);
+
+            result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+        }
+        else {
+            result = BoundingArea.Empty;
+        }
+
+        return result;
     }
 }

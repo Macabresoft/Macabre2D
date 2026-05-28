@@ -75,7 +75,7 @@ public class SingleColorBox : RenderableEntity {
             var scale = this.RenderOptions.Size;
             spriteBatch.Draw(
                 this._texture,
-                this.BoundingArea.Minimum * this.Project.PixelsPerUnit,
+                this.BoundingArea.Minimum * this.Measurements.PixelsPerUnit,
                 null,
                 colorOverride,
                 0f,
@@ -101,7 +101,7 @@ public class SingleColorBox : RenderableEntity {
 
     private BoundingArea CreateBoundingArea() => this.RenderOptions.CreateBoundingArea(this);
 
-    private Vector2 CreateSize() => this.Size * this.Project.PixelsPerUnit;
+    private Vector2 CreateSize() => this.Size * this.Measurements.PixelsPerUnit;
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.RenderOptions.Offset)) {

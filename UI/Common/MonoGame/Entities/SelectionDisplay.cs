@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Macabresoft.Core;
 using Macabre2D.Framework;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -57,17 +57,16 @@ public class SelectionDisplay : BaseDrawer {
         }
 
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
-            var project = this.Project;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * project.HalfPixelInUnits;
+            var shadowOffset = lineThickness * this.Measurements.HalfPixelInUnits;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             foreach (var boundingArea in this._boundables.Select(x => x.BoundingArea)) {
-                this.DrawBoundingArea(spriteBatch, drawer, project.PixelsPerUnit, boundingArea, Color.Transparent, shadowOffsetVector, lineThickness);
+                this.DrawBoundingArea(spriteBatch, drawer, this.Measurements.PixelsPerUnit, boundingArea, Color.Transparent, shadowOffsetVector, lineThickness);
             }
 
             if (this._selectedBoundable is { BoundingArea: { IsEmpty: false } selectedBoundingArea }) {
-                this.DrawBoundingArea(spriteBatch, drawer, project.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
+                this.DrawBoundingArea(spriteBatch, drawer, this.Measurements.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
             }
 
             if (this._entityService.Selected is { } selected) {
@@ -82,7 +81,7 @@ public class SelectionDisplay : BaseDrawer {
 
                     drawer.DrawLine(
                         spriteBatch,
-                        project.PixelsPerUnit,
+                        this.Measurements.PixelsPerUnit,
                         left + shadowOffsetVector,
                         right + shadowOffsetVector,
                         this._editorService.DropShadowColor,
@@ -90,14 +89,14 @@ public class SelectionDisplay : BaseDrawer {
 
                     drawer.DrawLine(
                         spriteBatch,
-                        project.PixelsPerUnit,
+                        this.Measurements.PixelsPerUnit,
                         top + shadowOffsetVector,
                         bottom + shadowOffsetVector,
                         this._editorService.DropShadowColor,
                         lineThickness);
 
-                    drawer.DrawLine(spriteBatch, project.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
-                    drawer.DrawLine(spriteBatch, project.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
+                    drawer.DrawLine(spriteBatch, this.Measurements.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
+                    drawer.DrawLine(spriteBatch, this.Measurements.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
                 }
 
                 if (selected is IPhysicsBody body) {
@@ -106,7 +105,7 @@ public class SelectionDisplay : BaseDrawer {
                         drawer.DrawCollider(
                             collider,
                             spriteBatch,
-                            project.PixelsPerUnit,
+                            this.Measurements.PixelsPerUnit,
                             this._editorService.DropShadowColor,
                             lineThickness,
                             shadowOffsetVector);
@@ -114,7 +113,7 @@ public class SelectionDisplay : BaseDrawer {
                         drawer.DrawCollider(
                             collider,
                             spriteBatch,
-                            project.PixelsPerUnit,
+                            this.Measurements.PixelsPerUnit,
                             this._editorService.ColliderColor,
                             lineThickness,
                             Vector2.Zero);

@@ -184,9 +184,12 @@ public static class DockingContainerTests {
         var game = Substitute.For<IGame>();
         scene = Substitute.For<IScene>();
         var project = Substitute.For<IGameProject>();
+        var measurements = Substitute.For<ICommonMeasurements>();
         scene.Game.Returns(game);
+        game.Measurements.Returns(measurements);
+        measurements.UnitsPerPixel.Returns(1f);
+        measurements.PixelsPerUnit.Returns((ushort)1);
         project.PixelsPerUnit = 1;
-        project.UnitsPerPixel.Returns(1f);
         scene.Project.Returns(project);
         game.Project.Returns(project);
 
@@ -224,5 +227,6 @@ public static class DockingContainerTests {
         }
 
         parent.Initialize(scene, scene);
+        parent.OnSceneTreeLoaded();
     }
 }

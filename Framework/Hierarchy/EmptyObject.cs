@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public class EmptyObject :
     ICamera,
+    ICommonMeasurements,
     IInputSystem,
     IScreenSpaceRenderer,
     IScreenSpaceRenderSystem,
@@ -171,10 +172,16 @@ public class EmptyObject :
     public IGame Game => BaseGame.Empty;
 
     /// <inheritdoc />
+    public float HalfPixelInUnits => 1f;
+
+    /// <inheritdoc />
     public bool HasCollider => false;
 
     /// <inheritdoc />
     public float HorizontalAxis => 0f;
+
+    /// <inheritdoc />
+    public float InternalRenderResolutionRatio => 1f;
 
     /// <inheritdoc />
     public bool IsActive => false;
@@ -226,6 +233,12 @@ public class EmptyObject :
     public static IScene Scene => Instance;
 
     /// <inheritdoc />
+    public ushort ScreenPixelsPerUnit => 1;
+
+    /// <inheritdoc />
+    public float ScreenResolutionToInternalResolution => 1f;
+
+    /// <inheritdoc />
     public bool ShouldAnimate => false;
 
     /// <inheritdoc cref="IScreenSpaceRenderer" />
@@ -247,6 +260,12 @@ public class EmptyObject :
     /// Gets the singleton instance as <see cref="ITextRenderer" />.
     /// </summary>
     public static ITextRenderer TextRenderer => Instance;
+
+    /// <inheritdoc />
+    public float UnitsPerPixel => 1f;
+
+    /// <inheritdoc />
+    public float UnitsPerScreenPixel => 1f;
 
     /// <inheritdoc cref="IUpdateableEntity.UpdateOrder" />
     public int UpdateOrder => 0;
@@ -320,6 +339,12 @@ public class EmptyObject :
     /// <inheritdoc />
     public string Name {
         get => "Empty";
+        set { }
+    }
+
+    /// <inheritdoc />
+    public ushort PixelsPerUnit {
+        get => 1;
         set { }
     }
 
@@ -425,6 +450,9 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public float GetLengthInUnits(int numberOfPixels) => this.UnitsPerPixel;
+
+    /// <inheritdoc />
     public void Enqueue(SpriteAnimation animation, AnimationLoopKind loopKind) {
     }
 
@@ -495,6 +523,9 @@ public class EmptyObject :
     public float GetPercentageComplete() => 0f;
 
     /// <inheritdoc />
+    public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => 1f;
+
+    /// <inheritdoc />
     public T? GetSystem<T>() where T : class, IGameSystem => null;
 
     /// <inheritdoc />
@@ -526,6 +557,10 @@ public class EmptyObject :
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
+    }
+
+    /// <inheritdoc />
+    public void Initialize(IGame game, IGameProject project) {
     }
 
     /// <inheritdoc />

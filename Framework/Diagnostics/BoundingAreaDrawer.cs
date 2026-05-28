@@ -41,7 +41,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
 
         if (this.SpriteBatch is { } spriteBatch && !this._boundingArea.IsEmpty) {
             var thickness = this.GetLineThickness(viewBoundingArea.Height);
-            this.PrimitiveDrawer.DrawBoundingArea(spriteBatch, this.Project.PixelsPerUnit, this._boundingArea, colorOverride, thickness);
+            this.PrimitiveDrawer.DrawBoundingArea(spriteBatch, this.Measurements.PixelsPerUnit, this._boundingArea, colorOverride, thickness);
         }
     }
 

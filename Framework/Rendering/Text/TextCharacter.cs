@@ -20,10 +20,10 @@ public readonly record struct TextCharacter {
     /// <param name="character">The character.</param>
     /// <param name="font">The font.</param>
     /// <param name="kerning">The additional kerning.</param>
-    /// <param name="project">The game project.</param>
-    public TextCharacter(SpriteSheetFontCharacter character, SpriteSheetFont font, int kerning, IGameProject project) {
+    /// <param name="measurements">The measurements.</param>
+    public TextCharacter(SpriteSheetFontCharacter character, SpriteSheetFont font, int kerning, ICommonMeasurements measurements) {
         this.SpriteIndex = character.SpriteIndex;
-        this.Width = font.GetCharacterWidth(character, kerning, project);
+        this.Width = font.GetCharacterWidth(character, kerning, measurements);
     }
 
     /// <summary>

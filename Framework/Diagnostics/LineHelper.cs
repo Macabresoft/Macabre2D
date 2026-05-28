@@ -13,9 +13,9 @@ public static class LineHelper {
     /// <param name="staticLineThickness">The line thickness before being scaled to the view height.</param>
     /// <param name="viewHeight">Height of the view.</param>
     /// <param name="graphicsDevice">The graphics device.</param>
-    /// <param name="project">The project.</param>
+    /// <param name="measurements">The measurements.</param>
     /// <returns>The appropriate line thickness for this drawer.</returns>
-    public static float GetDynamicLineThickness(float staticLineThickness, float viewHeight, GraphicsDevice graphicsDevice, IGameProject project) {
-        return staticLineThickness * project.GetPixelAgnosticRatio(viewHeight, graphicsDevice.Viewport.Height);
+    public static float GetDynamicLineThickness(float staticLineThickness, float viewHeight, GraphicsDevice graphicsDevice, ICommonMeasurements measurements) {
+        return staticLineThickness * measurements.GetPixelAgnosticRatio(viewHeight, graphicsDevice.Viewport.Height);
     }
 }

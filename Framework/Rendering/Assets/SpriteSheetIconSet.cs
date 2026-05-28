@@ -92,9 +92,9 @@ public abstract class SpriteSheetIconSet<TKey> : SpriteSheetIconSet where TKey :
     /// Gets the icon's width with kerning taken into account.
     /// </summary>
     /// <param name="key">The key.</param>
-    /// <param name="project">The project.</param>
+    /// <param name="measurements">The measurements.</param>
     /// <returns>The width.</returns>
-    public float GetIconWidth(TKey key, IGameProject project) {
+    public float GetIconWidth(TKey key, ICommonMeasurements measurements) {
         var result = 0f;
 
         if (this.SpriteSheet is { } spriteSheet) {
@@ -102,7 +102,7 @@ public abstract class SpriteSheetIconSet<TKey> : SpriteSheetIconSet where TKey :
                 result = width;
             }
             else if (this._keyToIcons.TryGetValue(key, out var icon)) {
-                result = (spriteSheet.SpriteSize.X + icon.Kerning + this.Kerning) * project.UnitsPerPixel;
+                result = measurements.GetLengthInUnits(spriteSheet.SpriteSize.X + icon.Kerning + this.Kerning);
                 this._characterToWidth[key] = result;
             }
         }

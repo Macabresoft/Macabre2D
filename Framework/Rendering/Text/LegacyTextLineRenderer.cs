@@ -133,7 +133,7 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
                 spriteBatch,
                 colorOverride,
                 this.WorldPosition,
-                this.Game.ScreenPixelsPerUnit,
+                this.Measurements.ScreenPixelsPerUnit,
                 this.RenderOptions.Orientation);
         }
     }
@@ -195,7 +195,7 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
             var scale = 1f;
 
             if (this.HeightOverride.IsEnabled && initialSize.Y > 0) {
-                this._actualHeight = this.HeightOverride.Value * this.Game.ScreenPixelsPerUnit;
+                this._actualHeight = this.HeightOverride.Value * this.Measurements.ScreenPixelsPerUnit;
                 scale = this._actualHeight / initialSize.Y;
                 this._actualWidth = initialSize.X * scale;
             }
@@ -204,7 +204,7 @@ public class LegacyTextLineRenderer : Entity, IScreenSpaceRenderer {
                 this._actualHeight = initialSize.Y;
             }
 
-            this._textLine = new LegacyTextLine(fontAsset, scale, this.Game.ScreenPixelsPerUnit, this.Text);
+            this._textLine = new LegacyTextLine(fontAsset, scale, this.Measurements.ScreenPixelsPerUnit, this.Text);
         }
         else {
             this._textLine = LegacyTextLine.Empty;
