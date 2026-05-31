@@ -156,9 +156,6 @@ public class BaseGame : Game, IGame {
     public static bool IsDesignMode { get; private set; }
 
     /// <inheritdoc />
-    public IScene Overlay { get; private set; } = EmptyObject.Scene;
-
-    /// <inheritdoc />
     public IGameProject Project {
         get;
         protected set {
@@ -374,11 +371,10 @@ public class BaseGame : Game, IGame {
         this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
-        this.Overlay.Initialize(this, this.CreateAssetManager());
 
         var assetManager = this.CreateAssetManager();
-        foreach (var renderSTep in this.Project.RenderSteps) {
-            renderSTep.Initialize(assetManager, this);
+        foreach (var renderStep in this.Project.RenderSteps) {
+            renderStep.Initialize(assetManager, this);
         }
 
         this.IsInitialized = true;
@@ -399,10 +395,6 @@ public class BaseGame : Game, IGame {
 
         if (assetManager.TryLoadContent<Scene>(startupSceneId, out var scene) && scene.TryClone(out var clone)) {
             this.LoadScene(clone);
-        }
-
-        if (assetManager.TryLoadContent<Scene>(this.Project.PersistentOverlaySceneId, out var overlay)) {
-            this.Overlay = overlay;
         }
 
         this.TryCreateSpriteBatch();
@@ -480,7 +472,6 @@ public class BaseGame : Game, IGame {
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
         this.RunTransitions();
         this.CurrentScene.Update(this.FrameTime, this.InputState);
-        this.Overlay.Update(this.FrameTime, this.InputState);
     }
 
     /// <summary>
@@ -592,14 +583,10 @@ public class BaseGame : Game, IGame {
         public LaunchArguments LaunchArguments => LaunchArguments.None;
         public ICommonMeasurements Measurements => EmptyObject.Instance;
         public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
-        public IScene Overlay => EmptyObject.Scene;
         public IGameProject Project => GameProject.Empty;
-        public ushort ScreenPixelsPerUnit => 1;
-        public float ScreenResolutionToInternalResolution => 1f;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
-        public float UnitsPerScreenPixel => 1f;
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
 

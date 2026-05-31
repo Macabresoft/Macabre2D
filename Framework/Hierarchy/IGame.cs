@@ -116,11 +116,6 @@ public interface IGame {
     IReadOnlyCollection<IScene> OpenScenes { get; }
 
     /// <summary>
-    /// Gets the overlay.
-    /// </summary>
-    IScene Overlay { get; }
-
-    /// <summary>
     /// Gets the project.
     /// </summary>
     IGameProject Project { get; }

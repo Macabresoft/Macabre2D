@@ -66,11 +66,6 @@ public interface IGameProject {
     string Name { get; }
 
     /// <summary>
-    /// Gets the scene identifier of the scene to render as an overlay.
-    /// </summary>
-    Guid PersistentOverlaySceneId { get; }
-
-    /// <summary>
     /// Gets the physics materials.
     /// </summary>
     PhysicsMaterialCollection PhysicsMaterials { get; }
@@ -199,11 +194,6 @@ public class GameProject : IGameProject, IDisposable {
     /// <inheritdoc />
     [DataMember]
     public string Name { get; set; }
-
-    /// <inheritdoc />
-    [DataMember(Name = "Persistent Overlay")]
-    [SceneGuid]
-    public Guid PersistentOverlaySceneId { get; set; }
 
     /// <inheritdoc />
     [DataMember]
