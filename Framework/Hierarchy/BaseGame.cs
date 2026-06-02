@@ -370,12 +370,13 @@ public class BaseGame : Game, IGame {
 
         this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
-        this.CurrentScene.Initialize(this, this.CreateAssetManager());
-
+        
         var assetManager = this.CreateAssetManager();
         foreach (var renderStep in this.Project.RenderSteps) {
             renderStep.Initialize(assetManager, this);
         }
+        
+        this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         this.IsInitialized = true;
     }
