@@ -177,7 +177,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get {
             return this._selected switch {
                 IEntity => this._entityService.Editors,
-                IGameSystem => this._systemService.Editors,
+                ISceneSystem => this._systemService.Editors,
                 _ => null
             };
         }
@@ -214,7 +214,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case IGameSystem system:
+                case ISceneSystem system:
                     this._systemService.Selected = system;
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this._selected;

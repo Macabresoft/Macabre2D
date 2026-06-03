@@ -30,7 +30,7 @@ public abstract class SystemReference : PropertyChangedNotifier, IGameObjectRefe
     /// <summary>
     /// Gets an untyped version of the system.
     /// </summary>
-    public IGameSystem? UntypedSystem { get; protected set; }
+    public ISceneSystem? UntypedSystem { get; protected set; }
 
     /// <summary>
     /// Gets the scene.
@@ -62,7 +62,7 @@ public abstract class SystemReference : PropertyChangedNotifier, IGameObjectRefe
 /// A reference to a system using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TSystem">The type of system.</typeparam>
-public class SystemReference<TSystem> : SystemReference where TSystem : class, IGameSystem {
+public class SystemReference<TSystem> : SystemReference where TSystem : class, ISceneSystem {
 
     /// <summary>
     /// Gets the system.

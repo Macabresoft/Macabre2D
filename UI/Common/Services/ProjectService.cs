@@ -161,7 +161,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
             Name = DefaultSceneName
         };
 
-        scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<SceneUpdateSystem>();
         scene.AddSystem<RenderSystem>();
         scene.AddChild<Camera>();
 

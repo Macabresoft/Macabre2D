@@ -16,7 +16,7 @@
         <ListBox Grid.Row="0"
                  Margin="{StaticResource StandardMarginAll}"
                  ItemsSource="{Binding Systems, Mode=OneWay}"
-                 SelectedItem="{Binding SelectedGameSystem}"
+                 SelectedItem="{Binding SelectedSceneSystem}"
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>

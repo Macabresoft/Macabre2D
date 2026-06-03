@@ -417,11 +417,11 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public T AddSystem<T>() where T : IGameSystem, new() => new();
+    public T AddSystem<T>() where T : ISceneSystem, new() => new();
 
 
     /// <inheritdoc />
-    public void AddSystem(IGameSystem system) {
+    public void AddSystem(ISceneSystem system) {
     }
 
     /// <inheritdoc />
@@ -478,7 +478,7 @@ public class EmptyObject :
     public TEntity? FindEntity<TEntity>(Guid id) where TEntity : class, IEntity => null;
 
     /// <inheritdoc />
-    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem => null;
+    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, ISceneSystem => null;
 
     /// <inheritdoc />
     public IEnumerable<IEntity> GetAllDescendants() => [];
@@ -517,7 +517,7 @@ public class EmptyObject :
     public IReadOnlyCollection<T> GetOrAddChildren<T>(int amountOfChildren) where T : class, IEntity, new() => [];
 
     /// <inheritdoc />
-    public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => throw new NotSupportedException("Initialization has not occured.");
+    public T GetOrAddSystem<T>() where T : class, ISceneSystem, new() => throw new NotSupportedException("Initialization has not occured.");
 
     /// <inheritdoc />
     public float GetPercentageComplete() => 0f;
@@ -526,7 +526,7 @@ public class EmptyObject :
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) => 1f;
 
     /// <inheritdoc />
-    public T? GetSystem<T>() where T : class, IGameSystem => null;
+    public T? GetSystem<T>() where T : class, ISceneSystem => null;
 
     /// <inheritdoc />
     public BoundingArea GetTileBoundingArea(Point tile) => BoundingArea.Empty;
@@ -569,7 +569,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void InsertSystem(int index, IGameSystem system) {
+    public void InsertSystem(int index, ISceneSystem system) {
     }
 
     /// <inheritdoc />
@@ -660,7 +660,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public bool RemoveSystem(IGameSystem system) => false;
+    public bool RemoveSystem(ISceneSystem system) => false;
 
     /// <inheritdoc />
     public bool RemoveTile(Point tile) => false;
@@ -706,7 +706,7 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
-    public void ReorderSystem(IGameSystem system, int newIndex) {
+    public void ReorderSystem(ISceneSystem system, int newIndex) {
     }
 
     /// <inheritdoc />

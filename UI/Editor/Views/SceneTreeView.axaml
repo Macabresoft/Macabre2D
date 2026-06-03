@@ -38,7 +38,7 @@
 
                             <MenuItem Header="Add System..."
                                       Command="{Binding AddCommand}"
-                                      CommandParameter="{x:Type framework:IGameSystem}"
+                                      CommandParameter="{x:Type framework:ISceneSystem}"
                                       ToolTip.Tip="Open a window to find a system to add" />
 
                             <Separator />
@@ -204,7 +204,7 @@
                                 <ContextMenu>
                                     <MenuItem Header="Add..."
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
-                                              CommandParameter="{x:Type framework:IGameSystem}"
+                                              CommandParameter="{x:Type framework:ISceneSystem}"
                                               ToolTip.Tip="Open a window to find a system to add" />
 
                                     <MenuItem Header="All Systems"
@@ -244,7 +244,7 @@
                         </avaloniaEx:EditableSelectableItem>
                     </TreeDataTemplate>
 
-                    <TreeDataTemplate DataType="framework:IGameSystem">
+                    <TreeDataTemplate DataType="framework:ISceneSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                            Text="{Binding Path=Name, Mode=OneWay}"

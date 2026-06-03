@@ -7,7 +7,7 @@ using Macabresoft.Core;
 /// <summary>
 /// A system which runs routines over multiple frames.
 /// </summary>
-public class RoutineSystem : GameSystem, IUpdateSystem {
+public class RoutineSystem : SceneSystem, IUpdateSystem {
     private readonly List<Routine> _routines = [];
 
     /// <inheritdoc />

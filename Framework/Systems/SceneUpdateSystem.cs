@@ -18,9 +18,9 @@ public enum UpdateSystemKind {
 }
 
 /// <summary>
-/// Interface for a <see cref="IGameSystem"/> that has an update loop.
+/// Interface for a <see cref="ISceneSystem"/> that has an update loop.
 /// </summary>
-public interface IUpdateSystem : IGameSystem, IUpdateableGameObject {
+public interface IUpdateSystem : ISceneSystem, IUpdateableGameObject {
     /// <summary>
     /// Gets the kind of update.
     /// </summary>
@@ -30,25 +30,23 @@ public interface IUpdateSystem : IGameSystem, IUpdateableGameObject {
 /// <summary>
 /// A system that calls updates on entities.
 /// </summary>
-public class UpdateSystem : GameSystem, IUpdateSystem {
-    private bool _shouldUpdate = true;
-
+public class SceneUpdateSystem : SceneSystem, IUpdateSystem {
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
     
     /// <inheritdoc />
     public virtual UpdateSystemKind Kind => UpdateSystemKind.Update;
-    
+
     /// <inheritdoc />
     [DataMember]
     public bool ShouldUpdate {
-        get => this._shouldUpdate;
+        get;
         set {
-            if (this.Set(ref this._shouldUpdate, value)) {
+            if (this.Set(ref field, value)) {
                 this.ShouldUpdateChanged.SafeInvoke(this);
             }
         }
-    }
+    } = true;
 
     /// <summary>
     /// Gets the bottom edge's overriden layer.

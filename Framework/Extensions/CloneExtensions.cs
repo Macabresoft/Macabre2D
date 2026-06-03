@@ -35,10 +35,10 @@ public static class CloneExtensions {
     /// <param name="system">The system to clone.</param>
     /// <param name="clone">The cloned system.</param>
     /// <returns>A value indicating whether the clone was successful.</returns>
-    public static bool TryClone(this IGameSystem system, [NotNullWhen(true)] out IGameSystem? clone) {
+    public static bool TryClone(this ISceneSystem system, [NotNullWhen(true)] out ISceneSystem? clone) {
         var result = false;
         var json = Serializer.Instance.SerializeToString(system);
-        if (Serializer.Instance.DeserializeFromString(json, system.GetType()) is IGameSystem tempClone) {
+        if (Serializer.Instance.DeserializeFromString(json, system.GetType()) is ISceneSystem tempClone) {
             result = true;
             clone = tempClone;
         }

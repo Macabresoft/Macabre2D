@@ -7,9 +7,9 @@ using System.Runtime.Serialization;
 /// <summary>
 /// A system which updates at a fixed time step.
 /// </summary>
-/// <seealso cref="UpdateSystem" />
+/// <seealso cref="SceneUpdateSystem" />
 [Category(CommonCategories.Timing)]
-public abstract class FixedTimeStepSystem : UpdateSystem {
+public abstract class FixedTimeStepSystem : SceneUpdateSystem {
     private float _timePassed;
     private float _timeStep = 1f / 30f;
 

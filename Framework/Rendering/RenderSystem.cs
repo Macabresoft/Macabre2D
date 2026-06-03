@@ -7,9 +7,9 @@ using System.Runtime.Serialization;
 using Macabresoft.Core;
 
 /// <summary>
-/// Interface for a <see cref="IGameSystem" /> that has an update loop.
+/// Interface for a <see cref="ISceneSystem" /> that has an update loop.
 /// </summary>
-public interface IRenderSystem : IGameSystem {
+public interface IRenderSystem : ISceneSystem {
     /// <summary>
     /// Called when <see cref="ShouldRender" /> changes.
     /// </summary>
@@ -31,10 +31,9 @@ public interface IRenderSystem : IGameSystem {
 /// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : GameSystem, IRenderSystem, IScreenSpaceRenderSystem {
+public class RenderSystem : SceneSystem, IRenderSystem, IScreenSpaceRenderSystem {
     private QuadTree<IScreenSpaceRenderer> _legacyRenderTree = QuadTree<IScreenSpaceRenderer>.Default;
     private QuadTree<IRenderableEntity> _renderTree = QuadTree<IRenderableEntity>.Default;
-
 
     /// <inheritdoc />
     public event EventHandler? ShouldRenderChanged;

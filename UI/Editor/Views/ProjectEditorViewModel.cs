@@ -150,7 +150,7 @@ public class ProjectEditorViewModel : BaseViewModel {
         };
 
         scene.AddSystem<RenderSystem>();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<SceneUpdateSystem>();
         scene.AddSystem<AnimationSystem>();
 
         this._camera = scene.AddChild<EditorCamera>();

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
 /// </summary>
-public interface ISimplePhysicsSystem : IGameSystem {
+public interface ISimplePhysicsSystem : ISceneSystem {
     /// <summary>
     /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
     /// </summary>

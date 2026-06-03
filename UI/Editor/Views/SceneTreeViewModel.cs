@@ -272,11 +272,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// <summary>
     /// Moves a system.
     /// </summary>
-    /// <param name="gameSystem">The system.</param>
+    /// <param name="sceneSystem">The system.</param>
     /// <param name="newIndex">The new index.</param>
-    public void MoveSystem(IGameSystem gameSystem, int newIndex) {
+    public void MoveSystem(ISceneSystem sceneSystem, int newIndex) {
         if (this.SceneService.CurrentScene is { Systems: SystemCollection collection }) {
-            var originalIndex = collection.IndexOf(gameSystem);
+            var originalIndex = collection.IndexOf(sceneSystem);
             this._undoService.Do(() =>
             {
                 collection.Move(originalIndex, newIndex);
@@ -314,7 +314,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private async Task AddChild(Type type) {
         if (type == null) {
-            if (this.SceneService.Selected is IGameSystem or SystemCollection) {
+            if (this.SceneService.Selected is ISceneSystem or SystemCollection) {
                 await this.AddSystem(null);
             }
             else if (this.SceneService.ImpliedSelected is IScene or IEntity) {
@@ -324,7 +324,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         else if (type.IsAssignableTo(typeof(IEntity))) {
             await this.AddEntity(type);
         }
-        else if (type.IsAssignableTo(typeof(IGameSystem))) {
+        else if (type.IsAssignableTo(typeof(ISceneSystem))) {
             await this.AddSystem(type);
         }
     }
@@ -364,7 +364,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes, typeof(AnimationSystem), "Select a System");
             }
 
-            if (type != null && Activator.CreateInstance(type) is IGameSystem system) {
+            if (type != null && Activator.CreateInstance(type) is ISceneSystem system) {
                 var originallySelected = this._systemService.Selected;
                 this._undoService.Do(() =>
                 {
@@ -387,7 +387,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private bool CanAdd() => !this.IsFiltered;
 
-    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity.Id != this.SceneService.CurrentlyEditing?.Id || selected is IGameSystem);
+    private bool CanClone(object selected) => !this.IsFiltered && (selected is IEntity entity && entity.Id != this.SceneService.CurrentlyEditing?.Id || selected is ISceneSystem);
 
     private bool CanMoveDown(object selected) {
         if (this.IsFiltered) {
@@ -396,7 +396,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
-            IGameSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) < scene.Systems.Count - 1,
+            ISceneSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) < scene.Systems.Count - 1,
             _ => false
         };
     }
@@ -414,7 +414,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) != 0,
-            IGameSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) != 0,
+            ISceneSystem system => this.SceneService.CurrentScene is { } scene && scene.Systems.IndexOf(system) != 0,
             _ => false
         };
     }
@@ -441,7 +441,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 });
             }
         }
-        else if (selected is IGameSystem system && this.SceneService.CurrentScene is { } scene) {
+        else if (selected is ISceneSystem system && this.SceneService.CurrentScene is { } scene) {
             if (system.TryClone(out var clone)) {
                 this._undoService.Do(() =>
                 {
@@ -532,7 +532,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index + 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IGameSystem system: {
+            case ISceneSystem system: {
                 if (this.SceneService.CurrentScene is { } scene) {
                     var index = scene.Systems.IndexOf(system);
                     this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, index + 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
@@ -548,8 +548,8 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         this.SceneService.RaiseSelectedChanged();
     }
 
-    private void MoveSystemByIndex(IScene scene, IGameSystem gameSystem, int index) {
-        scene.ReorderSystem(gameSystem, index);
+    private void MoveSystemByIndex(IScene scene, ISceneSystem sceneSystem, int index) {
+        scene.ReorderSystem(sceneSystem, index);
         this.SceneService.RaiseSelectedChanged();
     }
 
@@ -560,7 +560,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, parent.Children.Count - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IGameSystem system: {
+            case ISceneSystem system: {
                 if (this.SceneService.CurrentScene is { } scene) {
                     var index = scene.Systems.IndexOf(system);
                     this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, scene.Systems.Count - 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
@@ -578,7 +578,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, 0); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IGameSystem system: {
+            case ISceneSystem system: {
                 if (this.SceneService.CurrentScene is { } scene) {
                     var index = scene.Systems.IndexOf(system);
                     this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, 0); }, () => { this.MoveSystemByIndex(scene, system, index); });
@@ -596,7 +596,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IGameSystem system: {
+            case ISceneSystem system: {
                 if (this.SceneService.CurrentScene is { } scene) {
                     var index = scene.Systems.IndexOf(system);
                     this._undoService.Do(() => { this.MoveSystemByIndex(scene, system, index - 1); }, () => { this.MoveSystemByIndex(scene, system, index); });
@@ -622,7 +622,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
             case IEntity entity and not IScene:
                 this.RemoveEntity(entity);
                 break;
-            case IGameSystem system:
+            case ISceneSystem system:
                 this.RemoveSystem(system);
                 break;
         }
@@ -644,7 +644,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     }
 
     private void RemoveSystem(object selected) {
-        if (selected is IGameSystem system && this.SceneService.CurrentScene is { } scene) {
+        if (selected is ISceneSystem system && this.SceneService.CurrentScene is { } scene) {
             this._undoService.Do(() =>
             {
                 scene.RemoveSystem(system);

@@ -56,7 +56,7 @@ public partial class SceneTreeView : UserControl {
     }
 
     private bool CanInsert(Control target) =>
-        target is { DataContext: IEntity or IGameSystem or EntityCollection or SystemCollection } &&
+        target is { DataContext: IEntity or ISceneSystem or EntityCollection or SystemCollection } &&
         target.DataContext != this.DraggedObject;
 
     private void Drag(object sender, DragEventArgs e) {
@@ -93,7 +93,7 @@ public partial class SceneTreeView : UserControl {
                     case EntityCollection when this.DraggedObject is IEntity draggedEntity:
                         this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentlyEditing, 0);
                         break;
-                    case IGameSystem targetSystem when this.DraggedObject is IGameSystem draggedSystem:
+                    case ISceneSystem targetSystem when this.DraggedObject is ISceneSystem draggedSystem:
                         if (this.ViewModel.SceneService.CurrentScene is { } scene) {
                             index = scene.Systems.IndexOf(targetSystem);
 
@@ -105,7 +105,7 @@ public partial class SceneTreeView : UserControl {
                         }
 
                         break;
-                    case SystemCollection when this.DraggedObject is IGameSystem draggedSystem:
+                    case SystemCollection when this.DraggedObject is ISceneSystem draggedSystem:
                         this.ViewModel.MoveSystem(draggedSystem, 0);
                         break;
                 }
@@ -178,7 +178,7 @@ public partial class SceneTreeView : UserControl {
 
     private async void TreeNode_OnPointerMoved(object sender, PointerEventArgs e) {
         if (!this._isDragging && this.DraggedObject != null &&
-            sender is Control { DataContext: IGameSystem or IEntity and not IScene } control &&
+            sender is Control { DataContext: ISceneSystem or IEntity and not IScene } control &&
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
@@ -188,7 +188,7 @@ public partial class SceneTreeView : UserControl {
 
     private void TreeNode_OnPointerPressed(object sender, PointerPressedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
-            sender is Control { DataContext: IGameSystem or IEntity and not IScene } control) {
+            sender is Control { DataContext: ISceneSystem or IEntity and not IScene } control) {
             this.DraggedObject = control.DataContext as INameable;
         }
     }
@@ -214,7 +214,7 @@ public partial class SceneTreeView : UserControl {
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
                        (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
-                        draggedObject is IGameSystem && dropTarget is IGameSystem or SystemCollection);
+                        draggedObject is ISceneSystem && dropTarget is ISceneSystem or SystemCollection);
             }
 
             return false;

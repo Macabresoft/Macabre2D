@@ -8,7 +8,7 @@ using Macabre2D.Project.Common;
 /// <summary>
 /// A system that handles animations.
 /// </summary>
-public class AnimationSystem : UpdateSystem {
+public class AnimationSystem : SceneUpdateSystem {
     private byte _frameRate = 30;
 
     /// <summary>

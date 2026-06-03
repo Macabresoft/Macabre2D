@@ -10,12 +10,12 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public static class UpdateSystemTests {
+public static class SceneUpdateSystemTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotUpdate_WhenLayerOverrideDoesNotMatch() {
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddSystem<SceneUpdateSystem>();
         updateSystem.LayersToUpdate.IsEnabled = true;
         updateSystem.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
@@ -35,7 +35,7 @@ public static class UpdateSystemTests {
     [Test]
     public static void Update_ShouldNotUpdateDisabled() {
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddSystem<SceneUpdateSystem>();
         var disabled = scene.AddChild<TestUpdateableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -54,7 +54,7 @@ public static class UpdateSystemTests {
     [Test]
     public static void Update_ShouldUpdate_WhenLayerOverrideMatches() {
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddSystem<SceneUpdateSystem>();
         updateSystem.LayersToUpdate.IsEnabled = true;
         updateSystem.LayersToUpdate.Value = (Layers)1;
         var entity = scene.AddChild<TestUpdateableEntity>();
@@ -74,7 +74,7 @@ public static class UpdateSystemTests {
     [Test]
     public static void Update_ShouldUpdateAll_WhenNoLayerOverride() {
         var scene = new Scene();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<SceneUpdateSystem>();
         var entities = new List<TestUpdateableEntity>();
         var layers = Enum.GetValues<Layers>();
         foreach (var layer in layers) {
@@ -102,7 +102,7 @@ public static class UpdateSystemTests {
     public static void Update_ShouldUpdateAllEntities() {
         const int NumberOfChildren = 10;
         var scene = new Scene();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddSystem<SceneUpdateSystem>();
         var entities = new List<TestUpdateableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {
@@ -128,7 +128,7 @@ public static class UpdateSystemTests {
     [Test]
     public static void Update_ShouldUpdateNone_WhenLayerOverrideOfNone() {
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddSystem<SceneUpdateSystem>();
         updateSystem.LayersToUpdate.IsEnabled = true;
         updateSystem.LayersToUpdate.Value = Layers.None;
         var entities = new List<TestUpdateableEntity>();

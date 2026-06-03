@@ -142,7 +142,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             };
 
             foreach (var systemType in template.DefaultSystems) {
-                if (Activator.CreateInstance(systemType) is IGameSystem system) {
+                if (Activator.CreateInstance(systemType) is ISceneSystem system) {
                     scene.AddSystem(system);
                 }
             }

@@ -8,7 +8,7 @@ using Macabresoft.Core;
 /// Reference to a system using only its type.
 /// </summary>
 /// <typeparam name="TSystem">The type of system to reference.</typeparam>
-public class SystemTypeReference<TSystem> : PropertyChangedNotifier, IGameObjectReference where TSystem : class, IGameSystem {
+public class SystemTypeReference<TSystem> : PropertyChangedNotifier, IGameObjectReference where TSystem : class, ISceneSystem {
     /// <summary>
     /// Gets the referenced system.
     /// </summary>

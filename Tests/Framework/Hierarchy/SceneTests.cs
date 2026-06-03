@@ -173,7 +173,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             scene.FindSystem<RenderSystem>(system.Id).Should().Be(system);
-            scene.FindSystem<IGameSystem>(system.Id).Should().Be(system);
+            scene.FindSystem<ISceneSystem>(system.Id).Should().Be(system);
         }
     }
 
@@ -188,7 +188,7 @@ public sealed class SceneTests {
 
         using (new AssertionScope()) {
             deserialized.FindSystem<SimplePhysicsSystem>(system.Id).Should().BeEquivalentTo(system);
-            deserialized.FindSystem<IGameSystem>(system.Id).Should().BeEquivalentTo(system);
+            deserialized.FindSystem<ISceneSystem>(system.Id).Should().BeEquivalentTo(system);
         }
     }
 
@@ -210,7 +210,7 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddSystem<UpdateSystem>();
+            scene.AddSystem<SceneUpdateSystem>();
         }
 
         var reordered = scene.Systems.ElementAt(0);
@@ -231,7 +231,7 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddSystem<UpdateSystem>();
+            scene.AddSystem<SceneUpdateSystem>();
         }
 
         var reordered = scene.Systems.ElementAt(OriginalIndex);

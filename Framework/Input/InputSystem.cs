@@ -28,7 +28,7 @@ public enum InputKind : byte {
 }
 
 /// <summary>
-/// Interface for a <see cref="GameSystem" /> that handles input.
+/// Interface for a <see cref="SceneSystem" /> that handles input.
 /// </summary>
 public interface IInputSystem {
 
@@ -90,7 +90,7 @@ public interface IInputSystem {
 /// <summary>
 /// A system which handles basic input operations on a per-frame basis.
 /// </summary>
-public class InputSystem : UpdateSystem, IInputSystem {
+public class InputSystem : SceneUpdateSystem, IInputSystem {
     private readonly IDictionary<InputAction, InputActionState> _actionToButtonState = new Dictionary<InputAction, InputActionState>();
     private InputState _inputState;
 

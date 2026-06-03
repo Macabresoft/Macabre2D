@@ -12,7 +12,7 @@ using Unity;
 /// A view model for the system selection dialog.
 /// </summary>
 public class SystemSelectionViewModel : BaseDialogViewModel {
-    private IGameSystem _selectedGameSystem;
+    private ISceneSystem _selectedSceneSystem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SystemSelectionViewModel" /> class.
@@ -41,18 +41,18 @@ public class SystemSelectionViewModel : BaseDialogViewModel {
     /// <summary>
     /// Gets the selected system.
     /// </summary>
-    public IGameSystem SelectedGameSystem {
-        get => this._selectedGameSystem;
+    public ISceneSystem SelectedSceneSystem {
+        get => this._selectedSceneSystem;
         set {
-            this.RaiseAndSetIfChanged(ref this._selectedGameSystem, value);
-            this.IsOkEnabled = this._selectedGameSystem != null;
+            this.RaiseAndSetIfChanged(ref this._selectedSceneSystem, value);
+            this.IsOkEnabled = this._selectedSceneSystem != null;
         }
     }
 
     /// <summary>
     /// Gets the systems.
     /// </summary>
-    public IEnumerable<IGameSystem> Systems { get; }
+    public IEnumerable<ISceneSystem> Systems { get; }
 
     /// <summary>
     /// Gets the title.

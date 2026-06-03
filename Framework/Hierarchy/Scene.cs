@@ -10,7 +10,7 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for a combination of <see cref="IGameSystem" /> and <see cref="IEntity" />
+/// Interface for a combination of <see cref="ISceneSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntity {
@@ -82,7 +82,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <summary>
     /// Gets the systems.
     /// </summary>
-    IReadOnlyCollection<IGameSystem> Systems => [];
+    IReadOnlyCollection<ISceneSystem> Systems => [];
 
     /// <summary>
     /// Gets the updateable entities.
@@ -98,16 +98,16 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Adds the system.
     /// </summary>
     /// <typeparam name="T">
-    /// A type that implements <see cref="IGameSystem" /> and has an empty constructor.
+    /// A type that implements <see cref="ISceneSystem" /> and has an empty constructor.
     /// </typeparam>
     /// <returns>The added system.</returns>
-    T AddSystem<T>() where T : IGameSystem, new();
+    T AddSystem<T>() where T : ISceneSystem, new();
 
     /// <summary>
     /// Adds the system.
     /// </summary>
     /// <param name="system">The system.</param>
-    void AddSystem(IGameSystem system);
+    void AddSystem(ISceneSystem system);
 
     /// <summary>
     /// Gets a value indicating whether this scene contains an entity with the specified identifier.
@@ -130,21 +130,21 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <param name="id">The system identifier.</param>
     /// <typeparam name="TSystem">The system type.</typeparam>
     /// <returns>The system if found.</returns>
-    TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem;
+    TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, ISceneSystem;
 
     /// <summary>
     /// Gets the specified system if it exists, otherwise it adds it to the scene.
     /// </summary>
     /// <typeparam name="T">The type of system to get or add.</typeparam>
     /// <returns>The system.</returns>
-    T GetOrAddSystem<T>() where T : class, IGameSystem, new();
+    T GetOrAddSystem<T>() where T : class, ISceneSystem, new();
 
     /// <summary>
     /// Gets the first found system of the specified type.
     /// </summary>
     /// <typeparam name="T">The type of system.</typeparam>
     /// <returns>The system.</returns>
-    T? GetSystem<T>() where T : class, IGameSystem;
+    T? GetSystem<T>() where T : class, ISceneSystem;
 
     /// <summary>
     /// Initializes this instance.
@@ -158,7 +158,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// </summary>
     /// <param name="index">The index.</param>
     /// <param name="system">The system.</param>
-    void InsertSystem(int index, IGameSystem system);
+    void InsertSystem(int index, ISceneSystem system);
 
     /// <summary>
     /// Invokes the specified action after the current update
@@ -187,7 +187,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// </summary>
     /// <param name="system">The system.</param>
     /// <returns>A value indicating whether the system was removed.</returns>
-    bool RemoveSystem(IGameSystem system);
+    bool RemoveSystem(ISceneSystem system);
 
     /// <summary>
     /// Renders the scene.
@@ -208,7 +208,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// </summary>
     /// <param name="system">The system.</param>
     /// <param name="newIndex">The new index.</param>
-    void ReorderSystem(IGameSystem system, int newIndex);
+    void ReorderSystem(ISceneSystem system, int newIndex);
 
     /// <summary>
     /// Tries to find the specified entity.
@@ -234,7 +234,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
 }
 
 /// <summary>
-/// A user-created combination of <see cref="IGameSystem" /> and <see cref="IEntity" />
+/// A user-created combination of <see cref="ISceneSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
@@ -385,7 +385,7 @@ public sealed class Scene : GridContainer, IScene {
     public SceneState State { get; } = new();
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IGameSystem> Systems => this._systems;
+    public IReadOnlyCollection<ISceneSystem> Systems => this._systems;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
@@ -413,14 +413,14 @@ public sealed class Scene : GridContainer, IScene {
     public bool IsActive { get; private set; }
 
     /// <inheritdoc />
-    public T AddSystem<T>() where T : IGameSystem, new() {
+    public T AddSystem<T>() where T : ISceneSystem, new() {
         var system = new T();
         this.AddSystem(system);
         return system;
     }
 
     /// <inheritdoc />
-    public void AddSystem(IGameSystem system) {
+    public void AddSystem(ISceneSystem system) {
         this._systems.Add(system);
         this.OnSystemAdded(system);
     }
@@ -457,15 +457,15 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, IGameSystem {
+    public TSystem? FindSystem<TSystem>(Guid id) where TSystem : class, ISceneSystem {
         return this.Systems.OfType<TSystem>().FirstOrDefault(x => x.Id == id);
     }
 
     /// <inheritdoc />
-    public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => this.GetSystem<T>() ?? this.AddSystem<T>();
+    public T GetOrAddSystem<T>() where T : class, ISceneSystem, new() => this.GetSystem<T>() ?? this.AddSystem<T>();
 
     /// <inheritdoc />
-    public T? GetSystem<T>() where T : class, IGameSystem => this.Systems.OfType<T>().FirstOrDefault();
+    public T? GetSystem<T>() where T : class, ISceneSystem => this.Systems.OfType<T>().FirstOrDefault();
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
@@ -514,7 +514,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void InsertSystem(int index, IGameSystem system) {
+    public void InsertSystem(int index, ISceneSystem system) {
         this._systems.InsertOrAdd(index, system);
         this.OnSystemAdded(system);
     }
@@ -596,7 +596,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveSystem(IGameSystem system) {
+    public bool RemoveSystem(ISceneSystem system) {
         var result = false;
         if (this._systems.Contains(system)) {
             this.Invoke(() =>
@@ -642,7 +642,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void ReorderSystem(IGameSystem system, int newIndex) {
+    public void ReorderSystem(ISceneSystem system, int newIndex) {
         this._systems.Reorder(system, newIndex);
     }
 
@@ -744,14 +744,14 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
-    private void OnSystemAdded(IGameSystem system) {
+    private void OnSystemAdded(ISceneSystem system) {
         if (this._isInitialized) {
             system.Initialize(this);
             system.OnSceneTreeLoaded();
         }
     }
 
-    private void OnSystemRemoved(IGameSystem system) {
+    private void OnSystemRemoved(ISceneSystem system) {
         if (this._isInitialized) {
             this.UnregisterSystem(system);
             system.Deinitialize();
@@ -772,7 +772,7 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
-    private void RegisterSystem(IGameSystem system) {
+    private void RegisterSystem(ISceneSystem system) {
         this._screenSpaceRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
@@ -795,7 +795,7 @@ public sealed class Scene : GridContainer, IScene {
         }
     }
 
-    private void UnregisterSystem(IGameSystem system) {
+    private void UnregisterSystem(ISceneSystem system) {
         foreach (var cache in this.GetSystemCaches()) {
             cache.Remove(system);
         }

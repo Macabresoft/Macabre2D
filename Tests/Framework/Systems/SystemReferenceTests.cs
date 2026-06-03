@@ -12,7 +12,7 @@ public class SystemReferenceTests {
     public static void Initialize_ShouldSetEntity_WhenEntityIdIsAlreadySet() {
         var scene = new Scene();
         var system = scene.AddSystem<SimplePhysicsSystem>();
-        var reference = new SystemReference<IGameSystem>();
+        var reference = new SystemReference<ISceneSystem>();
         reference.SystemId = system.Id;
         reference.Initialize(scene);
 
@@ -26,7 +26,7 @@ public class SystemReferenceTests {
     public static void SetEntityId_ShouldNotSetEntity_WhenNotInitialized() {
         var scene = new Scene();
         var system = scene.AddSystem<SimplePhysicsSystem>();
-        var reference = new SystemReference<IGameSystem>();
+        var reference = new SystemReference<ISceneSystem>();
         reference.SystemId = system.Id;
 
         using (new AssertionScope()) {
@@ -39,7 +39,7 @@ public class SystemReferenceTests {
     public static void SetEntityId_ShouldSetEntity_WhenAlreadyInitialized() {
         var scene = new Scene();
         var system = scene.AddSystem<SimplePhysicsSystem>();
-        var reference = new SystemReference<IGameSystem>();
+        var reference = new SystemReference<ISceneSystem>();
         reference.Initialize(scene);
         reference.SystemId = system.Id;
 

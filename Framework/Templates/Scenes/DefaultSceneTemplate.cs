@@ -11,5 +11,5 @@ public class DefaultSceneTemplate : SceneTemplate {
     public override string Name => "Default Scene";
     
     /// <inheritdoc />
-    public override IReadOnlyCollection<Type> DefaultSystems { get; } = [typeof(InputSystem), typeof(UpdateSystem), typeof(AnimationSystem), typeof(SimplePhysicsSystem), typeof(RenderSystem)];
+    public override IReadOnlyCollection<Type> DefaultSystems { get; } = [typeof(InputSystem), typeof(SceneUpdateSystem), typeof(AnimationSystem), typeof(SimplePhysicsSystem), typeof(RenderSystem)];
 }

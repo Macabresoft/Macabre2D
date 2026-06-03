@@ -73,11 +73,11 @@ public interface ICommonDialogService : IBaseDialogService {
     Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType, string title);
 
     /// <summary>
-    /// Opens a dialog that allows the user to pick a <see cref="IGameSystem" /> which inherits from the specified base type.
+    /// Opens a dialog that allows the user to pick a <see cref="ISceneSystem" /> which inherits from the specified base type.
     /// </summary>
     /// <param name="baseSystemType">The base system type.</param>
     /// <returns>The selected entity.</returns>
-    Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType);
+    Task<ISceneSystem> OpenSystemSelectionDialog(Type baseSystemType);
 
     /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="Type" />.
@@ -220,16 +220,16 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     public abstract Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog(Type assetType, string title);
 
     /// <inheritdoc />
-    public async Task<IGameSystem> OpenSystemSelectionDialog(Type baseSystemType) {
-        IGameSystem selectedGameSystem = null;
+    public async Task<ISceneSystem> OpenSystemSelectionDialog(Type baseSystemType) {
+        ISceneSystem selectedSceneSystem = null;
         var window = Resolver.Resolve<SystemSelectionDialog>(new ParameterOverride(typeof(Type), baseSystemType));
         var result = await window.ShowDialog<bool>(this.MainWindow);
 
         if (result) {
-            selectedGameSystem = window.ViewModel.SelectedGameSystem;
+            selectedSceneSystem = window.ViewModel.SelectedSceneSystem;
         }
 
-        return selectedGameSystem;
+        return selectedSceneSystem;
     }
 
     /// <inheritdoc />
