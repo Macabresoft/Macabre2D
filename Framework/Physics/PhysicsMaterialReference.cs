@@ -3,15 +3,15 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Common;
+using Macabresoft.Core;
 
 /// <summary>
 /// A reference to a <see cref="PhysicsMaterial" />.
 /// </summary>
 [DataContract]
 public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObjectReference, IIdentifiable {
-    private IScene _scene = EmptyObject.Scene;
+    private IGame _game = BaseGame.Empty;
 
     /// <inheritdoc />
     [DataMember]
@@ -42,12 +42,12 @@ public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObj
 
     /// <inheritdoc />
     public void Deinitialize() {
-        this._scene = EmptyObject.Scene;
+        this._game = BaseGame.Empty;
     }
 
     /// <inheritdoc />
-    public void Initialize(IScene scene) {
-        this._scene = scene;
+    public void Initialize(IGame game, IScene scene) {
+        this._game = game;
         this.ResetReference();
     }
 
@@ -56,7 +56,7 @@ public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObj
             this.Material = PhysicsMaterial.Default;
         }
         else {
-            this.Material = this._scene.Project.PhysicsMaterials.FirstOrDefault<PhysicsMaterial>(x => x.Id == this.Id) ?? PhysicsMaterial.Default;
+            this.Material = this._game.Project.PhysicsMaterials.FirstOrDefault<PhysicsMaterial>(x => x.Id == this.Id) ?? PhysicsMaterial.Default;
         }
     }
 }

@@ -11,7 +11,7 @@ using Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
 
-public partial class SystemReferenceEditor : ValueEditorControl<SystemReference> {
+public partial class SystemReferenceEditor : ValueEditorControl<SceneSystemReference> {
     public static readonly DirectProperty<SystemReferenceEditor, ICommand> ClearCommandProperty =
         AvaloniaProperty.RegisterDirect<SystemReferenceEditor, ICommand>(
             nameof(ClearCommand),
@@ -64,7 +64,7 @@ public partial class SystemReferenceEditor : ValueEditorControl<SystemReference>
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
 
-    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SystemReference> args) {
+    protected override void OnValueChanged(AvaloniaPropertyChangedEventArgs<SceneSystemReference> args) {
         base.OnValueChanged(args);
         
         if (args.OldValue is { HasValue: true, Value: { } reference }) {
@@ -112,7 +112,7 @@ public partial class SystemReferenceEditor : ValueEditorControl<SystemReference>
     }
 
     private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(SystemReference.SystemId)) {
+        if (e.PropertyName is nameof(SceneSystemReference.SystemId)) {
             this.ResetPath();
         }
     }

@@ -24,6 +24,12 @@ public class BaseGame : Game, IGame {
 
     private readonly List<GameTransition> _runningTransitions = [];
     private readonly Stack<IScene> _sceneStack = new();
+
+    private readonly FilterCollection<IUpdateableGameObject> _updateSystems = new(
+        a => a.ShouldUpdate,
+        (a, handler) => a.ShouldUpdateChanged += handler,
+        (a, handler) => a.ShouldUpdateChanged -= handler);
+
     private bool _canToggleFullscreen = true;
     private Rectangle _finalRenderBounds;
     private RenderTarget2D? _gameRenderTarget;
@@ -96,6 +102,9 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public GameState State { get; } = new();
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IGameSystem> Systems => this.Project.Systems;
 
     /// <inheritdoc />
     public TimeSpan TimeSinceGameStart => this._gameTime.TotalGameTime;
@@ -226,6 +235,9 @@ public class BaseGame : Game, IGame {
     public void BeginTransition(GameTransition transition) {
         this._runningTransitions.Add(transition);
     }
+
+    /// <inheritdoc />
+    public T? GetSystem<T>() where T : class, IGameSystem => this.Systems.OfType<T>().FirstOrDefault();
 
     /// <inheritdoc />
     public void LoadScene(string sceneName) {
@@ -368,14 +380,21 @@ public class BaseGame : Game, IGame {
         this.ReloadUserSettings();
         this.Measurements.Initialize(this, this.Project);
 
+        this._updateSystems.Clear();
+        this._updateSystems.AddRange(this.Systems);
+
         this.InputActionIconResolver.Initialize(this);
         this.RaiseCultureChanged();
-        
+
         var assetManager = this.CreateAssetManager();
         foreach (var renderStep in this.Project.RenderSteps) {
             renderStep.Initialize(assetManager, this);
         }
-        
+
+        foreach (var system in this.Project.Systems) {
+            system.Initialize(this);
+        }
+
         this.CurrentScene.Initialize(this, this.CreateAssetManager());
 
         this.IsInitialized = true;
@@ -472,6 +491,12 @@ public class BaseGame : Game, IGame {
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
         this.RunTransitions();
+
+        this._updateSystems.RebuildCache();
+        foreach (var system in this._updateSystems) {
+            system.Update(this.FrameTime, this.InputState);
+        }
+
         this.CurrentScene.Update(this.FrameTime, this.InputState);
     }
 
@@ -587,6 +612,7 @@ public class BaseGame : Game, IGame {
         public IGameProject Project => GameProject.Empty;
         public SpriteBatch? SpriteBatch => null;
         public GameState State { get; } = new();
+        public IReadOnlyCollection<IGameSystem> Systems { get; } = [];
         public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
         public UserSettings UserSettings { get; } = new();
         public Point ViewportSize => default;
@@ -607,6 +633,8 @@ public class BaseGame : Game, IGame {
 
         public void Exit() {
         }
+
+        public T? GetSystem<T>() where T : class, IGameSystem => null;
 
         public void LoadScene(string sceneName) {
         }

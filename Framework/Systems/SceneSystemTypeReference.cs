@@ -8,16 +8,17 @@ using Macabresoft.Core;
 /// Reference to a system using only its type.
 /// </summary>
 /// <typeparam name="TSystem">The type of system to reference.</typeparam>
-public class SystemTypeReference<TSystem> : PropertyChangedNotifier, IGameObjectReference where TSystem : class, ISceneSystem {
-    /// <summary>
-    /// Gets the referenced system.
-    /// </summary>
-    public TSystem? System { get; private set; }
+public class SceneSystemTypeReference<TSystem> : PropertyChangedNotifier, IGameObjectReference where TSystem : class, ISceneSystem {
 
     /// <summary>
     /// Gets the type of the system referenced.
     /// </summary>
     public Type Type { get; } = typeof(TSystem);
+
+    /// <summary>
+    /// Gets the referenced system.
+    /// </summary>
+    public TSystem? System { get; private set; }
 
     /// <inheritdoc />
     public void Deinitialize() {
@@ -25,7 +26,7 @@ public class SystemTypeReference<TSystem> : PropertyChangedNotifier, IGameObject
     }
 
     /// <inheritdoc />
-    public void Initialize(IScene scene) {
+    public void Initialize(IGame game, IScene scene) {
         this.System = this.GetSystemFromScene(scene);
     }
 

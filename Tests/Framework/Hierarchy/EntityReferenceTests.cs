@@ -11,12 +11,13 @@ public sealed class EntityReferenceTests {
     [Test]
     [Category("Unit Tests")]
     public static void Initialize_ShouldSetEntity_WhenEntityIdIsAlreadySet() {
+        var game = Substitute.For<IGame>();
         var scene = new Scene();
         var child = scene.AddChild<Entity>();
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(game, Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
         entityReference.EntityId = child.Id;
-        entityReference.Initialize(scene);
+        entityReference.Initialize(game, scene);
 
         using (new AssertionScope()) {
             entityReference.Entity.Should().Be(child);
@@ -39,11 +40,12 @@ public sealed class EntityReferenceTests {
     [Test]
     [Category("Unit Tests")]
     public static void SetEntityId_ShouldSetEntity_WhenAlreadyInitialized() {
+        var game = Substitute.For<IGame>();
         var scene = new Scene();
         var child = scene.AddChild<Entity>();
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(game, Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
-        entityReference.Initialize(scene);
+        entityReference.Initialize(game, scene);
         entityReference.EntityId = child.Id;
 
         using (new AssertionScope()) {

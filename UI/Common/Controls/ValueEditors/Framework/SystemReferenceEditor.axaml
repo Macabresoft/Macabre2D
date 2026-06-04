@@ -4,7 +4,7 @@
                            xmlns:local="clr-namespace:Macabre2D.UI.Common"
                            xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                           x:TypeArguments="framework:SystemReference"
+                           x:TypeArguments="framework:SceneSystemReference"
                            x:Class="Macabre2D.UI.Common.SystemReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:SystemReferenceEditor]}">

@@ -12,6 +12,7 @@ public interface IGameObjectReference {
     /// <summary>
     /// Initializes this instance.
     /// </summary>
+    /// <param name="game">The game.</param>
     /// <param name="scene">The scene.</param>
-    void Initialize(IScene scene);
+    void Initialize(IGame game, IScene scene);
 }

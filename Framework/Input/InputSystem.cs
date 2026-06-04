@@ -98,7 +98,7 @@ public class InputSystem : SceneUpdateSystem, IInputSystem {
     public float HorizontalAxis { get; private set; }
 
     /// <inheritdoc />
-    public override UpdateSystemKind Kind => UpdateSystemKind.PreUpdate;
+    public override SceneUpdateSystemKind Kind => SceneUpdateSystemKind.PreUpdate;
 
     /// <inheritdoc />
     public float VerticalAxis { get; private set; }

@@ -275,7 +275,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// <param name="sceneSystem">The system.</param>
     /// <param name="newIndex">The new index.</param>
     public void MoveSystem(ISceneSystem sceneSystem, int newIndex) {
-        if (this.SceneService.CurrentScene is { Systems: SystemCollection collection }) {
+        if (this.SceneService.CurrentScene is { Systems: SceneSystemCollection collection }) {
             var originalIndex = collection.IndexOf(sceneSystem);
             this._undoService.Do(() =>
             {
@@ -314,7 +314,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private async Task AddChild(Type type) {
         if (type == null) {
-            if (this.SceneService.Selected is ISceneSystem or SystemCollection) {
+            if (this.SceneService.Selected is ISceneSystem or SceneSystemCollection) {
                 await this.AddSystem(null);
             }
             else if (this.SceneService.ImpliedSelected is IScene or IEntity) {

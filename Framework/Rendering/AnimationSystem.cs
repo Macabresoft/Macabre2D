@@ -27,7 +27,7 @@ public class AnimationSystem : SceneUpdateSystem {
     }
 
     /// <inheritdoc />
-    public override UpdateSystemKind Kind => UpdateSystemKind.PostUpdate;
+    public override SceneUpdateSystemKind Kind => SceneUpdateSystemKind.PostUpdate;
 
     /// <summary>
     /// Gets or sets the milliseconds that have passed for this animation.

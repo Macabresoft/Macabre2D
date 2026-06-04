@@ -177,7 +177,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject, UserSettings.UserSettingsTypes.ToArray());
                 this._editors.AddRange(editors);
             }
-            else if (this._selected is RenderStep or PhysicsMaterial) {
+            else if (this._selected is RenderStep or PhysicsMaterial or IGameSystem) {
                 var editors = this._valueControlService.CreateControls(this._selected);
                 this._editors.AddRange(editors);
             }

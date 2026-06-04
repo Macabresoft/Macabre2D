@@ -194,7 +194,7 @@
                                                            Text="{Binding Name}" />
                     </TreeDataTemplate>
 
-                    <TreeDataTemplate DataType="framework:SystemCollection"
+                    <TreeDataTemplate DataType="framework:SceneSystemCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                            Icon="{StaticResource GameSystemIcon}"

@@ -277,12 +277,12 @@ public sealed class Scene : GridContainer, IScene {
         (p, handler) => p.UpdateOrderChanged += handler,
         (p, handler) => p.UpdateOrderChanged -= handler);
 
-    private readonly FilterCollection<IUpdateSystem> _postUpdateSystems = new(
+    private readonly FilterCollection<ISceneUpdateSystem> _postUpdateSystems = new(
         a => a.ShouldUpdate,
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
 
-    private readonly FilterCollection<IUpdateSystem> _preUpdateSystems = new(
+    private readonly FilterCollection<ISceneUpdateSystem> _preUpdateSystems = new(
         a => a.ShouldUpdate,
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
@@ -311,7 +311,7 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldRenderInScreenSpaceChanged -= handler);
 
     [DataMember]
-    private readonly SystemCollection _systems = [];
+    private readonly SceneSystemCollection _systems = [];
 
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
@@ -322,7 +322,7 @@ public sealed class Scene : GridContainer, IScene {
         (u, handler) => u.UpdateOrderChanged += handler,
         (u, handler) => u.UpdateOrderChanged -= handler);
 
-    private readonly FilterCollection<IUpdateSystem> _updateSystems = new(
+    private readonly FilterCollection<ISceneUpdateSystem> _updateSystems = new(
         a => a.ShouldUpdate,
         (a, handler) => a.ShouldUpdateChanged += handler,
         (a, handler) => a.ShouldUpdateChanged -= handler);
@@ -776,18 +776,18 @@ public sealed class Scene : GridContainer, IScene {
         this._screenSpaceRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
-        if (system is IUpdateSystem updateSystem) {
+        if (system is ISceneUpdateSystem updateSystem) {
             switch (updateSystem.Kind) {
-                case UpdateSystemKind.Update:
+                case SceneUpdateSystemKind.Update:
                     this._updateSystems.Add(updateSystem);
                     break;
-                case UpdateSystemKind.PreUpdate:
+                case SceneUpdateSystemKind.PreUpdate:
                     this._preUpdateSystems.Add(updateSystem);
                     break;
-                case UpdateSystemKind.PostUpdate:
+                case SceneUpdateSystemKind.PostUpdate:
                     this._postUpdateSystems.Add(updateSystem);
                     break;
-                case UpdateSystemKind.None:
+                case SceneUpdateSystemKind.None:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

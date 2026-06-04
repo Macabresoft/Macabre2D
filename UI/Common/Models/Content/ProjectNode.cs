@@ -18,6 +18,7 @@ public class ProjectNode {
         this.Children = [
             new UserSettingsNode(project.DefaultUserSettings),
             new ProjectFontsNode(project.Fonts, undoService),
+            project.Systems,
             project.RenderSteps,
             project.PhysicsMaterials,
             rootContentDirectory

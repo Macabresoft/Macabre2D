@@ -273,6 +273,34 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
+    private async Task AddNewGameSystem() {
+        Type type;
+
+        var gameSystemTypes = this._assemblyService.LoadTypes(typeof(IGameSystem)).ToList();
+        if (gameSystemTypes.Count == 1) {
+            type = gameSystemTypes.FirstOrDefault();
+        }
+        else {
+            type = await this._dialogService.OpenTypeSelectionDialog(gameSystemTypes, typeof(IGameSystem), "Select a Game System Type");
+        }
+
+        if (type != null && Activator.CreateInstance(type) is IGameSystem newSystem) {
+            newSystem.Name = type.ToPresentableName();
+            var originalSelected = this.GetActualSelected();
+            this._undoService.Do(
+                () =>
+                {
+                    this.ProjectService.CurrentProject.Systems.Add(newSystem);
+                    this.AssetSelectionService.Selected = newSystem;
+                },
+                () =>
+                {
+                    this.ProjectService.CurrentProject.Systems.Remove(newSystem);
+                    this.AssetSelectionService.Selected = originalSelected;
+                });
+        }
+    }
+
     private void AddNewPhysicsMaterial() {
         var originalSelected = this.GetActualSelected();
         var newMaterial = new PhysicsMaterial();
@@ -357,6 +385,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                 }
 
                 break;
+            case IGameSystem:
+            case GameSystemCollection:
+                await this.AddNewGameSystem();
+                break;
             case IRenderStep:
             case RenderStepCollection:
                 await this.AddNewRenderStep();
@@ -387,6 +419,8 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         SpriteSheetFontCollection or
         SpriteSheetIconSetCollection or
         SpriteSheetMember or
+        IGameSystem or
+        GameSystemCollection or
         IRenderStep or
         RenderStepCollection or
         PhysicsMaterialCollection or
@@ -400,6 +434,11 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
             var index = collection.IndexOf(member);
             var maxIndex = collection.Count - 1;
+            result = index < maxIndex;
+        }
+        else if (selected is IGameSystem system) {
+            var index = this.ProjectService.CurrentProject.Systems.IndexOf(system);
+            var maxIndex = this.ProjectService.CurrentProject.Systems.Count - 1;
             result = index < maxIndex;
         }
         else if (selected is IRenderStep step) {
@@ -421,6 +460,10 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
 
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member && spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
             var index = collection.IndexOf(member);
+            result = index > 0;
+        }
+        else if (selected is IGameSystem system) {
+            var index = this.ProjectService.CurrentProject.Systems.IndexOf(system);
             result = index > 0;
         }
         else if (selected is IRenderStep step) {
@@ -456,6 +499,18 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             {
                 collection.RemoveMember(clonedMember);
                 this.AssetSelectionService.Selected = member;
+            });
+        }
+        else if (selected is IGameSystem system && system.TryClone(out var clonedSystem)) {
+            var systems = this.ProjectService.CurrentProject.Systems;
+            this._undoService.Do(() =>
+            {
+                systems.Add(clonedSystem);
+                this.AssetSelectionService.Selected = clonedSystem;
+            }, () =>
+            {
+                systems.Remove(clonedSystem);
+                this.AssetSelectionService.Selected = system;
             });
         }
         else if (selected is IRenderStep step && step.TryClone(out var clonedStep)) {
@@ -572,35 +627,20 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
     private void MoveDown(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member &&
             spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            this.MoveUp(collection, member, collection.Count);
+            this.MoveDown(collection, member, collection.Count);
+        }
+        else if (selected is IGameSystem system) {
+            this.MoveDown(this.ProjectService.CurrentProject.Systems, system, this.ProjectService.CurrentProject.Systems.Count);
         }
         else if (selected is IRenderStep step) {
-            this.MoveUp(this.ProjectService.CurrentProject.RenderSteps, step, this.ProjectService.CurrentProject.RenderSteps.Count);
+            this.MoveDown(this.ProjectService.CurrentProject.RenderSteps, step, this.ProjectService.CurrentProject.RenderSteps.Count);
         }
         else if (selected is PhysicsMaterial material) {
-            this.MoveUp(this.ProjectService.CurrentProject.PhysicsMaterials, material, this.ProjectService.CurrentProject.PhysicsMaterials.Count);
+            this.MoveDown(this.ProjectService.CurrentProject.PhysicsMaterials, material, this.ProjectService.CurrentProject.PhysicsMaterials.Count);
         }
     }
 
-    private void MoveDown<T>(IIndexedCollection collection, T value) {
-        var originalIndex = collection.IndexOfUntyped(value);
-        if (originalIndex > 0) {
-            var newIndex = originalIndex - 1;
-            this._undoService.Do(() =>
-            {
-                collection.Move(originalIndex, newIndex);
-                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-            }, () =>
-            {
-                collection.Move(newIndex, originalIndex);
-                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
-                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
-            });
-        }
-    }
-
-    private void MoveUp<T>(IIndexedCollection collection, T value, int count) {
+    private void MoveDown<T>(IIndexedCollection collection, T value, int count) {
         var originalIndex = collection.IndexOfUntyped(value);
         if (originalIndex < count - 1 && originalIndex >= 0) {
             var newIndex = originalIndex + 1;
@@ -618,16 +658,37 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         }
     }
 
+    private void MoveUp<T>(IIndexedCollection collection, T value) {
+        var originalIndex = collection.IndexOfUntyped(value);
+        if (originalIndex > 0) {
+            var newIndex = originalIndex - 1;
+            this._undoService.Do(() =>
+            {
+                collection.Move(originalIndex, newIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            }, () =>
+            {
+                collection.Move(newIndex, originalIndex);
+                this.RaisePropertyChanged(nameof(this.IsMoveDownEnabled));
+                this.RaisePropertyChanged(nameof(this.IsMoveUpEnabled));
+            });
+        }
+    }
+
     private void MoveUp(object selected) {
         if (selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } member &&
             spriteSheet.GetMemberCollection(member.GetType()) is { } collection) {
-            this.MoveDown(collection, member);
+            this.MoveUp(collection, member);
+        }
+        else if (selected is IGameSystem system) {
+            this.MoveUp(this.ProjectService.CurrentProject.Systems, system);
         }
         else if (selected is IRenderStep step) {
-            this.MoveDown(this.ProjectService.CurrentProject.RenderSteps, step);
+            this.MoveUp(this.ProjectService.CurrentProject.RenderSteps, step);
         }
         else if (selected is PhysicsMaterial material) {
-            this.MoveDown(this.ProjectService.CurrentProject.PhysicsMaterials, material);
+            this.MoveUp(this.ProjectService.CurrentProject.PhysicsMaterials, material);
         }
     }
 
@@ -678,6 +739,15 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
                     this._undoService.Do(
                         () => collection.RemoveMember(member),
                         () => collection.InsertMember(index, member));
+                }
+
+                break;
+            case IGameSystem system:
+                if (this.ProjectService.CurrentProject.Systems is var systems && systems.Contains(system)) {
+                    var index = systems.IndexOf(system);
+                    this._undoService.Do(
+                        () => systems.Remove(system),
+                        () => systems.Insert(index, system));
                 }
 
                 break;

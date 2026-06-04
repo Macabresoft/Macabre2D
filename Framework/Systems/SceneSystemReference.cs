@@ -4,9 +4,9 @@ using System;
 using Macabresoft.Core;
 
 /// <summary>
-/// Base class for system references.
+/// Base class for <see cref="ISceneSystem"/> references.
 /// </summary>
-public abstract class SystemReference : PropertyChangedNotifier, IGameObjectReference {
+public abstract class SceneSystemReference : PropertyChangedNotifier, IGameObjectReference {
 
     /// <summary>
     /// Gets or sets the system identifier.
@@ -43,11 +43,8 @@ public abstract class SystemReference : PropertyChangedNotifier, IGameObjectRefe
         this.UntypedSystem = null;
     }
 
-    /// <summary>
-    /// Initializes this instance.
-    /// </summary>
-    /// <param name="scene">The scene.</param>
-    public void Initialize(IScene scene) {
+    /// <inehrtidoc />
+    public void Initialize(IGame game, IScene scene) {
         this.Scene = scene;
         this.ResetSystem();
     }
@@ -62,7 +59,7 @@ public abstract class SystemReference : PropertyChangedNotifier, IGameObjectRefe
 /// A reference to a system using an identifier and type for serialization purposes.
 /// </summary>
 /// <typeparam name="TSystem">The type of system.</typeparam>
-public class SystemReference<TSystem> : SystemReference where TSystem : class, ISceneSystem {
+public class SceneSystemReference<TSystem> : SceneSystemReference where TSystem : class, ISceneSystem {
 
     /// <summary>
     /// Gets the system.

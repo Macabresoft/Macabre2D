@@ -226,7 +226,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case SystemCollection:
+                case SceneSystemCollection:
                     this._entityService.Selected = null;
                     this._systemService.Selected = null;
                     this.IsEntityContext = false;

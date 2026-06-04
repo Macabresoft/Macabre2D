@@ -9,10 +9,6 @@ using Macabresoft.Core;
 /// Interface for a render step reference.
 /// </summary>
 public interface IRenderStepReference : IGameObjectReference {
-    /// <summary>
-    /// Gets or sets the render step identifier.
-    /// </summary>
-    Guid Id { get; set; }
 
     /// <summary>
     /// Gets the type of the render step.
@@ -23,6 +19,11 @@ public interface IRenderStepReference : IGameObjectReference {
     /// Gets an untyped version of the render step.
     /// </summary>
     RenderStep? UntypedStep { get; }
+
+    /// <summary>
+    /// Gets or sets the render step identifier.
+    /// </summary>
+    Guid Id { get; set; }
 }
 
 /// <summary>
@@ -30,6 +31,12 @@ public interface IRenderStepReference : IGameObjectReference {
 /// </summary>
 [DataContract]
 public abstract class RenderStepReference : PropertyChangedNotifier, IRenderStepReference {
+
+    /// <inheritdoc />
+    public abstract Type Type { get; }
+
+    /// <inheritdoc />
+    public abstract RenderStep? UntypedStep { get; }
 
     /// <inheritdoc />
     [DataMember]
@@ -44,11 +51,10 @@ public abstract class RenderStepReference : PropertyChangedNotifier, IRenderStep
         }
     }
 
-    /// <inheritdoc />
-    public abstract Type Type { get; }
-
-    /// <inheritdoc />
-    public abstract RenderStep? UntypedStep { get; }
+    /// <summary>
+    /// Gets the game.
+    /// </summary>
+    protected IGame Game { get; private set; } = BaseGame.Empty;
 
     /// <summary>
     /// Gets the scene.
@@ -61,7 +67,8 @@ public abstract class RenderStepReference : PropertyChangedNotifier, IRenderStep
     }
 
     /// <inheritdoc />
-    public virtual void Initialize(IScene scene) {
+    public virtual void Initialize(IGame game, IScene scene) {
+        this.Game = game;
         this.Scene = scene;
         this.ResetRenderStep();
     }
@@ -78,6 +85,12 @@ public abstract class RenderStepReference : PropertyChangedNotifier, IRenderStep
 public class RenderStepReference<TStep> : RenderStepReference where TStep : RenderStep {
     private TStep? _step;
 
+    /// <inheritdoc />
+    public override Type Type => typeof(TStep);
+
+    /// <inheritdoc />
+    public override RenderStep? UntypedStep => this.Step;
+
     /// <summary>
     /// Gets the render step.
     /// </summary>
@@ -87,12 +100,6 @@ public class RenderStepReference<TStep> : RenderStepReference where TStep : Rend
     }
 
     /// <inheritdoc />
-    public override Type Type => typeof(TStep);
-
-    /// <inheritdoc />
-    public override RenderStep? UntypedStep => this.Step;
-
-    /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
         this._step = null;
@@ -100,6 +107,6 @@ public class RenderStepReference<TStep> : RenderStepReference where TStep : Rend
 
     /// <inheritdoc />
     protected override void ResetRenderStep() {
-        this.Step = this.Scene.Project.RenderSteps.OfType<TStep>().FirstOrDefault(x => x.Id == this.Id);
+        this.Step = this.Game.Project.RenderSteps.OfType<TStep>().FirstOrDefault(x => x.Id == this.Id);
     }
 }

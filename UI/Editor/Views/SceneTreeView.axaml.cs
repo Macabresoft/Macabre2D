@@ -56,7 +56,7 @@ public partial class SceneTreeView : UserControl {
     }
 
     private bool CanInsert(Control target) =>
-        target is { DataContext: IEntity or ISceneSystem or EntityCollection or SystemCollection } &&
+        target is { DataContext: IEntity or ISceneSystem or EntityCollection or SceneSystemCollection } &&
         target.DataContext != this.DraggedObject;
 
     private void Drag(object sender, DragEventArgs e) {
@@ -105,7 +105,7 @@ public partial class SceneTreeView : UserControl {
                         }
 
                         break;
-                    case SystemCollection when this.DraggedObject is ISceneSystem draggedSystem:
+                    case SceneSystemCollection when this.DraggedObject is ISceneSystem draggedSystem:
                         this.ViewModel.MoveSystem(draggedSystem, 0);
                         break;
                 }
@@ -127,7 +127,7 @@ public partial class SceneTreeView : UserControl {
         if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
             Control toCheck = null;
 
-            if (this._currentDropTarget.DataContext is EntityCollection or SystemCollection) {
+            if (this._currentDropTarget.DataContext is EntityCollection or SceneSystemCollection) {
                 toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
             }
 
@@ -214,7 +214,7 @@ public partial class SceneTreeView : UserControl {
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
                        (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
-                        draggedObject is ISceneSystem && dropTarget is ISceneSystem or SystemCollection);
+                        draggedObject is ISceneSystem && dropTarget is ISceneSystem or SceneSystemCollection);
             }
 
             return false;

@@ -86,6 +86,11 @@ public interface IGameProject {
     Guid StartupSceneId { get; }
 
     /// <summary>
+    /// Gets the game systems for this project. These persist between scenes.
+    /// </summary>
+    GameSystemCollection Systems { get; }
+
+    /// <summary>
     /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
     ushort PixelsPerUnit { get; set; }
@@ -172,6 +177,10 @@ public class GameProject : IGameProject, IDisposable {
     /// <inheritdoc />
     [DataMember]
     public RenderStepCollection RenderSteps { get; } = [];
+
+    /// <inheritdoc />
+    [DataMember]
+    public GameSystemCollection Systems { get; } = [];
 
     /// <inheritdoc />
     [DataMember]

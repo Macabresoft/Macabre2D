@@ -323,6 +323,21 @@
                                                                    Text="Content" />
                             </Border>
                         </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:GameSystemCollection"
+                                          ItemsSource="{Binding}">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource GameSystemIcon}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
+                                                               IsEditable="False"
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneTime}" />
+                        </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:IGameSystem">
+                            <avaloniaEx:EditableSelectableItem Icon="{StaticResource GameSystemIcon}"
+                                                               IsFileName="False"
+                                                               Text="{Binding Name, Mode=OneWay}" />
+                        </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="framework:RenderStepCollection"
                                           ItemsSource="{Binding}">

@@ -22,11 +22,6 @@ public interface IBaseSystem : INameable, IIdentifiable {
     /// <param name="assets">The assets.</param>
     /// <param name="game">The game.</param>
     void LoadAssets(IAssetManager assets, IGame game);
-
-    /// <summary>
-    /// Called when the scene tree is loaded and ready for interactions.
-    /// </summary>
-    void OnSceneTreeLoaded();
 }
 
 /// <summary>
@@ -79,10 +74,6 @@ public abstract class BaseSystem : PropertyChangedNotifier, IBaseSystem {
         foreach (var assetReference in this.GetAssetReferences()) {
             assetReference.Initialize(assets, game);
         }
-    }
-
-    /// <inheritdoc />
-    public virtual void OnSceneTreeLoaded() {
     }
 
     /// <summary>

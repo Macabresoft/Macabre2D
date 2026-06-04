@@ -77,8 +77,6 @@ public interface IGame {
     /// Gets the graphics settings.
     /// </summary>
     DisplaySettings DisplaySettings { get; }
-    
-    ICommonMeasurements Measurements { get; }
 
     /// <summary>
     /// Gets the frame time.
@@ -111,6 +109,11 @@ public interface IGame {
     LaunchArguments LaunchArguments { get; }
 
     /// <summary>
+    /// Gets common measurements.
+    /// </summary>
+    ICommonMeasurements Measurements { get; }
+
+    /// <summary>
     /// Gets a stack of the currently opened scenes.
     /// </summary>
     IReadOnlyCollection<IScene> OpenScenes { get; }
@@ -129,6 +132,11 @@ public interface IGame {
     /// Gets the game state.
     /// </summary>
     GameState State { get; }
+
+    /// <summary>
+    /// Gets the game systems.
+    /// </summary>
+    IReadOnlyCollection<IGameSystem> Systems { get; }
 
     /// <summary>
     /// Gets a <see cref="TimeSpan" /> representing the time since launching the game.
@@ -166,6 +174,13 @@ public interface IGame {
     /// Exits the game.
     /// </summary>
     void Exit();
+
+    /// <summary>
+    /// Gets the first system of the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type.</typeparam>
+    /// <returns>The system if found.</returns>
+    T? GetSystem<T>() where T : class, IGameSystem;
 
     /// <summary>
     /// Loads the scene.

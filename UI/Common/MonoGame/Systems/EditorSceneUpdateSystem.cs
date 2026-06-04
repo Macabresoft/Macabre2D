@@ -25,7 +25,7 @@ public class EditorSceneUpdateSystem : SceneUpdateSystem {
     }
 
     /// <inheritdoc />
-    public override UpdateSystemKind Kind => UpdateSystemKind.Update;
+    public override SceneUpdateSystemKind Kind => SceneUpdateSystemKind.Update;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

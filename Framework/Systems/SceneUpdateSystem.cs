@@ -10,7 +10,7 @@ using Macabre2D.Project.Common;
 /// <summary>
 /// The kind of system being run.
 /// </summary>
-public enum UpdateSystemKind {
+public enum SceneUpdateSystemKind {
     None = 0,
     Update = 1,
     PreUpdate = 2,
@@ -20,22 +20,22 @@ public enum UpdateSystemKind {
 /// <summary>
 /// Interface for a <see cref="ISceneSystem"/> that has an update loop.
 /// </summary>
-public interface IUpdateSystem : ISceneSystem, IUpdateableGameObject {
+public interface ISceneUpdateSystem : ISceneSystem, IUpdateableGameObject {
     /// <summary>
     /// Gets the kind of update.
     /// </summary>
-    UpdateSystemKind Kind { get; }
+    SceneUpdateSystemKind Kind { get; }
 }
 
 /// <summary>
 /// A system that calls updates on entities.
 /// </summary>
-public class SceneUpdateSystem : SceneSystem, IUpdateSystem {
+public class SceneUpdateSystem : SceneSystem, ISceneUpdateSystem {
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
     
     /// <inheritdoc />
-    public virtual UpdateSystemKind Kind => UpdateSystemKind.Update;
+    public virtual SceneUpdateSystemKind Kind => SceneUpdateSystemKind.Update;
 
     /// <inheritdoc />
     [DataMember]

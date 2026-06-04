@@ -90,7 +90,7 @@ public abstract class EntityReferenceCollection : PropertyChangedNotifier, IEnti
     }
 
     /// <inheritdoc />
-    public virtual void Initialize(IScene scene) {
+    public virtual void Initialize(IGame game, IScene scene) {
         this.Scene = scene;
     }
 
@@ -161,8 +161,8 @@ public class EntityReferenceCollection<TEntity> : EntityReferenceCollection wher
     }
 
     /// <inheritdoc />
-    public override void Initialize(IScene scene) {
-        base.Initialize(scene);
+    public override void Initialize(IGame game, IScene scene) {
+        base.Initialize(game, scene);
         this.ResetEntities();
     }
 

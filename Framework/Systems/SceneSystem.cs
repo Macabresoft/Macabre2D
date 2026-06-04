@@ -1,10 +1,8 @@
 namespace Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 
 /// <summary>
 /// Interface for a system which runs operations for a <see cref="IScene" />.
@@ -15,6 +13,11 @@ public interface ISceneSystem : IBaseSystem {
     /// </summary>
     /// <param name="scene">The scene.</param>
     void Initialize(IScene scene);
+
+    /// <summary>
+    /// Called when the scene tree is loaded and ready for interactions.
+    /// </summary>
+    void OnSceneTreeLoaded();
 }
 
 /// <summary>
@@ -41,12 +44,11 @@ public abstract class SceneSystem : BaseSystem, ISceneSystem {
 
     public override void Deinitialize() {
         base.Deinitialize();
-        
+
         foreach (var entityReference in this.GetGameObjectReferences()) {
             entityReference.Deinitialize();
         }
     }
-
 
     /// <inheritdoc />
     public virtual void Initialize(IScene scene) {
@@ -58,14 +60,18 @@ public abstract class SceneSystem : BaseSystem, ISceneSystem {
             this.Scene = scene;
 
             foreach (var entityReference in this.GetGameObjectReferences()) {
-                entityReference.Initialize(this.Scene);
+                entityReference.Initialize(scene.Game, this.Scene);
             }
         }
         finally {
             this.IsInitialized = true;
         }
     }
-    
+
+    /// <inheritdoc />
+    public virtual void OnSceneTreeLoaded() {
+    }
+
     /// <summary>
     /// Gets the game object references for initialization and deinitialization.
     /// </summary>

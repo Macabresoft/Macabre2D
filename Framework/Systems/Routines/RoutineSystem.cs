@@ -7,14 +7,14 @@ using Macabresoft.Core;
 /// <summary>
 /// A system which runs routines over multiple frames.
 /// </summary>
-public class RoutineSystem : SceneSystem, IUpdateSystem {
+public class RoutineSystem : SceneSystem, ISceneUpdateSystem {
     private readonly List<Routine> _routines = [];
 
     /// <inheritdoc />
     public event EventHandler? ShouldUpdateChanged;
 
     /// <inheritdoc />
-    public UpdateSystemKind Kind => UpdateSystemKind.Update;
+    public SceneUpdateSystemKind Kind => SceneUpdateSystemKind.Update;
 
     /// <inheritdoc />
     public bool ShouldUpdate {
