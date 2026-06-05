@@ -165,12 +165,6 @@ public interface IGame {
     void ApplyDisplaySettings();
 
     /// <summary>
-    /// Begins a new transition.
-    /// </summary>
-    /// <param name="transition">The transition.</param>
-    void BeginTransition(GameTransition transition);
-
-    /// <summary>
     /// Exits the game.
     /// </summary>
     void Exit();

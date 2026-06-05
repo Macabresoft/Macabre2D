@@ -22,7 +22,6 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
-    private readonly List<GameTransition> _runningTransitions = [];
     private readonly Stack<IScene> _sceneStack = new();
 
     private readonly FilterCollection<IUpdateableGameObject> _updateSystems = new(
@@ -229,11 +228,6 @@ public class BaseGame : Game, IGame {
         // If the mouse thinks it has changed, the input device can change from game
         // pad to mouse / keyboard. We don't want that!
         this.InputState = this.CreateInputStateForFrame();
-    }
-
-    /// <inheritdoc />
-    public void BeginTransition(GameTransition transition) {
-        this._runningTransitions.Add(transition);
     }
 
     /// <inheritdoc />
@@ -490,7 +484,6 @@ public class BaseGame : Game, IGame {
 
         this.UpdateInputState();
         this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
-        this.RunTransitions();
 
         this._updateSystems.RebuildCache();
         foreach (var system in this._updateSystems) {
@@ -572,17 +565,6 @@ public class BaseGame : Game, IGame {
         }
     }
 
-    private void RunTransitions() {
-        for (var i = this._runningTransitions.Count - 1; i >= 0; i--) {
-            var transition = this._runningTransitions[i];
-            transition.Update(this.FrameTime);
-
-            if (transition.IsComplete) {
-                this._runningTransitions.Remove(transition);
-            }
-        }
-    }
-
     private void ToggleFullscreen() {
         this.DisplaySettings.DisplayMode = this.DisplaySettings.DisplayMode == DisplayMode.Windowed ? DisplayMode.Borderless : DisplayMode.Windowed;
         this.SaveAndApplyUserSettings();
@@ -626,9 +608,6 @@ public class BaseGame : Game, IGame {
         }
 
         public void ApplyDisplaySettings() {
-        }
-
-        public void BeginTransition(GameTransition transition) {
         }
 
         public void Exit() {
