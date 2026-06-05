@@ -159,6 +159,21 @@ public interface IGame {
     double GameSpeed { get; set; }
 
     /// <summary>
+    /// Adds the system.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A type that implements <see cref="IGameSystem" /> and has an empty constructor.
+    /// </typeparam>
+    /// <returns>The added system.</returns>
+    T AddSystem<T>() where T : IGameSystem, new();
+
+    /// <summary>
+    /// Adds the system.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    void AddSystem(IGameSystem system);
+
+    /// <summary>
     /// Applies the display settings.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">The provided display mode is unsupported.</exception>
@@ -168,6 +183,13 @@ public interface IGame {
     /// Exits the game.
     /// </summary>
     void Exit();
+
+    /// <summary>
+    /// Gets the specified system if it exists, otherwise it adds it to the game.
+    /// </summary>
+    /// <typeparam name="T">The type of system to get or add.</typeparam>
+    /// <returns>The system.</returns>
+    T GetOrAddSystem<T>() where T : class, IGameSystem, new();
 
     /// <summary>
     /// Gets the first system of the specified type.

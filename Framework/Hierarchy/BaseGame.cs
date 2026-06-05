@@ -198,6 +198,23 @@ public class BaseGame : Game, IGame {
     /// </summary>
     protected bool IsInitialized { get; private set; }
 
+    /// <inheritdoc />
+    public T AddSystem<T>() where T : IGameSystem, new() {
+        var system = new T();
+        this.AddSystem(system);
+        return system;
+    }
+
+    /// <inheritdoc />
+    public void AddSystem(IGameSystem system) {
+        this.Project.Systems.Add(system);
+        this._updateSystems.Add(system);
+
+        if (this.IsInitialized) {
+            system.Initialize(this);
+        }
+    }
+
     /// <inheitdoc />
     public void ApplyDisplaySettings() {
         if (this.DisplaySettings.DisplayMode == DisplayMode.Borderless) {
@@ -229,6 +246,9 @@ public class BaseGame : Game, IGame {
         // pad to mouse / keyboard. We don't want that!
         this.InputState = this.CreateInputStateForFrame();
     }
+
+    /// <inheritdoc />
+    public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => this.GetSystem<T>() ?? this.AddSystem<T>();
 
     /// <inheritdoc />
     public T? GetSystem<T>() where T : class, IGameSystem => this.Systems.OfType<T>().FirstOrDefault();
@@ -607,11 +627,18 @@ public class BaseGame : Game, IGame {
             }
         }
 
+        public T AddSystem<T>() where T : IGameSystem, new() => new();
+
+        public void AddSystem(IGameSystem system) {
+        }
+
         public void ApplyDisplaySettings() {
         }
 
         public void Exit() {
         }
+
+        public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => new();
 
         public T? GetSystem<T>() where T : class, IGameSystem => null;
 
