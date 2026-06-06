@@ -104,7 +104,6 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     private ContentMetadata _currentMetadata;
     private object _impliedSelected;
 
-    private bool _isEditingPrefab;
     private object _selected;
 
     /// <summary>
@@ -191,8 +190,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public bool IsEditingPrefab {
-        get => this._isEditingPrefab;
-        private set => this.RaiseAndSetIfChanged(ref this._isEditingPrefab, value);
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
@@ -278,7 +277,9 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public void SaveScene(ContentMetadata metadata, IScene scene) {
-        if (metadata != null && scene != null && metadata.Asset is IAsset<Scene>) {
+        if (metadata != null && scene != null && metadata.Asset is IAsset<Scene> asset) {
+            scene.Id = metadata.ContentId;
+            asset.Content?.Id = metadata.ContentId;
             var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
             this._serializer.Serialize(metadata, metadataPath);
 

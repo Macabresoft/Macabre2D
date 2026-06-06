@@ -124,6 +124,10 @@ public class BaseGame : Game, IGame {
 
                 if (this.IsInitialized) {
                     value.Initialize(this, this.CreateAssetManager());
+
+                    foreach (var system in this.Systems) {
+                        system.OnSceneLoaded(value);
+                    }
                 }
             }
         }
@@ -428,6 +432,7 @@ public class BaseGame : Game, IGame {
         }
 
         if (assetManager.TryLoadContent<Scene>(startupSceneId, out var scene) && scene.TryClone(out var clone)) {
+            clone.Id = scene.Id;
             this.LoadScene(clone);
         }
 

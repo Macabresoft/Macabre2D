@@ -9,6 +9,12 @@ public interface IGameSystem : IBaseSystem {
     /// </summary>
     /// <param name="game">The game.</param>
     void Initialize(IGame game);
+
+    /// <summary>
+    /// Called when a scene is loaded.
+    /// </summary>
+    /// <param name="scene">The scene.</param>
+    void OnSceneLoaded(IScene scene);
 }
 
 /// <summary>
@@ -29,5 +35,9 @@ public abstract class GameSystem : BaseSystem, IGameSystem {
     /// <inheritdoc />
     public virtual void Initialize(IGame game) {
         this.Game = game;
+    }
+
+    /// <inheritdoc />
+    public virtual void OnSceneLoaded(IScene scene) {
     }
 }
