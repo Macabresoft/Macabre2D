@@ -211,6 +211,9 @@ public class EmptyObject :
     public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
 
     /// <inheritdoc />
+    public ushort PixelsPerUnit => 1;
+
+    /// <inheritdoc />
     public QueueableSpriteAnimation? QueuedAnimation => null;
 
     /// <inheritdoc />
@@ -342,12 +345,6 @@ public class EmptyObject :
         set { }
     }
 
-    /// <inheritdoc />
-    public ushort PixelsPerUnit {
-        get => 1;
-        set { }
-    }
-
     /// <inheritdoc cref="IRenderableEntity.RenderOrder" />
     public int RenderOrder {
         get => 0;
@@ -399,7 +396,9 @@ public class EmptyObject :
         set { }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc>
+    ///     <cref>ICommonMeasurements, ICamera</cref>
+    /// </inheritdoc>
     public float ViewHeight {
         get => 1f;
         set { }
@@ -448,9 +447,6 @@ public class EmptyObject :
     /// <inheritdoc cref="IEntity" />
     public void Deinitialize() {
     }
-
-    /// <inheritdoc />
-    public float GetLengthInUnits(int numberOfPixels) => this.UnitsPerPixel;
 
     /// <inheritdoc />
     public void Enqueue(SpriteAnimation animation, AnimationLoopKind loopKind) {
@@ -506,6 +502,9 @@ public class EmptyObject :
 
     /// <inheritdoc />
     public InputActionState GetInputActionState(InputAction action, InputKind inputKind) => InputActionState.None;
+
+    /// <inheritdoc />
+    public float GetLengthInUnits(int numberOfPixels) => this.UnitsPerPixel;
 
     /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) => throw new NotSupportedException();
@@ -718,11 +717,19 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public void StartUpdates() {
+    }
+
+    /// <inheritdoc />
     public void Stop() {
     }
 
     /// <inheritdoc cref="IQueueableSpriteAnimator.Stop(bool)" />
     public void Stop(bool eraseQueue) {
+    }
+
+    /// <inheritdoc />
+    public void StopUpdates() {
     }
 
     /// <inheritdoc />

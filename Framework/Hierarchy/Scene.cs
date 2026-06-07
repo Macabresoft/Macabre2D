@@ -211,6 +211,16 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     void ReorderSystem(ISceneSystem system, int newIndex);
 
     /// <summary>
+    /// Begins updating again.
+    /// </summary>
+    void StartUpdates();
+
+    /// <summary>
+    /// Stops updates on this scene until turned back on.
+    /// </summary>
+    void StopUpdates();
+
+    /// <summary>
     /// Tries to find the specified entity.
     /// </summary>
     /// <param name="id">The identifier.</param>
@@ -378,9 +388,6 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IScreenSpaceRenderer> ScreenSpaceRenderers => this._screenSpaceRenderers;
 
     /// <inheritdoc />
-    public bool ShouldUpdate => true;
-
-    /// <inheritdoc />
     [DataMember]
     public SceneState State { get; } = new();
 
@@ -411,6 +418,17 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public bool IsActive { get; private set; }
+
+    /// <inheritdoc />
+    public bool ShouldUpdate {
+        get;
+        private set {
+            if (value != field) {
+                field = value;
+                this.ShouldUpdateChanged.SafeInvoke(this);
+            }
+        }
+    } = true;
 
     /// <inheritdoc />
     public T AddSystem<T>() where T : ISceneSystem, new() {
@@ -647,6 +665,16 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public void StartUpdates() {
+        this.ShouldUpdate = true;
+    }
+
+    /// <inheritdoc />
+    public void StopUpdates() {
+        this.ShouldUpdate = false;
+    }
+
+    /// <inheritdoc />
     public bool TryFindEntity(Guid id, [NotNullWhen(true)] out IEntity? entity) => this._idToEntitiesInScene.TryGetValue(id, out entity);
 
     /// <inheritdoc />
@@ -683,16 +711,18 @@ public sealed class Scene : GridContainer, IScene {
             this.RebuildFilterCaches();
             this.InvokePendingActions();
 
-            foreach (var system in this._preUpdateSystems) {
-                system.Update(frameTime, inputState);
-            }
+            if (this.ShouldUpdate) {
+                foreach (var system in this._preUpdateSystems) {
+                    system.Update(frameTime, inputState);
+                }
 
-            foreach (var system in this._updateSystems) {
-                system.Update(frameTime, inputState);
-            }
+                foreach (var system in this._updateSystems) {
+                    system.Update(frameTime, inputState);
+                }
 
-            foreach (var system in this._postUpdateSystems) {
-                system.Update(frameTime, inputState);
+                foreach (var system in this._postUpdateSystems) {
+                    system.Update(frameTime, inputState);
+                }
             }
         }
         finally {
