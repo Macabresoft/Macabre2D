@@ -25,7 +25,7 @@ public class TextAreaRenderer : BaseSpriteSheetFontRenderer, ITextRenderer {
     public override event EventHandler? BoundingAreaChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextLineRenderer" /> class.
+    /// Initializes a new instance of the <see cref="TextAreaRenderer" /> class.
     /// </summary>
     public TextAreaRenderer() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
