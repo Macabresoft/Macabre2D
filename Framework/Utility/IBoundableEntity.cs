@@ -1,6 +1,8 @@
 namespace Macabre2D.Framework;
 
 using System;
+using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for objects that can be contained within a bounding area. Generally used for physics and rendering.
