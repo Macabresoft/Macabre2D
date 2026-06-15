@@ -45,4 +45,14 @@ public abstract class ValueOverride<T> : PropertyChangedNotifier where T : notnu
         get => this._value;
         set => this.Set(ref this._value, value);
     }
+
+    /// <summary>
+    /// Tries to get the value.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A value indicating whether this override is enabled.</returns>
+    public bool TryGetValue(out T value) {
+        value = this._value;
+        return this.IsEnabled;
+    }
 }
