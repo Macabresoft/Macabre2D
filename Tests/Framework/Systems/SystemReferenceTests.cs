@@ -16,7 +16,7 @@ public class SceneSystemReferenceTests {
         var system = scene.AddSystem<SimplePhysicsSystem>();
         var reference = new SceneSystemReference<ISceneSystem>();
         reference.SystemId = system.Id;
-        reference.Initialize(game, scene);
+        reference.Initialize(game, scene, scene);
 
         using (new AssertionScope()) {
             reference.System.Should().Be(system);
@@ -43,7 +43,7 @@ public class SceneSystemReferenceTests {
         var scene = new Scene();
         var system = scene.AddSystem<SimplePhysicsSystem>();
         var reference = new SceneSystemReference<ISceneSystem>();
-        reference.Initialize(game, scene);
+        reference.Initialize(game, scene, scene);
         reference.SystemId = system.Id;
 
         using (new AssertionScope()) {

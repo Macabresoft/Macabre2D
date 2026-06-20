@@ -26,7 +26,7 @@ public class SceneSystemTypeReference<TSystem> : PropertyChangedNotifier, IGameO
     }
 
     /// <inheritdoc />
-    public void Initialize(IGame game, IScene scene) {
+    public void Initialize(IGame game, IScene scene, IEntity entity) {
         this.System = this.GetSystemFromScene(scene);
     }
 

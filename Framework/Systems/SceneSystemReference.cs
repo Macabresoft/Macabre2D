@@ -44,7 +44,7 @@ public abstract class SceneSystemReference : PropertyChangedNotifier, IGameObjec
     }
 
     /// <inehrtidoc />
-    public void Initialize(IGame game, IScene scene) {
+    public void Initialize(IGame game, IScene scene, IEntity entity) {
         this.Scene = scene;
         this.ResetSystem();
     }

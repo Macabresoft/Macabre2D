@@ -56,7 +56,7 @@ public abstract class EntityReference : PropertyChangedNotifier, IEntityReferenc
     }
 
     /// <inheritdoc />
-    public void Initialize(IGame game, IScene scene) {
+    public void Initialize(IGame game, IScene scene, IEntity entity) {
         this.Scene = scene;
         this.ResetEntity();
     }

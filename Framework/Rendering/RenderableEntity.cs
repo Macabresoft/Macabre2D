@@ -71,7 +71,6 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public abstract RenderPriority RenderPriority { get; set; }
 
     /// <inheritdoc />
-
     [Category(CommonCategories.Rendering)]
     public bool ShouldRender {
         get => this._shouldRender && this.CheckShouldRender();

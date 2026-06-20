@@ -67,7 +67,7 @@ public abstract class RenderStepReference : PropertyChangedNotifier, IRenderStep
     }
 
     /// <inheritdoc />
-    public virtual void Initialize(IGame game, IScene scene) {
+    public virtual void Initialize(IGame game, IScene scene, IEntity entity) {
         this.Game = game;
         this.Scene = scene;
         this.ResetRenderStep();

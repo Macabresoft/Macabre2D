@@ -46,7 +46,7 @@ public sealed class PhysicsMaterialReference : PropertyChangedNotifier, IGameObj
     }
 
     /// <inheritdoc />
-    public void Initialize(IGame game, IScene scene) {
+    public void Initialize(IGame game, IScene scene, IEntity entity) {
         this._game = game;
         this.ResetReference();
     }

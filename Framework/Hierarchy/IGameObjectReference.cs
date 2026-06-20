@@ -14,5 +14,6 @@ public interface IGameObjectReference {
     /// </summary>
     /// <param name="game">The game.</param>
     /// <param name="scene">The scene.</param>
-    void Initialize(IGame game, IScene scene);
+    /// <param name="entity">The entity which references this <see cref="IGameObjectReference"/>.</param>
+    void Initialize(IGame game, IScene scene, IEntity entity);
 }

@@ -60,7 +60,7 @@ public abstract class SceneSystem : BaseSystem, ISceneSystem {
             this.Scene = scene;
 
             foreach (var entityReference in this.GetGameObjectReferences()) {
-                entityReference.Initialize(scene.Game, this.Scene);
+                entityReference.Initialize(scene.Game, this.Scene, this.Scene);
             }
         }
         finally {

@@ -17,7 +17,7 @@ public sealed class EntityReferenceTests {
         scene.Initialize(game, Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
         entityReference.EntityId = child.Id;
-        entityReference.Initialize(game, scene);
+        entityReference.Initialize(game, scene, scene);
 
         using (new AssertionScope()) {
             entityReference.Entity.Should().Be(child);
@@ -45,7 +45,7 @@ public sealed class EntityReferenceTests {
         var child = scene.AddChild<Entity>();
         scene.Initialize(game, Substitute.For<IAssetManager>());
         var entityReference = new EntityReference<IEntity>();
-        entityReference.Initialize(game, scene);
+        entityReference.Initialize(game, scene, scene);
         entityReference.EntityId = child.Id;
 
         using (new AssertionScope()) {
