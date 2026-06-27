@@ -17,7 +17,7 @@ public class EmptyObject :
     IInputSystem,
     IScreenSpaceRenderer,
     IScreenSpaceRenderSystem,
-    IPhysicsBody,
+    ISimplePhysicsBody,
     IQueueableSpriteAnimator,
     IRenderableBlinker,
     IScene,
@@ -144,6 +144,11 @@ public class EmptyObject :
 
     /// <inheritdoc />
     public BoundingArea BoundingArea => BoundingArea.Empty;
+
+    /// <inheritdoc />
+    public Collider Collider => Collider.Empty;
+
+    public bool TrySetCollider(Collider newCollider) => false;
 
     /// <inheritdoc />
     public SpriteAnimation? CurrentAnimation => null;

@@ -11,9 +11,16 @@ using Macabresoft.Core;
 /// </summary>
 public interface ISimplePhysicsBody : IPhysicsBody {
     /// <summary>
-    /// Gets the colliders
+    /// Gets the collider.
     /// </summary>
     Collider Collider { get; }
+
+    /// <summary>
+    /// Tries to set the current collider.
+    /// </summary>
+    /// <param name="newCollider">The new collider.</param>
+    /// <returns>A value indicating whether the collider was set.</returns>
+    bool TrySetCollider(Collider newCollider);
 }
 
 /// <summary>
@@ -38,6 +45,12 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
             this._collider = value;
             this.OnColliderChanged();
         }
+    }
+
+    /// <inheritdoc />
+    public bool TrySetCollider(Collider newCollider) {
+        this.Collider = newCollider;
+        return true;
     }
 
     /// <inheritdoc />
