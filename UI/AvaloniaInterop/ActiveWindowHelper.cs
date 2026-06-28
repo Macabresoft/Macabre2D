@@ -7,7 +7,7 @@ using Avalonia.VisualTree;
 internal static class ActiveWindowHelper {
     public static bool IsControlOnActiveWindow(InputElement element) {
         var result = false;
-        if (element.GetVisualRoot() is Window window) {
+        if (element.GetPresentationSource()?.RootVisual is Window window) {
             result = window.IsActive;
         }
 

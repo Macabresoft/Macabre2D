@@ -6,6 +6,7 @@
                        xmlns:local="clr-namespace:Macabre2D.UI.Editor"
                        xmlns:monoGameInterop="clr-namespace:Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
                        x:Class="Macabre2D.UI.Editor.MainWindow"
+                       x:DataType="local:MainViewModel"
                        CanResize="True"
                        ShowMinimize="True"
                        CloseCommand="{Binding ExitCommand}"

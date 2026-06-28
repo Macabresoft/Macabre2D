@@ -3,6 +3,7 @@
              xmlns:local="clr-namespace:Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabre2D.UI.Common.SpriteSheetFontEditorView"
+             x:DataType="local:SpriteSheetFontEditorViewModel"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Top">
     <Design.DataContext>
@@ -72,7 +73,7 @@
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
-                                        <Binding Path="$parent[local:SpriteSheetFontEditorView].DataContext.SpriteCollection" />
+                                        <Binding Path="$parent[local:SpriteSheetFontEditorView].ViewModel.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>

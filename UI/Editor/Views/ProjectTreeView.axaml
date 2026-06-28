@@ -5,7 +5,8 @@
              xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:frameworkCommon="clr-namespace:Macabre2D.Common;assembly=Macabre2D.Common"
-             x:Class="Macabre2D.UI.Editor.ProjectTreeView">
+             x:Class="Macabre2D.UI.Editor.ProjectTreeView"
+             x:CompileBindings="False">
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.RenameCommand}"
                     CommandParameter="{Binding #_treeView}"
@@ -232,7 +233,7 @@
                     <TextBox Grid.Column="0"
                              Height="14"
                              Text="{Binding FilterText}"
-                             Watermark="Filter..." />
+                             PlaceholderText="Filter..." />
 
                     <Button Grid.Column="1"
                             VerticalAlignment="Top"

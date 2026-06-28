@@ -23,7 +23,7 @@ public abstract class SpriteSheetMember : PropertyChangedNotifier, IIdentifiable
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets the sprite sheet.
+    /// Gets or sets the sprite sheet.
     /// </summary>
-    public SpriteSheet? SpriteSheet { get; internal set; }
+    public SpriteSheet? SpriteSheet { get; set; }
 }

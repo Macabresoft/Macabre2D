@@ -6,7 +6,7 @@ using Avalonia;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
-internal static class Program {
+internal class Program {
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure<App>()
@@ -14,6 +14,10 @@ internal static class Program {
             .LogToTrace()
             .UseReactiveUI(rxAppBuilder =>
             {
+                if (Assembly.GetAssembly(typeof(ReactiveCommand)) is {} assembly) {
+                    Assembly.Load(assembly.GetName());
+                }
+                
                 // Enable ReactiveUI
                 rxAppBuilder
                     .WithViewsFromAssembly(Assembly.GetExecutingAssembly())

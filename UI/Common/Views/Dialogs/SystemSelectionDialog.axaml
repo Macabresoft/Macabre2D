@@ -3,6 +3,7 @@
                        xmlns:local="clr-namespace:Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        x:Class="Macabre2D.UI.Common.SystemSelectionDialog"
+                       x:DataType="local:SystemSelectionViewModel"
                        Height="480"
                        Width="640"
                        ShowInTaskbar="False"

@@ -1,7 +1,9 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:local="clr-namespace:Macabre2D.UI.Common"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style Selector="MenuItem.MenuItemParent > MenuItem">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:DataType="MenuItem">
+    <Style Selector="MenuItem.MenuItemParent > MenuItem"
+           x:DataType="local:MenuItemModel">
         <Design.DataContext>
             <local:MenuItemModel />
         </Design.DataContext>

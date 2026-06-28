@@ -4,6 +4,7 @@
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                        x:Class="Macabre2D.UI.Editor.SpriteSelectionDialog"
+                       x:DataType="local:SpriteSelectionViewModel"
                        Height="768"
                        Width="1024"
                        CanResize="False"
@@ -35,7 +36,7 @@
                      Grid.Column="0"
                      Height="14"
                      Text="{Binding FilterText}"
-                     Watermark="Filter..." />
+                     PlaceholderText="Filter..." />
 
             <Button Grid.Column="1"
                     VerticalAlignment="Top"

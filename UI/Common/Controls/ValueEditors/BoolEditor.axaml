@@ -8,6 +8,7 @@
         <local:BoolEditor />
     </Design.DataContext>
     <CheckBox DataContext="{Binding $parent[local:BoolEditor]}"
+              x:DataType="local:BoolEditor"
               Content="{Binding Title}"
               IsChecked="{Binding Value}" />
 </local:ValueEditorControl>

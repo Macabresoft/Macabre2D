@@ -2,7 +2,6 @@ namespace Macabre2D.UI.Common;
 
 using Avalonia;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Unity;
 
 public partial class StringEditor : ValueEditorControl<string> {
@@ -14,8 +13,6 @@ public partial class StringEditor : ValueEditorControl<string> {
 
     public static readonly StyledProperty<string> WatermarkProperty =
         AvaloniaProperty.Register<StringEditor, string>(nameof(Watermark));
-
-    private string _intermediaryValue;
 
     public StringEditor() : this(null) {
     }
@@ -30,13 +27,13 @@ public partial class StringEditor : ValueEditorControl<string> {
     }
 
     public string IntermediaryValue {
-        get => this._intermediaryValue;
+        get;
         set {
             if (!this.UpdateOnLostFocus) {
                 this.Value = value;
             }
 
-            this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, value);
+            this.SetAndRaise(IntermediaryValueProperty, ref field, value);
         }
     }
 

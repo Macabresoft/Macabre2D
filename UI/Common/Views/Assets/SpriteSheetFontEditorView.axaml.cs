@@ -10,7 +10,15 @@ public partial class SpriteSheetFontEditorView : UserControl {
 
     [InjectionConstructor]
     public SpriteSheetFontEditorView(SpriteSheetFontEditorViewModel viewModel) {
-        this.DataContext = viewModel;
+        this.ViewModel = viewModel;
         this.InitializeComponent();
+    }
+
+    public SpriteSheetFontEditorViewModel ViewModel {
+        get;
+        private set {
+            field = value;
+            this.DataContext = value;
+        }
     }
 }

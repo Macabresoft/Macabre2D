@@ -19,7 +19,7 @@
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid x:DataType="local:SpriteDisplayModel">
                             <Image Source="{Binding Bitmap}"
                                    MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
                                    MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
@@ -35,14 +35,7 @@
                             
                             <TextBlock VerticalAlignment="Top"
                                        HorizontalAlignment="Right"
-                                       IsVisible="{Binding Member, Converter={x:Static ObjectConverters.IsNull}}"
                                        Text="{Binding Index}" />
-                            
-                            <TextBlock VerticalAlignment="Top"
-                                       HorizontalAlignment="Right"
-                                       IsVisible="{Binding Member, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                       Text="{Binding Member.Name}"
-                                       ToolTip.Tip="{Binding Member.Name}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

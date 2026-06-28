@@ -3,6 +3,7 @@
                        xmlns:local="clr-namespace:Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        x:Class="Macabre2D.UI.Common.ContentSelectionDialog"
+                       x:DataType="local:ContentSelectionViewModel"
                        Height="480"
                        Width="640"
                        CanResize="False"
@@ -32,7 +33,7 @@
                      Grid.Column="0"
                      Height="14"
                      Text="{Binding FilterText}"
-                     Watermark="Filter..." />
+                     PlaceholderText="Filter..." />
 
             <Button Grid.Column="1"
                     VerticalAlignment="Top"

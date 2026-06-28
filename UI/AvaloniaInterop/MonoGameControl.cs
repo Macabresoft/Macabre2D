@@ -182,7 +182,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     }
 
     private void Initialize() {
-        if (this.Game is { } game && this.GetVisualRoot() is Window window) {
+        if (this.Game is { } game && this.GetPresentationSource()?.RootVisual  is Window window) {
             game.Initialize(this._mouse, this._keyboard);
 
             if (window.TryGetPlatformHandle() is { } platformHandle) {

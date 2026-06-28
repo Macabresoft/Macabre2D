@@ -3,6 +3,7 @@
                        xmlns:local="clr-namespace:Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        x:Class="Macabre2D.UI.Common.LicenseDialog"
+                       x:DataType="local:LicenseDialog"
                        Title="Licenses"
                        Height="1024"
                        Width="768"
@@ -19,9 +20,8 @@
             <AutoCompleteBox x:Name="_filterBox"
                              Grid.Column="0"
                              ItemsSource="{Binding Licenses}"
-                             ValueMemberBinding="{Binding Product}"
                              FilterMode="Contains"
-                             Watermark="Filter..."
+                             PlaceholderText="Filter..."
                              TextChanged="AutoCompleteBox_OnTextChanged" />
 
             <Button Grid.Column="1"

@@ -3,6 +3,7 @@
                        xmlns:local="clr-namespace:Macabre2D.UI.Common"
                        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                        x:Class="Macabre2D.UI.Common.ResourceSelectionDialog"
+                       x:DataType="local:ResourceSelectionViewModel"
                        Height="480"
                        Width="640"
                        CanResize="False"
@@ -20,7 +21,7 @@
                          ItemsSource="{Binding Items}"
                          SelectionChanged="AutoCompleteBox_OnSelectionChanged"
                          FilterMode="Contains"
-                         Watermark="Filter..." />
+                         PlaceholderText="Filter..." />
 
         <ListBox Grid.Row="1"
                  Margin="{StaticResource StandardMarginAll}"

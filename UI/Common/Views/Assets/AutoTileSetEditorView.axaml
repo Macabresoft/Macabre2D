@@ -3,6 +3,8 @@
              xmlns:local="clr-namespace:Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabre2D.UI.Common.AutoTileSetEditorView"
+             x:DataType="local:AutoTileSetEditorViewModel"
+             x:CompileBindings="False"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Top">
     <Design.DataContext>

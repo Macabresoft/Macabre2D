@@ -17,7 +17,7 @@
                              ItemsSource="{Binding Collections}"
                              ValueMemberBinding="{Binding Name}"
                              FilterMode="Contains"
-                             Watermark="Filter..." />
+                             PlaceholderText="Filter..." />
 
             <Button Grid.Column="1"
                     Classes="Icon"

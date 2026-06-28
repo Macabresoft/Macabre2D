@@ -13,6 +13,7 @@ using Macabresoft.Core;
 using Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
+using GroupBox = Macabresoft.AvaloniaEx.GroupBox;
 
 public partial class LicenseDialog : BaseDialog {
     private readonly ObservableCollectionExtended<LicenseDefinition> _filteredLicenses = new();

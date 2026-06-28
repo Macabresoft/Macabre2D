@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabre2D.UI.Common"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabre2D.UI.Common.SpriteSheetIconSetEditorView"
+             x:DataType="local:SpriteSheetIconSetEditorViewModel"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Top">
     <Design.DataContext>
@@ -56,7 +58,8 @@
                  ItemsSource="{Binding Icons}"
                  SelectedItem="{Binding SelectedIcon}">
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="framework:SpriteSheetIcon"
+                              x:CompileBindings="False">
                     <Border Width="64"
                             Height="64"
                             Classes="Preview"
@@ -68,7 +71,7 @@
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
-                                        <Binding Path="$parent[local:SpriteSheetIconSetEditorView].DataContext.SpriteCollection" />
+                                        <Binding Path="$parent[local:SpriteSheetIconSetEditorView].ViewModel.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>

@@ -7,8 +7,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using ReactiveUI;
 
 public partial class ProjectTreeView : UserControl {
@@ -18,6 +18,7 @@ public partial class ProjectTreeView : UserControl {
             editor => editor.ViewModel);
 
     private Guid _dragTarget;
+    private PointerPressedEventArgs _pointerPressedEventArgs;
 
     public ProjectTreeView() {
         this.ViewModel = Resolver.Resolve<ProjectTreeViewModel>();
@@ -44,16 +45,17 @@ public partial class ProjectTreeView : UserControl {
     }
 
     private async void Node_OnPointerMoved(object sender, PointerEventArgs e) {
-        if (this._dragTarget != Guid.Empty && sender is Control { DataContext: IContentNode sourceNode } && sourceNode.Id == this._dragTarget) {
+        if (this._dragTarget != Guid.Empty && this._pointerPressedEventArgs != null && sender is Control { DataContext: IContentNode sourceNode } && sourceNode.Id == this._dragTarget) {
             this._dragTarget = sourceNode.Id;
             var dragData = new GenericDataObject(sourceNode, sourceNode.Name);
-            await DragDrop.DoDragDropAsync(e, dragData, DragDropEffects.Move);
+            await DragDrop.DoDragDropAsync(this._pointerPressedEventArgs, dragData, DragDropEffects.Move);
         }
     }
 
     private void Node_OnPointerPressed(object sender, PointerPressedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed && sender is Control { DataContext: IContentNode sourceNode }) {
             this._dragTarget = sourceNode.Id;
+            this._pointerPressedEventArgs = e;
         }
     }
 
@@ -61,6 +63,8 @@ public partial class ProjectTreeView : UserControl {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
             this._dragTarget = Guid.Empty;
         }
+
+        this._pointerPressedEventArgs = null;
     }
 
     private void Rename(TreeView treeView) {

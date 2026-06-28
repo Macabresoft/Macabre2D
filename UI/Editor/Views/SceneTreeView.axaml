@@ -4,7 +4,8 @@
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
-             x:Class="Macabre2D.UI.Editor.SceneTreeView">
+             x:Class="Macabre2D.UI.Editor.SceneTreeView"
+             x:CompileBindings="False">
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.ViewModel.EditorService.RequestFocusCommand}"
                     Gesture="Ctrl + F" />
@@ -125,7 +126,7 @@
                 <TextBox Grid.Column="0"
                          Text="{Binding FilterText}"
                          Height="14"
-                         Watermark="Filter..." />
+                         PlaceholderText="Filter..." />
 
                 <Button Grid.Column="1"
                         VerticalAlignment="Top"

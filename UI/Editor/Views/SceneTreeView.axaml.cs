@@ -13,9 +13,9 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using DynamicData;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 using ReactiveUI;
 
 public partial class SceneTreeView : UserControl {
@@ -33,6 +33,7 @@ public partial class SceneTreeView : UserControl {
 
     private TreeViewItem _currentDropTarget;
     private bool _isDragging;
+    private PointerPressedEventArgs _pointerPressedEventArgs;
 
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
@@ -182,7 +183,7 @@ public partial class SceneTreeView : UserControl {
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
-            await DragDrop.DoDragDropAsync(e, dragData, DragDropEffects.Move);
+            await DragDrop.DoDragDropAsync(this._pointerPressedEventArgs, dragData, DragDropEffects.Move);
         }
     }
 
@@ -190,6 +191,7 @@ public partial class SceneTreeView : UserControl {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
             sender is Control { DataContext: ISceneSystem or IEntity and not IScene } control) {
             this.DraggedObject = control.DataContext as INameable;
+            this._pointerPressedEventArgs = e;
         }
     }
 
@@ -199,6 +201,8 @@ public partial class SceneTreeView : UserControl {
             this.DraggedObject = null;
             this.ResetDropTarget(null, null);
         }
+
+        this._pointerPressedEventArgs = null;
     }
 
     private void TreeView_OnLostFocus(object sender, RoutedEventArgs e) {
