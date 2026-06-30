@@ -8,21 +8,21 @@ using Macabresoft.Core;
 /// <summary>
 /// A basic entity with a bounding area based on width and height that implements <see cref="IBoundableEntity" />.
 /// </summary>
-public abstract class BoundableEntity : Entity, IBoundableEntity {
+public abstract class BoundedEntity : Entity, IBoundableEntity {
 
     /// <summary>
-    /// Gets the bounding options.
+    /// Gets the bounding area instance.
     /// </summary>
     [DataMember]
-    public BoundingAreaInstance BoundingAreaInstance = new();
+    public BoundingAreaInstance BoundingAreaInstance { get; } = new();
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoundableEntity" /> class.
+    /// Initializes a new instance of the <see cref="BoundedEntity" /> class.
     /// </summary>
-    protected BoundableEntity() {
+    protected BoundedEntity() {
     }
 
     /// <inheritdoc />
