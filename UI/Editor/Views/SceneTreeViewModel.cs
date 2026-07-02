@@ -420,8 +420,13 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     }
 
     private bool CanRemove(object value) {
-        if (!this.IsFiltered && value is IEntity entity && this.SceneService.CurrentlyEditing is { } currentlyEditing) {
-            return entity.Id != currentlyEditing.Id;
+        if (!this.IsFiltered && this.SceneService.CurrentlyEditing is { } currentlyEditing) {
+            switch (value) {
+                case IEntity entity:
+                    return entity.Id != currentlyEditing.Id;
+                case ISceneSystem system:
+                    return system.Id != currentlyEditing.Id;
+            }
         }
 
         return false;

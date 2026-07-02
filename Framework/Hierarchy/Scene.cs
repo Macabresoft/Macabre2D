@@ -339,6 +339,7 @@ public sealed class Scene : GridContainer, IScene {
 
     private IGame _game = BaseGame.Empty;
     private bool _isBusy;
+    private bool _hasBegunInitializingSystems;
     private bool _isInitialized;
 
     /// <inheritdoc />
@@ -501,12 +502,13 @@ public sealed class Scene : GridContainer, IScene {
                 foreach (var child in this.GetAllDescendants()) {
                     this._idToEntitiesInScene[child.Id] = child;
                 }
-
+                
                 // Reason for two loops: Load ALL assets before beginning initialization.
                 foreach (var system in this.Systems) {
                     system.LoadAssets(this.Assets, this.Game);
                 }
 
+                this._hasBegunInitializingSystems = true;
                 foreach (var system in this.Systems) {
                     system.Initialize(this);
                     this.RegisterSystem(system);
@@ -522,6 +524,7 @@ public sealed class Scene : GridContainer, IScene {
             finally {
                 this._isInitialized = true;
                 this._isBusy = false;
+                this._hasBegunInitializingSystems = false;
             }
         }
         else {
@@ -775,7 +778,8 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private void OnSystemAdded(ISceneSystem system) {
-        if (this._isInitialized) {
+        if (this._isInitialized || this._hasBegunInitializingSystems) {
+            system.LoadAssets(this.Assets, this.Game);
             system.Initialize(this);
             system.OnSceneTreeLoaded();
         }
