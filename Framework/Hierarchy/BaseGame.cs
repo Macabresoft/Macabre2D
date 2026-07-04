@@ -38,6 +38,9 @@ public class BaseGame : Game, IGame {
     public event EventHandler<ResourceCulture>? CultureChanged;
 
     /// <inheritdoc />
+    public event EventHandler? DisplaySettingsChanged;
+
+    /// <inheritdoc />
     public event EventHandler<double>? GameSpeedChanged;
 
     /// <inheritdoc />
@@ -249,6 +252,8 @@ public class BaseGame : Game, IGame {
         // If the mouse thinks it has changed, the input device can change from game
         // pad to mouse / keyboard. We don't want that!
         this.InputState = this.CreateInputStateForFrame();
+
+        this.DisplaySettingsChanged.SafeInvoke(this);
     }
 
     /// <inheritdoc />
@@ -596,81 +601,168 @@ public class BaseGame : Game, IGame {
     }
 
     private sealed class EmptyGame : IGame {
-        public event EventHandler<ResourceCulture>? CultureChanged;
-        public event EventHandler<double>? GameSpeedChanged;
-        public event EventHandler<InputDevice>? InputDeviceChanged;
-        public event EventHandler? SettingsSaved;
-        public event EventHandler<Point>? ViewportSizeChanged;
-        public AudioSettings AudioSettings => this.UserSettings.Audio;
-        public ContentManager? Content => null;
-        public Point CroppedViewportSize => this.ViewportSize;
-        public bool CurrentCultureRendersTextInScreenSpace => false;
-        public IScene CurrentScene => EmptyObject.Scene;
-        public IDataManager DataManager => EmptyDataManager.Instance;
-        public InputDevice DesiredInputDevice => InputDevice.GamePad;
-        public DisplaySettings DisplaySettings => this.UserSettings.Display;
-        public FrameTime FrameTime => FrameTime.Zero;
-        public GraphicsDevice? GraphicsDevice => null;
-        public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
-        public InputSettings InputSettings => this.UserSettings.Input;
-        public LaunchArguments LaunchArguments => LaunchArguments.None;
-        public ICommonMeasurements Measurements => EmptyObject.Instance;
-        public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
-        public IGameProject Project => GameProject.Empty;
-        public SpriteBatch? SpriteBatch => null;
-        public GameState State { get; } = new();
-        public IReadOnlyCollection<IGameSystem> Systems { get; } = [];
-        public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
-        public UserSettings UserSettings { get; } = new();
-        public Point ViewportSize => default;
-
-        public double GameSpeed {
-            get => 1f;
-            set {
-                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
-                this.GameSpeedChanged.SafeInvoke(this, 1f);
-            }
+        /// <inheritdoc />
+        public event EventHandler<ResourceCulture>? CultureChanged {
+            add { }
+            remove { }
         }
 
+        /// <inheritdoc />
+        public event EventHandler? DisplaySettingsChanged {
+            add { }
+            remove { }
+        }
+
+        /// <inheritdoc />
+        public event EventHandler<double>? GameSpeedChanged {
+            add { }
+            remove { }
+        }
+
+        /// <inheritdoc />
+        public event EventHandler<InputDevice>? InputDeviceChanged {
+            add { }
+            remove { }
+        }
+
+        /// <inheritdoc />
+        public event EventHandler? SettingsSaved {
+            add { }
+            remove { }
+        }
+
+        /// <inheritdoc />
+        public event EventHandler<Point>? ViewportSizeChanged {
+            add { }
+            remove { }
+        }
+
+        /// <inheritdoc />
+        public AudioSettings AudioSettings => this.UserSettings.Audio;
+
+        /// <inheritdoc />
+        public ContentManager? Content => null;
+
+        /// <inheritdoc />
+        public Point CroppedViewportSize => this.ViewportSize;
+
+        /// <inheritdoc />
+        public bool CurrentCultureRendersTextInScreenSpace => false;
+
+        /// <inheritdoc />
+        public IScene CurrentScene => EmptyObject.Scene;
+
+        /// <inheritdoc />
+        public IDataManager DataManager => EmptyDataManager.Instance;
+
+        /// <inheritdoc />
+        public InputDevice DesiredInputDevice => InputDevice.GamePad;
+
+        /// <inheritdoc />
+        public DisplaySettings DisplaySettings => this.UserSettings.Display;
+
+        /// <inheritdoc />
+        public FrameTime FrameTime => FrameTime.Zero;
+
+        /// <inheritdoc />
+        public GraphicsDevice? GraphicsDevice => null;
+
+        /// <inheritdoc />
+        public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
+
+        /// <inheritdoc />
+        public InputSettings InputSettings => this.UserSettings.Input;
+
+        /// <inheritdoc />
+        public LaunchArguments LaunchArguments => LaunchArguments.None;
+
+        /// <inheritdoc />
+        public ICommonMeasurements Measurements => EmptyObject.Instance;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<IScene> OpenScenes { get; } = [];
+
+        /// <inheritdoc />
+        public IGameProject Project => GameProject.Empty;
+
+        /// <inheritdoc />
+        public SpriteBatch? SpriteBatch => null;
+
+        /// <inheritdoc />
+        public GameState State { get; } = new();
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<IGameSystem> Systems { get; } = [];
+
+        /// <inheritdoc />
+        public TimeSpan TimeSinceGameStart => TimeSpan.Zero;
+
+        /// <inheritdoc />
+        public UserSettings UserSettings { get; } = new();
+
+        /// <inheritdoc />
+        public Point ViewportSize => default;
+
+        /// <inheritdoc />
+        public double GameSpeed {
+            get => 1f;
+            set { }
+        }
+
+        /// <inheritdoc />
         public T AddSystem<T>() where T : IGameSystem, new() => new();
 
+        /// <inheritdoc />
         public void AddSystem(IGameSystem system) {
         }
 
+        /// <inheritdoc />
         public void ApplyDisplaySettings() {
         }
 
+        /// <inheritdoc />
         public void Exit() {
         }
 
+        /// <inheritdoc />
         public T GetOrAddSystem<T>() where T : class, IGameSystem, new() => new();
 
+        /// <inheritdoc />
         public T? GetSystem<T>() where T : class, IGameSystem => null;
 
+        /// <inheritdoc />
         public void LoadScene(string sceneName) {
         }
 
+        /// <inheritdoc />
         public void LoadScene(IScene scene) {
         }
 
+        /// <inheritdoc />
         public void LoadScene(Guid sceneId) {
         }
 
+        /// <inheritdoc />
         public void PushScene(IScene scene) {
         }
 
+        /// <inheritdoc />
         public void RaiseCultureChanged() {
         }
 
+        /// <inheritdoc />
         public void ReloadUserSettings() {
         }
 
+        /// <inheritdoc />
         public void SaveAndApplyUserSettings() {
         }
 
+        /// <inheritdoc />
         public void SaveUserSettings() {
         }
 
+        /// <inheritdoc />
         public bool TryPopScene(out IScene scene) {
             scene = EmptyObject.Scene;
             return false;

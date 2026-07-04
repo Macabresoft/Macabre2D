@@ -18,6 +18,11 @@ public interface IGame {
     event EventHandler<ResourceCulture> CultureChanged;
 
     /// <summary>
+    /// Occurs when the display settings change.
+    /// </summary>
+    event EventHandler DisplaySettingsChanged;
+
+    /// <summary>
     /// Occurs when the game speed has changed.
     /// </summary>
     event EventHandler<double> GameSpeedChanged;

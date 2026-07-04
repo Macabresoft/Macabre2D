@@ -26,21 +26,13 @@ public sealed class DisplaySettings : INameableSettings {
     private const byte MinimumWindowScale = 1;
 
     [DataMember]
-    private readonly HashSet<Guid> _disabledRenderSteps = new();
-
-    private byte _windowScale = 4;
+    private readonly HashSet<Guid> _disabledRenderSteps = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DisplaySettings" /> class.
     /// </summary>
     public DisplaySettings() {
     }
-
-    /// <summary>
-    /// Gets or sets the current culture.
-    /// </summary>
-    [DataMember]
-    public ResourceCulture Culture { get; set; } = ResourceCulture.Default;
 
     /// <summary>
     /// Gets the custom settings.
@@ -53,23 +45,35 @@ public sealed class DisplaySettings : INameableSettings {
     /// </summary>
     public IReadOnlyCollection<Guid> DisabledRenderSteps => this._disabledRenderSteps;
 
+    /// <inheritdoc />
+    public string Name => "Display Settings";
+
+    /// <summary>
+    /// Gets or sets the current culture.
+    /// </summary>
+    [DataMember]
+    public ResourceCulture Culture { get; set; } = ResourceCulture.Default;
+
     /// <summary>
     /// Gets or sets the display mode.
     /// </summary>
     [DataMember]
     public DisplayMode DisplayMode { get; set; } = DisplayMode.Windowed;
 
-    /// <inheritdoc />
-    public string Name => "Display Settings";
+    /// <summary>
+    /// Gets or sets a value indicating whether this should prefer pixel fonts.
+    /// </summary>
+    [DataMember]
+    public bool PreferPixelFonts { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the window scale.
     /// </summary>
     [DataMember]
     public byte WindowScale {
-        get => this._windowScale;
-        set => this._windowScale = Math.Max(MinimumWindowScale, value);
-    }
+        get;
+        set => field = Math.Max(MinimumWindowScale, value);
+    } = 4;
 
     /// <summary>
     /// Clones this instance.
@@ -88,6 +92,7 @@ public sealed class DisplaySettings : INameableSettings {
     public void CopyTo(DisplaySettings other) {
         other.Culture = this.Culture;
         other.DisplayMode = this.DisplayMode;
+        other.PreferPixelFonts = this.PreferPixelFonts;
         other.WindowScale = this.WindowScale;
         this.CustomSettings.CopyTo(other.CustomSettings);
 

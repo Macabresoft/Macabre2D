@@ -111,6 +111,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
 
     /// <inheritdoc />
     public override void Deinitialize() {
+        this.Game.DisplaySettingsChanged -= this.Game_DisplaySettingsChanged;
         this.Game.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
 
         base.Deinitialize();
@@ -130,6 +131,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
             this.ScrollWaitTime.Restart();
         }
 
+        this.Game.DisplaySettingsChanged += this.Game_DisplaySettingsChanged;
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.RenderOptions.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.WidthOverride.PropertyChanged += this.WidthOverride_PropertyChanged;
@@ -217,7 +219,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     /// <returns>The size.</returns>
     protected virtual Vector2 CreateSize() {
         if (this.ShouldRenderInScreenSpace && this.SpriteSheet != null) {
-            return new Vector2(this.LegacyTextLine.Width,  this.Measurements.GetLengthInUnits(this.SpriteSheet.SpriteSize.Y)) * this.Measurements.ScreenPixelsPerUnit;
+            return new Vector2(this.LegacyTextLine.Width, this.Measurements.GetLengthInUnits(this.SpriteSheet.SpriteSize.Y)) * this.Measurements.ScreenPixelsPerUnit;
         }
 
         if (this.Font != null && this.SpriteSheet != null) {
@@ -257,7 +259,8 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
         if (this.FontCategory != FontCategory.None && this.Project.Fonts.TryGetFont(this.FontCategory, this.Game.DisplaySettings.Culture, out var fontDefinition)) {
             var shouldRenderLegacyFont = this.ShouldRenderInScreenSpace;
 
-            this.ShouldRenderInScreenSpace = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture);
+            this.ShouldRenderInScreenSpace = this.Project.Fonts.CheckShouldRenderInScreenSpace(this.Game.DisplaySettings.Culture) ||
+                                             fontDefinition.LegacyFontId != Guid.Empty && !this.Game.DisplaySettings.PreferPixelFonts;
 
             if (!this.ShouldRenderInScreenSpace) {
                 this.FontReference.LoadAsset(fontDefinition.SpriteSheetId, fontDefinition.FontId);
@@ -308,6 +311,13 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
     private bool CouldLegacyTextBeVisible() =>
         this.ShouldRenderInScreenSpace &&
         this.LegacyTextLine is { Height: > 0f, Width: > 0f };
+
+    private void Game_DisplaySettingsChanged(object? sender, EventArgs e) {
+        // If we're rendering in screen space, but we prefer pixel fonts (or vice versa), reload the font.
+        if (this.Game.DisplaySettings.PreferPixelFonts == this.ShouldRenderInScreenSpace) {
+            this.ReloadFontFromCategory();
+        }
+    }
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         if (this.IsInitialized && this.ShouldRenderInScreenSpace) {
