@@ -70,8 +70,8 @@ public class BoundableCover : RenderableEntity {
             }
         }
 
-        if (this._texture == null) {
-            this._texture = new Texture2D(this.Game.GraphicsDevice, 1, 1);
+        if (this._texture == null && this.Game.TryGetGraphicsDevice(out var device)) {
+            this._texture = new Texture2D(device, 1, 1);
             this._texture?.SetData([Color.White]);
         }
     }

@@ -2,6 +2,7 @@ namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Macabre2D.Common;
 using Macabre2D.Project.Common;
 using Microsoft.Xna.Framework;
@@ -87,11 +88,6 @@ public interface IGame {
     /// Gets the frame time.
     /// </summary>
     FrameTime FrameTime { get; }
-
-    /// <summary>
-    /// Gets the graphics device.
-    /// </summary>
-    GraphicsDevice GraphicsDevice { get; }
 
     /// <summary>
     /// Gets the input action icon resolver.
@@ -249,6 +245,13 @@ public interface IGame {
     /// Saves the current graphics settings.
     /// </summary>
     void SaveUserSettings();
+
+    /// <summary>
+    /// Tries to get the graphics device.
+    /// </summary>
+    /// <param name="device">The graphics device.</param>
+    /// <returns>A value indicating whether the graphics device was found.</returns>
+    public bool TryGetGraphicsDevice([NotNullWhen(true)] out GraphicsDevice? device);
 
     /// <summary>
     /// Pops the top scene in the stack. The scene will no longer be updated or rendered. The next scene in the stack will become CurrentScene.

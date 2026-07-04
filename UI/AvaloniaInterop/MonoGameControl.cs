@@ -140,7 +140,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size finalSize) {
         finalSize = base.ArrangeOverride(finalSize);
-        if (finalSize != this._bitmap.Size && this.Game?.GraphicsDevice is { } device) {
+        if (finalSize != this._bitmap.Size && this.Game.TryGetGraphicsDevice(out var device)) {
             this.ResetDevice(device, finalSize);
         }
 
@@ -166,7 +166,7 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
 
     private bool CanDraw(out IAvaloniaGame game, out GraphicsDevice device) {
         game = this.Game;
-        device = this.Game?.GraphicsDevice;
+        this.Game.TryGetGraphicsDevice(out device);
 
         return this.ShouldRender && game != null && device != null &&
                this.Bounds is { Width: > 0, Height: > 0 } &&
@@ -182,14 +182,14 @@ public sealed class MonoGameControl : Control, IObserver<AvaloniaPropertyChanged
     }
 
     private void Initialize() {
-        if (this.Game is { } game && this.GetVisualRoot() is Window window) {
+        if (this.Game is { } game && game.TryGetGraphicsDevice(out var device) && this.GetVisualRoot() is Window window) {
             game.Initialize(this._mouse, this._keyboard);
 
             if (window.TryGetPlatformHandle() is { } platformHandle) {
                 this._presentationParameters.DeviceWindowHandle = platformHandle.Handle;
             }
 
-            this.ResetDevice(game.GraphicsDevice, this.Bounds.Size);
+            this.ResetDevice(device, this.Bounds.Size);
             this.RunFrame();
         }
     }

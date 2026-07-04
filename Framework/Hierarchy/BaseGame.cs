@@ -2,6 +2,7 @@ namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -355,6 +356,12 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public bool TryGetGraphicsDevice([NotNullWhen(true)] out GraphicsDevice? device) {
+        device = this.GraphicsDevice;
+        return true;
+    }
+
+    /// <inheritdoc />
     public bool TryPopScene(out IScene scene) {
         if (this._sceneStack.Count > 1) {
             scene = this._sceneStack.Pop();
@@ -665,9 +672,6 @@ public class BaseGame : Game, IGame {
         public FrameTime FrameTime => FrameTime.Zero;
 
         /// <inheritdoc />
-        public GraphicsDevice? GraphicsDevice => null;
-
-        /// <inheritdoc />
         public IInputActionIconResolver InputActionIconResolver => Framework.InputActionIconResolver.Empty;
 
         /// <inheritdoc />
@@ -760,6 +764,12 @@ public class BaseGame : Game, IGame {
 
         /// <inheritdoc />
         public void SaveUserSettings() {
+        }
+
+        /// <inheritdoc />
+        public bool TryGetGraphicsDevice([NotNullWhen(true)] out GraphicsDevice? device) {
+            device = null;
+            return false;
         }
 
         /// <inheritdoc />

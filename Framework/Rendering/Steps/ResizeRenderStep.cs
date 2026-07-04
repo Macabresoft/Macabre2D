@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -113,27 +114,38 @@ public class ResizeRenderStep : RenderStep {
     /// <param name="effect">The effect.</param>
     /// <returns>The render target.</returns>
     protected RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget, Effect? effect) {
-        var renderTarget = this.GetRenderTarget();
-        this.Game.GraphicsDevice.SetRenderTarget(renderTarget);
-        this.Game.GraphicsDevice.Clear(this.Game.CurrentScene.BackgroundColor);
-        spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
-        spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
-        spriteBatch.End();
-        return renderTarget;
+        if (this.Game.TryGetGraphicsDevice(out var device) && this.TryGetRenderTarget(out var renderTarget)) {
+            device.SetRenderTarget(renderTarget);
+            device.Clear(this.Game.CurrentScene.BackgroundColor);
+            spriteBatch.Begin(effect: effect, samplerState: this.SamplerStateType.ToSamplerState());
+            spriteBatch.Draw(previousRenderTarget, renderTarget.Bounds, Color.White);
+            spriteBatch.End();
+            return renderTarget;
+        }
+
+        return previousRenderTarget;
+    }
+
+    /// <summary>
+    /// Tries to get the render target.
+    /// </summary>
+    /// <param name="renderTarget">Teh render target.</param>
+    /// <returns>A value indicating whether the render target was found or created.</returns>
+    protected bool TryGetRenderTarget([NotNullWhen(true)] out RenderTarget2D? renderTarget) {
+        if (this._renderTarget == null && this.TryGetRenderTarget(this.RenderSize, out renderTarget)) {
+            this._renderTarget = renderTarget;
+        }
+        else {
+            renderTarget = this._renderTarget;
+        }
+
+        return this._renderTarget != null;
     }
 
     private Point GetRenderSize() => this.GetRenderSize(this.Sizing, this.Multiplier, this.ViewportSize, this.InternalResolution);
-    
+
     private Vector2 GetRenderSizeFloatingPoint() => this._renderSize.Value.ToVector2();
 
-    /// <summary>
-    /// Gets the render target to use.
-    /// </summary>
-    /// <returns>The render target.</returns>
-    protected RenderTarget2D GetRenderTarget() {
-        this._renderTarget ??= this.GetRenderTarget(this.RenderSize);
-        return this._renderTarget;
-    }
 
     private void ResetRenderSize() {
         this._renderSize.Reset();

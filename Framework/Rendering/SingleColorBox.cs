@@ -3,8 +3,8 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Macabresoft.Core;
 using Macabre2D.Project.Common;
+using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -55,8 +55,8 @@ public class SingleColorBox : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        if (this._texture == null) {
-            this._texture = new Texture2D(this.Game.GraphicsDevice, 1, 1);
+        if (this._texture == null && this.Game.TryGetGraphicsDevice(out var device)) {
+            this._texture = new Texture2D(device, 1, 1);
             this._texture?.SetData([Color.White]);
         }
 

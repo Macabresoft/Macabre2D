@@ -17,10 +17,9 @@ public class PixelShiftRenderStep : ResizeRenderStep {
 
     /// <inheritdoc />
     public override RenderTarget2D RenderToTexture(SpriteBatch spriteBatch, RenderTarget2D previousRenderTarget) {
-        if (this.Amount != Point.Zero) {
-            var renderTarget = this.GetRenderTarget();
-            this.Game.GraphicsDevice.SetRenderTarget(renderTarget);
-            this.Game.GraphicsDevice.Clear(this.Game.CurrentScene.BackgroundColor);
+        if (this.Amount != Point.Zero && this.Game.TryGetGraphicsDevice(out var device) && this.TryGetRenderTarget(out var renderTarget)) {
+            device.SetRenderTarget(renderTarget);
+            device.Clear(this.Game.CurrentScene.BackgroundColor);
             spriteBatch.Begin(samplerState: this.SamplerStateType.ToSamplerState());
             spriteBatch.Draw(previousRenderTarget, this.GetAdjustedBounds(previousRenderTarget.Bounds), Color.White);
             spriteBatch.End();

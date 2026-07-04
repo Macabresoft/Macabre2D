@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -125,13 +126,22 @@ public abstract class RenderStep : PropertyChangedNotifier, IRenderStep {
             _ => new Point(viewPortSize.X * multiplier, viewPortSize.Y * multiplier)
         };
     }
-    
+
     /// <summary>
-    /// Gets the render target to use.
+    /// Tries to get a render target to use.
     /// </summary>
     /// <param name="renderSize">The render size.</param>
-    /// <returns>The render target.</returns>
-    protected RenderTarget2D GetRenderTarget(Point renderSize) => this.Game.GraphicsDevice.CreateRenderTarget(renderSize);
+    /// <param name="renderTarget">The render target.</param>
+    /// <returns>A value indicating whether the render target was found.</returns>
+    protected bool TryGetRenderTarget(Point renderSize, [NotNullWhen(true)] out RenderTarget2D? renderTarget) {
+        if (this.Game.TryGetGraphicsDevice(out var device)) {
+            renderTarget = device.CreateRenderTarget(renderSize);
+            return true;
+        }
+
+        renderTarget = null;
+        return false;
+    }
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OnViewportSizeChanged();
