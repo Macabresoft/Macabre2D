@@ -316,6 +316,7 @@ public class TextLineRenderer : BaseSpriteSheetFontRenderer, IScreenSpaceRendere
         // If we're rendering in screen space, but we prefer pixel fonts (or vice versa), reload the font.
         if (this.Game.DisplaySettings.PreferPixelFonts == this.ShouldRenderInScreenSpace) {
             this.ReloadFontFromCategory();
+            this.OnFontChanged();
         }
     }
 
