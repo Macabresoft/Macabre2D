@@ -65,6 +65,7 @@ public class BuildService : IBuildService {
     public static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
     private readonly IAssemblyService _assemblyService;
+    private readonly IAssetManager _assetManager;
     private readonly IFileSystemService _fileSystem;
     private readonly IPathService _pathService;
     private readonly IProcessService _processService;
@@ -92,17 +93,20 @@ public class BuildService : IBuildService {
     /// Initializes a new instance of the <see cref="BuildService" /> class.
     /// </summary>
     /// <param name="assemblyService">The assembly service.</param>
+    /// <param name="assetManager">The asset manager.</param>
     /// <param name="fileSystem">The file system service.</param>
     /// <param name="pathService">The path service.</param>
     /// <param name="processService">The process service.</param>
     /// <param name="serializer">The serializer.</param>
     public BuildService(
         IAssemblyService assemblyService,
+        IAssetManager assetManager,
         IFileSystemService fileSystem,
         IPathService pathService,
         IProcessService processService,
         ISerializer serializer) {
         this._assemblyService = assemblyService;
+        this._assetManager = assetManager;
         this._fileSystem = fileSystem;
         this._pathService = pathService;
         this._processService = processService;
@@ -245,6 +249,7 @@ public class BuildService : IBuildService {
             if (Activator.CreateInstance(assetType) is IAsset asset) {
                 metadata = new ContentMetadata(asset, splitPath, extension);
                 this._assemblyService.CreateContentFileObject(parent, metadata);
+                this._assetManager.RegisterMetadata(metadata);
                 result = true;
             }
         }

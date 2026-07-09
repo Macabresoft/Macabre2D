@@ -2,7 +2,6 @@ namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -41,11 +40,11 @@ public class ContentMetadata {
     /// </summary>
     /// <param name="asset">The asses which manages this content.</param>
     /// <param name="splitContentPath">The split path to the content file without its extension.</param>
-    /// <param name="contentFileExtension"></param>
+    /// <param name="contentFileExtension">The content file extension</param>
     public ContentMetadata(IAsset asset, IEnumerable<string>? splitContentPath, string contentFileExtension) {
         this.Asset = asset;
         this.ContentFileExtension = contentFileExtension;
-        this._splitContentPath = splitContentPath?.ToList() ?? [];    
+        this._splitContentPath = splitContentPath?.ToList() ?? [];
     }
 
     /// <summary>
@@ -88,12 +87,12 @@ public class ContentMetadata {
         contentStringBuilder.AppendLine($"#begin {metadataPath}");
         contentStringBuilder.AppendLine($@"/copy:{metadataPath}");
         contentStringBuilder.AppendLine($"#end {metadataPath}");
-        
+
         // We should copy the metadata, but ignore the asset for editor purposes.
         if (!this.Asset.IgnoreInBuild) {
             contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
         }
-        
+
         return contentStringBuilder.ToString();
     }
 
