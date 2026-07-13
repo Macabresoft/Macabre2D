@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -41,14 +40,10 @@ public class LineStripCollider : PolygonCollider {
     public IReadOnlyCollection<LineSegment> LineSegments => this._lineSegments;
 
     /// <inheritdoc />
-    public override bool Contains(Collider other) {
-        return false;
-    }
+    public override bool Contains(Collider other) => false;
 
     /// <inheritdoc />
-    public override bool Contains(Vector2 point) {
-        return this.TryGetLineSegmentContainingPoint(point, out _);
-    }
+    public override bool Contains(Vector2 point) => this.TryGetLineSegmentContainingPoint(point, out _);
 
     /// <inheritdoc />
     public override void Reset() {
@@ -56,11 +51,9 @@ public class LineStripCollider : PolygonCollider {
 
         if (!this._isResetting) {
             this.ResetVertices(this._relativeVertices.ToAbsolute(), false);
-            base.Reset();
         }
-        else {
-            base.Reset();
-        }
+
+        base.Reset();
 
         this._lineSegments.Clear();
 
@@ -93,10 +86,10 @@ public class LineStripCollider : PolygonCollider {
     }
 
     private void RelativeVerticesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-        if (this.Body != null && !this._isResetting) {
+        if (!this._isResetting) {
             try {
                 this._isResetting = true;
-                this.ResetVertices(this._relativeVertices.ToAbsolute(), this.Body != null);
+                this.ResetVertices(this._relativeVertices.ToAbsolute(), true);
             }
             finally {
                 this._isResetting = false;
