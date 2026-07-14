@@ -304,6 +304,24 @@ public abstract class PolygonCollider : Collider {
                 if (currentDistance < shortestDistance) {
                     contactPoint = intersection;
                     normal = edge.GetNormal();
+
+                    if (ray.Direction.Y < 0f == normal.Y < 0f && normal.Y != 0f) {
+                        normal = new Vector2(normal.X, -normal.Y);
+                    }
+
+                    if (ray.Direction.X < 0f == normal.X < 0f && normal.X != 0f) {
+                        normal = new Vector2(-normal.X, normal.Y);
+                    }
+
+                    if (ray.Direction.Y < 0f) {
+                        if (normal.Y < 0f) {
+                            normal = -normal;
+                        }
+                    }
+                    else if (normal.Y > 0f) {
+                        normal = -normal;
+                    }
+
                     shortestDistance = currentDistance;
                     hasIntersection = true;
                 }
@@ -316,10 +334,7 @@ public abstract class PolygonCollider : Collider {
 
     private List<Vector2> CreateWorldPoints() {
         var worldPoints = new List<Vector2>();
-        if (this.Body != null) {
-            worldPoints.AddRange(this._vertices.Select(point => this.Body.GetWorldPosition(this.Offset + point)));
-        }
-
+        worldPoints.AddRange(this._vertices.Select(point => this.Body.GetWorldPosition(this.Offset + point)));
         return worldPoints;
     }
 
