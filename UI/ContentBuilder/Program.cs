@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Macabre2D.Common;
+using Macabre2D.Framework;
 using Macabre2D.UI.Common;
 using Macabresoft.AvaloniaEx;
 using Unity;
@@ -8,10 +9,11 @@ using Unity;
 try {
     Console.WriteLine(@"Initializing services...");
     var assemblyService = new AssemblyService(new UnityContainer(), false);
+    var assetManager = new AssetManager();
     var fileSystem = new FileSystemService();
     var pathService = new PathService();
     var processService = new ProcessService();
-    var buildService = new BuildService(assemblyService, fileSystem, pathService, processService, new Serializer());
+    var buildService = new BuildService(assemblyService, assetManager, fileSystem, pathService, processService, new Serializer());
     Console.WriteLine(@"Getting content directory...");
     var rootContentDirectory = new RootContentDirectory(fileSystem, pathService);
     Console.WriteLine(@"Creating MGCB file and building content...");
