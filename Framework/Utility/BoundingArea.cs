@@ -45,6 +45,16 @@ public readonly struct BoundingArea : IEquatable<BoundingArea> {
     public float Width => this.Maximum.X - this.Minimum.X;
 
     /// <summary>
+    /// Gets the center of this instance.
+    /// </summary>
+    /// <returns>The center.</returns>
+    public Vector2 GetCenter() {
+        var halfWidth = this.Width * 0.5f;
+        var halfHeight = this.Height * 0.5f;
+        return new Vector2(this.Minimum.X + halfWidth, this.Minimum.Y + halfHeight);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
     /// <param name="minimum">The minimum.</param>

@@ -49,8 +49,8 @@ public class OffsetOptions : PropertyChangedNotifier {
     /// Gets or sets the offset amount. This size is in pixels.
     /// </summary>
     /// <remarks>
-    /// The reason this is in pixels is because if <see cref="GameProject.PixelsPerUnit" />
-    /// changes, a pixel value for offset will still be valid. Otherwise this would need to
+    /// The reason this is in pixels is that if <see cref="GameProject.PixelsPerUnit" />
+    /// changes, a pixel value for offset will still be valid; otherwise, this would need to
     /// reset every time <see cref="GameProject.PixelsPerUnit" /> changes, which is not
     /// something the engine really handles. We allow this pixel value to be a <see cref="float" />
     /// because it provides further granularity when converting it to engine units.
@@ -60,13 +60,9 @@ public class OffsetOptions : PropertyChangedNotifier {
     public Vector2 Offset {
         get => this._offset;
         set {
-            if (value != this._offset) {
-                this._offset = value;
-
-                if (this._isInitialized) {
-                    this._offsetType = PixelOffsetType.Custom;
-                    this.RaisePropertyChanged(nameof(this.OffsetType));
-                }
+            if (this.Set(ref this._offset, value) && this._isInitialized) {
+                this._offsetType = PixelOffsetType.Custom;
+                this.RaisePropertyChanged(nameof(this.OffsetType));
             }
         }
     }
