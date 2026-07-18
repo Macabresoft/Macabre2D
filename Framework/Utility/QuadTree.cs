@@ -127,6 +127,15 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
         }
     }
 
+    /// <summary>
+    /// Resets this quad tree with a new set of items. This will clear all previous entries.
+    /// </summary>
+    /// <param name="items">The items.</param>
+    public void Reset(IEnumerable<T> items) {
+        this.Clear();
+        this.InsertMany(items);
+    }   
+
     /// <inheritdoc />
     public IEnumerable<T> RetrievePotentialCollisions(T boundable) => this.RetrievePotentialCollisions(boundable.BoundingArea);
 
