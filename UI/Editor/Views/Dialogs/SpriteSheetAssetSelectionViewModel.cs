@@ -18,9 +18,6 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     private readonly Type _packagedAssetType;
     private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection> _spriteSheets = new();
     private bool _isFinished;
-    private SpriteSheetMember _selectedAsset;
-    private FilteredContentWrapper _selectedContentNode;
-    private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel" /> class.
@@ -52,10 +49,12 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     /// Gets or sets the selected asset.
     /// </summary>
     public SpriteSheetMember SelectedAsset {
-        get => this._selectedAsset;
+        get;
         set {
-            this.RaiseAndSetIfChanged(ref this._selectedAsset, value);
-            this.IsOkEnabled = this.SelectedAsset != null;
+            if (!this.IsClosing) {
+                this.RaiseAndSetIfChanged(ref field, value);
+                this.IsOkEnabled = this.SelectedAsset != null;
+            }
         }
     }
 
@@ -63,10 +62,10 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper SelectedContentNode {
-        get => this._selectedContentNode;
+        get;
         set {
-            if (this._selectedContentNode != value) {
-                this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
+            if (field != value && !this.IsClosing) {
+                this.RaiseAndSetIfChanged(ref field, value);
                 this.ResetSpriteSheets();
             }
         }
@@ -76,8 +75,8 @@ public sealed class SpriteSheetAssetSelectionViewModel : FilterableViewModel<Fil
     /// Gets or sets the selected thumbnail size.
     /// </summary>
     public ThumbnailSize SelectedThumbnailSize {
-        get => this._selectedThumbnailSize;
-        set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <summary>

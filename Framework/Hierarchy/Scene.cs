@@ -40,6 +40,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IAssetManager Assets => AssetManager.Empty;
 
     /// <summary>
+    /// Gets or sets the color of the background.
+    /// </summary>
+    Color BackgroundColor { get; set; }
+
+    /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
     IReadOnlyCollection<ICamera> Cameras => [];
@@ -88,11 +93,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => [];
-
-    /// <summary>
-    /// Gets or sets the color of the background.
-    /// </summary>
-    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Adds the system.
@@ -159,6 +159,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     /// <param name="index">The index.</param>
     /// <param name="system">The system.</param>
     void InsertSystem(int index, ISceneSystem system);
+
+    /// <summary>
+    /// Inserts the <see cref="systemToInsert" /> after the <see cref="precedingSystem" />.
+    /// </summary>
+    /// <param name="systemToInsert">The system to insert.</param>
+    /// <param name="precedingSystem">The preceding system.</param>
+    void InsertSystemAfter(ISceneSystem systemToInsert, ISceneSystem precedingSystem);
 
     /// <summary>
     /// Invokes the specified action after the current update
@@ -320,6 +327,8 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldRenderInScreenSpaceChanged += handler,
         (a, handler) => a.ShouldRenderInScreenSpaceChanged -= handler);
 
+    private readonly HashSet<SceneSystemContainer> _systemContainers = [];
+
     [DataMember]
     private readonly SceneSystemCollection _systems = [];
 
@@ -338,8 +347,8 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldUpdateChanged -= handler);
 
     private IGame _game = BaseGame.Empty;
-    private bool _isBusy;
     private bool _hasBegunInitializingSystems;
+    private bool _isBusy;
     private bool _isInitialized;
 
     /// <inheritdoc />
@@ -368,37 +377,6 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IAnimatableEntity> AnimatableEntities => this._animatableEntities;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
-
-    /// <inheritdoc cref="IScene" />
-    public override IGame Game => this._game;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IScreenSpaceRenderer> ScreenSpaceRenderers => this._screenSpaceRenderers;
-
-    /// <inheritdoc />
-    [DataMember]
-    public SceneState State { get; } = new();
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<ISceneSystem> Systems => this._systems;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
-
-    /// <inheritdoc />
     public IAssetManager Assets { get; private set; } = AssetManager.Empty;
 
     /// <inheritdoc />
@@ -418,7 +396,28 @@ public sealed class Scene : GridContainer, IScene {
     } = BoundingArea.Empty;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
+
+    /// <inheritdoc cref="IScene" />
+    public override IGame Game => this._game;
+
+    /// <inheritdoc />
     public bool IsActive { get; private set; }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IScreenSpaceRenderer> ScreenSpaceRenderers => this._screenSpaceRenderers;
 
     /// <inheritdoc />
     public bool ShouldUpdate {
@@ -430,6 +429,16 @@ public sealed class Scene : GridContainer, IScene {
             }
         }
     } = true;
+
+    /// <inheritdoc />
+    [DataMember]
+    public SceneState State { get; } = new();
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ISceneSystem> Systems => this._systems;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
     /// <inheritdoc />
     public T AddSystem<T>() where T : ISceneSystem, new() {
@@ -484,7 +493,13 @@ public sealed class Scene : GridContainer, IScene {
     public T GetOrAddSystem<T>() where T : class, ISceneSystem, new() => this.GetSystem<T>() ?? this.AddSystem<T>();
 
     /// <inheritdoc />
-    public T? GetSystem<T>() where T : class, ISceneSystem => this.Systems.OfType<T>().FirstOrDefault();
+    public T? GetSystem<T>() where T : class, ISceneSystem {
+        if (this.Systems.OfType<T>().FirstOrDefault() is { } foundSystem) {
+            return foundSystem;
+        }
+
+        return this._systemContainers.Select(x => x.System).OfType<T>().FirstOrDefault();
+    }
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
@@ -502,7 +517,7 @@ public sealed class Scene : GridContainer, IScene {
                 foreach (var child in this.GetAllDescendants()) {
                     this._idToEntitiesInScene[child.Id] = child;
                 }
-                
+
                 // Reason for two loops: Load ALL assets before beginning initialization.
                 foreach (var system in this.Systems) {
                     system.LoadAssets(this.Assets, this.Game);
@@ -538,6 +553,12 @@ public sealed class Scene : GridContainer, IScene {
     public void InsertSystem(int index, ISceneSystem system) {
         this._systems.InsertOrAdd(index, system);
         this.OnSystemAdded(system);
+    }
+
+    /// <inheritdoc />
+    public void InsertSystemAfter(ISceneSystem systemToInsert, ISceneSystem precedingSystem) {
+        var index = this._systems.IndexOf(precedingSystem) + 1;
+        this.InsertSystem(index, systemToInsert);
     }
 
     /// <inheritdoc />
@@ -810,6 +831,10 @@ public sealed class Scene : GridContainer, IScene {
         this._screenSpaceRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
+        if (system is SceneSystemContainer container) {
+            this._systemContainers.Add(container);
+        }
+
         if (system is ISceneUpdateSystem updateSystem) {
             switch (updateSystem.Kind) {
                 case SceneUpdateSystemKind.Update:
@@ -832,6 +857,10 @@ public sealed class Scene : GridContainer, IScene {
     private void UnregisterSystem(ISceneSystem system) {
         foreach (var cache in this.GetSystemCaches()) {
             cache.Remove(system);
+        }
+
+        if (system is SceneSystemContainer container) {
+            this._systemContainers.Remove(container);
         }
     }
 }

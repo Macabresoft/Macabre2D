@@ -11,7 +11,6 @@ using Unity;
 public class ContentSelectionViewModel : FilterableViewModel<FilteredContentWrapper> {
     private readonly bool _allowDirectorySelection;
     private readonly Type _desiredAssetType;
-    private FilteredContentWrapper _selectedContentNode;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContentSelectionViewModel" /> class.
@@ -52,11 +51,13 @@ public class ContentSelectionViewModel : FilterableViewModel<FilteredContentWrap
     /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper SelectedContentNode {
-        get => this._selectedContentNode;
+        get;
         set {
-            this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
-            this.IsOkEnabled = this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset) ||
-                               this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
+            if (!this.IsClosing) {
+                this.RaiseAndSetIfChanged(ref field, value);
+                this.IsOkEnabled = field?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset) ||
+                                   this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
+            }
         }
     }
 

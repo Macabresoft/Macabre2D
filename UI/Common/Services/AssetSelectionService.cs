@@ -47,9 +47,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
-    private Control _assetEditor;
     private object _selected;
-    private ProjectSelectionType _selectionType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssetSelectionService" /> class.
@@ -73,13 +71,13 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
+    public Control AssetEditor {
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     /// <inheritdoc />
-    public Control AssetEditor {
-        get => this._assetEditor;
-        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
-    }
+    public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
 
     /// <inheritdoc />
     public object Selected {
@@ -109,8 +107,8 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
 
     /// <inheritdoc />
     public ProjectSelectionType SelectionType {
-        get => this._selectionType;
-        private set => this.RaiseAndSetIfChanged(ref this._selectionType, value);
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {

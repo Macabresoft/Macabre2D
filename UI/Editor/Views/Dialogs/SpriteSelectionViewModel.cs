@@ -1,9 +1,9 @@
 namespace Macabre2D.UI.Editor;
 
 using System.Collections.Generic;
-using Macabresoft.Core;
 using Macabre2D.Framework;
 using Macabre2D.UI.Common;
+using Macabresoft.Core;
 using ReactiveUI;
 using Unity;
 
@@ -12,9 +12,6 @@ using Unity;
 /// </summary>
 public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredContentWrapper> {
     private readonly ObservableCollectionExtended<SpriteDisplayCollection> _spriteSheets = new();
-    private FilteredContentWrapper _selectedContentNode;
-    private SpriteDisplayModel _selectedSprite;
-    private ThumbnailSize _selectedThumbnailSize;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteSelectionViewModel" /> class.
@@ -34,11 +31,6 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
         this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
-    
-    /// <summary>
-    /// Gets the title.
-    /// </summary>
-    public string Title { get; }
 
     /// <summary>
     /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
@@ -46,18 +38,13 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
     public FilteredContentWrapper RootContentDirectory { get; }
 
     /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
-
-    /// <summary>
     /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper SelectedContentNode {
-        get => this._selectedContentNode;
+        get;
         set {
-            if (this._selectedContentNode != value) {
-                this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
+            if (field != value && !this.IsClosing) {
+                this.RaiseAndSetIfChanged(ref field, value);
                 this.ResetSpriteSheets();
             }
         }
@@ -67,10 +54,12 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
     /// Gets or sets the selected sprite.
     /// </summary>
     public SpriteDisplayModel SelectedSprite {
-        get => this._selectedSprite;
+        get;
         set {
-            this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
-            this.IsOkEnabled = this.SelectedSprite != null;
+            if (!this.IsClosing) {
+                this.RaiseAndSetIfChanged(ref field, value);
+                this.IsOkEnabled = this.SelectedSprite != null;
+            }
         }
     }
 
@@ -78,9 +67,19 @@ public sealed class SpriteSelectionViewModel : FilterableViewModel<FilteredConte
     /// Gets or sets the selected thumbnail size.
     /// </summary>
     public ThumbnailSize SelectedThumbnailSize {
-        get => this._selectedThumbnailSize;
-        set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
+
+    /// <summary>
+    /// Gets the title.
+    /// </summary>
+    public string Title { get; }
 
     /// <inheritdoc />
     protected override FilteredContentWrapper GetActualSelected() => this.SelectedContentNode;

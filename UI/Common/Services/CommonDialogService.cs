@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using Macabresoft.AvaloniaEx;
 using Macabre2D.Framework;
+using Macabresoft.AvaloniaEx;
 using Microsoft.Xna.Framework.Input;
 using Unity;
 using Unity.Resolution;
@@ -138,9 +138,9 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
     /// <param name="mainWindow">The main window.</param>
     protected CommonDialogService(IUnityContainer container, Window mainWindow) : base(container, mainWindow) {
         this._contentSelectionOptions.AllowMultiple = false;
-        this._contentSelectionOptions.FileTypeFilter = new[] {
+        this._contentSelectionOptions.FileTypeFilter = [
             new FilePickerFileType("All") {
-                Patterns = new[] { "*" }
+                Patterns = ["*"]
             },
             new FilePickerFileType("Audio") {
                 Patterns = AudioClip.ValidFileExtensions.Select(x => $"*{x}").ToArray()
@@ -149,15 +149,18 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
                 Patterns = SpriteSheet.ValidFileExtensions.Select(x => $"*{x}").ToArray()
             },
             new FilePickerFileType("Prefabs") {
-                Patterns = new[] { $"*{PrefabAsset.FileExtension}" }
+                Patterns = [$"*{PrefabAsset.FileExtension}"]
             },
             new FilePickerFileType("Scenes") {
-                Patterns = new[] { $"*{SceneAsset.FileExtension}" }
+                Patterns = [$"*{SceneAsset.FileExtension}"]
             },
             new FilePickerFileType("Shaders") {
-                Patterns = new[] { $"*{ShaderAsset.FileExtension}" }
+                Patterns = [$"*{ShaderAsset.FileExtension}"]
+            },
+            new FilePickerFileType("Systems") {
+                Patterns = [$"*{SceneSystemAsset.FileExtension}"]
             }
-        };
+        ];
     }
 
     /// <inheritdoc />

@@ -38,8 +38,15 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Creates a prefab from the given entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
-    /// <returns>A task.</returns>
+    /// <returns>The entity prefab asset.</returns>
     Task<PrefabAsset> CreatePrefab(IEntity entity);
+
+    /// <summary>
+    /// Creates a prefab from the given system.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    /// <returns>The system prefab asset.</returns>
+    Task<SceneSystemAsset> CreatePrefab(ISceneSystem system);
 
     /// <summary>
     /// Creates a safe name for the given directory.
@@ -165,7 +172,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
             prefab.AddChild(prefabChild);
 
-            var result = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), true, "Save the Prefab");
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), true, "Save the Entity Prefab");
             var parent = result as IContentDirectory ?? result?.Parent;
 
             if (parent != null) {
@@ -191,6 +198,44 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                     this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
                     prefabAsset = contentFile.Asset as PrefabAsset;
+                }
+            }
+        }
+
+        return prefabAsset;
+    }
+
+    /// <inheritdoc />
+    public async Task<SceneSystemAsset> CreatePrefab(ISceneSystem system) {
+        SceneSystemAsset prefabAsset = null;
+        if (system?.TryClone(out var clone) == true) {
+            var prefab = new SceneSystemPrefab(clone);
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(SceneSystemAsset), true, "Save the System Prefab");
+            var parent = result as IContentDirectory ?? result?.Parent;
+
+            if (parent != null) {
+                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(clone.Name, parent)}{SceneSystemAsset.FileExtension}" : result.Name;
+                var fullPath = Path.Combine(parent.GetFullPath(), fileName);
+                this._serializer.Serialize(prefab, fullPath);
+
+                ContentFile contentFile = null;
+                switch (result) {
+                    case IContentDirectory: {
+                        contentFile = this.CreateContentFile(parent, fileName);
+                        break;
+                    }
+                    case ContentFile { Asset: SceneSystemAsset asset } file:
+                        asset.LoadContent(prefab);
+                        this.SaveMetadata(file.Metadata);
+                        contentFile = file;
+                        break;
+                }
+
+                if (contentFile != null) {
+                    this.CopyToEditorBin(parent, contentFile);
+                    this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
+                    this._settingsService.Settings.ShouldRebuildContent = true;
+                    prefabAsset = contentFile.Asset as SceneSystemAsset;
                 }
             }
         }
@@ -254,7 +299,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
             var hasMetadataChanges = this.CheckForMetadataChanges(out var cleanEditorMetadata);
-            
+
             if (cleanEditorMetadata) {
                 this._fileSystem.DeleteDirectory(this._pathService.EditorMetadataDirectoryPath);
             }
@@ -308,9 +353,9 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
         var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList();
         var metadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath).ToList() : [];
-        
+
         cleanEditorMetadata = editorMetadataFiles.Count > metadataFiles.Count;
-        
+
         return editorMetadataFiles.Count != metadataFiles.Count ||
                metadataFiles.Select(Path.GetFileName).Any(metadata => !editorMetadataFiles.Select(Path.GetFileName).Contains(metadata));
     }

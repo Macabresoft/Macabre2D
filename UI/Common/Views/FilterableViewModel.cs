@@ -4,11 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Macabre2D.Framework;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
-using Macabre2D.Framework;
 using ReactiveUI;
 
+/// <summary>
+/// Base class for a view or dialog with filterable items.
+/// </summary>
+/// <typeparam name="TFiltered">The type of item to be filtered,</typeparam>
 public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where TFiltered : class, INameable {
     private readonly ObservableCollectionExtended<TFiltered> _filteredNodes = [];
     private readonly List<TFiltered> _nodesAvailableToFilter = [];
@@ -30,7 +34,6 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     protected FilterableViewModel() : base() {
         this.ClearFilterCommand = ReactiveCommand.Create(this.ClearFilter, this.WhenAny(x => x.IsFiltered, _ => this.IsFiltered));
     }
-
 
     /// <summary>
     /// Gets a command to clear the filter.
@@ -84,6 +87,11 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     public bool IsFiltered => !string.IsNullOrEmpty(this.FilterText);
 
     /// <summary>
+    /// Gets a value indicating that this is closing.
+    /// </summary>
+    protected bool IsClosing { get; private set; }
+
+    /// <summary>
     /// Gets the object that is selected outside the filter.
     /// </summary>
     /// <returns>The selected object.</returns>
@@ -99,6 +107,12 @@ public abstract class FilterableViewModel<TFiltered> : BaseDialogViewModel where
     /// Called when the filter changes.
     /// </summary>
     protected virtual void OnFilterChanged() {
+    }
+
+    /// <inheritdoc />
+    protected override void OnOk() {
+        this.IsClosing = true;
+        base.OnOk();
     }
 
     /// <summary>

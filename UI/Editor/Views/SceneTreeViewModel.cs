@@ -78,9 +78,16 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         var canClone = this.SceneService.WhenAny(x => x.ImpliedSelected, x => this.CanClone(x.Value));
         this.RenameCommand = ReactiveCommand.Create<ValueChangedEventArgs<string>>(this.RenameChild);
         this.CloneCommand = ReactiveCommand.Create<object>(this.Clone, canClone);
+
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
-        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.ConvertToPrefabContainerCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.ConvertToPrefabContainer(x));
+        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreatePrefab(x));
+
+        this.ConvertToSystemInstanceCommand = ReactiveCommand.Create<ISceneSystem>(this.ConvertToInstance);
+        this.ConvertToSystemContainerCommand = ReactiveCommand.CreateFromTask<ISceneSystem>(async x => await this.ConvertToSystemContainer(x));
+        this.CreateSystemPrefabCommand = ReactiveCommand.CreateFromTask<ISceneSystem>(async x => await this.CreatePrefab(x));
+
+
         this.ReinitializeCommand = ReactiveCommand.Create<IEntity>(this.Reinitialize);
         this.DisassociateFromParentCommand = ReactiveCommand.Create<IEntity>(this.DisassociateFromParent, canClone);
         this.EnableCommand = ReactiveCommand.Create<IEntity>(x => this.SetIsEnabled(x, true));
@@ -125,9 +132,24 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     public ICommand ConvertToPrefabContainerCommand { get; }
 
     /// <summary>
+    /// Gets a command to convert a system into a system container using a newly created prefab.
+    /// </summary>
+    public ICommand ConvertToSystemContainerCommand { get; }
+
+    /// <summary>
+    /// Gets a command to convert a system container into an instance.
+    /// </summary>
+    public ICommand ConvertToSystemInstanceCommand { get; }
+
+    /// <summary>
     /// Gets a command to create a prefab.
     /// </summary>
     public ICommand CreatePrefabCommand { get; }
+
+    /// <summary>
+    /// Gets a command to create a system prefab.
+    /// </summary>
+    public ICommand CreateSystemPrefabCommand { get; }
 
     /// <summary>
     /// Gets a command to disable an entity and its descendants.
@@ -488,6 +510,26 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         }
     }
 
+    private void ConvertToInstance(ISceneSystem system) {
+        if (this.SceneService.CurrentScene is var scene &&
+            !Scene.IsNullOrEmpty(scene, out scene) &&
+            system is SceneSystemContainer container &&
+            container.SystemReference.TryGetSystem(out var originalSystem) &&
+            originalSystem.TryClone(out var clone)) {
+            var index = scene.Systems.IndexOf(system);
+
+            this._undoService.Do(() =>
+            {
+                scene.InsertSystem(index, clone);
+                scene.RemoveSystem(system);
+            }, () =>
+            {
+                scene.InsertSystem(index, system);
+                scene.RemoveSystem(clone);
+            });
+        }
+    }
+
     private async Task ConvertToPrefabContainer(IEntity entity) {
         var prefab = await this._contentService.CreatePrefab(entity);
         if (prefab != null && entity.Parent is { } parent) {
@@ -515,8 +557,39 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
         }
     }
 
-    private async Task CreateFromPrefab(IEntity entity) {
+    private async Task ConvertToSystemContainer(ISceneSystem system) {
+        var prefab = await this._contentService.CreatePrefab(system);
+        if (prefab != null) {
+            var systemContainer = new SceneSystemContainer();
+            systemContainer.Name = system.Name;
+            systemContainer.SystemReference.LoadAsset(prefab);
+            var scene = this.SceneService.CurrentScene;
+            var index = scene.Systems.IndexOf(system);
+
+            this._undoService.Do(() =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    scene.InsertSystem(index, systemContainer);
+                    scene.RemoveSystem(system);
+                });
+            }, () =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    scene.InsertSystem(index, system);
+                    scene.RemoveSystem(systemContainer);
+                });
+            });
+        }
+    }
+
+    private async Task CreatePrefab(IEntity entity) {
         await this._contentService.CreatePrefab(entity);
+    }
+
+    private async Task CreatePrefab(ISceneSystem system) {
+        await this._contentService.CreatePrefab(system);
     }
 
     private void DisassociateFromParent(IEntity entity) {

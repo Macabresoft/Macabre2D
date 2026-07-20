@@ -3,5 +3,5 @@
 /// <summary>
 /// Reference to a <see cref="SceneAsset" />.
 /// </summary>
-public class SceneReference : AssetReference<SceneAsset, Scene> {
+public class SceneAssetReference : AssetReference<SceneAsset, Scene> {
 }

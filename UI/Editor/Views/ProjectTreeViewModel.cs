@@ -599,7 +599,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             {
                 var usages = new List<string>();
                 var root = this.ContentService.RootContentDirectory;
-                var filesToCheck = root.GetAllContentFiles().Where(file => file.Asset is SceneAsset or PrefabAsset && file.Id != node.Id).ToList();
+                var filesToCheck = root.GetAllContentFiles().Where(file => file.Asset is SceneAsset or PrefabAsset or SceneSystemAsset && file.Id != node.Id).ToList();
 
                 foreach (var file in filesToCheck) {
                     var contents = File.ReadAllText(file.GetFullPath());
@@ -721,7 +721,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         var openSceneMetadataId = this.SceneService.CurrentMetadata?.ContentId ?? Guid.Empty;
         switch (node) {
             case RootContentDirectory or ProjectNode or RenderStepCollection or PhysicsMaterialCollection:
-                this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete the root.");
+                this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete a root node.");
                 break;
             case IContentDirectory directory when directory.ContainsMetadata(openSceneMetadataId):
                 this._dialogService.ShowWarningDialog("Cannot Delete", "This directory cannot be deleted, because the open scene is a descendent.");
