@@ -60,9 +60,9 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
         this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
-        this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x), this.WhenAny(
-            x => x.IsFiltered,
-            _ => this.CanAdd()));
+        var canAdd = this.WhenAny(x => x.IsFiltered, _ => this.CanAdd());
+        this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x), canAdd);
+        this.AddFromPrefabCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddPrefab(x), canAdd);
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => this.CanRemove(x.Value)));
@@ -110,6 +110,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     /// Gets a collection of <see cref="MenuItemModel" /> for adding entities.
     /// </summary>
     public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
+
+    /// <summary>
+    /// Gets a command to add a system or an entity from an existing prefabricated asset.
+    /// </summary>
+    public ICommand AddFromPrefabCommand { get; }
 
     /// <summary>
     /// Gets a collection of <see cref="MenuItemModel" /> for adding systems.
@@ -335,15 +340,9 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     }
 
     private async Task AddChild(Type type) {
-        if (type == null) {
-            if (this.SceneService.Selected is ISceneSystem or SceneSystemCollection) {
-                await this.AddSystem(null);
-            }
-            else if (this.SceneService.ImpliedSelected is IScene or IEntity) {
-                await this.AddEntity(null);
-            }
-        }
-        else if (type.IsAssignableTo(typeof(IEntity))) {
+        type ??= this.SceneService.Selected is ISceneSystem or SceneSystemCollection ? typeof(ISceneSystem) : typeof(IEntity);
+
+        if (type.IsAssignableTo(typeof(IEntity))) {
             await this.AddEntity(type);
         }
         else if (type.IsAssignableTo(typeof(ISceneSystem))) {
@@ -374,6 +373,72 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
                     {
                         parent.RemoveChild(child);
                         this.SceneService.Selected = parent;
+                    });
+                });
+            }
+        }
+    }
+
+    private async Task AddPrefab(Type type) {
+        type ??= this.SceneService.Selected is ISceneSystem or SceneSystemCollection ? typeof(ISceneSystem) : typeof(IEntity);
+
+        if (type.IsAssignableTo(typeof(IEntity))) {
+            await this.AddPrefabEntity();
+        }
+        else if (type.IsAssignableTo(typeof(ISceneSystem))) {
+            await this.AddPrefabSystem();
+        }
+    }
+
+    private async Task AddPrefabEntity() {
+        var parent = this.EntityService.Selected ?? this.SceneService.CurrentlyEditing;
+        if (parent != null) {
+            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), false, "Select a Prefab Entity");
+            if (contentNode is ContentFile { Asset: PrefabAsset asset }) {
+                var container = new PrefabContainer();
+                container.Name = contentNode.NameWithoutExtension;
+                container.PrefabReference.LoadAsset(asset);
+
+                this._undoService.Do(() =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        parent.AddChild(container);
+                        this.SceneService.Selected = container;
+                    });
+                }, () =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        parent.RemoveChild(container);
+                        this.SceneService.Selected = parent;
+                    });
+                });
+            }
+        }
+    }
+
+    private async Task AddPrefabSystem() {
+        if (this.SceneService.CurrentScene is { } scene) {
+            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(SceneSystemAsset), false, "Select a Prefab System");
+            if (contentNode is ContentFile { Asset: SceneSystemAsset asset }) {
+                var system = new SceneSystemContainer();
+                system.Name = contentNode.NameWithoutExtension;
+                system.SystemReference.LoadAsset(asset);
+                var originallySelected = this._systemService.Selected;
+                this._undoService.Do(() =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        scene.AddSystem(system);
+                        this.SceneService.Selected = system;
+                    });
+                }, () =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        scene.RemoveSystem(system);
+                        this.SceneService.Selected = originallySelected;
                     });
                 });
             }

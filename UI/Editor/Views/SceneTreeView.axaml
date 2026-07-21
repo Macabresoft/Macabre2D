@@ -31,15 +31,29 @@
                         ToolTip.Tip="Contextually add an entity or system depending on the currently selected object in the tree">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Add Entity..."
-                                      Command="{Binding AddCommand}"
-                                      CommandParameter="{x:Type framework:IEntity}"
-                                      ToolTip.Tip="Open a window to find an entity to add as a child" />
+                            <MenuItem Header="Add Entity...">
+                                <MenuItem Header="Find..."
+                                          Command="{Binding AddCommand}"
+                                          CommandParameter="{x:Type framework:IEntity}"
+                                          ToolTip.Tip="Open a window to find an entity to add as a child" />
 
-                            <MenuItem Header="Add System..."
-                                      Command="{Binding AddCommand}"
-                                      CommandParameter="{x:Type framework:ISceneSystem}"
-                                      ToolTip.Tip="Open a window to find a system to add" />
+                                <MenuItem Header="From Prefab..."
+                                          Command="{Binding AddFromPrefabCommand}"
+                                          CommandParameter="{x:Type framework:IEntity}"
+                                          ToolTip.Tip="Open a window to find a prefab entity to add as a child" />
+                            </MenuItem>
+
+                            <MenuItem Header="Add System...">
+                                <MenuItem Header="Find..."
+                                          Command="{Binding AddCommand}"
+                                          CommandParameter="{x:Type framework:ISceneSystem}"
+                                          ToolTip.Tip="Open a window to find a system to add" />
+
+                                <MenuItem Header="From Prefab..."
+                                          Command="{Binding AddFromPrefabCommand}"
+                                          CommandParameter="{x:Type framework:ISceneSystem}"
+                                          ToolTip.Tip="Open a window to find a prefab system to add" />
+                            </MenuItem>
 
                             <Separator />
 
@@ -81,7 +95,7 @@
                     <avaloniaEx:Icon Content="{StaticResource CloneIcon}" />
                 </Button>
             </StackPanel>
-            
+
             <StackPanel Grid.Column="0"
                         Grid.ColumnSpan="2"
                         Grid.Row="0"
@@ -110,7 +124,7 @@
                         IsVisible="{Binding IsEntityOrSystemSelected}">
                     <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
                 </Button>
-                
+
                 <Button Command="{Binding MoveToEndCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         ToolTip.Tip="Move the selected entity to the bottom of its parent's child collection"
@@ -118,7 +132,7 @@
                     <avaloniaEx:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
                 </Button>
             </StackPanel>
-            
+
             <Grid Grid.Column="0"
                   Grid.Row="1"
                   ColumnDefinitions="*, Auto">
@@ -135,7 +149,7 @@
                     <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
                 </Button>
             </Grid>
-            
+
             <StackPanel Grid.Column="1"
                         Grid.Row="1"
                         Orientation="Horizontal"
@@ -207,6 +221,11 @@
                                               CommandParameter="{x:Type framework:ISceneSystem}"
                                               ToolTip.Tip="Open a window to find a system to add" />
 
+                                    <MenuItem Header="Add from Prefab..."
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.AddFromPrefabCommand}"
+                                              CommandParameter="{x:Type framework:ISceneSystem}"
+                                              ToolTip.Tip="Open a window to find a prefab system to add" />
+
                                     <MenuItem Header="All Systems"
                                               Classes="MenuItemParent"
                                               ItemsSource="{Binding $parent[local:SceneTreeView].ViewModel.AddSystemModels}">
@@ -231,6 +250,11 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
                                               CommandParameter="{x:Type framework:IEntity}"
                                               ToolTip.Tip="Open a window to find an entity to add as a child" />
+
+                                    <MenuItem Header="Add from Prefab..."
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.AddFromPrefabCommand}"
+                                              CommandParameter="{x:Type framework:IEntity}"
+                                              ToolTip.Tip="Open a window to find a prefab entity to add as a child" />
 
                                     <MenuItem Header="All Entities"
                                               Classes="MenuItemParent"
@@ -262,15 +286,15 @@
                                               CommandParameter="{Binding}"
                                               InputGesture="Ctrl + Shift + C"
                                               ToolTip.Tip="Clone this system" />
-                                    
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreateSystemPrefabCommand}"
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:SceneSystemContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected system" />
-                                    
+
                                     <MenuItem Header="Convert to Prefab Container"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToSystemContainerCommand}"
                                               CommandParameter="{Binding}"
@@ -320,7 +344,7 @@
                                               CommandParameter="{Binding}"
                                               InputGesture="Ctrl + Shift + C"
                                               ToolTip.Tip="Clone this entity" />
-                                    
+
                                     <Separator />
 
                                     <MenuItem Header="Create Prefab"
@@ -328,7 +352,7 @@
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected entity" />
-                                    
+
                                     <MenuItem Header="Convert to Prefab Container"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToPrefabContainerCommand}"
                                               CommandParameter="{Binding}"
@@ -342,16 +366,16 @@
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
 
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Re-initialize"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ReinitializeCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Re-initializes this entity" />
-                                    
-                                    <MenuItem Header="Disassociate from Parent" 
+
+                                    <MenuItem Header="Disassociate from Parent"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.DisassociateFromParentCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Disassociates this entity from its parent, making its parent the scene itself"/>
+                                              ToolTip.Tip="Disassociates this entity from its parent, making its parent the scene itself" />
 
                                     <Separator />
 
@@ -381,6 +405,11 @@
                                                   Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
                                                   CommandParameter="{x:Type framework:IEntity}"
                                                   ToolTip.Tip="Open a window to find an entity to add as a child" />
+
+                                        <MenuItem Header="From Prefab..."
+                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.AddFromPrefabCommand}"
+                                                  CommandParameter="{x:Type framework:IEntity}"
+                                                  ToolTip.Tip="Open a window to find a prefab entity to add as a child" />
 
                                         <Separator />
 

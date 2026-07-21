@@ -214,6 +214,9 @@ public class EmptyObject :
     }
 
     /// <inheritdoc />
+    public SceneInitializationStep InitializationStep => SceneInitializationStep.NotStarted;
+
+    /// <inheritdoc />
     public float InternalRenderResolutionRatio => 1f;
 
     /// <inheritdoc />

@@ -55,6 +55,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundableEntit
     IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => [];
 
     /// <summary>
+    /// Gets the scene initialization step.
+    /// </summary>
+    public SceneInitializationStep InitializationStep { get; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this is active.
     /// </summary>
     bool IsActive { get; }
@@ -347,9 +352,7 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldUpdateChanged -= handler);
 
     private IGame _game = BaseGame.Empty;
-    private bool _hasBegunInitializingSystems;
     private bool _isBusy;
-    private bool _isInitialized;
 
     /// <inheritdoc />
     public event EventHandler? Activated;
@@ -405,6 +408,9 @@ public sealed class Scene : GridContainer, IScene {
     public override IGame Game => this._game;
 
     /// <inheritdoc />
+    public SceneInitializationStep InitializationStep { get; private set; }
+
+    /// <inheritdoc />
     public bool IsActive { get; private set; }
 
     /// <inheritdoc />
@@ -458,7 +464,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public override void Deinitialize() {
-        if (this._isInitialized) {
+        if (this.InitializationStep != SceneInitializationStep.NotStarted) {
             try {
                 base.Deinitialize();
 
@@ -470,7 +476,7 @@ public sealed class Scene : GridContainer, IScene {
                 this.State.Deinitialize();
             }
             finally {
-                this._isInitialized = false;
+                this.InitializationStep = SceneInitializationStep.NotStarted;
             }
         }
     }
@@ -503,13 +509,14 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void Initialize(IGame game, IAssetManager assetManager) {
-        if (!this._isInitialized) {
+        if (this.InitializationStep == SceneInitializationStep.NotStarted) {
             try {
                 this._isBusy = true;
                 this.IsActive = true;
                 this.Assets = assetManager;
                 this._game = game;
 
+                this.InitializationStep = SceneInitializationStep.InitializeProject;
                 this.Project.Initialize(this.Assets, this.Game);
 
                 this._idToEntitiesInScene.Clear();
@@ -519,27 +526,34 @@ public sealed class Scene : GridContainer, IScene {
                 }
 
                 // Reason for two loops: Load ALL assets before beginning initialization.
-                foreach (var system in this.Systems) {
+                this.InitializationStep = SceneInitializationStep.LoadSystemAssets;
+                foreach (var system in this.Systems.ToList()) {
                     system.LoadAssets(this.Assets, this.Game);
                 }
 
-                this._hasBegunInitializingSystems = true;
-                foreach (var system in this.Systems) {
+                this.InitializationStep = SceneInitializationStep.InitializeSystems;
+                foreach (var system in this.Systems.ToList()) {
                     system.Initialize(this);
                     this.RegisterSystem(system);
                 }
 
+                this.InitializationStep = SceneInitializationStep.InitializeState;
                 this.State.Initialize(this._game.State);
+
+                this.InitializationStep = SceneInitializationStep.LoadEntityAssets;
                 this.LoadAssets(this.Assets, this.Game);
+
+                this.InitializationStep = SceneInitializationStep.InitializeEntities;
                 this.Initialize(this, this);
                 this.RebuildFilterCaches();
+
+                this.InitializationStep = SceneInitializationStep.LoadSceneTree;
                 this.OnSceneTreeLoaded();
                 this.InvokePendingActions();
             }
             finally {
-                this._isInitialized = true;
+                this.InitializationStep = SceneInitializationStep.Done;
                 this._isBusy = false;
-                this._hasBegunInitializingSystems = false;
             }
         }
         else {
@@ -600,7 +614,7 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public override void OnSceneTreeLoaded() {
-        foreach (var system in this.Systems) {
+        foreach (var system in this.Systems.ToList()) {
             system.OnSceneTreeLoaded();
         }
 
@@ -627,7 +641,7 @@ public sealed class Scene : GridContainer, IScene {
 
         this._idToEntitiesInScene[entity.Id] = entity;
 
-        if (this._isInitialized) {
+        if (this.InitializationStep == SceneInitializationStep.Done) {
             if (BaseGame.IsDesignMode) {
                 this.RebuildEntityCaches();
             }
@@ -799,15 +813,22 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     private void OnSystemAdded(ISceneSystem system) {
-        if (this._isInitialized || this._hasBegunInitializingSystems) {
+        if (this.InitializationStep >= SceneInitializationStep.LoadSystemAssets) {
             system.LoadAssets(this.Assets, this.Game);
+        }
+
+        if (this.InitializationStep >= SceneInitializationStep.InitializeSystems) {
             system.Initialize(this);
+            this.RegisterSystem(system);
+        }
+
+        if (this.InitializationStep >= SceneInitializationStep.LoadSceneTree) {
             system.OnSceneTreeLoaded();
         }
     }
 
     private void OnSystemRemoved(ISceneSystem system) {
-        if (this._isInitialized) {
+        if (this.InitializationStep >= SceneInitializationStep.InitializeSystems) {
             this.UnregisterSystem(system);
             system.Deinitialize();
         }
