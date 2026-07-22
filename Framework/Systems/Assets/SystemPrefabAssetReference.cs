@@ -3,9 +3,9 @@ namespace Macabre2D.Framework;
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
-/// Reference to a <see cref="SceneSystemAsset" />.
+/// Reference to a <see cref="SystemPrefabAsset" />.
 /// </summary>
-public class SceneSystemAssetReference : AssetReference<SceneSystemAsset, SceneSystemPrefab> {
+public class SystemPrefabAssetReference : AssetReference<SystemPrefabAsset, SystemPrefab> {
 
 
     /// <summary>

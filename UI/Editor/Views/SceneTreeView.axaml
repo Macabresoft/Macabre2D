@@ -292,19 +292,19 @@
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreateSystemPrefabCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:SceneSystemContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:SystemPrefabContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected system" />
 
                                     <MenuItem Header="Convert to Prefab Container"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToSystemContainerCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:SceneSystemContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:SystemPrefabContainer}}"
                                               ToolTip.Tip="Create a prefab from the selected system and convert the system into a prefab instance" />
 
                                     <MenuItem Header="Convert to Instance"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToSystemInstanceCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:SceneSystemContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:SystemPrefabContainer}}"
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
 
                                     <Separator />
@@ -350,19 +350,19 @@
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:EntityPrefabContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected entity" />
 
                                     <MenuItem Header="Convert to Prefab Container"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToPrefabContainerCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:EntityPrefabContainer}}"
                                               ToolTip.Tip="Create a prefab from the selected entity and convert the entity into a prefab instance" />
 
                                     <MenuItem Header="Convert to Instance"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToInstanceCommand}"
                                               CommandParameter="{Binding}"
-                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:EntityPrefabContainer}}"
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
 
                                     <Separator />

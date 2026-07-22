@@ -143,8 +143,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                 switch (this._currentMetadata.Asset) {
                     case SceneAsset sceneAsset:
                         return sceneAsset.Content;
-                    case PrefabAsset prefabAsset:
-                        return prefabAsset.Content;
+                    case EntityPrefabAsset prefabAsset:
+                        return prefabAsset.Content.Entity;
                 }
             }
 
@@ -158,7 +158,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         private set {
             this.RaiseAndSetIfChanged(ref this._currentMetadata, value);
             this.RaisePropertyChanged(nameof(this.CurrentlyEditing));
-            this.IsEditingPrefab = this.CurrentMetadata?.Asset is PrefabAsset;
+            this.IsEditingPrefab = this.CurrentMetadata?.Asset is EntityPrefabAsset;
         }
     }
 
@@ -269,7 +269,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
             case SceneAsset sceneAsset:
                 this.SaveScene(this.CurrentMetadata, sceneAsset.Content);
                 break;
-            case PrefabAsset prefabAsset:
+            case EntityPrefabAsset prefabAsset:
                 this.SavePrefab(this.CurrentMetadata, prefabAsset.Content);
                 break;
         }
@@ -290,10 +290,10 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
     /// <inheritdoc />
     public bool TryLoadPrefab(Guid contentId) {
-        if (this.TryGetMetadata<PrefabAsset, Entity>(contentId, out var metadata, out var prefabAsset, out var entity)) {
+        if (this.TryGetMetadata<EntityPrefabAsset, EntityPrefab>(contentId, out var metadata, out _, out var prefab) && prefab.Entity != null) {
             var tempScene = new Scene();
-            tempScene.AddChild(entity);
-            this.SelectAndOpen(entity, metadata);
+            tempScene.AddChild(prefab.Entity);
+            this.SelectAndOpen(prefab.Entity, metadata);
             return true;
         }
 
@@ -312,8 +312,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         return sceneAsset != null;
     }
 
-    private void SavePrefab(ContentMetadata metadata, IEntity prefab) {
-        if (metadata != null && prefab != null && metadata.Asset is IAsset<Entity>) {
+    private void SavePrefab(ContentMetadata metadata, EntityPrefab prefab) {
+        if (metadata != null && prefab != null && metadata.Asset is IAsset<EntityPrefab>) {
             var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
             this._serializer.Serialize(metadata, metadataPath);
 

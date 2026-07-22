@@ -39,14 +39,14 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>The entity prefab asset.</returns>
-    Task<PrefabAsset> CreatePrefab(IEntity entity);
+    Task<EntityPrefabAsset> CreatePrefab(IEntity entity);
 
     /// <summary>
     /// Creates a prefab from the given system.
     /// </summary>
     /// <param name="system">The system.</param>
     /// <returns>The system prefab asset.</returns>
-    Task<SceneSystemAsset> CreatePrefab(ISceneSystem system);
+    Task<SystemPrefabAsset> CreatePrefab(ISceneSystem system);
 
     /// <summary>
     /// Creates a safe name for the given directory.
@@ -161,22 +161,18 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     /// <inheritdoc />
-    public async Task<PrefabAsset> CreatePrefab(IEntity entity) {
-        PrefabAsset prefabAsset = null;
-        if (entity?.TryClone(out var prefabChild) == true) {
-            prefabChild.LocalPosition = Vector2.Zero;
+    public async Task<EntityPrefabAsset> CreatePrefab(IEntity entity) {
+        EntityPrefabAsset entityPrefabAsset = null;
+        if (entity?.TryClone(out var clone) == true) {
+            clone.LocalPosition = Vector2.Zero;
 
-            var prefab = new Entity {
-                Name = !string.IsNullOrEmpty(prefabChild.Name) ? $"{prefabChild.Name}" : "Prefab"
-            };
+            var prefab = new EntityPrefab(clone);
 
-            prefab.AddChild(prefabChild);
-
-            var result = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), true, "Save the Entity Prefab");
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(EntityPrefabAsset), true, "Save the Entity Prefab");
             var parent = result as IContentDirectory ?? result?.Parent;
 
             if (parent != null) {
-                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(prefab.Name, parent)}{PrefabAsset.FileExtension}" : result.Name;
+                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(clone.Name, parent)}{EntityPrefabAsset.FileExtension}" : result.Name;
                 var fullPath = Path.Combine(parent.GetFullPath(), fileName);
                 this._serializer.Serialize(prefab, fullPath);
 
@@ -186,7 +182,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                         contentFile = this.CreateContentFile(parent, fileName);
                         break;
                     }
-                    case ContentFile { Asset: PrefabAsset asset } file:
+                    case ContentFile { Asset: EntityPrefabAsset asset } file:
                         asset.LoadContent(prefab);
                         this.SaveMetadata(file.Metadata);
                         contentFile = file;
@@ -197,24 +193,24 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                     this.CopyToEditorBin(parent, contentFile);
                     this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
-                    prefabAsset = contentFile.Asset as PrefabAsset;
+                    entityPrefabAsset = contentFile.Asset as EntityPrefabAsset;
                 }
             }
         }
 
-        return prefabAsset;
+        return entityPrefabAsset;
     }
 
     /// <inheritdoc />
-    public async Task<SceneSystemAsset> CreatePrefab(ISceneSystem system) {
-        SceneSystemAsset prefabAsset = null;
+    public async Task<SystemPrefabAsset> CreatePrefab(ISceneSystem system) {
+        SystemPrefabAsset prefabAsset = null;
         if (system?.TryClone(out var clone) == true) {
-            var prefab = new SceneSystemPrefab(clone);
-            var result = await this._dialogService.OpenContentSelectionDialog(typeof(SceneSystemAsset), true, "Save the System Prefab");
+            var prefab = new SystemPrefab(clone);
+            var result = await this._dialogService.OpenContentSelectionDialog(typeof(SystemPrefabAsset), true, "Save the System Prefab");
             var parent = result as IContentDirectory ?? result?.Parent;
 
             if (parent != null) {
-                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(clone.Name, parent)}{SceneSystemAsset.FileExtension}" : result.Name;
+                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(clone.Name, parent)}{SystemPrefabAsset.FileExtension}" : result.Name;
                 var fullPath = Path.Combine(parent.GetFullPath(), fileName);
                 this._serializer.Serialize(prefab, fullPath);
 
@@ -224,7 +220,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                         contentFile = this.CreateContentFile(parent, fileName);
                         break;
                     }
-                    case ContentFile { Asset: SceneSystemAsset asset } file:
+                    case ContentFile { Asset: SystemPrefabAsset asset } file:
                         asset.LoadContent(prefab);
                         this.SaveMetadata(file.Metadata);
                         contentFile = file;
@@ -235,7 +231,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                     this.CopyToEditorBin(parent, contentFile);
                     this._buildService.TryCreateMGCBFile(this.RootContentDirectory, out _, out _);
                     this._settingsService.Settings.ShouldRebuildContent = true;
-                    prefabAsset = contentFile.Asset as SceneSystemAsset;
+                    prefabAsset = contentFile.Asset as SystemPrefabAsset;
                 }
             }
         }

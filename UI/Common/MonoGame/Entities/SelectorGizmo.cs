@@ -91,7 +91,7 @@ public class SelectorGizmo : Entity, IGizmo {
         while (potential.Parent != EmptyObject.Entity && potential.Parent != this._sceneService.CurrentlyEditing) {
             potential = potential.Parent;
 
-            if (potential is IPrefabContainer && !this.CheckForPrefab(potential, out finalSelected)) {
+            if (potential is IEntityPrefabContainer && !this.CheckForPrefab(potential, out finalSelected)) {
                 result = true;
                 break;
             }

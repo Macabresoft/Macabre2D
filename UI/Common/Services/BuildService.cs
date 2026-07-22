@@ -76,8 +76,8 @@ public class BuildService : IBuildService {
     /// </summary>
     static BuildService() {
         FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
-        FileExtensionToAssetType.Add(SceneSystemAsset.FileExtension, typeof(SceneSystemAsset));
-        FileExtensionToAssetType.Add(PrefabAsset.FileExtension, typeof(PrefabAsset));
+        FileExtensionToAssetType.Add(SystemPrefabAsset.FileExtension, typeof(SystemPrefabAsset));
+        FileExtensionToAssetType.Add(EntityPrefabAsset.FileExtension, typeof(EntityPrefabAsset));
         FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
         FileExtensionToAssetType.Add(LegacyFontAsset.FileExtension, typeof(LegacyFontAsset));
 

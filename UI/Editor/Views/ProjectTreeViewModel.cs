@@ -482,7 +482,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         return result;
     }
 
-    private static bool CanOpenContent(IContentNode node) => node is ContentFile { Asset: SceneAsset or PrefabAsset };
+    private static bool CanOpenContent(IContentNode node) => node is ContentFile { Asset: SceneAsset or EntityPrefabAsset };
 
     private bool CanRemoveContent(object node) =>
         node != null &&
@@ -599,7 +599,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
             {
                 var usages = new List<string>();
                 var root = this.ContentService.RootContentDirectory;
-                var filesToCheck = root.GetAllContentFiles().Where(file => file.Asset is SceneAsset or PrefabAsset or SceneSystemAsset && file.Id != node.Id).ToList();
+                var filesToCheck = root.GetAllContentFiles().Where(file => file.Asset is SceneAsset or EntityPrefabAsset or SystemPrefabAsset && file.Id != node.Id).ToList();
 
                 foreach (var file in filesToCheck) {
                     var contents = File.ReadAllText(file.GetFullPath());
@@ -707,7 +707,7 @@ public class ProjectTreeViewModel : FilterableViewModel<IContentNode> {
         if (node is ContentFile file && CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel) {
             var result = file.Asset switch {
                 SceneAsset => this.SceneService.TryLoadScene(file.Id, out _),
-                PrefabAsset => this.SceneService.TryLoadPrefab(file.Id),
+                EntityPrefabAsset => this.SceneService.TryLoadPrefab(file.Id),
                 _ => false
             };
 

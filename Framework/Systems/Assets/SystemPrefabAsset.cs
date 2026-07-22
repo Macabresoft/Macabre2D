@@ -3,7 +3,7 @@ namespace Macabre2D.Framework;
 /// <summary>
 /// An asset which contains a <see cref="SceneSystem" />.
 /// </summary>
-public sealed class SceneSystemAsset  : Asset<SceneSystemPrefab> {
+public sealed class SystemPrefabAsset  : Asset<SystemPrefab> {
     /// <summary>
     /// The file extension for a serialized <see cref="SceneSystem" />.
     /// </summary>

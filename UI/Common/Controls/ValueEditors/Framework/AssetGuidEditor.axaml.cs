@@ -80,7 +80,7 @@ public partial class AssetGuidEditor : ValueEditorControl<Guid> {
                     this.AssetType = typeof(ShaderAsset);
                 }
                 else if (info.GetCustomAttribute<PrefabGuidAttribute>() != null) {
-                    this.AssetType = typeof(PrefabAsset);
+                    this.AssetType = typeof(EntityPrefabAsset);
                 }
             }
         }

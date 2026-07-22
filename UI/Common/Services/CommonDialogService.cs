@@ -149,7 +149,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
                 Patterns = SpriteSheet.ValidFileExtensions.Select(x => $"*{x}").ToArray()
             },
             new FilePickerFileType("Prefabs") {
-                Patterns = [$"*{PrefabAsset.FileExtension}"]
+                Patterns = [$"*{EntityPrefabAsset.FileExtension}"]
             },
             new FilePickerFileType("Scenes") {
                 Patterns = [$"*{SceneAsset.FileExtension}"]
@@ -158,7 +158,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
                 Patterns = [$"*{ShaderAsset.FileExtension}"]
             },
             new FilePickerFileType("Systems") {
-                Patterns = [$"*{SceneSystemAsset.FileExtension}"]
+                Patterns = [$"*{SystemPrefabAsset.FileExtension}"]
             }
         ];
     }

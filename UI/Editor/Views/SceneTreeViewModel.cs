@@ -393,11 +393,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private async Task AddPrefabEntity() {
         var parent = this.EntityService.Selected ?? this.SceneService.CurrentlyEditing;
         if (parent != null) {
-            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(PrefabAsset), false, "Select a Prefab Entity");
-            if (contentNode is ContentFile { Asset: PrefabAsset asset }) {
-                var container = new PrefabContainer();
+            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(EntityPrefabAsset), false, "Select a Prefab Entity");
+            if (contentNode is ContentFile { Asset: EntityPrefabAsset asset }) {
+                var container = new EntityPrefabContainer();
                 container.Name = contentNode.NameWithoutExtension;
-                container.PrefabReference.LoadAsset(asset);
+                container.EntityPrefabReference.LoadAsset(asset);
 
                 this._undoService.Do(() =>
                 {
@@ -420,11 +420,11 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
 
     private async Task AddPrefabSystem() {
         if (this.SceneService.CurrentScene is { } scene) {
-            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(SceneSystemAsset), false, "Select a Prefab System");
-            if (contentNode is ContentFile { Asset: SceneSystemAsset asset }) {
-                var system = new SceneSystemContainer();
+            var contentNode = await this._dialogService.OpenContentSelectionDialog(typeof(SystemPrefabAsset), false, "Select a Prefab System");
+            if (contentNode is ContentFile { Asset: SystemPrefabAsset asset }) {
+                var system = new SystemPrefabContainer();
                 system.Name = contentNode.NameWithoutExtension;
-                system.SystemReference.LoadAsset(asset);
+                system.SystemPrefabReference.LoadAsset(asset);
                 var originallySelected = this._systemService.Selected;
                 this._undoService.Do(() =>
                 {
@@ -551,7 +551,7 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private void ConvertToInstance(IEntity entity) {
         if (entity.Parent is { } parent &&
             !Entity.IsNullOrEmpty(parent, out _) &&
-            entity is PrefabContainer { PrefabReference.Asset.Content: IEntity content } &&
+            entity is EntityPrefabContainer { EntityPrefabReference.Asset.Content: IEntity content } &&
             content.TryClone(out var clone)) {
             if (clone.GetType() == typeof(Entity) && clone.Children.Count == 1) {
                 // We create an entity to store the clone in that we want to ignore when converting back
@@ -578,8 +578,8 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private void ConvertToInstance(ISceneSystem system) {
         if (this.SceneService.CurrentScene is var scene &&
             !Scene.IsNullOrEmpty(scene, out scene) &&
-            system is SceneSystemContainer container &&
-            container.SystemReference.TryGetSystem(out var originalSystem) &&
+            system is SystemPrefabContainer container &&
+            container.SystemPrefabReference.TryGetSystem(out var originalSystem) &&
             originalSystem.TryClone(out var clone)) {
             var index = scene.Systems.IndexOf(system);
 
@@ -598,9 +598,9 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private async Task ConvertToPrefabContainer(IEntity entity) {
         var prefab = await this._contentService.CreatePrefab(entity);
         if (prefab != null && entity.Parent is { } parent) {
-            var prefabContainer = new PrefabContainer();
+            var prefabContainer = new EntityPrefabContainer();
             prefabContainer.Name = entity.Name;
-            prefabContainer.PrefabReference.LoadAsset(prefab);
+            prefabContainer.EntityPrefabReference.LoadAsset(prefab);
             prefabContainer.LocalPosition = entity.LocalPosition;
             var index = entity.Parent.Children.IndexOf(entity);
 
@@ -625,9 +625,9 @@ public sealed class SceneTreeViewModel : FilterableViewModel<INameable> {
     private async Task ConvertToSystemContainer(ISceneSystem system) {
         var prefab = await this._contentService.CreatePrefab(system);
         if (prefab != null) {
-            var systemContainer = new SceneSystemContainer();
+            var systemContainer = new SystemPrefabContainer();
             systemContainer.Name = system.Name;
-            systemContainer.SystemReference.LoadAsset(prefab);
+            systemContainer.SystemPrefabReference.LoadAsset(prefab);
             var scene = this.SceneService.CurrentScene;
             var index = scene.Systems.IndexOf(system);
 

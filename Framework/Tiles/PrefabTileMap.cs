@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A tile map that presents a prefab at each active tile.
 /// </summary>
-public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity {
+public class PrefabTileMap : TileableEntity, IEntityPrefabContainer, IRenderableEntity {
     [DataMember]
     private readonly HashSet<Point> _activeTiles = [];
 
@@ -27,7 +27,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     /// Gets a reference to the prefab this entity contains.
     /// </summary>
     [DataMember(Order = 0, Name = "Prefab")]
-    public PrefabReference PrefabReference { get; } = new();
+    public EntityPrefabAssetReference EntityPrefabReference { get; } = new();
 
     /// <inheritdoc />
     public int RenderOrder { get; set; }
@@ -47,7 +47,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.PrefabReference.AssetChanged -= this.PrefabReference_AssetChanged;
+        this.EntityPrefabReference.AssetChanged -= this.EntityPrefabReference_AssetChanged;
         this.DeinitializePrefabs();
     }
 
@@ -58,7 +58,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.Reset();
-        this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
+        this.EntityPrefabReference.AssetChanged += this.EntityPrefabReference_AssetChanged;
     }
 
     /// <inheritdoc />
@@ -90,7 +90,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
 
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.PrefabReference;
+        yield return this.EntityPrefabReference;
     }
 
     /// <inheritdoc />
@@ -131,7 +131,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     private void FillTile(Point tile) {
         this.RemovePrefab(tile);
 
-        if (this.PrefabReference.Asset?.Content is { } entity && entity.TryClone(out var clone)) {
+        if (this.EntityPrefabReference.Asset?.Content?.Entity is { } entity && entity.TryClone(out var clone)) {
             clone.SetWorldPosition(this.GetTileBoundingArea(tile).Minimum);
             this._activeTileToEntity[tile] = clone;
 
@@ -150,7 +150,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
         }
     }
 
-    private void PrefabReference_AssetChanged(object? sender, bool hasAsset) {
+    private void EntityPrefabReference_AssetChanged(object? sender, bool hasAsset) {
         this.Reset();
     }
 
@@ -175,7 +175,7 @@ public class PrefabTileMap : TileableEntity, IPrefabContainer, IRenderableEntity
     private void Reset() {
         this.DeinitializePrefabs();
 
-        if (this.PrefabReference.Asset?.Content != null) {
+        if (this.EntityPrefabReference.Asset?.Content != null) {
             foreach (var tile in this._activeTiles) {
                 this.FillTile(tile);
             }

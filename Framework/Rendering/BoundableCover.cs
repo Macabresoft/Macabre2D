@@ -58,7 +58,7 @@ public class BoundableCover : RenderableEntity {
         base.Initialize(scene, parent);
 
         if (this.TryGetAncestor<IBoundableEntity>(out var boundable)) {
-            if (boundable is IPrefabContainer prefabContainer) {
+            if (boundable is IEntityPrefabContainer prefabContainer) {
                 if (prefabContainer.TryGetAncestor<IBoundableEntity>(out var stepRemovedBoundable)) {
                     this._boundable = stepRemovedBoundable;
                     this._boundable.BoundingAreaChanged += this.Boundable_BoundingAreaChanged;

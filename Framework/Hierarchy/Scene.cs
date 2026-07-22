@@ -2,6 +2,7 @@ namespace Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -332,7 +333,7 @@ public sealed class Scene : GridContainer, IScene {
         (a, handler) => a.ShouldRenderInScreenSpaceChanged += handler,
         (a, handler) => a.ShouldRenderInScreenSpaceChanged -= handler);
 
-    private readonly HashSet<SceneSystemContainer> _systemContainers = [];
+    private readonly HashSet<SystemPrefabContainer> _systemContainers = [];
 
     [DataMember]
     private readonly SceneSystemCollection _systems = [];
@@ -551,10 +552,15 @@ public sealed class Scene : GridContainer, IScene {
                 this.OnSceneTreeLoaded();
                 this.InvokePendingActions();
             }
+            catch (Exception e)
+            {
+                Debug.Write(e);
+            }
             finally {
                 this.InitializationStep = SceneInitializationStep.Done;
                 this._isBusy = false;
             }
+
         }
         else {
             foreach (var system in this.Systems) {
@@ -852,7 +858,7 @@ public sealed class Scene : GridContainer, IScene {
         this._screenSpaceRenderSystems.Add(system);
         this._renderSystems.Add(system);
 
-        if (system is SceneSystemContainer container) {
+        if (system is SystemPrefabContainer container) {
             this._systemContainers.Add(container);
         }
 
@@ -880,7 +886,7 @@ public sealed class Scene : GridContainer, IScene {
             cache.Remove(system);
         }
 
-        if (system is SceneSystemContainer container) {
+        if (system is SystemPrefabContainer container) {
             this._systemContainers.Remove(container);
         }
     }

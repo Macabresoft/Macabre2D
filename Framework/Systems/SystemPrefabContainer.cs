@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// A container for a scene system asset.
 /// </summary>
-public class SceneSystemContainer : SceneSystem {
+public class SystemPrefabContainer : SceneSystem {
     /// <summary>
     /// Gets the system.
     /// </summary>
@@ -16,7 +16,7 @@ public class SceneSystemContainer : SceneSystem {
     /// Gets the system asset reference.
     /// </summary>
     [DataMember]
-    public SceneSystemAssetReference SystemReference { get; } = new();
+    public SystemPrefabAssetReference SystemPrefabReference { get; } = new();
 
     /// <inheritdoc />
     public override void Deinitialize() {
@@ -27,7 +27,7 @@ public class SceneSystemContainer : SceneSystem {
     /// <inheritdoc />
     public override void Initialize(IScene scene) {
         base.Initialize(scene);
-        if (this.SystemReference.TryGetSystem(out var system)) {
+        if (this.SystemPrefabReference.TryGetSystem(out var system)) {
             this.System = system;
 
             if (!BaseGame.IsDesignMode) {
@@ -39,6 +39,6 @@ public class SceneSystemContainer : SceneSystem {
 
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.SystemReference;
+        yield return this.SystemPrefabReference;
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an entity which contains another entity.
 /// </summary>
-public interface IPrefabContainer : IEntity {
+public interface IEntityPrefabContainer : IEntity {
     /// <summary>
     /// Gets a value indicating whether the other entity is a descendent of this container's prefab.
     /// </summary>
@@ -24,10 +24,10 @@ public interface IPrefabContainer : IEntity {
 }
 
 /// <summary>
-/// An entity which loads a <see cref="PrefabAsset" />.
+/// An entity which loads a <see cref="EntityPrefabAsset" />.
 /// </summary>
-public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntity {
-    private Entity? _prefabChild;
+public sealed class EntityPrefabContainer : Entity, IEntityPrefabContainer, IRenderableEntity {
+    private IEntity? _prefabChild;
 
     /// <inheritdoc />
     public event EventHandler? BoundingAreaChanged;
@@ -36,9 +36,9 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     public event EventHandler? ShouldRenderChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PrefabContainer" /> class.
+    /// Initializes a new instance of the <see cref="EntityPrefabContainer" /> class.
     /// </summary>
-    public PrefabContainer() : base() {
+    public EntityPrefabContainer() : base() {
     }
 
     /// <inheritdoc />
@@ -48,7 +48,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     /// Gets a reference to the prefab this entity contains.
     /// </summary>
     [DataMember(Order = 0, Name = "Prefab")]
-    public PrefabReference PrefabReference { get; } = new();
+    public EntityPrefabAssetReference EntityPrefabReference { get; } = new();
 
     /// <inheritdoc />
     public int RenderOrder { get; set; }
@@ -68,7 +68,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     /// <inheritdoc />
     public override void Deinitialize() {
         base.Deinitialize();
-        this.PrefabReference.AssetChanged -= this.PrefabReference_AssetChanged;
+        this.EntityPrefabReference.AssetChanged -= this.EntityPrefabReference_AssetChanged;
         this.DeinitializeChild();
     }
 
@@ -76,7 +76,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.Reset();
-        this.PrefabReference.AssetChanged += this.PrefabReference_AssetChanged;
+        this.EntityPrefabReference.AssetChanged += this.EntityPrefabReference_AssetChanged;
     }
 
     /// <inheritdoc />
@@ -100,7 +100,7 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
 
     /// <inheritdoc />
     protected override IEnumerable<IAssetReference> GetAssetReferences() {
-        yield return this.PrefabReference;
+        yield return this.EntityPrefabReference;
     }
 
     /// <inheritdoc />
@@ -130,14 +130,14 @@ public sealed class PrefabContainer : Entity, IPrefabContainer, IRenderableEntit
         }
     }
 
-    private void PrefabReference_AssetChanged(object? sender, bool hasAsset) {
+    private void EntityPrefabReference_AssetChanged(object? sender, bool hasAsset) {
         this.Reset();
     }
 
     private void Reset() {
         this.DeinitializeChild();
 
-        if (this.PrefabReference.Asset?.Content is { } prefab && prefab.TryClone(out var clone)) {
+        if (this.EntityPrefabReference.Asset?.Content?.Entity is { } entity && entity.TryClone(out var clone)) {
             this._prefabChild = clone;
             if (BaseGame.IsDesignMode) {
                 this._prefabChild.LoadAssets(this.Scene.Assets, this.Game);

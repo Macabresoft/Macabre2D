@@ -6,24 +6,24 @@ using System.Runtime.Serialization;
 /// A scene system prefab, which wraps a <see cref="ISceneSystem" /> to be saved as a content file and loaded as part of an asset.
 /// </summary>
 [DataContract]
-public class SceneSystemPrefab {
+public class SystemPrefab {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SceneSystemPrefab" /> class.
+    /// Initializes a new instance of the <see cref="SystemPrefab" /> class.
     /// </summary>
     /// <param name="system">The system.</param>
-    public SceneSystemPrefab(ISceneSystem system) {
+    public SystemPrefab(ISceneSystem system) {
         this.System = system;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SceneSystemPrefab" /> class.
+    /// Initializes a new instance of the <see cref="SystemPrefab" /> class.
     /// </summary>
-    public SceneSystemPrefab() {
+    public SystemPrefab() {
     }
 
     /// <summary>
     /// Gets the system.
     /// </summary>
     [DataMember]
-    public ISceneSystem? System { get; internal set; }
+    public ISceneSystem? System { get; private set; }
 }
