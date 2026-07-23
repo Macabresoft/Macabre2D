@@ -102,6 +102,7 @@ public class RenderableBlinker : UpdateableEntity, IRenderableBlinker {
     public override void Initialize(IScene scene, IEntity parent) {
         this.ShouldUpdate = false;
         base.Initialize(scene, parent);
+        this.Stop(true);
     }
 
     /// <inheritdoc />
