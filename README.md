@@ -1,3 +1,7 @@
+## ARCHIVED
+
+This project has been moved to [codeberg](https://codeberg.org/macabrett/Macabre2D).
+
 ![Macabre2D Logo](icon.png "Macabre2D Logo")
 
 # Macabre2D
